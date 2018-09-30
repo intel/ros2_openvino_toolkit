@@ -124,7 +124,7 @@ For example,
 ```bash
 ros2 run dynamic_vino_sample dynamic_vino_sample -m /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml -m_em /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml -m_ag /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml -m-hp /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml -i StandardCamera -d CPU -d_em CPU -d_ag GPU -d_hp GPU
 ```
-4. run sample code with parameters extracted from [yaml](https://github.intel.com/otc-rse/ros2_openvino/blob/master/vino_param_lib/param/pipeline.yaml).
+4. run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/vino_param_lib/param/pipeline.yaml).
 ```bash
 ros2 run dynamic_vino_sample pipeline_with_params
 ```
@@ -134,11 +134,11 @@ ros2 run dynamic_vino_sample pipeline_with_params
 - Face Detection:
 ```/openvino_toolkit/faces```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
 - Emotion Detection:
-```/openvino_toolkit/emotions```([people_msgs:msg:EmotionsStamped](https://github.intel.com/otc-rse/ros2_openvino/blob/master/people_msgs/msg/EmotionsStamped.msg))
+```/openvino_toolkit/emotions```([people_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/EmotionsStamped.msg))
 - Age and Gender Detection:
-```/openvino_toolkit/age_genders```([people_msgs:msg:AgeGenderStamped](https://github.intel.com/otc-rse/ros2_openvino/blob/master/people_msgs/msg/AgeGenderStamped.msg))
+```/openvino_toolkit/age_genders```([people_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/AgeGenderStamped.msg))
 - Head Pose:
-```/openvino_toolkit/headposes```([people_msgs:msg:HeadPoseStamped](https://github.intel.com/otc-rse/ros2_openvino/blob/master/people_msgs/msg/HeadPoseStamped.msg))
+```/openvino_toolkit/headposes```([people_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/HeadPoseStamped.msg))
 
 ## 7. Known Issues
 - Parameters "-m_ag, -m_hp, -m_em" should be optional, but samples throw exception without them.
