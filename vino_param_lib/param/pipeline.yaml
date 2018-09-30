@@ -1,0 +1,78 @@
+Pipelines:
+- name: people
+  inputs: [StandardCamera ]
+  infers:
+    - name: face_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+    - name: age_gender_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+    - name: emotion_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+    - name: head_pose_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [ImageWindow, RosTopic]
+  confidence_threshold: 0.2
+  connects:
+    - left: StandardCamera
+      right: [face_detection]
+    - left: face_detection
+      right: [age_gender_detection, emotion_detection, head_pose_detection, ImageWindow, RosTopic]
+    - left: age_gender_detection
+      right: [ImageWindow, RosTopic]
+    - left: emotion_detection
+      right: [ImageWindow, RosTopic]
+    - left: head_pose_detection
+      right: [ImageWindow, RosTopic]
+- name: people2
+  inputs: [StandardCamera]
+  infers:
+    - name: face_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+    - name: age_gender_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+    - name: emotion_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+    - name: head_pose_detection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+  outputs: [ImageWindow, RosTopic]
+  confidence_threshold: 0.2
+  connects:
+    - left: StandardCamera
+      right: [face_detection]
+    - left: face_detection
+      right: [age_gender_detection, emotion_detection, head_pose_detection, ImageWindow, RosTopic]
+    - left: age_gender_detection
+      right: [ImageWindow, RosTopic]
+    - left: emotion_detection
+      right: [ImageWindow, RosTopic]
+    - left: head_pose_detection
+      right: [ImageWindow, RosTopic]
+
+Common:
+  camera_topic: /any/foloder/image_raw/
+  input_path: /file
+  custom_cpu_library: okok
+  enable_performance_count: true
+
+  
+
