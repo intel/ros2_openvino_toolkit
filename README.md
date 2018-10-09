@@ -86,7 +86,7 @@ colcon build --symlink-install
 1.  Preparation
 	-  copy label files (excute _once_)
 	```bash
-	sudo cp ~/ros2_overlay_ws/src/ros2_openvino/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
+	sudo cp ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
 	```
 	- set OpenVINO toolkit ENV
 	```bash
