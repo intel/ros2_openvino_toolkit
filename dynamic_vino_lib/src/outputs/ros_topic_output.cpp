@@ -23,7 +23,7 @@
 #include <string>
 #include <memory>
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
-
+#include "cv_bridge/cv_bridge.h"
 
 Outputs::RosTopicOutput::RosTopicOutput() {
   // rmw_qos_profile_t qos = rmw_qos_profile_default;
@@ -39,13 +39,18 @@ Outputs::RosTopicOutput::RosTopicOutput() {
     "/openvino_toolkit/age_genders", 16);
   pub_headpose_ = node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
     "/openvino_toolkit/headposes", 16);
+  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>(
+    "/openvino_toolkit/images", 16);
   emotions_topic_ = nullptr;
   faces_topic_ = nullptr;
   age_gender_topic_ = nullptr;
   headpose_topic_ = nullptr;
+  image_topic_ = nullptr;
 }
 
-void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame) {}
+void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame) {
+  frame_ = frame.clone();
+}
 
 void Outputs::RosTopicOutput::accept(
     const std::vector<dynamic_vino_lib::FaceDetectionResult>& results) {
@@ -151,6 +156,13 @@ void Outputs::RosTopicOutput::handleOutput(
     pub_headpose_->publish(headpose_topic_);
     headpose_topic_ = nullptr;
   }
+
+  cv::line(frame_, cv::Point(100,100), cv::Point(200,200), cv::Scalar(0, 255, 0), 2);
+  std::shared_ptr<cv_bridge::CvImage> 
+    cv_ptr = std::make_shared<cv_bridge::CvImage>(header, "bgr8", frame_);
+  image_topic_ = cv_ptr->toImageMsg();
+  pub_image_->publish(image_topic_);
+  
 }
 
 /**

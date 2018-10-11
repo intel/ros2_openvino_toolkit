@@ -31,6 +31,7 @@
 #include <people_msgs/msg/age_gender_stamped.hpp>
 #include <people_msgs/msg/head_pose.hpp>
 #include <people_msgs/msg/head_pose_stamped.hpp>
+#include <sensor_msgs/msg/image.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -99,6 +100,8 @@ class RosTopicOutput : public BaseOutput {
   std::shared_ptr<people_msgs::msg::AgeGenderStamped> age_gender_topic_;
   rclcpp::Publisher<people_msgs::msg::HeadPoseStamped>::SharedPtr pub_headpose_;
   std::shared_ptr<people_msgs::msg::HeadPoseStamped> headpose_topic_;
+  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_image_;
+  std::shared_ptr<sensor_msgs::msg::Image> image_topic_;
 };
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__ROS_TOPIC_OUTPUT_HPP_
