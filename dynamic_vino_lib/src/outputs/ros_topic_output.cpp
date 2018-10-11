@@ -130,8 +130,7 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::handleOutput(
-    const std::string& overall_output_text, const std::string& input_type) {
+cv::Mat Outputs::RosTopicOutput::handleOutput(const std::string& input_type) {
   auto header = getHeader();
   if (faces_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;
@@ -156,13 +155,12 @@ void Outputs::RosTopicOutput::handleOutput(
     pub_headpose_->publish(headpose_topic_);
     headpose_topic_ = nullptr;
   }
-
   cv::line(frame_, cv::Point(100,100), cv::Point(200,200), cv::Scalar(0, 255, 0), 2);
   std::shared_ptr<cv_bridge::CvImage> 
     cv_ptr = std::make_shared<cv_bridge::CvImage>(header, "bgr8", frame_);
   image_topic_ = cv_ptr->toImageMsg();
   pub_image_->publish(image_topic_);
-  
+  return frame_;
 }
 
 /**

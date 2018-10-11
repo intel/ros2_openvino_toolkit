@@ -118,13 +118,10 @@ void Pipeline::runOnce(const std::string& input_type) {
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
   // calculate fps
   ms secondDetection = std::chrono::duration_cast<ms>(t1 - t0);
-  std::ostringstream out;
-  std::string window_output_string = "";
-  // show fps?
-  //"(" + std::to_string(1000.f / secondDetection.count()) + " fps)";
-  for (auto& pair : name_to_output_map_) {
-    pair.second->handleOutput(window_output_string, input_type);
-  }
+
+  cv::Mat frame_result = name_to_output_map_["video_output"]->handleOutput(input_type);
+  name_to_output_map_["ros_output"]->feedFrame(frame_result);
+  name_to_output_map_["ros_output"]->handleOutput(input_type);
 }
 
 void Pipeline::printPipeline() {
