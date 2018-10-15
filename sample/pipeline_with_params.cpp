@@ -36,6 +36,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <csignal>
 
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
