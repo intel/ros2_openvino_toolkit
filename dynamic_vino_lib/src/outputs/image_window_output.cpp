@@ -173,7 +173,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-cv::Mat Outputs::ImageWindowOutput::handleOutput(const std::string& input_type) {
+cv::Mat Outputs::ImageWindowOutput::handleOutput(const std::string& input_type, bool flag) {
   if (input_type.compare("Image")){
     int fps = getFPS();
     std::stringstream ss;
@@ -192,7 +192,16 @@ cv::Mat Outputs::ImageWindowOutput::handleOutput(const std::string& input_type) 
     cv::line(frame_, o.hp_zs, o.hp_ze, cv::Scalar(255, 0, 0), 2);
     cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
   }
-  cv::imshow(window_name_, frame_);
+
+  if (flag) {
+    cv::imshow(window_name_, frame_);
+    if (!input_type.compare("Image")) {
+      cv::waitKey(0);
+    }
+    else {
+      cv::waitKey(1);
+    }
+  }
   outputs_.clear();
   return frame_;
 }

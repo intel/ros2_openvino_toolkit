@@ -74,7 +74,14 @@ bool parseAndCheckCommandLine(int argc, char** argv) {
   return true;
 }
 
+void signalHandler(int signum)
+{
+  slog::info << "Interrupt signal (" << signum << ") received.\n"; 
+  exit(signum);  
+}
+
 int main(int argc, char* argv[]) {
+  signal(SIGINT, signalHandler); 
   rclcpp::init(argc, argv);
   std::string content;
   std::string prefix_path;
@@ -227,11 +234,13 @@ int main(int argc, char* argv[]) {
     // ------ 5. Run Pipeline -----------------------------------
 
     auto node = input_ptr->getHandler();
-    while (cv::waitKey(1) < 0 && cvGetWindowHandle(window_name.c_str())) {
+    bool is_cvwindow = true;
+    bool is_rviz = true;
+    while (true) {
       if (node != nullptr) {
         rclcpp::spin_some(node);
       }
-      pipe.runOnce(FLAGS_i);
+      pipe.runOnce(FLAGS_i, is_cvwindow, is_rviz);
     }
     slog::info << "Execution successful" << slog::endl;
     return 0;

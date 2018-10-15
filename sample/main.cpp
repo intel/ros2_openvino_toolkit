@@ -36,6 +36,7 @@
 #include <thread>
 #include <utility>
 #include <vector>
+#include <csignal>
 
 #include "dynamic_vino_lib/common.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
@@ -99,11 +100,17 @@ void thread_op(std::shared_ptr<rclcpp::Node> node, bool& enable) {
   }
 }
 
+void signalHandler(int signum)
+{
+  slog::info << "Interrupt signal (" << signum << ") received.\n"; 
+  exit(signum);  
+}
+
 int main(int argc, char* argv[]) {
+  signal(SIGINT, signalHandler); 
   rclcpp::init(argc, argv);
   // std::shared_ptr<rclcpp::Node> node =
   // rclcpp::Node::make_shared("dynamic_vino_sample");
-
   try {
     std::cout << "InferenceEngine: " << GetInferenceEngineVersion()
               << std::endl;
@@ -236,14 +243,14 @@ int main(int argc, char* argv[]) {
     // --------------------------- 5. Run Pipeline
     // -----------------------------------------
     auto node = input_ptr->getHandler();
-    while (cv::waitKey(1) < 0 && cvGetWindowHandle(window_name.c_str())) {
+    bool is_cvwindow = true;
+    bool is_rviz = true;
+
+    while (true) {
       if (node != nullptr) {
         rclcpp::spin_some(node);
       }
-      pipe.runOnce(FLAGS_i);
-      if (!FLAGS_i.compare("Image")) {
-        cv::waitKey(0);
-      }
+      pipe.runOnce(FLAGS_i, is_cvwindow, is_rviz);
     }
 
     // enable = false;

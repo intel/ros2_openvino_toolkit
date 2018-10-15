@@ -89,7 +89,7 @@ bool Pipeline::add(const std::string& parent, const std::string& name,
   return true;
 }
 
-void Pipeline::runOnce(const std::string& input_type) {
+void Pipeline::runOnce(const std::string& input_type, bool is_cvwindow, bool is_rviz) {
   initInferenceCounter();
 
   if (!input_device_->read(&frame_)) {
@@ -119,9 +119,9 @@ void Pipeline::runOnce(const std::string& input_type) {
   // calculate fps
   ms secondDetection = std::chrono::duration_cast<ms>(t1 - t0);
 
-  cv::Mat frame_result = name_to_output_map_["video_output"]->handleOutput(input_type);
+  cv::Mat frame_result = name_to_output_map_["video_output"]->handleOutput(input_type, is_cvwindow);
   name_to_output_map_["ros_output"]->feedFrame(frame_result);
-  name_to_output_map_["ros_output"]->handleOutput(input_type);
+  name_to_output_map_["ros_output"]->handleOutput(input_type, is_rviz);
 }
 
 void Pipeline::printPipeline() {
