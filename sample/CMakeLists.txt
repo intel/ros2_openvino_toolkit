@@ -116,6 +116,7 @@ add_executable(${PROJECT_NAME}
   main.cpp
 )
 target_link_libraries(${PROJECT_NAME}
+  dl
   cpu_extension
   gflags)
 ament_target_dependencies(${PROJECT_NAME}
@@ -137,6 +138,7 @@ add_executable(vino_param_sample
   parameters.cpp
 )
 target_link_libraries(vino_param_sample
+  dl
   gflags)
 
 ament_target_dependencies(vino_param_sample
@@ -149,6 +151,7 @@ add_executable(pipeline_with_params
   pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
+  dl
   cpu_extension
   gflags)
 ament_target_dependencies(pipeline_with_params
