@@ -56,10 +56,6 @@ find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 
 set (CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
-if (NOT ($ENV{CPU_EXTENSION_LIB}))
-  set( ENV{CPU_EXTENSION_LIB} 
-"/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so")
-endif()
 
 add_library(cpu_extension SHARED IMPORTED)
 set_target_properties(cpu_extension PROPERTIES
