@@ -33,9 +33,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 
 ## 3. Environment Setup
 - Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))
-- Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)
-	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)
-	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/distribution_linux.md)
+
 - Install [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))
 
 	**Note**: Please use  *root privileges* to run the installer when installing the core components.
@@ -44,6 +42,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 cd /opt/intel/computer_vision_sdk/install_dependencies
 sudo ./install_NEO_OCL_driver.sh
 ```
+
+- Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)
+	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/distribution_linux.md)
+
 - Other Dependencies
 ```bash
 # numpy
