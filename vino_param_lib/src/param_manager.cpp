@@ -16,7 +16,7 @@
 
 #include "vino_param_lib/param_manager.hpp"
 #include <yaml-cpp/yaml.h>
-#include <dynamic_vino_lib/slog.hpp>
+#include <vino_param_lib/slog.hpp>
 #include <fstream>
 #include <iostream>
 #include <string>
@@ -175,7 +175,16 @@ std::vector<std::string> ParamManager::getPipelineNames() const {
   for (auto& p : pipelines_) {
     names.push_back(p.name);
   }
-  
+
   return names;
+}
+
+ParamManager::PipelineParams ParamManager::getPipeline(const std::string& name) const{
+  for (auto& p : pipelines_) {
+    if (p.name == name) {
+      return p;
+    }
+  }
+  throw std::logic_error("No parameters found for pipeline [" + name +"]");
 }
 }  // namespace Params

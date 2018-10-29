@@ -23,6 +23,7 @@
 #include <string>
 #include <vector>
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
+#include "dynamic_vino_lib/pipeline.hpp"
 
 Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& window_name,
                                               int focal_length)
@@ -173,12 +174,11 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::handleOutput(
-    const std::string& overall_output_text, const std::string& input_type) {
-  if (input_type.compare("Image")){
+void Outputs::ImageWindowOutput::handleOutput() {
+  if(getPipeline()->getParameters()->isGetFps()){
     int fps = getFPS();
     std::stringstream ss;
-    ss << "FPS: " << fps << overall_output_text;
+    ss << "FPS: " << fps;
     cv::putText(frame_, ss.str(), cv::Point2f(0, 65),
               cv::FONT_HERSHEY_TRIPLEX, 0.5, cv::Scalar(255, 0, 0));
   }

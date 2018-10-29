@@ -54,10 +54,11 @@ find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
+find_package(vino_param_lib REQUIRED)
 
 set (CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
 if (NOT ($ENV{CPU_EXTENSION_LIB}))
-  set( ENV{CPU_EXTENSION_LIB} 
+  set( ENV{CPU_EXTENSION_LIB}
 "/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so")
 endif()
 
@@ -169,6 +170,7 @@ set(DEPENDENCIES realsense2 ${OpenCV_LIBS} cpu_extension)
 add_library(${PROJECT_NAME} SHARED
         src/factory.cpp
         src/pipeline.cpp
+        src/pipeline_params.cpp
         src/engines/engine.cpp
         src/inferences/base_inference.cpp
         src/inferences/emotions_detection.cpp
@@ -203,6 +205,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "class_loader"
   "realsense2"
   "cv_bridge"
+  "vino_param_lib"
 )
 
 if(BUILD_TESTING)

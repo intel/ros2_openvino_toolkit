@@ -33,7 +33,7 @@
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "opencv2/opencv.hpp"
-
+#include "dynamic_vino_lib/pipeline_params.hpp"
 
 /**
  * @class Pipeline
@@ -43,7 +43,7 @@
  */
 class Pipeline {
  public:
-  Pipeline();
+  explicit Pipeline(const std::string& name="pipeline");
   /**
    * @brief Add input device to the pipeline.
    * @param[in] name name of the current input device.
@@ -94,11 +94,16 @@ class Pipeline {
    */
   void setCallback();
   void printPipeline();
+  const std::shared_ptr<PipelineParams> getParameters(){
+    return params_;
+  };
 
  private:
   void initInferenceCounter();
   void increaseInferenceCounter();
   void decreaseInferenceCounter();
+  
+  std::shared_ptr<PipelineParams> params_;
 
   std::shared_ptr<Input::BaseInputDevice> input_device_;
   std::string input_device_name_;
