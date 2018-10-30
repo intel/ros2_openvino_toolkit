@@ -63,7 +63,7 @@ sudo ln -s libboost_python-py35.so libboost_python3.so
 # root is required instead of sudo
 source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 cd /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/
-mdkir build
+mkdir build
 cd build
 cmake ..
 make
@@ -81,6 +81,7 @@ git clone https://github.com/ros-perception/vision_opencv -b ros2
 - Build package
 ```
 source ~/ros2_ws/install/local_setup.bash
+source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 cd ~/ros2_overlay_ws
 colcon build --symlink-install
 ```
