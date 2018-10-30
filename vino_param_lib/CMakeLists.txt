@@ -16,18 +16,18 @@ cmake_minimum_required(VERSION 3.5)
 project(vino_param_lib)
 
 find_package(ament_cmake REQUIRED)
-find_package(rviz_yaml_cpp_vendor REQUIRED)
+find_package(yaml_cpp_vendor REQUIRED)
 find_package(dynamic_vino_lib REQUIRED)
 
 include_directories(include
-  ${rviz_yaml_cpp_vendor_DIR}/../../../opt/rviz_yaml_cpp_vendor/include)
+  ${yaml_cpp_vendor_DIR}/../../../opt/yaml_cpp_vendor/include)
 
 add_library(${PROJECT_NAME} SHARED
   src/param_manager.cpp
   )
 
 ament_target_dependencies(${PROJECT_NAME}
-  "rviz_yaml_cpp_vendor"
+  "yaml_cpp_vendor"
   "dynamic_vino_lib"
   )
 

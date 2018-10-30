@@ -58,7 +58,7 @@ find_package(dynamic_vino_lib REQUIRED)
 find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
-find_package(rviz_yaml_cpp_vendor REQUIRED)
+find_package(yaml_cpp_vendor REQUIRED)
 
 if(OpenCV_FOUND)
     message(STATUS "OPENCV is enabled")
@@ -70,7 +70,7 @@ else()
 endif()
 
 include_directories(include
-  ${rviz_yaml_cpp_vendor_DIR}/../../../opt/rviz_yaml_cpp_vendor/include)
+  ${yaml_cpp_vendor_DIR}/../../../opt/yaml_cpp_vendor/include)
 
 if( BUILD_SAMPLE_NAME AND NOT ${BUILD_SAMPLE_NAME} STREQUAL ${PROJECT_NAME} )
     message(STATUS "SAMPLE ${PROJECT_NAME} SKIPPED")
@@ -137,7 +137,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "InferenceEngine"
   "people_msgs"
   "vino_param_lib"
-  "rviz_yaml_cpp_vendor"
+  "yaml_cpp_vendor"
 )
 
 
