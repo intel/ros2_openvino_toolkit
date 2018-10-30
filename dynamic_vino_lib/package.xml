@@ -31,7 +31,7 @@ limitations under the License.
   <build_depend>rmw_implementation</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>sensor_msgs</build_depend>
-  <build_depend>rviz_yaml_cpp_vendor</build_depend>
+  <build_depend>yaml_cpp_vendor</build_depend>
   <build_depend>ament_index_cpp</build_depend>
   <build_depend>class_loader</build_depend>
   <build_depend>cv_bridge</build_depend>
@@ -44,7 +44,7 @@ limitations under the License.
   <exec_depend>rmw_implementation</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
-  <exec_depend>rviz_yaml_cpp_vendor</exec_depend>
+  <exec_depend>yaml_cpp_vendor</exec_depend>
   <exec_depend>ament_index_cpp</exec_depend>
   <exec_depend>class_loader</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
