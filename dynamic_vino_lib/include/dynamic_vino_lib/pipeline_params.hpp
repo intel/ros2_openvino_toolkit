@@ -23,38 +23,39 @@
 
 #include <atomic>
 #include <future>
+#include <map>
 #include <memory>
 #include <mutex>
-#include <string>
 #include <set>
-#include <map>
+#include <string>
 
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
-#include "vino_param_lib/param_manager.hpp"
 #include "opencv2/opencv.hpp"
-
+#include "vino_param_lib/param_manager.hpp"
 
 /**
  * @class PipelineParams
- * @brief This class is a pipeline parameter management that stores parameters of a given pipeline
+ * @brief This class is a pipeline parameter management that stores parameters
+ * of a given pipeline
  */
 class PipelineParams {
-public:
+ public:
   PipelineParams(const std::string& name);
   PipelineParams(const Params::ParamManager::PipelineParams& params);
-  static Params::ParamManager::PipelineParams getPipeline(const std::string& name);
+  static Params::ParamManager::PipelineParams getPipeline(
+      const std::string& name);
   PipelineParams& operator=(const Params::ParamManager::PipelineParams& params);
   void update();
   bool isOutputTo(std::string& name);
   bool isGetFps();
-  
-  const std::string kInputType_Image="Image";
-  const std::string kOutputTpye_RViz="RViz";
-private:
+
+  const std::string kInputType_Image = "Image";
+  const std::string kOutputTpye_RViz = "RViz";
+
+ private:
   Params::ParamManager::PipelineParams params_;
-  
 };
 
 #endif  // DYNAMIC_VINO_LIB__PIPELINE_PARAM_HPP_
