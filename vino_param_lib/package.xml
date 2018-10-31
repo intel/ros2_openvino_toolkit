@@ -31,14 +31,12 @@ limitations under the License.
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <build_depend>yaml_cpp_vendor</build_depend>
-  <build_depend>dynamic_vino_lib</build_depend>
 
   <exec_depend>yaml_cpp_vendor</exec_depend>
-  <exec_depend>dynamic_vino_lib</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
-  
+
   <export>
     <build_type>ament_cmake</build_type>
   </export>

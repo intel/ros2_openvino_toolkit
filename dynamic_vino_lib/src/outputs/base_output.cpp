@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-#include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
+#include "dynamic_vino_lib/outputs/base_output.hpp"
+#include "dynamic_vino_lib/pipeline.hpp"
 
 int Outputs::BaseOutput::getFPS() const {
   static int fps = 0;
@@ -36,4 +37,12 @@ int Outputs::BaseOutput::getFPS() const {
   }
 
   return fps;
+}
+
+void Outputs::BaseOutput::setPipeline(Pipeline* const pipeline){
+  pipeline_ = pipeline;
+}
+
+Pipeline* Outputs::BaseOutput::getPipeline() const {
+  return pipeline_;
 }

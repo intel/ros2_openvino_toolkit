@@ -37,6 +37,7 @@ limitations under the License.
   <build_depend>cv_bridge</build_depend>
   <build_depend>object_msgs</build_depend>
   <build_depend>people_msgs</build_depend>
+  <build_depend>vino_param_lib</build_depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>builtin_interfaces</exec_depend>
@@ -50,6 +51,7 @@ limitations under the License.
   <exec_depend>cv_bridge</exec_depend>
   <exec_depend>object_msgs</exec_depend>
   <exec_depend>people_msgs</exec_depend>
+  <exec_depend>vino_param_lib</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

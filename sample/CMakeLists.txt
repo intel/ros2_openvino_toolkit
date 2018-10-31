@@ -150,6 +150,7 @@ target_link_libraries(vino_param_sample
 ament_target_dependencies(vino_param_sample
   "vino_param_lib"
   "dynamic_vino_lib"
+  "rviz_yaml_cpp_vendor"
 
 )
 
@@ -171,6 +172,7 @@ ament_target_dependencies(pipeline_with_params
   "people_msgs"
   "vino_param_lib"
   "OpenCV"
+  "rviz_yaml_cpp_vendor"
 )
 
 if(UNIX)

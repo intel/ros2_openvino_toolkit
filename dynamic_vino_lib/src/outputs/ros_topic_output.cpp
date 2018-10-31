@@ -125,8 +125,7 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::handleOutput(
-    const std::string& overall_output_text, const std::string& input_type) {
+void Outputs::RosTopicOutput::handleOutput() {
   auto header = getHeader();
   if (faces_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;

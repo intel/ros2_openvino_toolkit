@@ -24,10 +24,12 @@
 #include <string>
 
 #include "dynamic_vino_lib/pipeline.hpp"
+#include <vino_param_lib/param_manager.hpp>
 
 using namespace InferenceEngine;
 
-Pipeline::Pipeline() {
+Pipeline::Pipeline(const std::string& name) {
+  params_ = std::make_shared<PipelineParams>(name);
   counter_ = 0;
 }
 
@@ -55,6 +57,9 @@ bool Pipeline::add(const std::string& parent, const std::string& name,
   output_names_.insert(name);
   name_to_output_map_[name] = std::move(output);
   next_.insert({parent, name});
+  
+  /**< Add pipeline instance to Output instance >**/
+  output->setPipeline(this);
   return true;
 }
 
@@ -116,14 +121,9 @@ void Pipeline::runOnce(const std::string& input_type) {
   cv_.wait(lock, [self = this]() { return self->counter_ == 0; });
   auto t1 = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
-  // calculate fps
-  ms secondDetection = std::chrono::duration_cast<ms>(t1 - t0);
-  std::ostringstream out;
-  std::string window_output_string = "";
-  // show fps?
-  //"(" + std::to_string(1000.f / secondDetection.count()) + " fps)";
+
   for (auto& pair : name_to_output_map_) {
-    pair.second->handleOutput(window_output_string, input_type);
+    pair.second->handleOutput();
   }
 }
 
