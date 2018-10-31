@@ -55,6 +55,7 @@ find_package(people_msgs REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
+find_package(yaml_cpp_vendor REQUIRED)
 
 set (CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
 if (NOT ($ENV{CPU_EXTENSION_LIB}))
@@ -206,6 +207,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "realsense2"
   "cv_bridge"
   "vino_param_lib"
+  "yaml_cpp_vendor"
 )
 
 if(BUILD_TESTING)
