@@ -94,6 +94,7 @@ class Pipeline {
    */
   void setCallback();
   void printPipeline();
+  void outputHandler();
   void setParams(PipelineParams pipeline_params) {
     params_ = std::make_shared<PipelineParams>(pipeline_params);
   };
