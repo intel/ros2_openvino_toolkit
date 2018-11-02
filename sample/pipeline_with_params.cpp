@@ -206,7 +206,9 @@ int main(int argc, char* argv[]) {
     headpose_inference_ptr->loadEngine(headpose_detection_engine);
 
     // ------ 4. Build Pipeline --------------------------------------
-    Pipeline pipe;
+    Pipeline pipe("people");
+    auto pipeline_params = Params::ParamManager::getInstance().getPipeline("people");
+    pipe.setParams(pipeline_params);
     // pipe.add("video_input", std::move(input_ptr));
     pipe.add("video_input", input_ptr);
     pipe.add("video_input", "face_detection", face_inference_ptr);
