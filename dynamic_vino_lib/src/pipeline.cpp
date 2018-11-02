@@ -36,7 +36,7 @@ Pipeline::Pipeline(const std::string& name) {
 bool Pipeline::add(const std::string& name,
                    std::shared_ptr<Input::BaseInputDevice> input_device) {
   input_device_name_ = name;
-  input_device_ = std::move(input_device);
+  input_device_ = input_device;
   next_.insert({"", name});
   return true;
 }
@@ -55,7 +55,7 @@ bool Pipeline::add(const std::string& parent, const std::string& name,
     return add(parent, name);
   }
   output_names_.insert(name);
-  name_to_output_map_[name] = std::move(output);
+  name_to_output_map_[name] = output;
   next_.insert({parent, name});
   
   /**< Add pipeline instance to Output instance >**/
@@ -89,7 +89,7 @@ bool Pipeline::add(const std::string& parent, const std::string& name,
     return false;
   }
   next_.insert({parent, name});
-  name_to_detection_map_[name] = std::move(inference);
+  name_to_detection_map_[name] = inference;
   ++total_inference_;
   return true;
 }

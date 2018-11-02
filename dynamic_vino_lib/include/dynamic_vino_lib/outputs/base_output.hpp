@@ -76,7 +76,8 @@ class BaseOutput {
   
   void setPipeline( Pipeline* const pipeline);
   Pipeline* getPipeline() const;
-private:
+
+ private:
   Pipeline* pipeline_;
 };
 }  // namespace Outputs
