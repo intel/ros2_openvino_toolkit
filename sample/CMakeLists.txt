@@ -175,6 +175,26 @@ ament_target_dependencies(pipeline_with_params
   "rviz_yaml_cpp_vendor"
 )
 
+add_executable(object_detection_sample
+  object_detection_sample.cpp
+)
+target_link_libraries(object_detection_sample
+  cpu_extension
+  gflags)
+ament_target_dependencies(object_detection_sample
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+) 
+
 if(UNIX)
     target_link_libraries( ${PROJECT_NAME} ${LIB_DL} pthread ${OpenCV_LIBRARIES})
 endif()
@@ -191,6 +211,9 @@ install(TARGETS vino_param_sample
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS pipeline_with_params
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS object_detection_sample
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

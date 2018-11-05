@@ -29,6 +29,7 @@
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
+#include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "opencv2/opencv.hpp"
@@ -44,6 +45,10 @@ namespace Outputs {
 class BaseOutput {
  public:
   BaseOutput() = default;
+    /**
+   * @brief Generate output content according to the face detection result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::ObjectDetectionResult>&){}
   /**
    * @brief Generate output content according to the face detection result.
    */
