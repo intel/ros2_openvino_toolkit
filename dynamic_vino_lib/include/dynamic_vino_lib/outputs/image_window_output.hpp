@@ -103,7 +103,6 @@ class ImageWindowOutput : public BaseOutput {
 
   std::vector<OutputData> outputs_;
   const std::string window_name_;
-  cv::Mat frame_;
   float focal_length_;
   cv::Mat camera_matrix_;
 };

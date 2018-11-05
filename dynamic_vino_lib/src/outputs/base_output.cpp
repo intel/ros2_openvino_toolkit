@@ -46,3 +46,7 @@ void Outputs::BaseOutput::setPipeline(Pipeline* const pipeline){
 Pipeline* Outputs::BaseOutput::getPipeline() const {
   return pipeline_;
 }
+
+cv::Mat Outputs::BaseOutput::getFrame() const {
+  return frame_;
+}

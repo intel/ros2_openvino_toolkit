@@ -60,12 +60,11 @@ bool PipelineParams::isOutputTo(std::string& output) {
       params_.outputs.end()) {
     return true;
   }
-
   return false;
 }
 
 bool PipelineParams::isGetFps() {
   /**< Only "Image" input can't computing FPS >**/
   return std::find(params_.inputs.begin(), params_.inputs.end(),
-                   kInputType_Image) != params_.inputs.end();
+                   kInputType_Image) == params_.inputs.end();
 }

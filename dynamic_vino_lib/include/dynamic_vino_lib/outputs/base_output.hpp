@@ -76,8 +76,10 @@ class BaseOutput {
   
   void setPipeline( Pipeline* const pipeline);
   Pipeline* getPipeline() const;
+  cv::Mat getFrame() const;
 
- private:
+ protected:
+  cv::Mat frame_;
   Pipeline* pipeline_;
 };
 }  // namespace Outputs

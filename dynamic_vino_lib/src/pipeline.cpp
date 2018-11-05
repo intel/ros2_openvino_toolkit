@@ -122,8 +122,25 @@ void Pipeline::runOnce(const std::string& input_type) {
   auto t1 = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
 
-  for (auto& pair : name_to_output_map_) {
-    pair.second->handleOutput();
+  outputHandler();
+}
+
+void Pipeline::outputHandler() {
+  std::string output_window = "ImageWindow";
+  std::string output_topic = "RosTopic";
+  std::string output_rviz = "Rviz";
+  if (this->params_->isOutputTo(output_rviz)) {
+    name_to_output_map_["video_output"]->handleOutput();
+    cv::Mat window_frame = name_to_output_map_["video_output"]->getFrame();
+    name_to_output_map_["ros_output"]->feedFrame(window_frame);
+    name_to_output_map_["ros_output"]->handleOutput();
+  } else {
+    if (this->params_->isOutputTo(output_window)) {
+      name_to_output_map_["video_output"]->handleOutput();
+    }
+    if (this->params_->isOutputTo(output_topic)) {
+      name_to_output_map_["ros_output"]->handleOutput();
+    }
   }
 }
 

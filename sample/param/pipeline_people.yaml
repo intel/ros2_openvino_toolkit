@@ -22,7 +22,7 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow, RosTopic]
+  outputs: [ImageWindow]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
@@ -30,10 +30,10 @@ Pipelines:
     - left: face_detection
       right: [age_gender_detection, emotion_detection, head_pose_detection, ImageWindow, RosTopic]
     - left: age_gender_detection
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
     - left: emotion_detection
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
     - left: head_pose_detection
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
 
 OpenvinoCommon:
