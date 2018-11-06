@@ -175,13 +175,13 @@ ament_target_dependencies(pipeline_with_params
   "rviz_yaml_cpp_vendor"
 )
 
-add_executable(object_detection_sample
-  object_detection_sample.cpp
+add_executable(object_detection_with_params
+  object_detection_with_params.cpp
 )
-target_link_libraries(object_detection_sample
+target_link_libraries(object_detection_with_params
   cpu_extension
   gflags)
-ament_target_dependencies(object_detection_sample
+ament_target_dependencies(object_detection_with_params
   "rclcpp"
   "rmw_implementation"
   "std_msgs"
@@ -213,7 +213,7 @@ install(TARGETS vino_param_sample
 install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
-install(TARGETS object_detection_sample
+install(TARGETS object_detection_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

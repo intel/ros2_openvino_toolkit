@@ -65,6 +65,7 @@ bool parseAndCheckCommandLine(int argc, char** argv) {
     showUsageForObjectDetection();
     return false;
   }
+/*  return true;
   slog::info << "Parsing input parameters" << slog::endl;
   if (FLAGS_i.empty()) {
     throw std::logic_error("Parameter -i is not set");
@@ -73,7 +74,7 @@ bool parseAndCheckCommandLine(int argc, char** argv) {
   if (FLAGS_m.empty()) {
     throw std::logic_error("Parameter -m is not set");
   }
-  
+  */
   return true;
 }
 int main(int argc, char* argv[]) {
@@ -97,11 +98,18 @@ int main(int argc, char* argv[]) {
           prefix_path + "/share/dynamic_vino_sample/param/pipeline_object.yaml";
     }
     Params::ParamManager::getInstance().parse(FLAGS_config);
+    Params::ParamManager::getInstance().print();
+    auto pipelines = Params::ParamManager::getInstance().getPipelines();
+    if (pipelines.size() < 1) {
+      throw std::logic_error("Pipeline parameters should be set!");
+    }
+
+    FLAGS_i = pipelines[0].inputs[0];
+    FLAGS_m = pipelines[0].infers[0].model;
 
     // ----------- 1. Load Plugin for inference engine
     std::unique_ptr<InferencePlugin> plugin = Factory::makePluginByName(
       FLAGS_d, FLAGS_l, FLAGS_c, FLAGS_pc);
-    Params::ParamManager::getInstance().print();
     
     // --------------------------- 2. Generate Input Device and Output
     // Device-----------------------
