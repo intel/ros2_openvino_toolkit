@@ -135,6 +135,7 @@ ros2 run dynamic_vino_sample pipeline_with_params
 5. run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
 ```bash
 ros2 run dynamic_vino_sample object_detection_with_params
+```
 
 ## 6. Interfaces
 ### 6.1 Topic
