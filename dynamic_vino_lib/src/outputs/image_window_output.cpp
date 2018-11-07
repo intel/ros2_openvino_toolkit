@@ -72,6 +72,34 @@ void Outputs::ImageWindowOutput::accept(
 }
 
 void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) {
+  if (outputs_.size() == 0) {
+    initOutputs(results.size());
+  }
+  if (outputs_.size() != results.size()) {
+    // throw std::logic_error("size is not equal!");
+    slog::err << "the size of Face Detection and Output Vector is not equal!"
+    << slog::endl;
+    return;
+  }
+  
+  for (unsigned i = 0; i < results.size(); i++) {
+    // outputs_[i].desc.str("");
+    outputs_[i].rect = results[i].getLocation();
+    
+    auto fd_conf = results[i].getConfidence();
+    if (fd_conf >= 0) {
+      std::ostringstream ostream;
+      ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
+      outputs_[i].desc += ostream.str();
+    }
+    auto label = results[i].getLabel();
+    outputs_[i].desc += "[" + label + "]";
+  }
+}
+
+
+void Outputs::ImageWindowOutput::accept(
     const std::vector<dynamic_vino_lib::EmotionsResult>& results) {
   if (outputs_.size() == 0) {
     initOutputs(results.size());
@@ -188,10 +216,16 @@ void Outputs::ImageWindowOutput::handleOutput() {
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y),
                 cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
-    cv::line(frame_, o.hp_cp, o.hp_x, cv::Scalar(0, 0, 255), 2);
-    cv::line(frame_, o.hp_cp, o.hp_y, cv::Scalar(0, 255, 0), 2);
-    cv::line(frame_, o.hp_zs, o.hp_ze, cv::Scalar(255, 0, 0), 2);
-    cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
+    if (o.hp_cp != o.hp_x){
+      cv::line(frame_, o.hp_cp, o.hp_x, cv::Scalar(0, 0, 255), 2);
+    }
+    if (o.hp_cp != o.hp_y){
+      cv::line(frame_, o.hp_cp, o.hp_y, cv::Scalar(0, 255, 0), 2);
+    }
+    if (o.hp_zs != o.hp_ze){
+      cv::line(frame_, o.hp_zs, o.hp_ze, cv::Scalar(255, 0, 0), 2);
+      cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
+    }
   }
   cv::imshow(window_name_, frame_);
 

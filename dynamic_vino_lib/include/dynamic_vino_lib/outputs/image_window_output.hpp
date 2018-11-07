@@ -55,6 +55,13 @@ class ImageWindowOutput : public BaseOutput {
       const std::vector<dynamic_vino_lib::FaceDetectionResult>&) override;
   /**
    * @brief Generate image window output content according to
+   * the object detection result.
+   * @param[in] results A bundle of object detection results.
+   */
+  void accept(
+      const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) override;
+  /**
+   * @brief Generate image window output content according to
    * the emotion detection result.
    * @param[in] A emotion detection result objetc.
    */

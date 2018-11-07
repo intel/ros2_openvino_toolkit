@@ -50,7 +50,7 @@ class Factory {
   * @return the instance of derived input device referenced by a smart pointer
   */
   static std::shared_ptr<Input::BaseInputDevice> makeInputDeviceByName(
-      const std::string& input_device_name, const std::string& input_file_path);
+      const std::string& input_device_name, const std::string& input_file_path="");
   /**
   * @brief This function produces the derived inference plugin corresponding to
   * the input string
