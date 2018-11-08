@@ -93,6 +93,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 			cmake -DCMAKE_BUILD_TYPE=Release ..
 			make -j8
 			```
+			**Note**:On Ubuntu 18.04,replace libpng12-dev with libpng-dev in the install_dependencies.sh file.
 		* Install [Open Model Zoo](https://github.com/opencv/open_model_zoo)([guide](https://github.com/opencv/open_model_zoo/tree/2018/demos))<br>
 			```bash
 			cd ~/code
