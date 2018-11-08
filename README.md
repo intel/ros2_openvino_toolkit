@@ -37,9 +37,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 
 ## 3. Environment Setup
 * Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
-* Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)<br>
-	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)<br>
-	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/distribution_linux.md)<br>
 * Install OpenVINO™ Toolkit<br>
 	* From OpenVINO™ Toolkit tar ball
 		* [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))<br>
@@ -106,6 +103,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 			make -j8
 			```
 			**Note**:<path_to_inference_engine_demos_directory> is /home/\<hostname\>/code/dldt/inference-engine,After that you can find binaries for all demos applications in the intel64/Release subfolder.<br><br>
+
+* Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)<br>
+	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)<br>
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/distribution_linux.md)<br>
 
 - Other Dependencies
 	```bash
