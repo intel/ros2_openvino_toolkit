@@ -78,20 +78,12 @@ if( BUILD_SAMPLE_NAME AND NOT ${BUILD_SAMPLE_NAME} STREQUAL ${PROJECT_NAME} )
 endif()
 
 set (CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
-if (NOT ($ENV{CPU_EXTENSION_LIB}))
-  set( ENV{CPU_EXTENSION_LIB}
-"/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so")
-endif()
 
 add_library(cpu_extension SHARED IMPORTED)
 set_target_properties(cpu_extension PROPERTIES
   IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
 set (Gflags_lib $ENV{GFLAGS_LIB})
-if (NOT ($ENV{GFLAGS_LIB}))
-  set( ENV{GFLAGS_LIB}
-"/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libgflags_nothreads.a")
-endif()
 
 add_library(gflags STATIC IMPORTED)
 set_target_properties(gflags PROPERTIES
@@ -124,6 +116,7 @@ add_executable(${PROJECT_NAME}
   main.cpp
 )
 target_link_libraries(${PROJECT_NAME}
+  dl
   cpu_extension
   gflags)
 ament_target_dependencies(${PROJECT_NAME}
@@ -145,6 +138,7 @@ add_executable(vino_param_sample
   parameters.cpp
 )
 target_link_libraries(vino_param_sample
+  dl
   gflags)
 
 ament_target_dependencies(vino_param_sample
@@ -158,6 +152,7 @@ add_executable(pipeline_with_params
   pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
+  dl
   cpu_extension
   gflags)
 ament_target_dependencies(pipeline_with_params
@@ -179,6 +174,7 @@ add_executable(object_detection_with_params
   object_detection_with_params.cpp
 )
 target_link_libraries(object_detection_with_params
+  dl
   cpu_extension
   gflags)
 ament_target_dependencies(object_detection_with_params

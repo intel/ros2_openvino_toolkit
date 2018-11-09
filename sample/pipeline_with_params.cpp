@@ -76,12 +76,7 @@ bool parseAndCheckCommandLine(int argc, char** argv) {
 
 int main(int argc, char* argv[]) {
   rclcpp::init(argc, argv);
-  std::string content;
-  std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content,
-                                &prefix_path);
-  slog::info << "prefix_path=" << prefix_path << slog::endl;
-
+  
   try {
     std::cout << "InferenceEngine: " << GetInferenceEngineVersion()
               << std::endl;
@@ -90,10 +85,7 @@ int main(int argc, char* argv[]) {
     if (!parseAndCheckCommandLine(argc, argv)) {
       return 0;
     }
-    if (FLAGS_config.empty()) {
-      FLAGS_config =
-          prefix_path + "/share/dynamic_vino_sample/param/pipeline_people.yaml";
-    }
+
     Params::ParamManager::getInstance().parse(FLAGS_config);
     Params::ParamManager::getInstance().print();
     auto pcommon = Params::ParamManager::getInstance().getCommon();
