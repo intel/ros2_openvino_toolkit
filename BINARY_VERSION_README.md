@@ -54,15 +54,25 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo ln -s libboost_python-py35.so libboost_python3.so
 	```
 ## 4. Building and Installation
+**Note**:You can choose to build the environment using *./environment_setup.sh* script.
+```bash
+./environment_setup_binary.sh hostname password
+```
+**Note**:You can also choose to follow the steps below to build the environment step by step.
 * Build sample code under openvino toolkit
 	```bash
 	# root is required instead of sudo
 	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 	cd /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/
-	mdkir build
+	mkdir build
 	cd build
 	cmake ..
 	make
+	```
+* set ENV CPU_EXTENSION_LIB and GFLAGS_LIB
+	```bash
+	export CPU_EXTENSION_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so
+	export GFLAGS_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libgflags_nothreads.a
 	```
 * Install ROS2_OpenVINO packages
 	```bash
@@ -76,6 +86,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Build package
 	```
 	source ~/ros2_ws/install/local_setup.bash
+	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
 	```
@@ -94,14 +105,14 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
-	* run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
-		```bash
-		ros2 run dynamic_vino_sample pipeline_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
-		```
-	* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
-		```bash
-		ros2 run dynamic_vino_sample object_detection_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
-		```
+* run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
+	```bash
+	ros2 run dynamic_vino_sample pipeline_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
+	```
+* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
+	```bash
+	ros2 run dynamic_vino_sample object_detection_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
+	```
 
 ## 6. Interfaces
 ### 6.1 Topic
