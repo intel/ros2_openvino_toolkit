@@ -3,7 +3,7 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: object_detection
-      model: /home/iei/code/open_model_zoo/model_downloader/Security/object_detection/crossroad/0078/dldt/person-vehicle-bike-detection-crossroad-0078.xml 
+      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/crossroad/0078/dldt/person-vehicle-bike-detection-crossroad-0078.xml 
       label: to/be/set/xxx.labels
       batch: 16
   outputs: [ImageWindow, RosTopic, Rviz]

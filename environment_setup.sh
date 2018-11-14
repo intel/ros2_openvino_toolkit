@@ -54,6 +54,7 @@ if [ "$CLEAN" == "1" ]; then
   echo "===================Cleaning...===================================="
   rm -rf ~/code
   rm -rf ~/ros2_ws
+  echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
 fi
 
 # Setup ROS2 from src
@@ -227,6 +228,8 @@ if [ "$DLDT" == "1" ]; then
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release ..
   make -j8
+  echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
+  echo $ROOT_PASSWD | sudo -S ln -s ~/code/dldt /opt/openvino_toolkit/dldt
   echo "==== END install DLDT ===="
 fi
 
@@ -237,8 +240,10 @@ if [ "$MODEL_ZOO" == "1" ]; then
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
   mkdir build && cd build
-  cmake -DCMAKE_BUILD_TYPE=Release /home/${HOST_NAME}/code/dldt/inference-engine
+  cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8
+  echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
+  echo $ROOT_PASSWD | sudo -S ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
   echo "==== END install open_model_zoo ===="
 fi
 
