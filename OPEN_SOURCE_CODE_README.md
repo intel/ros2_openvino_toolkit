@@ -78,6 +78,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo cp -R intel-opencl/* /
 		sudo ldconfig
 		```
+		**Note**:On Ubuntu 18.04,replace libpng12-dev with libpng-dev in the *install_dependencies.sh* file.
 	* Install [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt)([guide](https://github.com/opencv/dldt/tree/2018/inference-engine))<br>
 		```bash
 		mkdir ~/code && cd ~/code
@@ -87,18 +88,20 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release ..
 		make -j8
+		sudo mkdir -p ~/opt/openvino_toolkit
+		sudo ln -s ~/code/dldt /opt/openvino_toolkit/dldt
 		```
-		**Note**:On Ubuntu 18.04,replace libpng12-dev with libpng-dev in the install_dependencies.sh file.
 	* Install [Open Model Zoo](https://github.com/opencv/open_model_zoo)([guide](https://github.com/opencv/open_model_zoo/tree/2018/demos))<br>
 		```bash
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
 		mkdir build && cd build
-		cmake -DCMAKE_BUILD_TYPE=Release <path_to_inference_engine_demos_directory>
+		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
+		sudo mkdir -p ~/opt/openvino_toolkit
+		sudo ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
-		**Note**:<path_to_inference_engine_demos_directory> is /home/\<hostname\>/code/dldt/inference-engine,After that you can find binaries for all demos applications in the intel64/Release subfolder.<br><br>
 
 * Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)<br>
 	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)<br>
@@ -126,9 +129,9 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 
 * set ENV InferenceEngine_DIR, CPU_EXTENSION_LIB and GFLAGS_LIB
 	```bash
-	export InferenceEngine_DIR=/home/<hostname>/code/dldt/inference-engine/build/
-	export CPU_EXTENSION_LIB=/home/<hostname>/code/dldt/inference-engine/bin/intel64/Release/lib/libcpu_extension.so
-	export GFLAGS_LIB=/home/<hostname>/code/dldt/inference-engine/bin/intel64/Release/lib/libgflags_nothreads.a
+	export InferenceEngine_DIR=/opt/openvino_toolkit/dldt/inference-engine/build/
+	export CPU_EXTENSION_LIB=/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib/libcpu_extension.so
+	export GFLAGS_LIB=/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib/libgflags_nothreads.a
 	```
 * Install ROS2_OpenVINO packages
 	```bash
@@ -144,13 +147,16 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	source ~/ros2_ws/install/local_setup.bash
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
+	source ./install/local_setup.bash
+	sudo mkdir -p ~/opt/openvino_toolkit
+	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
 ## 5. Running the Demo
 * Preparation
 	* download model file (excute _once_)<br>
 		```bash
-		cd ~/code/open_model_zoo/model_downloader
+		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
 		python3 downloader.py --name face-detection-adas-0001
 		python3 downloader.py --name age-gender-recognition-retail-0013
 		python3 downloader.py --name emotions-recognition-retail-0003
@@ -159,23 +165,20 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```
 	* copy label files (excute _once_)<br>
 		```bash
-		sudo cp ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /home/<hostname>/code/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
 		```
 	* set ENV LD_LIBRARY_PATH<br>
 		```bash
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/<hostname>/code/dldt/inference-engine/bin/intel64/Release/lib
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib
 		```
+**Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml),options for inputsparameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
 * run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml).
 	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
 	```
 * run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
 	```bash
-	ros2 run dynamic_vino_sample object_detection_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
-	```
-	**Note**: Need to manually modify the path of the model file in the .yaml configuration file.
-	```bash
-	model: /home/<hostname>/code/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/face-detection-adas-0001.xml
+	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
 
 ## 6. Interfaces
