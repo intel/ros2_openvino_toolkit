@@ -11,6 +11,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Emotion recognition
 * Age and gender recognition
 * Head pose recognition
+* Object detection
 * Demo application to show above detection and recognitions
 
 ## 2. Prerequisite
