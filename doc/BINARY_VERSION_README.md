@@ -55,7 +55,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo ln -s libboost_python-py35.so libboost_python3.so
 	```
 ## 4. Building and Installation
-**Note**:You can choose to build the environment using *./environment_setup.sh* script.
+**Note**:You can choose to build the environment using *./environment_setup.sh* script in the script subfolder.
 ```bash
 ./environment_setup_binary.sh hostname password
 ```
