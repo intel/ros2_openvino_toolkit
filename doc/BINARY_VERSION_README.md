@@ -108,11 +108,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```
 * run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
 	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
 	```
 * run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
 	```bash
-	ros2 run dynamic_vino_sample object_detection_with_params -config /home/<hostname>/ros2_overlay_ws/src/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
+	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
 
 ## 6. Interfaces
