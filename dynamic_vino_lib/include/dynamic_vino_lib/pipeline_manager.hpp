@@ -56,6 +56,7 @@ class PipelineManager {
       const Params::ParamManager::PipelineParams& params);
   
   void runAll();
+  void stopAll();
   void joinAll();
 
   enum PipelineState {

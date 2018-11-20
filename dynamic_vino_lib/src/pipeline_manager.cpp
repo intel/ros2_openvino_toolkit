@@ -277,6 +277,7 @@ void PipelineManager::threadPipeline(const char* name) {
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
+
 void PipelineManager::runAll() {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if(it->second.state != PipelineState_ThreadRunning) {
@@ -284,6 +285,14 @@ void PipelineManager::runAll() {
     }
     if(it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this, it->second.params.name.c_str());
+    }
+  }
+}
+
+void PipelineManager::stopAll() {
+  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
+    if(it->second.state == PipelineState_ThreadRunning) {
+      it->second.state = PipelineState_ThreadStopped;
     }
   }
 }

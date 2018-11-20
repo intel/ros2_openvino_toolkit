@@ -20,11 +20,10 @@
 * \file sample/main.cpp
 */
 
-#include <rclcpp/rclcpp.hpp>
-
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
+#include <csignal>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -32,6 +31,7 @@
 #include <map>
 #include <memory>
 #include <random>
+#include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <thread>
 #include <utility>
@@ -53,13 +53,47 @@
 using namespace InferenceEngine;
 using namespace rs2;
 
-int main(int argc, char* argv[]) {
-  rclcpp::init(argc, argv);
+void signalHandler(int signum) {
+  slog::warn << "!!!!!!!!!!!Interrupt signal (" << signum
+             << ") received!!!!!!!!!!!!" << slog::endl;
+
+  // cleanup and close up stuff here
+  // terminate program
+  PipelineManager::getInstance().stopAll();
+  // exit(signum);
+}
+
+bool parseAndCheckCommandLine(int argc, char** argv) {
+  // -----Parsing and validation of input args---------------------------
+  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
+  if (FLAGS_h) {
+    showUsageForParam();
+    return false;
+  }
+
+  return true;
+}
+
+std::string getConfigPath(int argc, char* argv[]) {
+  if (parseAndCheckCommandLine(argc, argv)) {
+    if (!FLAGS_config.empty()) {
+      return FLAGS_config;
+    }
+  }
+
   std::string content;
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content,
                                 &prefix_path);
-  slog::info << "prefix_path=" << prefix_path << slog::endl;
+  // slog::info << "prefix_path=" << prefix_path << slog::endl;
+  return prefix_path + "/share/dynamic_vino_sample/param/pipeline_people.yaml";
+}
+
+int main(int argc, char* argv[]) {
+  rclcpp::init(argc, argv);
+
+  // register signal SIGINT and signal handler
+  signal(SIGINT, signalHandler);
 
   try {
     std::cout << "InferenceEngine: " << GetInferenceEngineVersion()
@@ -67,8 +101,8 @@ int main(int argc, char* argv[]) {
 
     // ----- Parsing and validation of input args-----------------------
 
-    std::string config =
-          prefix_path + "/share/dynamic_vino_sample/param/pipeline_people.yaml";
+    std::string config = getConfigPath(argc, argv);
+    slog::info << "Config File Path =" << config << slog::endl;
 
     Params::ParamManager::getInstance().parse(config);
     Params::ParamManager::getInstance().print();
@@ -77,11 +111,11 @@ int main(int argc, char* argv[]) {
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
     }
-    //auto createPipeline = PipelineManager::getInstance().createPipeline;
+    // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto& p : pipelines) {
       PipelineManager::getInstance().createPipeline(p);
     }
-    
+
     PipelineManager::getInstance().runAll();
     PipelineManager::getInstance().joinAll();
 
