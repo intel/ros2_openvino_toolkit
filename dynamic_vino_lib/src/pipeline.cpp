@@ -29,72 +29,144 @@
 using namespace InferenceEngine;
 
 Pipeline::Pipeline(const std::string& name) {
-  params_ = std::make_shared<PipelineParams>(name);
+  if(!name.empty()) {
+    params_ = std::make_shared<PipelineParams>(name);
+  }
   counter_ = 0;
 }
 
 bool Pipeline::add(const std::string& name,
                    std::shared_ptr<Input::BaseInputDevice> input_device) {
+  if (name.empty()) {
+    slog::err << "Item name can't be empty!" << slog::endl;
+    return false;
+  }
+  slog::info << "Adding Input Device into Pipeline: " << name << slog::endl;
   input_device_name_ = name;
   input_device_ = input_device;
-  next_.insert({"", name});
+
+  addConnect("", name);
   return true;
 }
 
 bool Pipeline::add(const std::string& parent, const std::string& name,
                    std::shared_ptr<Outputs::BaseOutput> output) {
-  if (parent.empty()) {
-    slog::err << "output device have no parent!" << slog::endl;
+  if (parent.empty() || name.empty() || !isLegalConnect(parent, name) ||
+    output == nullptr ) {
+    slog::err << "ARGuments ERROR when adding output instance!" << slog::endl;
     return false;
   }
-  if (name_to_detection_map_.find(parent) == name_to_detection_map_.end()) {
-    slog::err << "parent detection does not exists!" << slog::endl;
-    return false;
-  }
-  if (output_names_.find(name) != output_names_.end()) {
-    return add(parent, name);
-  }
-  output_names_.insert(name);
-  name_to_output_map_[name] = output;
-  next_.insert({parent, name});
   
-  /**< Add pipeline instance to Output instance >**/
-  output->setPipeline(this);
-  return true;
+  if(add(name, output)) {
+    addConnect(parent, name);
+
+    return true;
+  }
+  
+  return false;
 }
 
 bool Pipeline::add(const std::string& parent, const std::string& name) {
-  if (parent.empty()) {
-    slog::err << "output device should have no parent!" << slog::endl;
+  if (isLegalConnect(parent, name)) {
+    addConnect(parent, name);
+    return true;
+  }
+
+  return false;
+}
+
+bool Pipeline::add(const std::string& name,
+                   std::shared_ptr<Outputs::BaseOutput> output) {
+    if (name.empty()) {
+    slog::err << "Item name can't be empty!" << slog::endl;
     return false;
   }
-  if (name_to_detection_map_.find(parent) == name_to_detection_map_.end()) {
-    slog::err << "parent detection does not exists!" << slog::endl;
-    return false;
+  
+  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>::iterator it = name_to_output_map_.find(name);
+  if (it != name_to_output_map_.end()) {
+    slog::warn << "inferance instance for [" << name << 
+                  "] already exists, update it with new instance." << slog::endl;
   }
-  if (std::find(output_names_.begin(), output_names_.end(), name) ==
-      output_names_.end()) {
-    slog::err << "output does not exists!" << slog::endl;
-    return false;
-  }
-  next_.insert({parent, name});
+  name_to_output_map_[name] = output;
+  output_names_.insert(name);
+  /**< Add pipeline instance to Output instance >**/
+  output->setPipeline(this);
+  
   return true;
+}
+
+void Pipeline::addConnect(const std::string& parent, const std::string& name) {
+  std::pair <std::multimap<std::string, std::string>::iterator, std::multimap<std::string, std::string>::iterator> ret;
+  ret = next_.equal_range(parent);
+  
+  for (std::multimap<std::string, std::string>::iterator it=ret.first; it!=ret.second; ++it){
+    if(it->second == name) {
+      slog::warn << "The connect [" << parent << "<-->" << name << "] already exists." << slog::endl;
+      return;
+    }
+  }
+  slog::info << "Adding connection into pipeline:[" << parent << "<-->" << name << "]" << slog::endl;
+  next_.insert({parent, name});
 }
 
 bool Pipeline::add(const std::string& parent, const std::string& name,
                    std::shared_ptr<dynamic_vino_lib::BaseInference> inference) {
-  if (name_to_detection_map_.find(parent) == name_to_detection_map_.end() &&
-      input_device_name_ != parent) {
-    slog::err << "parent device/detection does not exists!" << slog::endl;
+  if (parent.empty() || name.empty() || !isLegalConnect(parent, name)) {
+    slog::err << "ARGuments ERROR when adding inference instance!" << slog::endl;
     return false;
   }
-  next_.insert({parent, name});
+  
+  if(add(name, inference)) {
+    addConnect(parent, name);
+    return true;
+  }
+
+  return false;
+}
+
+bool Pipeline::add(const std::string& name,
+                   std::shared_ptr<dynamic_vino_lib::BaseInference> inference) {
+  if (name.empty()) {
+    slog::err << "Item name can't be empty!" << slog::endl;
+    return false;
+  }
+  
+  std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>::iterator it = name_to_detection_map_.find(name);
+  if (it != name_to_detection_map_.end()) {
+    slog::warn << "inferance instance for [" << name << 
+                  "] already exists, update it with new instance." << slog::endl;
+  } else {
+    ++total_inference_;
+  }
   name_to_detection_map_[name] = inference;
-  ++total_inference_;
+
   return true;
 }
 
-void Pipeline::runOnce(const std::string& input_type) {
+bool Pipeline::isLegalConnect(const std::string parent, const std::string child){
+  int parent_order = getCatagoryOrder(parent);
+  int child_order = getCatagoryOrder(child);
+  slog::info << "Checking connection into pipeline:[" << parent << "(" << parent_order<< ")" << "<-->" << child << "(" << child_order<< ")"<< "]" << slog::endl;
+  return (parent_order != kCatagoryOrder_Unknown) && 
+         (child_order != kCatagoryOrder_Unknown) && (parent_order <= child_order);
+}
+
+int Pipeline::getCatagoryOrder(const std::string name) {
+
+  int order = kCatagoryOrder_Unknown;
+  if (name == input_device_name_) {
+    order = kCatagoryOrder_Input;
+  } else if (name_to_detection_map_.find(name) != name_to_detection_map_.end()) {
+    order = kCatagoryOrder_Inference;
+  } else if (name_to_output_map_.find(name) != name_to_output_map_.end()) {
+    order = kCatagoryOrder_Output;
+  }
+  
+  return order;
+}
+
+
+void Pipeline::runOnce() {
   initInferenceCounter();
 
   if (!input_device_->read(&frame_)) {
@@ -122,25 +194,9 @@ void Pipeline::runOnce(const std::string& input_type) {
   auto t1 = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
 
-  outputHandler();
-}
-
-void Pipeline::outputHandler() {
-  std::string output_window = "ImageWindow";
-  std::string output_topic = "RosTopic";
-  std::string output_rviz = "Rviz";
-  if (this->params_->isOutputTo(output_rviz)) {
-    name_to_output_map_["video_output"]->handleOutput();
-    cv::Mat window_frame = name_to_output_map_["video_output"]->getFrame();
-    name_to_output_map_["ros_output"]->feedFrame(window_frame);
-    name_to_output_map_["ros_output"]->handleOutput();
-  } else {
-    if (this->params_->isOutputTo(output_window)) {
-      name_to_output_map_["video_output"]->handleOutput();
-    }
-    if (this->params_->isOutputTo(output_topic)) {
-      name_to_output_map_["ros_output"]->handleOutput();
-    }
+  for (auto& pair : name_to_output_map_) {
+    // slog::info << "Handling Output ..." << pair.first << slog::endl;
+    pair.second->handleOutput();
   }
 }
 

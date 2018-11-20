@@ -2,38 +2,38 @@ Pipelines:
 - name: people
   inputs: [StandardCamera ]
   infers:
-    - name: face_detection
+    - name: FaceDetection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.labels
       batch: 1
-    - name: age_gender_detection
+    - name: AgeGenderRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
-      engine: CPU
+      engine: GPU
       label: to/be/set/xxx.labels
       batch: 16
-    - name: emotion_detection
+    - name: EmotionRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
-      engine: CPU
-      label: to/be/set/xxx.labels
+      engine: GPU
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
       batch: 16
-    - name: head_pose_detection
+    - name: HeadPoseEstimation
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
-      engine: CPU
+      engine: GPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow]
+  outputs: [ImageWindow, RosTopic]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
-      right: [face_detection]
-    - left: face_detection
-      right: [age_gender_detection, emotion_detection, head_pose_detection, ImageWindow, RosTopic]
-    - left: age_gender_detection
-      right: [ImageWindow]
-    - left: emotion_detection
-      right: [ImageWindow]
-    - left: head_pose_detection
-      right: [ImageWindow]
+      right: [FaceDetection]
+    - left: FaceDetection
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic]
+    - left: AgeGenderRecognition
+      right: [ImageWindow, RosTopic]
+    - left: EmotionRecognition
+      right: [ImageWindow, RosTopic]
+    - left: HeadPoseEstimation
+      right: [ImageWindow, RosTopic]
 
-OpenvinoCommon:
+Common:

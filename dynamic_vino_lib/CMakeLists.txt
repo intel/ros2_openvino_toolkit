@@ -168,6 +168,7 @@ add_library(${PROJECT_NAME} SHARED
         src/factory.cpp
         src/pipeline.cpp
         src/pipeline_params.cpp
+        src/pipeline_manager.cpp
         src/engines/engine.cpp
         src/inferences/base_inference.cpp
         src/inferences/emotions_detection.cpp

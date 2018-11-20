@@ -69,6 +69,7 @@ class ParamManager  // singleton
     std::vector<std::string> inputs;
     std::vector<std::string> outputs;
     std::multimap<std::string, std::string> connects;
+    std::string input_meta;
   };
   struct CommonParams {
     std::string custom_cpu_library;
@@ -99,7 +100,8 @@ class ParamManager  // singleton
   std::vector<PipelineParams> getPipelines() const { return pipelines_; }
 
   /**
-   * @brief Retrieve the specific pipeline parameters by the given pipeline name.
+   * @brief Retrieve the specific pipeline parameters by the given pipeline
+   * name.
    * @param[in] name: the name of the pipeline to be retrieved.
    * @return The pipeline paratmeters, or throw a loginc error.
    */

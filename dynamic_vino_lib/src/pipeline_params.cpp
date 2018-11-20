@@ -26,6 +26,22 @@
 #include <vino_param_lib/param_manager.hpp>
 #include "dynamic_vino_lib/pipeline_params.hpp"
 
+const std::string kInputType_Image = "Image";
+const std::string kInputType_Video = "Video";
+const std::string kInputType_StandardCamera = "StandardCamera";
+const std::string kInputType_CameraTopic = "RealSenseCameraTopic";
+const std::string kInputType_RealSenseCamera = "RealSenseCamera";
+
+const std::string kOutputTpye_RViz = "RViz";
+const std::string kOutputTpye_ImageWindow = "ImageWindow";
+const std::string kOutputTpye_RosTopic = "RosTopic";
+
+const std::string kInferTpye_FaceDetection = "FaceDetection";
+const std::string kInferTpye_AgeGenderRecognition = "AgeGenderRecognition";
+const std::string kInferTpye_EmotionRecognition = "EmotionRecognition";
+const std::string kInferTpye_HeadPoseEstimation = "HeadPoseEstimation";
+const std::string kInferTpye_ObjectDetection = "ObjectDetection";
+
 PipelineParams::PipelineParams(const std::string& name) { params_.name = name; }
 
 PipelineParams::PipelineParams(
@@ -55,6 +71,11 @@ void PipelineParams::update() {
   }
 }
 
+void PipelineParams::update(
+    const Params::ParamManager::PipelineParams& params) {
+  params_ = params;
+}
+
 bool PipelineParams::isOutputTo(std::string& output) {
   if (std::find(params_.outputs.begin(), params_.outputs.end(), output) !=
       params_.outputs.end()) {
@@ -65,6 +86,10 @@ bool PipelineParams::isOutputTo(std::string& output) {
 
 bool PipelineParams::isGetFps() {
   /**< Only "Image" input can't computing FPS >**/
+  if (params_.inputs.size() == 0) {
+    return false;
+  }
+  
   return std::find(params_.inputs.begin(), params_.inputs.end(),
                    kInputType_Image) == params_.inputs.end();
 }

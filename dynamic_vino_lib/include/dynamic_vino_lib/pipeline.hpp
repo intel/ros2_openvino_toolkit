@@ -70,6 +70,12 @@ class Pipeline {
    */
   bool add(const std::string& parent, const std::string& name,
            std::shared_ptr<Outputs::BaseOutput> output);
+  
+  bool add(const std::string& name,
+           std::shared_ptr<Outputs::BaseOutput> output);
+  void addConnect(const std::string& parent, const std::string& name);
+  bool add(const std::string& name,
+           std::shared_ptr<dynamic_vino_lib::BaseInference> inference);
   /**
    * @brief Add inference network-output device edge to the pipeline.
    * @param[in] parent name of the parent inference.
@@ -81,7 +87,7 @@ class Pipeline {
    * @brief Do the inference once.
    * Data flow from input device to inference network, then to output device.
    */
-  void runOnce(const std::string& input_type);
+  void runOnce();
   /**
    * @brief The callback function provided for all the inference network in the
    * pipeline.
@@ -106,6 +112,13 @@ class Pipeline {
   void initInferenceCounter();
   void increaseInferenceCounter();
   void decreaseInferenceCounter();
+  bool isLegalConnect(const std::string parent, const std::string child);
+  int getCatagoryOrder(const std::string name);
+  
+  const int kCatagoryOrder_Unknown = -1;
+  const int kCatagoryOrder_Input = 1;
+  const int kCatagoryOrder_Inference = 2;
+  const int kCatagoryOrder_Output = 3;
   
   std::shared_ptr<PipelineParams> params_;
 

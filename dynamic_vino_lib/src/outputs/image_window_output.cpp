@@ -228,6 +228,7 @@ void Outputs::ImageWindowOutput::handleOutput() {
     }
   }
   cv::imshow(window_name_, frame_);
+  cv::waitKey(1);
 
   outputs_.clear();
 }
