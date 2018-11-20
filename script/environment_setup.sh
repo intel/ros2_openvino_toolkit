@@ -1,4 +1,5 @@
 #!/bin/bash -x
+set -euxo pipefail
 
 if [[ -n "$1" && -n "$2" ]]; then
 	HOST_NAME=$1
