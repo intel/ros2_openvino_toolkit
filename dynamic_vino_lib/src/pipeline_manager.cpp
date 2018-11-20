@@ -63,8 +63,8 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(
   for (auto it = inputs.begin(); it != inputs.end(); ++it) {
     pipeline->add(it->first, it->second);
     auto node = it->second->getHandler();
-    if(node != nullptr) {
-      data.spin_nodes.emplace_back(node); 
+    if (node != nullptr) {
+      data.spin_nodes.emplace_back(node);
     }
   }
 
@@ -92,7 +92,6 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(
   slog::info << "One Pipeline Created!" << slog::endl;
   pipeline->printPipeline();
   return pipeline;
-
 }
 
 std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
@@ -280,18 +279,20 @@ void PipelineManager::threadPipeline(const char* name) {
 
 void PipelineManager::runAll() {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    if(it->second.state != PipelineState_ThreadRunning) {
+    if (it->second.state != PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadRunning;
     }
-    if(it->second.thread == nullptr) {
-      it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this, it->second.params.name.c_str());
+    if (it->second.thread == nullptr) {
+      it->second.thread =
+          std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
+                                        it->second.params.name.c_str());
     }
   }
 }
 
 void PipelineManager::stopAll() {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    if(it->second.state == PipelineState_ThreadRunning) {
+    if (it->second.state == PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadStopped;
     }
   }
@@ -299,7 +300,8 @@ void PipelineManager::stopAll() {
 
 void PipelineManager::joinAll() {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    if(it->second.thread != nullptr && it->second.state == PipelineState_ThreadRunning) {
+    if (it->second.thread != nullptr &&
+        it->second.state == PipelineState_ThreadRunning) {
       it->second.thread->join();
     }
   }

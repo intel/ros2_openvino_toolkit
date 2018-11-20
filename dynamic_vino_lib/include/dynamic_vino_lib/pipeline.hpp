@@ -23,17 +23,17 @@
 
 #include <atomic>
 #include <future>
+#include <map>
 #include <memory>
 #include <mutex>
-#include <string>
 #include <set>
-#include <map>
+#include <string>
 
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
-#include "opencv2/opencv.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
+#include "opencv2/opencv.hpp"
 
 /**
  * @class Pipeline
@@ -43,7 +43,7 @@
  */
 class Pipeline {
  public:
-  explicit Pipeline(const std::string& name="pipeline");
+  explicit Pipeline(const std::string& name = "pipeline");
   /**
    * @brief Add input device to the pipeline.
    * @param[in] name name of the current input device.
@@ -70,7 +70,7 @@ class Pipeline {
    */
   bool add(const std::string& parent, const std::string& name,
            std::shared_ptr<Outputs::BaseOutput> output);
-  
+
   bool add(const std::string& name,
            std::shared_ptr<Outputs::BaseOutput> output);
   void addConnect(const std::string& parent, const std::string& name);
@@ -104,9 +104,7 @@ class Pipeline {
   void setParams(PipelineParams pipeline_params) {
     params_ = std::make_shared<PipelineParams>(pipeline_params);
   };
-  const std::shared_ptr<PipelineParams> getParameters(){
-    return params_;
-  };
+  const std::shared_ptr<PipelineParams> getParameters() { return params_; };
 
  private:
   void initInferenceCounter();
@@ -114,12 +112,12 @@ class Pipeline {
   void decreaseInferenceCounter();
   bool isLegalConnect(const std::string parent, const std::string child);
   int getCatagoryOrder(const std::string name);
-  
+
   const int kCatagoryOrder_Unknown = -1;
   const int kCatagoryOrder_Input = 1;
   const int kCatagoryOrder_Inference = 2;
   const int kCatagoryOrder_Output = 3;
-  
+
   std::shared_ptr<PipelineParams> params_;
 
   std::shared_ptr<Input::BaseInputDevice> input_device_;

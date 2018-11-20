@@ -89,7 +89,7 @@ bool PipelineParams::isGetFps() {
   if (params_.inputs.size() == 0) {
     return false;
   }
-  
+
   return std::find(params_.inputs.begin(), params_.inputs.end(),
                    kInputType_Image) == params_.inputs.end();
 }

@@ -92,7 +92,6 @@ class ParamManager  // singleton
    */
   std::vector<std::string> getPipelineNames() const;
 
-  
   /**
    * @brief Retrieve pipeline parameters.
    * @return A list of struct PipelineParams storing all pipeline parameters.

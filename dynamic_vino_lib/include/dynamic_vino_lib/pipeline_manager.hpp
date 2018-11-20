@@ -54,7 +54,7 @@ class PipelineManager {
   PipelineManager& updatePipeline(
       const std::string& name,
       const Params::ParamManager::PipelineParams& params);
-  
+
   void runAll();
   void stopAll();
   void joinAll();

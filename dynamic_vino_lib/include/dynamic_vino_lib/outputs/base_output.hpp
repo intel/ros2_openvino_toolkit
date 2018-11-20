@@ -19,19 +19,18 @@
  * @file head_pose_detection_model.h
  */
 
-
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__BASE_OUTPUT_HPP_
 #define DYNAMIC_VINO_LIB__OUTPUTS__BASE_OUTPUT_HPP_
 
 #include <string>
 #include <vector>
 
+#include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
-#include "dynamic_vino_lib/inferences/object_detection.hpp"
-#include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
+#include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -45,29 +44,32 @@ namespace Outputs {
 class BaseOutput {
  public:
   BaseOutput() = default;
-    /**
-   * @brief Generate output content according to the face detection result.
-   */
-  virtual void accept(const std::vector<dynamic_vino_lib::ObjectDetectionResult>&){}
+  /**
+ * @brief Generate output content according to the face detection result.
+ */
+  virtual void accept(
+      const std::vector<dynamic_vino_lib::ObjectDetectionResult>&) {}
   /**
    * @brief Generate output content according to the face detection result.
    */
-  virtual void accept(const std::vector<dynamic_vino_lib::FaceDetectionResult>&){}
+  virtual void accept(
+      const std::vector<dynamic_vino_lib::FaceDetectionResult>&) {}
   /**
    * @brief Generate output content according to the emotion detection result.
    */
-  virtual void accept(const std::vector<dynamic_vino_lib::EmotionsResult>&){}
+  virtual void accept(const std::vector<dynamic_vino_lib::EmotionsResult>&) {}
   /**
-   * @brief Generate output content according to the age and gender detection result.
+   * @brief Generate output content according to the age and gender detection
+   * result.
    */
-  virtual void accept(const std::vector<dynamic_vino_lib::AgeGenderResult>&){}
+  virtual void accept(const std::vector<dynamic_vino_lib::AgeGenderResult>&) {}
   /**
    * @brief Generate output content according to the headpose detection result.
    */
-  virtual void accept(const std::vector<dynamic_vino_lib::HeadPoseResult>&){}
+  virtual void accept(const std::vector<dynamic_vino_lib::HeadPoseResult>&) {}
   /**
    * @brief Calculate the camera matrix of a frame for image window output, no
-   	 implementation for ros topic output.
+         implementation for ros topic output.
    */
   virtual void feedFrame(const cv::Mat&) {}
   /**
