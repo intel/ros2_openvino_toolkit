@@ -89,7 +89,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release ..
 		make -j8
-		sudo mkdir -p ~/opt/openvino_toolkit
+		sudo mkdir -p /opt/openvino_toolkit
 		sudo ln -s ~/code/dldt /opt/openvino_toolkit/dldt
 		```
 	* Install [Open Model Zoo](https://github.com/opencv/open_model_zoo)([guide](https://github.com/opencv/open_model_zoo/tree/2018/demos))<br>
@@ -100,7 +100,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
-		sudo mkdir -p ~/opt/openvino_toolkit
+		sudo mkdir -p /opt/openvino_toolkit
 		sudo ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
 
@@ -149,7 +149,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
 	source ./install/local_setup.bash
-	sudo mkdir -p ~/opt/openvino_toolkit
+	sudo mkdir -p /opt/openvino_toolkit
 	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
@@ -172,12 +172,12 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib
 		```
-**Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml),options for inputsparameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
+**Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml),options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
 * run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml).
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
 	```
-* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
+* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml).
 	```bash
 	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
