@@ -29,9 +29,9 @@ OPENVINO=`cat modules.conf | grep 'openvino'`
 OPENVINO=${OPENVINO##*=}
 echo "Set OPENVINO to $OPENVINO"
 
-OpenCL=`cat modules.conf | grep 'opencl'`
-OpenCL=${OpenCL##*=}
-echo "Set OpenCL_binary to $OpenCL"
+OPENCL=`cat modules.conf | grep 'opencl'`
+OPENCL=${OPENCL##*=}
+echo "Set OPENCL to $OPENCL"
 
 LIBREALSENSE=`cat modules.conf | grep 'librealsense'`
 LIBREALSENSE=${LIBREALSENSE##*=}
@@ -45,15 +45,21 @@ echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
 # Clean Existing Directories
 if [ "$CLEAN" == "1" ]; then
   echo "===================Cleaning...===================================="
+  
   rm -rf ~/code
   rm -rf ~/ros2_ws
   echo $ROOT_PASSWD | sudo -S rm -rf /opt/intel
   rm -rf ~/Downloads/l_openvino_toolkit*
+  echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
+  if [[ $system_ver = "16.04" && -L "/usr/lib/x86_64-linux-gnu/libboost_python3.so" ]]; then
+    echo $ROOT_PASSWD | sudo -S rm /usr/lib/x86_64-linux-gnu/libboost_python3.so
+  fi
 fi
 
 # Setup ROS2 from src
 if [ "$ROS2_SRC" == "1" ]; then
   echo "===================Installing ROS2 from Source...======================="
+  
   echo $ROOT_PASSWD | sudo -S locale-gen en_US en_US.UTF-8
   echo $ROOT_PASSWD | sudo -S update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
   export LANG=en_US.UTF-8
@@ -74,7 +80,7 @@ if [ "$ROS2_SRC" == "1" ]; then
   wget https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
   vcs-import src < ros2.repos
 
-  echo $ROOT_PASSED | sudo -S apt install -y --no-install-recommends \
+  echo $ROOT_PASSWD | sudo -S apt install -y --no-install-recommends \
         libeigen3-dev \
         libtinyxml2-dev \
         qtbase5-dev \
@@ -120,11 +126,12 @@ if [ "$ROS2_SRC" == "1" ]; then
         python3-catkin-pkg-modules \
         pkg-config
   colcon build --symlink-install
-  source install/local_setup.bash
 fi
 
 #setup OPENVINO
 if [ "$OPENVINO" == "1" ]; then
+  echo "===================Installing OpenVINO Toolkit...======================="
+
   cd ~/Downloads
   wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/13521/l_openvino_toolkit_p_2018.3.343.tgz
   tar -xvf l_openvino_toolkit_p_2018.3.343.tgz
@@ -139,18 +146,24 @@ if [ "$OPENVINO" == "1" ]; then
   else
     echo "openvino already set, skip..."
   fi
+
+  echo "==== END install OpenVINO Toolkit ===="
 fi
 
 #install OpenCL Driver for GPU
-if [ "$OpenCL_BINARY" == "1" ]; then
+if [ "$OPENCL" == "1" ]; then
+   echo "===================Installing OpenCL Driver for GPU...======================="
+   
    cd /opt/intel/computer_vision_sdk/install_dependencies
    echo $ROOT_PASSWD | sudo -S ./install_NEO_OCL_driver.sh
-   echo "install OpenCL Driver for GPU"
+
+   echo "==== END install OpenCL ===="
 fi
 
 # Setup LIBREALSENSE
 if [ "$LIBREALSENSE" == "1" ]; then
   echo "===================Setting Up LibRealSense...======================="
+  
   echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   mkdir -p ~/code && cd ~/code
@@ -168,21 +181,24 @@ if [ "$LIBREALSENSE" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
   echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
   udevadm trigger
+
   echo "==== END install librealsense ===="
 fi
 
 # Setup other dependencies
 if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo "===================Setting UP OTHER_DEPENDENCY DEPENDENCY...======================="
+  
   pip3 install numpy
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
-     sudo ln -s libboost_python-py35.so libboost_python3.so
+     echo $ROOT_PASSWD | sudo -S ln -s libboost_python-py35.so libboost_python3.so
   elif [ $system_ver = "18.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
-     sudo apt install libboost-python1.62.0
+     echo $ROOT_PASSWD | sudo -S apt install libboost-python1.62.0
    fi
+
    echo "==== END install other dependencies ===="
 fi
 
