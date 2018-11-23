@@ -23,7 +23,6 @@
 #include <string>
 #include <memory>
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
-#include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
 
@@ -32,7 +31,6 @@ Outputs::RosTopicOutput::RosTopicOutput() {
   // qos.depth = 10;
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
-  
   node_ = rclcpp::Node::make_shared("topic_publisher");
   pub_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
     "/openvino_toolkit/objects", 16);
@@ -44,14 +42,11 @@ Outputs::RosTopicOutput::RosTopicOutput() {
     "/openvino_toolkit/age_genders", 16);
   pub_headpose_ = node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
     "/openvino_toolkit/headposes", 16);
-  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>(
-    "/openvino_toolkit/images", 16);
   emotions_topic_ = nullptr;
   objects_topic_ = nullptr;
   faces_topic_ = nullptr;
   age_gender_topic_ = nullptr;
   headpose_topic_ = nullptr;
-  image_topic_ = nullptr;
 }
 
 void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame) {frame_ = frame.clone();}
@@ -59,7 +54,6 @@ void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame) {frame_ = frame.cl
 void Outputs::RosTopicOutput::accept(
   const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) {
   objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
-  
   object_msgs::msg::ObjectInBox object;
   for (auto& r : results) {
     // slog::info << ">";
@@ -184,13 +178,6 @@ void Outputs::RosTopicOutput::handleOutput() {
     headpose_topic_->header = header;
     pub_headpose_->publish(headpose_topic_);
     headpose_topic_ = nullptr;
-  }
-  std::string output_rviz = "Rviz";
-  if(getPipeline()->getParameters()->isOutputTo(output_rviz)){
-    std::shared_ptr<cv_bridge::CvImage> 
-    cv_ptr = std::make_shared<cv_bridge::CvImage>(header, "bgr8", frame_);
-    image_topic_ = cv_ptr->toImageMsg();
-    pub_image_->publish(image_topic_);
   }
 }
 

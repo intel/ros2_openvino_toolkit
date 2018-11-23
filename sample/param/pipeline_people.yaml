@@ -9,31 +9,31 @@ Pipelines:
       batch: 1
     - name: AgeGenderRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
-      engine: GPU
+      engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
     - name: EmotionRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
-      engine: GPU
+      engine: CPU
       label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
       batch: 16
     - name: HeadPoseEstimation
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
-      engine: GPU
+      engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow, RosTopic]
+  outputs: [ImageWindow]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
       right: [FaceDetection]
     - left: FaceDetection
-      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic]
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow]
     - left: AgeGenderRecognition
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
     - left: EmotionRecognition
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
     - left: HeadPoseEstimation
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow]
 
 Common:
