@@ -22,18 +22,18 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow]
+  outputs: [ImageWindow, RViz]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
       right: [FaceDetection]
     - left: FaceDetection
-      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow]
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RViz]
     - left: AgeGenderRecognition
-      right: [ImageWindow]
+      right: [ImageWindow, RViz]
     - left: EmotionRecognition
-      right: [ImageWindow]
+      right: [ImageWindow, RViz]
     - left: HeadPoseEstimation
-      right: [ImageWindow]
+      right: [ImageWindow, RViz]
 
 Common:
