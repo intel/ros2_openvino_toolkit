@@ -19,10 +19,10 @@
  * @file image_window_output.cpp
  */
 
+#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include <algorithm>
 #include <string>
 #include <vector>
-#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 
 Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& window_name,
@@ -72,21 +72,21 @@ void Outputs::ImageWindowOutput::accept(
 }
 
 void Outputs::ImageWindowOutput::accept(
-  const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) {
+    const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) {
   if (outputs_.size() == 0) {
     initOutputs(results.size());
   }
   if (outputs_.size() != results.size()) {
     // throw std::logic_error("size is not equal!");
     slog::err << "the size of Face Detection and Output Vector is not equal!"
-    << slog::endl;
+              << slog::endl;
     return;
   }
-  
+
   for (unsigned i = 0; i < results.size(); i++) {
     // outputs_[i].desc.str("");
     outputs_[i].rect = results[i].getLocation();
-    
+
     auto fd_conf = results[i].getConfidence();
     if (fd_conf >= 0) {
       std::ostringstream ostream;
@@ -97,7 +97,6 @@ void Outputs::ImageWindowOutput::accept(
     outputs_[i].desc += "[" + label + "]";
   }
 }
-
 
 void Outputs::ImageWindowOutput::accept(
     const std::vector<dynamic_vino_lib::EmotionsResult>& results) {
@@ -143,8 +142,8 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-cv::Point Outputs::ImageWindowOutput::calcAxis(
-    cv::Mat r, double cx, double cy, double cz, cv::Point cp){
+cv::Point Outputs::ImageWindowOutput::calcAxis(cv::Mat r, double cx, double cy,
+                                               double cz, cv::Point cp) {
   cv::Mat Axis(3, 1, CV_32F);
   Axis.at<float>(0) = cx;
   Axis.at<float>(1) = cy;
@@ -153,22 +152,26 @@ cv::Point Outputs::ImageWindowOutput::calcAxis(
   o.at<float>(2) = camera_matrix_.at<float>(0);
   Axis = r * Axis + o;
   cv::Point point;
-  point.x = static_cast<int>((Axis.at<float>(0) / Axis.at<float>(2)
-    * camera_matrix_.at<float>(0)) + cp.x);
-  point.y = static_cast<int>((Axis.at<float>(1) / Axis.at<float>(2)
-    * camera_matrix_.at<float>(4)) + cp.y);
+  point.x = static_cast<int>(
+      (Axis.at<float>(0) / Axis.at<float>(2) * camera_matrix_.at<float>(0)) +
+      cp.x);
+  point.y = static_cast<int>(
+      (Axis.at<float>(1) / Axis.at<float>(2) * camera_matrix_.at<float>(4)) +
+      cp.y);
   return point;
 }
 
-cv::Mat Outputs::ImageWindowOutput::getRotationTransform(
-    double yaw, double pitch, double roll) {
+cv::Mat Outputs::ImageWindowOutput::getRotationTransform(double yaw,
+                                                         double pitch,
+                                                         double roll) {
   pitch *= CV_PI / 180.0;
-  yaw   *= CV_PI / 180.0;
-  roll  *= CV_PI / 180.0;
-  cv::Matx33f Rx(1, 0, 0, 0, cos(pitch), -sin(pitch), 0, sin(pitch), cos(pitch));
+  yaw *= CV_PI / 180.0;
+  roll *= CV_PI / 180.0;
+  cv::Matx33f Rx(1, 0, 0, 0, cos(pitch), -sin(pitch), 0, sin(pitch),
+                 cos(pitch));
   cv::Matx33f Ry(cos(yaw), 0, -sin(yaw), 0, 1, 0, sin(yaw), 0, cos(yaw));
-  cv::Matx33f Rz(cos(roll), -sin(roll), 0, sin(roll),  cos(roll), 0, 0, 0, 1);
-  auto r = cv::Mat(Rz*Ry*Rx);
+  cv::Matx33f Rz(cos(roll), -sin(roll), 0, sin(roll), cos(roll), 0, 0, 0, 1);
+  auto r = cv::Mat(Rz * Ry * Rx);
   return r;
 }
 
@@ -184,16 +187,17 @@ void Outputs::ImageWindowOutput::accept(
         << slog::endl;
     return;
   }
-  for (unsigned i = 0; i < results.size(); i++){
+  for (unsigned i = 0; i < results.size(); i++) {
     auto result = results[i];
     double yaw = result.getAngleY();
     double pitch = result.getAngleP();
     double roll = result.getAngleR();
     double scale = 50;
     feedFrame(frame_);
-    cv::Mat r = getRotationTransform(yaw, pitch, roll); 
+    cv::Mat r = getRotationTransform(yaw, pitch, roll);
     cv::Rect location = result.getLocation();
-    auto cp = cv::Point(location.x + location.width/2, location.y + location.height/2);
+    auto cp = cv::Point(location.x + location.width / 2,
+                        location.y + location.height / 2);
     outputs_[i].hp_cp = cp;
     outputs_[i].hp_x = calcAxis(r, scale, 0, 0, cp);
     outputs_[i].hp_y = calcAxis(r, 0, -scale, 0, cp);
@@ -203,31 +207,32 @@ void Outputs::ImageWindowOutput::accept(
 }
 
 void Outputs::ImageWindowOutput::handleOutput() {
-  if(getPipeline()->getParameters()->isGetFps()){
+  if (getPipeline()->getParameters()->isGetFps()) {
     int fps = getFPS();
     std::stringstream ss;
     ss << "FPS: " << fps;
-    cv::putText(frame_, ss.str(), cv::Point2f(0, 65),
-              cv::FONT_HERSHEY_TRIPLEX, 0.5, cv::Scalar(255, 0, 0));
+    cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX,
+                0.5, cv::Scalar(255, 0, 0));
   }
-  
+
   for (auto o : outputs_) {
     auto new_y = std::max(15, o.rect.y - 15);
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y),
                 cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
-    if (o.hp_cp != o.hp_x){
+    if (o.hp_cp != o.hp_x) {
       cv::line(frame_, o.hp_cp, o.hp_x, cv::Scalar(0, 0, 255), 2);
     }
-    if (o.hp_cp != o.hp_y){
+    if (o.hp_cp != o.hp_y) {
       cv::line(frame_, o.hp_cp, o.hp_y, cv::Scalar(0, 255, 0), 2);
     }
-    if (o.hp_zs != o.hp_ze){
+    if (o.hp_zs != o.hp_ze) {
       cv::line(frame_, o.hp_zs, o.hp_ze, cv::Scalar(255, 0, 0), 2);
       cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
     }
   }
   cv::imshow(window_name_, frame_);
+  cv::waitKey(1);
 
   outputs_.clear();
 }

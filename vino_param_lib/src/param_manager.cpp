@@ -16,12 +16,12 @@
 
 #include "vino_param_lib/param_manager.hpp"
 #include <yaml-cpp/yaml.h>
-#include <vino_param_lib/slog.hpp>
 #include <fstream>
 #include <iostream>
-#include <string>
 #include <map>
+#include <string>
 #include <vector>
+#include <vino_param_lib/slog.hpp>
 
 namespace Params {
 
@@ -69,6 +69,7 @@ void operator>>(const YAML::Node& node,
   YAML_PARSE(node, "infers", pipeline.infers)
   YAML_PARSE(node, "outputs", pipeline.outputs)
   YAML_PARSE(node, "connects", pipeline.connects)
+  YAML_PARSE(node, "input_path", pipeline.input_meta)
   slog::info << "Pipeline Params:name=" << pipeline.name << slog::endl;
 }
 
@@ -179,12 +180,13 @@ std::vector<std::string> ParamManager::getPipelineNames() const {
   return names;
 }
 
-ParamManager::PipelineParams ParamManager::getPipeline(const std::string& name) const{
+ParamManager::PipelineParams ParamManager::getPipeline(
+    const std::string& name) const {
   for (auto& p : pipelines_) {
     if (p.name == name) {
       return p;
     }
   }
-  throw std::logic_error("No parameters found for pipeline [" + name +"]");
+  throw std::logic_error("No parameters found for pipeline [" + name + "]");
 }
 }  // namespace Params

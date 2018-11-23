@@ -16,7 +16,7 @@
 
 /**
  * @brief a header file with declaration of Pipeline class
- * @file pipeline_param.hpp
+ * @file pipeline_params.hpp
  */
 #ifndef DYNAMIC_VINO_LIB__PIPELINE_PARAM_HPP_
 #define DYNAMIC_VINO_LIB__PIPELINE_PARAM_HPP_
@@ -29,11 +29,27 @@
 #include <set>
 #include <string>
 
+#include <vino_param_lib/param_manager.hpp>
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "opencv2/opencv.hpp"
-#include "vino_param_lib/param_manager.hpp"
+
+extern const std::string kInputType_Image;
+extern const std::string kInputType_Video;
+extern const std::string kInputType_StandardCamera;
+extern const std::string kInputType_CameraTopic;
+extern const std::string kInputType_RealSenseCamera;
+
+extern const std::string kOutputTpye_RViz;
+extern const std::string kOutputTpye_ImageWindow;
+extern const std::string kOutputTpye_RosTopic;
+
+extern const std::string kInferTpye_FaceDetection;
+extern const std::string kInferTpye_AgeGenderRecognition;
+extern const std::string kInferTpye_EmotionRecognition;
+extern const std::string kInferTpye_HeadPoseEstimation;
+extern const std::string kInferTpye_ObjectDetection;
 
 /**
  * @class PipelineParams
@@ -48,11 +64,9 @@ class PipelineParams {
       const std::string& name);
   PipelineParams& operator=(const Params::ParamManager::PipelineParams& params);
   void update();
+  void update(const Params::ParamManager::PipelineParams& params);
   bool isOutputTo(std::string& name);
   bool isGetFps();
-
-  const std::string kInputType_Image = "Image";
-  const std::string kOutputTpye_RViz = "RViz";
 
  private:
   Params::ParamManager::PipelineParams params_;

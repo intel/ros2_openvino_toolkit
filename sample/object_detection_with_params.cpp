@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
       if (node != nullptr) {
         rclcpp::spin_some(node);
       }
-      pipe.runOnce(FLAGS_i);
+      pipe.runOnce();
       if (!FLAGS_i.compare("Image")) {
         cv::waitKey(0);
       }
