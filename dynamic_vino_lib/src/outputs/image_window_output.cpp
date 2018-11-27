@@ -19,16 +19,16 @@
  * @file image_window_output.cpp
  */
 
-#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include <algorithm>
 #include <string>
 #include <vector>
+
+#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 
 Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& window_name,
                                               int focal_length)
     : window_name_(window_name), focal_length_(focal_length) {
-  cv::namedWindow(window_name, cv::WINDOW_AUTOSIZE);
 }
 
 void Outputs::ImageWindowOutput::feedFrame(const cv::Mat& frame) {
@@ -57,7 +57,6 @@ void Outputs::ImageWindowOutput::accept(
               << slog::endl;
     return;
   }
-
   for (unsigned i = 0; i < results.size(); i++) {
     // outputs_[i].desc.str("");
     outputs_[i].rect = results[i].getLocation();
@@ -82,7 +81,6 @@ void Outputs::ImageWindowOutput::accept(
               << slog::endl;
     return;
   }
-
   for (unsigned i = 0; i < results.size(); i++) {
     // outputs_[i].desc.str("");
     outputs_[i].rect = results[i].getLocation();
@@ -206,7 +204,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::handleOutput() {
+void Outputs::ImageWindowOutput::decorateFrame() {
   if (getPipeline()->getParameters()->isGetFps()) {
     int fps = getFPS();
     std::stringstream ss;
@@ -214,7 +212,6 @@ void Outputs::ImageWindowOutput::handleOutput() {
     cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX,
                 0.5, cv::Scalar(255, 0, 0));
   }
-
   for (auto o : outputs_) {
     auto new_y = std::max(15, o.rect.y - 15);
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y),
@@ -231,10 +228,14 @@ void Outputs::ImageWindowOutput::handleOutput() {
       cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
     }
   }
+  outputs_.clear();
+}
+
+void Outputs::ImageWindowOutput::handleOutput() {
+  cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
+  decorateFrame();
   cv::imshow(window_name_, frame_);
   cv::waitKey(1);
-
-  outputs_.clear();
 }
 
 void Outputs::ImageWindowOutput::initOutputs(unsigned size) {

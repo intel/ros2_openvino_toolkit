@@ -33,11 +33,9 @@ void Models::ObjectDetectionModel::setLayerProperty(
   if (input_info_map.size() != 1) {
     throw std::logic_error("This sample accepts networks having only one input");
   }
-  
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  //input_info->setLayout(InferenceEngine::Layout::NCHW);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
       net_reader->getNetwork().getOutputsInfo());

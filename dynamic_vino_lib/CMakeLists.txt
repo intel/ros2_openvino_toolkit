@@ -189,6 +189,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/head_pose_detection_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
+        src/outputs/rviz_output.cpp
         src/outputs/base_output.cpp
         )
 

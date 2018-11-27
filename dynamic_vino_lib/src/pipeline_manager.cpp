@@ -40,6 +40,7 @@
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
+#include "dynamic_vino_lib/outputs/rviz_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
@@ -134,12 +135,13 @@ PipelineManager::parseOutput(
   for (auto& name : params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
-    if (name == kOutputTpye_RViz || name == kOutputTpye_RosTopic) {
+    if (name == kOutputTpye_RosTopic) {
       object = std::make_shared<Outputs::RosTopicOutput>();
     } else if (name == kOutputTpye_ImageWindow) {
       object = std::make_shared<Outputs::ImageWindowOutput>("Results");
+    } else if (name == kOutputTpye_RViz) {
+      object = std::make_shared<Outputs::RvizOutput>();
     }
-
     if (object != nullptr) {
       outputs.insert({name, object});
       slog::info << " ... Adding one Output: " << name << slog::endl;
