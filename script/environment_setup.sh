@@ -53,14 +53,19 @@ echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
 # Clean Existing Directories
 if [ "$CLEAN" == "1" ]; then
   echo "===================Cleaning...===================================="
+  
   rm -rf ~/code
   rm -rf ~/ros2_ws
   echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
+  if [[ $system_ver = "16.04" && -L "/usr/lib/x86_64-linux-gnu/libboost_python3.so" ]]; then
+    echo $ROOT_PASSWD | sudo -S rm /usr/lib/x86_64-linux-gnu/libboost_python3.so
+  fi
 fi
 
 # Setup ROS2 from src
 if [ "$ROS2_SRC" == "1" ]; then
   echo "===================Installing ROS2 from Source...======================="
+  
   echo $ROOT_PASSWD | sudo -S locale-gen en_US en_US.UTF-8
   echo $ROOT_PASSWD | sudo -S update-locale LC_ALL=en_US.UTF-8 LANG=en_US.UTF-8
   export LANG=en_US.UTF-8
@@ -81,7 +86,7 @@ if [ "$ROS2_SRC" == "1" ]; then
   wget https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
   vcs-import src < ros2.repos
 
-  echo $ROOT_PASSED | sudo -S apt install -y --no-install-recommends \
+  echo $ROOT_PASSWD | sudo -S apt install -y --no-install-recommends \
         libeigen3-dev \
         libtinyxml2-dev \
         qtbase5-dev \
@@ -127,12 +132,12 @@ if [ "$ROS2_SRC" == "1" ]; then
         python3-catkin-pkg-modules \
         pkg-config
   colcon build --symlink-install
-  source install/local_setup.bash
 fi
 
 # Setup OpenCV
 if [ "$OPENCV" == "1" ]; then
   echo "===================Installing OpenCV3 from Source...======================="
+  
   echo $ROOT_PASSWD | sudo -S apt-get install -y build-essential
   echo $ROOT_PASSWD | sudo -S apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
   echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
@@ -162,6 +167,7 @@ if [ "$OPENCV" == "1" ]; then
   make -j4
   echo $ROOT_PASSWD | sudo -S make install
   echo $ROOT_PASSWD | sudo -S ldconfig
+  
   echo "==== END install OpenCV ===="
 fi
 
@@ -180,6 +186,7 @@ if [ "$OPENCL" == "1" ]; then
   tar -C intel-opencl -Jxf intel-opencl-cpu-r5.0-63503.x86_64.tar.xz
   echo $ROOT_PASSWD | sudo -S cp -R intel-opencl/* /
   echo $ROOT_PASSWD | sudo -S ldconfig
+  
   echo "==== END install OpenCL ===="
 fi
 
@@ -188,8 +195,8 @@ if [ "$DLDT" == "1" ]; then
   echo "===================Installing Deep Learning Deployment Toolkit...======================="
  
   if [[ -f /etc/lsb-release ]]; then
-    sudo -E apt update
-    sudo -E apt-get install -y \
+    echo $ROOT_PASSWD | sudo -S -E apt update
+    echo $ROOT_PASSWD | sudo -S -E apt-get install -y \
             build-essential \
             cmake \
             curl \
@@ -218,9 +225,9 @@ if [ "$DLDT" == "1" ]; then
             libusb-1.0-0-dev \
             libopenblas-dev
     if [ $system_ver = "18.04" ]; then
-            sudo -E apt-get install -y libpng-dev
+            echo $ROOT_PASSWD | sudo -S -E apt-get install -y libpng-dev
     else
-            sudo -E apt-get install -y libpng12-dev
+            echo $ROOT_PASSWD | sudo -S -E apt-get install -y libpng12-dev
     fi
   fi
   mkdir -p  ~/code && cd ~/code
@@ -231,12 +238,14 @@ if [ "$DLDT" == "1" ]; then
   make -j8
   echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
   echo $ROOT_PASSWD | sudo -S ln -s ~/code/dldt /opt/openvino_toolkit/dldt
+  
   echo "==== END install DLDT ===="
 fi
 
 # Setup open_model_zoo
 if [ "$MODEL_ZOO" == "1" ]; then
   echo "===================Installing Open Model Zoo...======================="
+  
   mkdir -p ~/code && cd ~/code
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
@@ -245,12 +254,14 @@ if [ "$MODEL_ZOO" == "1" ]; then
   make -j8
   echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
   echo $ROOT_PASSWD | sudo -S ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
+  
   echo "==== END install open_model_zoo ===="
 fi
 
 # Setup LIBREALSENSE
 if [ "$LIBREALSENSE" == "1" ]; then
   echo "===================Setting Up LibRealSense...======================="
+  
   echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   mkdir -p ~/code && cd ~/code
@@ -268,21 +279,24 @@ if [ "$LIBREALSENSE" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
   echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
   udevadm trigger
+  
   echo "==== END install librealsense ===="
 fi
 
 # Setup other dependencies
 if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo "===================Setting UP OTHER_DEPENDENCY DEPENDENCY...======================="
+  
   pip3 install numpy
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
-     sudo ln -s libboost_python-py35.so libboost_python3.so
+     echo $ROOT_PASSWD | sudo -S ln -s libboost_python-py35.so libboost_python3.so
   elif [ $system_ver = "18.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
-     sudo apt install libboost-python1.62.0
+     echo $ROOT_PASSWD | sudo -S apt install libboost-python1.62.0
    fi
+
    echo "==== END install other dependencies ===="
 fi
 

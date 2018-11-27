@@ -90,13 +90,16 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
+	source ./install/local_setup.bash
+ 	sudo mkdir -p /opt/openvino_toolkit
+ 	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
 ## 5. Running the Demo
 * Preparation
 	*  copy label files (excute _once_)
 		```bash
-		sudo cp ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
 		```
 	* set OpenVINO toolkit ENV
 		```bash
@@ -106,13 +109,14 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
+**Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml),options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
 * run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
 	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
 	```
 * run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
 	```bash
-	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
+	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
 	```
 
 ## 6. Interfaces
