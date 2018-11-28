@@ -233,6 +233,8 @@ if [ "$DLDT" == "1" ]; then
   mkdir -p  ~/code && cd ~/code
   git clone https://github.com/opencv/dldt.git
   cd dldt/inference-engine/
+  git submodule init
+  git submodule update --recursive
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release ..
   make -j8
