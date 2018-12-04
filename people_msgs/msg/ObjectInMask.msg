@@ -16,4 +16,4 @@
 string object_name  				# object name
 float32 probability 				# probability of detected object
 sensor_msgs/RegionOfInterest roi    # region of interest
-sensor_msgs/Image mask				# Instance mask as Image
+float32[] mask_array				# Instance mask as Image
