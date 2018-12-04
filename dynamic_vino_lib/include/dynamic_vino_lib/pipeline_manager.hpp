@@ -94,6 +94,8 @@ class PipelineManager {
       const Params::ParamManager::InferenceParams& infer);
   std::shared_ptr<dynamic_vino_lib::BaseInference> createObjectDetection(
       const Params::ParamManager::InferenceParams& infer);
+  std::shared_ptr<dynamic_vino_lib::BaseInference> createObjectSegmentation(
+      const Params::ParamManager::InferenceParams& infer);
 
   std::map<std::string, PipelineData> pipelines_;
   std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
