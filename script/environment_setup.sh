@@ -233,6 +233,7 @@ if [ "$DLDT" == "1" ]; then
   mkdir -p  ~/code && cd ~/code
   git clone https://github.com/opencv/dldt.git
   cd dldt/inference-engine/
+  git checkout 2018_R3
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release ..
   make -j8
@@ -249,6 +250,7 @@ if [ "$MODEL_ZOO" == "1" ]; then
   mkdir -p ~/code && cd ~/code
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
+  git checkout e238a1ac6bfacf133be223dd9debade7bfcf7dc5
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8
