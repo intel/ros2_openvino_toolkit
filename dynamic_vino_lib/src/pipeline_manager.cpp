@@ -116,6 +116,8 @@ PipelineManager::parseInputDevice(
       if (params.input_meta != "") {
         device = std::make_shared<Input::Image>(params.input_meta);
       }
+    } else {
+      slog::err << "Invalid input device name: " << name << slog::endl;
     }
 
     if (device != nullptr) {
@@ -141,6 +143,8 @@ PipelineManager::parseOutput(
       object = std::make_shared<Outputs::ImageWindowOutput>("Results");
     } else if (name == kOutputTpye_RViz) {
       object = std::make_shared<Outputs::RvizOutput>();
+    } else {
+      slog::err << "Invalid output name: " << name << slog::endl;
     }
     if (object != nullptr) {
       outputs.insert({name, object});
@@ -187,6 +191,8 @@ PipelineManager::parseInference(
 
     } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
+    } else {
+      slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
 
     if (object != nullptr) {
