@@ -85,6 +85,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir ~/code && cd ~/code
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
+		git checkout 2018_R3
 		./install_dependencies.sh
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -97,6 +98,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
+		git checkout e238a1ac6bfacf133be223dd9debade7bfcf7dc5
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
@@ -179,7 +181,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```
 * run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml).
 	```bash
-	ros2 run dynamic_vino_sample object_detection_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
 
 ## 6. Interfaces
