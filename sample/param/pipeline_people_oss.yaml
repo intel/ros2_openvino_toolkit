@@ -1,39 +1,39 @@
 Pipelines:
 - name: people
-  inputs: [StandardCamera ]
+  inputs: [StandardCamera]
   infers:
-    - name: face_detection
+    - name: FaceDetection
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/face-detection-adas-0001.xml 
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
-    - name: age_gender_detection
+    - name: AgeGenderRecognition
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/age_gender/dldt/age-gender-recognition-retail-0013.xml 
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-    - name: emotion_detection
+    - name: EmotionRecognition
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt/emotions-recognition-retail-0003.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-    - name: head_pose_detection
+    - name: HeadPoseEstimation
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_attributes/headpose/vanilla_cnn/dldt/head-pose-estimation-adas-0001.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow]
+  outputs: [ImageWindow, RosTopic, RViz]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
-      right: [face_detection]
-    - left: face_detection
-      right: [age_gender_detection, emotion_detection, head_pose_detection, ImageWindow, RosTopic]
-    - left: age_gender_detection
-      right: [ImageWindow]
-    - left: emotion_detection
-      right: [ImageWindow]
-    - left: head_pose_detection
-      right: [ImageWindow]
+      right: [FaceDetection]
+    - left: FaceDetection
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]
+    - left: AgeGenderRecognition
+      right: [ImageWindow, RosTopic, RViz]
+    - left: EmotionRecognition
+      right: [ImageWindow, RosTopic, RViz]
+    - left: HeadPoseEstimation
+      right: [ImageWindow, RosTopic, RViz]
 
 OpenvinoCommon:
