@@ -46,7 +46,6 @@
 #include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
-#include "mkldnn/mkldnn_extension_ptr.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
 
