@@ -38,7 +38,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ## 3. Environment Setup
 **Note**:You can choose to build the environment using *./environment_setup.sh* script in the script subfolder.
 ```bash
-./environment_setup.sh hostname password
+./environment_setup.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
 * Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
@@ -86,7 +86,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
 		git submodule init
-  		git submodule update --recursive
+		git submodule update --recursive
 		./install_dependencies.sh
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -143,6 +143,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/intel/ros2_openvino_toolkit
 	git clone https://github.com/intel/ros2_object_msgs
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
+	git clone https://github.com/ros2/message_filters.git
+	git clone https://github.com/ros-perception/image_common.git -b ros2
+	git clone https://github.com/IntelRealSense/librealsense.git -b ros2debian
+	git clone https://github.com/intel/ros2_intel_realsense.git
 	```
 
 * Build package
@@ -155,7 +159,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
-## 5. Running the Demo
+## 5. Usage Instructions
+### 5.1 Running the Demo
 * Preparation
 	* download model file (excute _once_)<br>
 		```bash
@@ -183,17 +188,39 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
+### 5.2 View the result in RVIZ
+* console #1 
+	```bash
+	#according the step 5.1 to run face detection sample code
+	source ~/ros2_overlay_ws/install/local_setup.bash
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
+	
+	#or run object detection sample code
+	source ~/ros2_overlay_ws/install/local_setup.bash
+	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
+	```
+* console #2 
+	```bash
+	#launch rviz2
+	source ~/ros2_overlay_ws/install/local_setup.bash
+	ros2 run rviz2 rviz2
+	# add image and select /openvino_toolkit/images topic in rviz.
+	```
 
 ## 6. Interfaces
 ### 6.1 Topic
 - Face Detection:
 ```/openvino_toolkit/faces```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Emotion Detection:
+- Emotion Recognition:
 ```/openvino_toolkit/emotions```([people_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/EmotionsStamped.msg))
-- Age and Gender Detection:
+- Age and Gender Recognition:
 ```/openvino_toolkit/age_genders```([people_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/AgeGenderStamped.msg))
-- Head Pose:
+- Head Pose Estimation:
 ```/openvino_toolkit/headposes```([people_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/HeadPoseStamped.msg))
+- Object Detection:
+```/openvino_toolkit/objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
+- Rviz Output:
+```/openvino_toolkit/images```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
 ## 7. Known Issues
 - Parameters "-m_ag, -m_hp, -m_em" should be optional, but samples throw exception without them.
@@ -201,3 +228,4 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 - Standard USB camera can be unexpected launched with input parameter "-i RealSenseCamera". 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
+
