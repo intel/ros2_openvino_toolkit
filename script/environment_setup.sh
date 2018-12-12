@@ -1,15 +1,10 @@
 #!/bin/bash -x
 set -euxo pipefail
 
-if [[ -n "$1" && -n "$2" ]]; then
-	HOST_NAME=$1
-	ROOT_PASSWD=$2
-	echo "set sudo password to $ROOT_PASSWD and your hostname is $HOST_NAME"
-else
-        echo "you have to input your hostname and sudo password!"
-        echo "    for example:./environment_setup.sh username password"
-	exit
-fi
+echo "Please Enter Your Password:"
+stty -echo
+read ROOT_PASSWD
+stty echo
 
 basedir=$PWD
 echo "Begin Environment Setup"
@@ -163,7 +158,7 @@ if [ "$OPENCV" == "1" ]; then
 
   cd ~/code/opencv
   mkdir build && cd build
-  cmake -DOPENCV_EXTRA_MODULES_PATH=/home/$HOST_NAME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
+  cmake -DOPENCV_EXTRA_MODULES_PATH=$HOME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
   make -j4
   echo $ROOT_PASSWD | sudo -S make install
   echo $ROOT_PASSWD | sudo -S ldconfig
