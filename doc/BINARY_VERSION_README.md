@@ -158,9 +158,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ```/openvino_toolkit/images```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
 ## 7. Known Issues
-- Parameters "-m_ag, -m_hp, -m_em" should be optional, but samples throw exception without them.
-- Parameters "-n_ag, -n_hp, -n_em" doesn't work. The maximum number of face/age/headpose/emotion is always 16.
-- Standard USB camera can be unexpected launched with input parameter "-i RealSenseCamera". 
+- In the yaml file,inputs parameters "Image, Video" are not yet supported.
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
