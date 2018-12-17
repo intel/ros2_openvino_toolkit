@@ -99,8 +99,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
  	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
-## 5. Usage Instructions
-### 5.1 Running the Demo
+## 5. Running the Demo
 * Preparation
 	*  copy label files (excute _once_)
 		```bash
@@ -114,8 +113,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
-**Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml),options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
-* run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
+**Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml) yaml file,
+> Options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
+
+> Options for outputs parameter: ImageWindow, RosTopic and RViz. If RViz is chosen in the yaml file, the output results can be shown in RVIZ tool.
+* run face detection sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
 	```
@@ -123,19 +125,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
 	```
-### 5.2 View the result in RVIZ
-**Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml),options for outputs parameter: ImageWindow, RosTopic or RViz. If Rviz is chosen in the yaml file, the output results can be shown in RVIZ tool.
-* console #1 
-	```bash
-	#according the step 5.1 to run face detection sample code
-	source ~/ros2_overlay_ws/install/local_setup.bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
-	
-	#or run object detection sample code
-	source ~/ros2_overlay_ws/install/local_setup.bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
-	```
-* console #2 
+* View the output result in RVIZ
 	```bash
 	#launch rviz2
 	source ~/ros2_overlay_ws/install/local_setup.bash
