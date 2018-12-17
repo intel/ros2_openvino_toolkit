@@ -114,9 +114,18 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
 **Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml) yaml file,
-> Options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
+> Options for inputs parameter: StandardCamera, RealSenseCamera, Image, Video or RealSenseCameraTopic. Default is StandardCamera. If RealSenseCameraTopic is chosen in the yaml file, you should start the realsense node firstly. 
 
 > Options for outputs parameter: ImageWindow, RosTopic and RViz. If RViz is chosen in the yaml file, the output results can be shown in RVIZ tool.
+* Start the realsense camera node.To start the camera node in ROS2, plug in the realsense camera, then type the following command:
+	```bash
+	source ~/ros2_ws/install/local_setup.bash
+	source ~/ros2_overlay_ws/install/local_setup.bash
+	# To launch with "ros2 run"
+	ros2 run realsense_ros2_camera realsense_ros2_camera
+	# OR, to invoke the executable directly
+	realsense_ros2_camera
+	```
 * run face detection sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
