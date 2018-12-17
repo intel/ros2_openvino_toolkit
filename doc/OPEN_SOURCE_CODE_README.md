@@ -179,9 +179,18 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib
 		```
 **Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml) yaml file:<br>
-> Options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.</br>
+> Options for inputs parameter: StandardCamera, RealSenseCamera, Image, Video or RealSenseCameraTopic. Default is StandardCamera. If RealSenseCameraTopic is chosen in the yaml file, you should start the realsense node firstly.</br>
 
 > Options for outputs parameter: ImageWindow, RosTopic and RViz. If RViz is chosen in the yaml file, the output results can be shown in RVIZ tool.</br>
+* Start the realsense camera node.To start the camera node in ROS2, plug in the realsense camera, then type the following command:
+	```bash
+	source ~/ros2_ws/install/local_setup.bash
+	source ~/ros2_overlay_ws/install/local_setup.bash
+	# To launch with "ros2 run"
+	ros2 run realsense_ros2_camera realsense_ros2_camera
+	# OR, to invoke the executable directly
+	realsense_ros2_camera
+	```
 * run face detection sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml).
 	```bash
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
@@ -214,9 +223,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ```/openvino_toolkit/images```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
 ## 7. Known Issues
-- Parameters "-m_ag, -m_hp, -m_em" should be optional, but samples throw exception without them.
-- Parameters "-n_ag, -n_hp, -n_em" doesn't work. The maximum number of face/age/headpose/emotion is always 16.
-- Standard USB camera can be unexpected launched with input parameter "-i RealSenseCamera". 
+- In the yaml file,inputs parameters "Image, Video" are not yet supported.
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
