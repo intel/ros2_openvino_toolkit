@@ -189,6 +189,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
 	```
 ### 5.2 View the result in RVIZ
+**Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml),options for outputs parameter: ImageWindow, RosTopic or RViz. If Rviz is chosen in the yaml file, the output results can be shown in RVIZ tool.
 * console #1 
 	```bash
 	#according the step 5.1 to run face detection sample code
