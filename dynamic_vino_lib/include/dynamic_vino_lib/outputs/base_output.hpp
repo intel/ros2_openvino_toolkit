@@ -31,6 +31,7 @@
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
+#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -45,7 +46,12 @@ class BaseOutput {
  public:
   BaseOutput() = default;
   /**
- * @brief Generate output content according to the face detection result.
+ * @brief Generate output content according to the object segmentation result.
+ */
+  virtual void accept(
+      const std::vector<dynamic_vino_lib::ObjectSegmentationResult>&) {}
+  /**
+ * @brief Generate output content according to the object detection result.
  */
   virtual void accept(
       const std::vector<dynamic_vino_lib::ObjectDetectionResult>&) {}

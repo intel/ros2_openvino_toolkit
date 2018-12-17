@@ -201,7 +201,7 @@ void Pipeline::runOnce() {
     auto detection_ptr = name_to_detection_map_[detection_name];
     detection_ptr->enqueue(frame_,
                            cv::Rect(width_ / 2, height_ / 2, width_, height_));
-    increaseInferenceCounter();
+    increaseInferenceCounter(); 
     detection_ptr->submitRequest();
   }
   std::unique_lock<std::mutex> lock(counter_mutex_);

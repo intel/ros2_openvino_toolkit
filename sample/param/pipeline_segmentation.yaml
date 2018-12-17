@@ -1,0 +1,22 @@
+Pipelines:
+- name: segmentation
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectSegmentation
+      model: /home/houk/dl_models/houk_download/mask_rcnn_inception_v2_coco_2018_01_28/output/frozen_inference_graph.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+  outputs: [ImageWindow, RosTopic, RViz]
+  confidence_threshold: 0.2
+  connects:
+    - left: StandardCamera
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [ImageWindow]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+    - left: ObjectSegmentation
+      right: [RViz]
+
+OpenvinoCommon:

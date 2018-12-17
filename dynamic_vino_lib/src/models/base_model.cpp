@@ -63,9 +63,11 @@ void Models::BaseModel::modelInit() {
   setLayerProperty(net_reader_);
 }
 
+
 void Models::BaseModel::checkNetworkSize(
     int input_size, int output_size,
     InferenceEngine::CNNNetReader::Ptr net_reader) {
+  // TODO(Houk): Repeat, better removed!
   // check input size
   slog::info << "Checking input size" << slog::endl;
   InferenceEngine::InputsDataMap input_info(
