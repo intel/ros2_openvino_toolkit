@@ -1,10 +1,6 @@
 # Copyright (c) 2018 Intel Corporation
 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-#      http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License"); # you may not use this file except in compliance with the License.  # You may obtain a copy of the License at #      http://www.apache.org/licenses/LICENSE-2.0
 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,6 +55,7 @@ find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
+find_package(librealsense2 REQUIRED)
 
 if(OpenCV_FOUND)
     message(STATUS "OPENCV is enabled")
@@ -107,6 +104,11 @@ include_directories (${OpenCV_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/include)
 include_directories (${dynamic_vino_lib_INCLUDE_DIRS})
 include_directories (${vino_param_lib_INCLUDE_DIRS})
+include_directories (${InferenceEngine_INCLUDE_DIRS})
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
+include_directories (${librealsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
 
 # Create library file from sources.
@@ -168,6 +170,7 @@ ament_target_dependencies(pipeline_with_params
   "vino_param_lib"
   "OpenCV"
   "rviz_yaml_cpp_vendor"
+  "librealsense2"
 )
 
 add_executable(object_detection_with_params
@@ -189,6 +192,7 @@ ament_target_dependencies(object_detection_with_params
   "people_msgs"
   "vino_param_lib"
   "OpenCV"
+  "librealsense2"
 ) 
 
 if(UNIX)
