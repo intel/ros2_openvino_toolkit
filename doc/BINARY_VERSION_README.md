@@ -87,8 +87,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/intel/ros2_intel_realsense.git
 	cd ~/ros2_overlay_ws/src/librealsense
 	sudo cp ./config/99-realsense-libusb.rules /etc/udev/rules.d/
-        sudo udevadm control --reload-rules
-        udevadm trigger
+	sudo udevadm control --reload-rules
+	udevadm trigger
 	```
 
 * Build package
