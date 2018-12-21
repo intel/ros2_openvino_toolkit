@@ -106,8 +106,11 @@ include_directories (${dynamic_vino_lib_INCLUDE_DIRS})
 include_directories (${vino_param_lib_INCLUDE_DIRS})
 include_directories (${InferenceEngine_INCLUDE_DIRS})
 include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples)
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
 include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../src)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
+
 include_directories (${librealsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
 
