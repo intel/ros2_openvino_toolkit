@@ -1,15 +1,10 @@
-#!/bin/bash -x
-set -euxo pipefail
+#!/bin/bash
+set -euo pipefail
 
-if [[ -n "$1" && -n "$2" ]]; then
-	HOST_NAME=$1
-	ROOT_PASSWD=$2
-	echo "set sudo password to $ROOT_PASSWD and your hostname is $HOST_NAME"
-else
-        echo "you have to input your hostname and sudo password!"
-        echo "    for example:./environment_setup.sh username password"
-	exit
-fi
+echo "Please Enter Your Password:"
+stty -echo
+read ROOT_PASSWD
+stty echo
 
 basedir=$PWD
 echo "Begin Environment Setup"
@@ -40,10 +35,6 @@ echo "Set DLDT to $DLDT"
 MODEL_ZOO=`cat modules.conf | grep 'model_zoo'`
 MODEL_ZOO=${MODEL_ZOO##*=}
 echo "Set MODEL_ZOO to $MODEL_ZOO"
-
-LIBREALSENSE=`cat modules.conf | grep 'librealsense'`
-LIBREALSENSE=${LIBREALSENSE##*=}
-echo "Set LIBREALSENSE to $LIBREALSENSE"
 
 OTHER_DEPENDENCY=`cat modules.conf | grep 'other_dependency'`
 OTHER_DEPENDENCY=${OTHER_DEPENDENCY##*=}
@@ -163,7 +154,7 @@ if [ "$OPENCV" == "1" ]; then
 
   cd ~/code/opencv
   mkdir build && cd build
-  cmake -DOPENCV_EXTRA_MODULES_PATH=/home/$HOST_NAME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
+  cmake -DOPENCV_EXTRA_MODULES_PATH=$HOME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
   make -j4
   echo $ROOT_PASSWD | sudo -S make install
   echo $ROOT_PASSWD | sudo -S ldconfig
@@ -260,34 +251,12 @@ if [ "$MODEL_ZOO" == "1" ]; then
   echo "==== END install open_model_zoo ===="
 fi
 
-# Setup LIBREALSENSE
-if [ "$LIBREALSENSE" == "1" ]; then
-  echo "===================Setting Up LibRealSense...======================="
-  
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-  mkdir -p ~/code && cd ~/code
-  git clone https://github.com/IntelRealSense/librealsense
-  cd ~/code/librealsense
-  git checkout v2.14.1
-  mkdir build && cd build
-  cmake ../ -DBUILD_EXAMPLES=true
-  echo $ROOT_PASSWD | sudo -S make uninstall
-  make clean
-  make
-  echo $ROOT_PASSWD | sudo -S make install
-
-  cd ..
-  echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
-  echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
-  udevadm trigger
-  
-  echo "==== END install librealsense ===="
-fi
-
 # Setup other dependencies
 if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo "===================Setting UP OTHER_DEPENDENCY DEPENDENCY...======================="
+  
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   
   pip3 install numpy
   if [ $system_ver = "16.04" ]; then
