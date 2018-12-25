@@ -161,7 +161,7 @@ include_directories (
     ${InferenceEngine_INCLUDE_DIRS}
     ${InferenceEngine_INCLUDE_DIRS}/../samples
     ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include
+    ${InferenceEngine_INCLUDE_DIRS}/../src
     ${librealsense2_INCLUDE_DIRS}
 )
 

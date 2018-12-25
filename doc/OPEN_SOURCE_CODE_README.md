@@ -84,6 +84,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir ~/code && cd ~/code
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
+		git checkout 2018_R4
 		git submodule init
 		git submodule update --recursive
 		./install_dependencies.sh
@@ -98,6 +99,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
+		git checkout 2018_R4
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
