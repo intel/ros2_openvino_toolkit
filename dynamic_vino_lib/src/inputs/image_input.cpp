@@ -22,7 +22,6 @@
 #include <string>
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 
-// Image
 Input::Image::Image(const std::string& file) { file_.assign(file); }
 
 bool Input::Image::initialize() {
