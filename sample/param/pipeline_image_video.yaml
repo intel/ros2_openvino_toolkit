@@ -1,6 +1,7 @@
 Pipelines:
 - name: people
-  inputs: [StandardCamera]
+  inputs: [Video]
+  input_path: /home/houk/Desktop/video
   infers:
     - name: FaceDetection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
@@ -25,7 +26,7 @@ Pipelines:
   outputs: [ImageWindow, RosTopic, RViz]
   confidence_threshold: 0.2
   connects:
-    - left: StandardCamera
+    - left: Video
       right: [FaceDetection]
     - left: FaceDetection
       right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]
