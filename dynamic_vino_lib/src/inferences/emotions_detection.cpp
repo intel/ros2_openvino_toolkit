@@ -91,7 +91,7 @@ bool dynamic_vino_lib::EmotionsDetection::fetchResults() {
       for idx image to return appropriate emotion name */
   auto emotions_values = emotions_blob->buffer().as<float*>();
   for (int idx = 0; idx < results_.size(); ++idx) {
-    auto output_idx_pos = emotions_values + idx;
+    auto output_idx_pos = emotions_values + label_length*idx;
     int64 max_prob_emotion_idx =
         std::max_element(output_idx_pos, output_idx_pos + label_length) -
         output_idx_pos;
