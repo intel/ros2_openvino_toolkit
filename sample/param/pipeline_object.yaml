@@ -1,6 +1,6 @@
 Pipelines:
 - name: object
-  inputs: [StandardCamera]
+  inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml
@@ -10,7 +10,7 @@ Pipelines:
   outputs: [ImageWindow, RosTopic, RViz]
   confidence_threshold: 0.2
   connects:
-    - left: StandardCamera
+    - left: RealSenseCamera
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [ImageWindow]
