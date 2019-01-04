@@ -104,9 +104,22 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	
 ## 5. Running the Demo
 * Preparation
-	*  copy label files (excute _once_)
+	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
+		```bash
+		mkdir -p ~/Downloads/models
+		cd ~/Downloads/models
+		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
+		tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
+		cd mask_rcnn_inception_v2_coco_2018_01_28
+		python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
+		sudo mkdir -p /opt/models
+		sudo ln -s ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
+		```
+	* copy label files (excute _once_)<br>
 		```bash
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
+		 sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
 		```
 	* set OpenVINO toolkit ENV
 		```bash
@@ -116,53 +129,23 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
-**Note**:In [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml) and [pipeline_object.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml) yaml file,
-> Options for inputs parameter: StandardCamera, RealSenseCamera, Image, Video or RealSenseCameraTopic. Default is StandardCamera. If RealSenseCameraTopic is chosen in the yaml file, you should start the realsense node firstly. 
-
-> Options for outputs parameter: ImageWindow, RosTopic and RViz. If RViz is chosen in the yaml file, the output results can be shown in RVIZ tool.
-* Start the realsense camera node.To start the camera node in ROS2, plug in the realsense camera, then type the following command:
+* run face detection sample code input from StandardCamera.
 	```bash
-	source ~/ros2_ws/install/local_setup.bash
-	source ~/ros2_overlay_ws/install/local_setup.bash
-	# To launch with "ros2 run"
-	ros2 run realsense_ros2_camera realsense_ros2_camera
-	# OR, to invoke the executable directly
-	realsense_ros2_camera
+	ros2 launch dynamic_vino_sample pipeline_people.launch.py
 	```
-* run face detection sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people.yaml).
+* run face detection sample code input from Image.
 	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people.yaml
+	ros2 launch dynamic_vino_sample pipeline_image.launch.py
 	```
-* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object.yaml).
+* run object detection sample code input from RealSenseCamera.
 	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object.yaml
+	ros2 launch dynamic_vino_sample pipeline_object.launch.py
 	```
-* View the output result in RVIZ
+* run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
-	#launch rviz2
-	source ~/ros2_overlay_ws/install/local_setup.bash
-	ros2 run rviz2 rviz2
-	# add image and select /openvino_toolkit/images topic in rviz.
+	ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
 	```
-
-## 6. Interfaces
-### 6.1 Topic
-- Face Detection:
-```/openvino_toolkit/faces```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Emotion Recognition:
-```/openvino_toolkit/emotions```([people_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/EmotionsStamped.msg))
-- Age and Gender Recognition:
-```/openvino_toolkit/age_genders```([people_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/AgeGenderStamped.msg))
-- Head Pose Estimation:
-```/openvino_toolkit/headposes```([people_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/HeadPoseStamped.msg))
-- Object Detection:
-```/openvino_toolkit/objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Rviz Output:
-```/openvino_toolkit/images```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
-
-## 7. Known Issues
-- In the yaml file,inputs parameters "Image, Video" are not yet supported.
-
-###### *Any security issue should be reported using process at https://01.org/security*
-
-
+* run object segmentation sample code input from Video.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_video.launch.py
+	```
