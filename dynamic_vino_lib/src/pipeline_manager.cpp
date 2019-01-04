@@ -284,7 +284,7 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(
     const Params::ParamManager::InferenceParams& infer) {
   auto obejct_segmentation_model =
-      std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 1, 1);
+      std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, 1);
   obejct_segmentation_model->modelInit();
   auto obejct_segmentation_engine = std::make_shared<Engines::Engine>(
       plugins_for_devices_[infer.engine], obejct_segmentation_model);
