@@ -9,7 +9,7 @@ The OpenVINO™ (Open visual inference and neural network optimization) toolkit 
 ## Design Architecture
 From the view of hirarchical architecture design, the package is divided into different functional components, as shown in below picture. 
 
-![OpenVINO_Architecture](https://github.com/intel/ros2_openvino_toolkit/blob/udevel/data/images/design_arch.PNG "OpenVINO RunTime Architecture")
+![OpenVINO_Architecture](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/design_arch.PNG "OpenVINO RunTime Architecture")
 
 - **Intel® OpenVINO™ toolkit** is leveraged to provide deep learning basic implementation for data inference. is free software that helps developers and data scientists speed up computer vision workloads, streamline deep learning inference and deployments,
 and enable easy, heterogeneous execution across Intel® platforms from edge to cloud. It helps to:
@@ -28,7 +28,7 @@ From the view of logic implementation, the package introduces the definitions of
 
 Once a corresponding program is launched with a specified .yaml config file passed in the .launch.py file or via commandline, _**parameter manager**_ analyzes the configurations about pipeline and the whole framework, then shares the parsed configuration information with pipeline procedure. A _**pipeline instance**_ is created by following the configuration info and is added into _**pipeline manager**_ for lifecycle control and inference action triggering.
 
-The contents in **.yaml config file** should be well structured and follow the supported rules and entity names. Please see [the configuration guidance](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/YAML_CONFIGURATION_GUIDE.MD) for how to create or edit the config files.
+The contents in **.yaml config file** should be well structured and follow the supported rules and entity names. Please see [the configuration guidance](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/YAML_CONFIGURATION_GUIDE.md) for how to create or edit the config files.
 
 **Pipeline** fulfills the whole data handling process: initiliazing Input Component for image data gathering and formating; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
 
@@ -90,7 +90,7 @@ To show in RViz tool, add an image marker with the composited topic:
 
 ### Image Window
 OpenCV based image window is natively supported by the package.
-To enable window, Image Window output should be added into the output choices in .yaml config file. see [the config file guidance](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/YAML_CONFIGURATION_GUIDE.MD) for checking/adding this feature in your launching.
+To enable window, Image Window output should be added into the output choices in .yaml config file. see [the config file guidance](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/YAML_CONFIGURATION_GUIDE.md) for checking/adding this feature in your launching.
 
 ## Demo Result Snapshots
 See below pictures for the demo result snapshots.
