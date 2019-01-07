@@ -104,9 +104,10 @@ See below pictures for the demo result snapshots.
 ![object_segmentation_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/object_segmentation.gif "object segmentation demo video")
 
 # Installation & Launching
+**NOTE:** Intel releases 2 different series of OpenVINO Toolkit, we call them as [OpenSource Version](https://github.com/opencv/dldt/) and [Tarball Version](https://software.intel.com/en-us/openvino-toolkit). This guidelie uses OpenSource Version as the installation and launching example. **If you want to use Tarball version, please follow [the guide for Tarball Version](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/BINARY_VERSION_README.md).**
+
 ## Dependencies Installation
 One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/OPEN_SOURCE_CODE_README.md) for details.
-Note that beside the opensource version of the openVINO toolkit, Intel also releases the toolkit in Binary version. If you prefer to use the binary version, you may follow [this guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/BINARY_VERSION_README.md).
 
 ## Launching
 * Preparation
@@ -166,6 +167,9 @@ Note that beside the opensource version of the openVINO toolkit, Intel also rele
 	```
 
 # TODO Features
+* Support **result filtering** for inference process, so that the inference results can be filtered to different subsidiary inference. For example, given an image, firstly we do Object Detection on it, secondly we pass cars to vehicle brand recognition and pass license plate to license number recognition.
+* Design **resource manager** to better use such resources as models, engines, and other external plugins.
+* Develop GUI based **configuration and management tools** (and monitoring and diagnose tools), in order to provide easy entry for end users to simplify their operation. 
 
 # More Information
 
