@@ -23,6 +23,8 @@
 #include <string>
 #include <memory>
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
+#include "dynamic_vino_lib/pipeline_params.hpp"
+#include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
 
@@ -218,8 +220,7 @@ void Outputs::RosTopicOutput::handleOutput() {
  */
 std_msgs::msg::Header Outputs::RosTopicOutput::getHeader() {
   std_msgs::msg::Header header;
-  header.frame_id = "default_camera";
-
+  header.frame_id = getPipeline()->getInputDevice()->getFrameID();
   std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
   int64 ns = tp.time_since_epoch().count();
   header.stamp.sec = ns/1000000000;

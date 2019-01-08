@@ -44,6 +44,7 @@ bool Input::RealSenseCameraTopic::initialize() {
 
 void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg) {
   slog::info << "Receiving a new image from Camera topic." << slog::endl;
+  setFrameID(image_msg->header.frame_id);
   image = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
   ++image_count;
 }
