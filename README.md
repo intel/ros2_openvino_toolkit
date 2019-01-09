@@ -172,4 +172,4 @@ One-step installation scripts are provided for the dependencies' installation. P
 * Develop GUI based **configuration and management tools** (and monitoring and diagnose tools), in order to provide easy entry for end users to simplify their operation. 
 
 # More Information
-
+* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
