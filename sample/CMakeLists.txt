@@ -118,7 +118,7 @@ include_directories (${librealsense2_INCLUDE_DIRS})
 #add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
 
 add_executable(${PROJECT_NAME}
-  main.cpp
+  src/main.cpp
 )
 target_link_libraries(${PROJECT_NAME}
   dl
@@ -140,7 +140,7 @@ ament_target_dependencies(${PROJECT_NAME}
 
 
 add_executable(vino_param_sample
-  parameters.cpp
+  src/parameters.cpp
 )
 target_link_libraries(vino_param_sample
   dl
@@ -154,7 +154,7 @@ ament_target_dependencies(vino_param_sample
 )
 
 add_executable(pipeline_with_params
-  pipeline_with_params.cpp
+  src/pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
   dl
@@ -177,7 +177,7 @@ ament_target_dependencies(pipeline_with_params
 )
 
 add_executable(object_detection_with_params
-  object_detection_with_params.cpp
+  src/object_detection_with_params.cpp
 )
 target_link_libraries(object_detection_with_params
   dl
@@ -204,9 +204,6 @@ endif()
 set_target_properties(${PROJECT_NAME} PROPERTIES "CMAKE_CXX_FLAGS" "${CMAKE_CXX_FLAGS} -fPIE"
         COMPILE_PDB_NAME ${PROJECT_NAME})
 
-install(DIRECTORY param
-        DESTINATION share/${PROJECT_NAME}/
-)
 install(TARGETS ${PROJECT_NAME}
   DESTINATION lib/${PROJECT_NAME})
 
@@ -223,5 +220,17 @@ if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+# Install param files.
+install(DIRECTORY 
+  param
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install launch files.
+install(DIRECTORY 
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 ament_package()

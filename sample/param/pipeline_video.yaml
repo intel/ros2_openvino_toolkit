@@ -1,0 +1,25 @@
+Pipelines:
+- name: segmentation
+  inputs: [Video]
+  input_path: /home/iei/Videos/object_segmentation.MP4 
+  infers:
+    - name: ObjectSegmentation
+      model: /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output/frozen_inference_graph.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+  outputs: [ImageWindow, RosTopic, RViz]
+  confidence_threshold: 0.2
+  connects:
+    - left: Video
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [ImageWindow]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+    - left: ObjectSegmentation
+      right: [RViz]
+
+
+
+OpenvinoCommon:
