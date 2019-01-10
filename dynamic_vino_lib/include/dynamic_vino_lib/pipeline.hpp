@@ -105,6 +105,7 @@ class Pipeline {
     params_ = std::make_shared<PipelineParams>(pipeline_params);
   };
   const std::shared_ptr<PipelineParams> getParameters() { return params_; };
+  std::shared_ptr<Input::BaseInputDevice> getInputDevice() { return input_device_; };
 
  private:
   void initInferenceCounter();

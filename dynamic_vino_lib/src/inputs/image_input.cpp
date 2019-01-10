@@ -25,6 +25,7 @@
 Input::Image::Image(const std::string& file) { file_.assign(file); }
 
 bool Input::Image::initialize() {
+  setFrameID("image_frame");
   image_ = cv::imread(file_);
   if (image_.data != NULL) {
     setInitStatus(true);
