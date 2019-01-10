@@ -111,6 +111,8 @@ class EmotionsDetection : public BaseInference {
   const void observeOutput(
       const std::shared_ptr<Outputs::BaseOutput>& output) override;
 
+  std::vector<Result> getResults() { return results_; };
+
  private:
   std::shared_ptr<Models::EmotionDetectionModel> valid_model_;
   std::vector<Result> results_;

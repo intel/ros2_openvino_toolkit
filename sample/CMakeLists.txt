@@ -191,6 +191,48 @@ ament_target_dependencies(object_detection_with_params
   "OpenCV"
 ) 
 
+add_executable(image_object_server
+  image_object_server.cpp
+)
+target_link_libraries(image_object_server
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_object_server
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
+add_executable(image_object_client
+  image_object_client.cpp
+)
+target_link_libraries(image_object_client
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_object_client
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
 if(UNIX)
     target_link_libraries( ${PROJECT_NAME} ${LIB_DL} pthread ${OpenCV_LIBRARIES})
 endif()
@@ -210,6 +252,12 @@ install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS object_detection_with_params
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS image_object_server
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS image_object_client
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)

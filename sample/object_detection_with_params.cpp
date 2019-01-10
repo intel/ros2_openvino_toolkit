@@ -44,6 +44,8 @@
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
+#include "dynamic_vino_lib/inputs/base_input.hpp"
+#include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"

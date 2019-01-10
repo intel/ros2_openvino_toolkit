@@ -42,6 +42,8 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+#include "dynamic_vino_lib/inputs/base_input.hpp"
+#include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "extension/ext_list.hpp"
 #include "gflags/gflags.h"
 #include "inference_engine.hpp"
