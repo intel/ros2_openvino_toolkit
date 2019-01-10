@@ -22,6 +22,18 @@
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__BASE_OUTPUT_HPP_
 #define DYNAMIC_VINO_LIB__OUTPUTS__BASE_OUTPUT_HPP_
 
+#include <object_msgs/msg/object_in_box.hpp>
+#include <object_msgs/msg/objects_in_boxes.hpp> 
+#include <people_msgs/msg/emotion.hpp>
+#include <people_msgs/msg/emotions_stamped.hpp>
+#include <people_msgs/msg/age_gender.hpp>
+#include <people_msgs/msg/age_gender_stamped.hpp>
+#include <people_msgs/msg/head_pose.hpp>
+#include <people_msgs/msg/head_pose_stamped.hpp>
+#include <people_msgs/srv/age_gender.hpp>
+#include <people_msgs/srv/emotion.hpp>
+#include <people_msgs/srv/head_pose.hpp>
+#include <object_msgs/srv/detect_object.hpp>
 #include <string>
 #include <vector>
 
@@ -88,6 +100,10 @@ class BaseOutput {
   int getFPS() const;
 
   void setPipeline(Pipeline* const pipeline);
+  virtual void setResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {} ;
+  virtual void setResponse(std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {} ;
+  virtual void setResponse(std::shared_ptr<people_msgs::srv::Emotion::Response> response) {} ;
+  virtual void setResponse(std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {} ;
   Pipeline* getPipeline() const;
   cv::Mat getFrame() const;
 

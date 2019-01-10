@@ -117,6 +117,8 @@ class HeadPoseDetection : public BaseInference {
    */
   const void observeOutput(
       const std::shared_ptr<Outputs::BaseOutput>& output) override;
+  
+  std::vector<Result> getResults() { return results_; };
 
  private:
   std::shared_ptr<Models::HeadPoseDetectionModel> valid_model_;

@@ -40,6 +40,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/HeadPoseStamped.msg"
   "msg/ObjectInMask.msg"
   "msg/ObjectsInMasks.msg"
+  "srv/AgeGender.srv"
+  "srv/Emotion.srv"
+  "srv/HeadPose.srv"
   DEPENDENCIES builtin_interfaces std_msgs sensor_msgs geometry_msgs
 )
 

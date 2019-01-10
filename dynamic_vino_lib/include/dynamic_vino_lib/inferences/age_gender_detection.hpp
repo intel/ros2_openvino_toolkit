@@ -28,6 +28,8 @@
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
+#include <people_msgs/msg/age_gender.hpp> 
+#include <people_msgs/msg/age_gender_stamped.hpp>
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 
