@@ -155,7 +155,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```
 * run face detection sample code input from StandardCamera.(connect Intel® Neural Compute Stick 2)
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_people.launch.py
+	ros2 launch dynamic_vino_sample pipeline_people_myriad.launch.py
 	```
 * run face detection sample code input from Image.
 	```bash
