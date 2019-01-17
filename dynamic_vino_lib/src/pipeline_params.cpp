@@ -31,10 +31,12 @@ const std::string kInputType_Video = "Video";
 const std::string kInputType_StandardCamera = "StandardCamera";
 const std::string kInputType_CameraTopic = "RealSenseCameraTopic";
 const std::string kInputType_RealSenseCamera = "RealSenseCamera";
+const std::string kInputType_ServiceImage = "ServiceImage";
 
 const std::string kOutputTpye_RViz = "RViz";
 const std::string kOutputTpye_ImageWindow = "ImageWindow";
 const std::string kOutputTpye_RosTopic = "RosTopic";
+const std::string kOutputTpye_RosService = "RosService";
 
 const std::string kInferTpye_FaceDetection = "FaceDetection";
 const std::string kInferTpye_AgeGenderRecognition = "AgeGenderRecognition";

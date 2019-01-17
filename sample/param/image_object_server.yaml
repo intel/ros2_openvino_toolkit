@@ -1,0 +1,19 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  infers:
+    - name: ObjectDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [RosService]
+  confidence_threshold: 0.2
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosService]
+  input_path: "/home/intel/Pictures/timg.jpeg"
+
+Common:

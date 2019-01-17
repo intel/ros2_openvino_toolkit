@@ -172,6 +172,7 @@ endif()
 set(DEPENDENCIES ${librealsense2_LIBRARIES} ${OpenCV_LIBS} cpu_extension)
 
 add_library(${PROJECT_NAME} SHARED
+        src/services/frame_processing_server.cpp
         src/factory.cpp
         src/pipeline.cpp
         src/pipeline_params.cpp
@@ -200,6 +201,7 @@ add_library(${PROJECT_NAME} SHARED
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp
         src/outputs/base_output.cpp
+        src/outputs/ros_service_output.cpp
         )
 
 target_link_libraries(${PROJECT_NAME} ${DEPENDENCIES})

@@ -42,10 +42,8 @@ void dynamic_vino_lib::ObjectDetection::loadNetwork(
 }
 bool dynamic_vino_lib::ObjectDetection::enqueue(const cv::Mat& frame,
                                               const cv::Rect& input_frame_loc) {
-  if (width_ == 0 && height_ == 0) {
-    width_ = frame.cols;
-    height_ = frame.rows;
-  }
+  width_ = frame.cols;
+  height_ = frame.rows;
   if (!dynamic_vino_lib::BaseInference::enqueue<u_int8_t>(
           frame, input_frame_loc, 1, 0, valid_model_->getInputName())) {
     return false;
@@ -55,9 +53,11 @@ bool dynamic_vino_lib::ObjectDetection::enqueue(const cv::Mat& frame,
   results_.emplace_back(r);
   return true;
 }
+
 bool dynamic_vino_lib::ObjectDetection::submitRequest() {
   return dynamic_vino_lib::BaseInference::submitRequest();
 }
+
 bool dynamic_vino_lib::ObjectDetection::fetchResults() {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
   if (!can_fetch) return false;
@@ -71,11 +71,24 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults() {
     cv::Rect r;
     auto label_num = static_cast<int>(detections[i * object_size_ + 1]);
     std::vector<std::string>& labels = valid_model_->getLabels();
+
     r.x = static_cast<int>(detections[i * object_size_ + 3] * width_);
+    if (r.x < 0)
+      r.x = 0;
+
     r.y = static_cast<int>(detections[i * object_size_ + 4] * height_);
+    if (r.y < 0)
+      r.y = 0;
+
     r.width = static_cast<int>(detections[i * object_size_ + 5] * width_ - r.x);
+    if (r.width < 0)
+      r.width = 0;
+
     r.height =
         static_cast<int>(detections[i * object_size_ + 6] * height_ - r.y);
+    if (r.height < 0)
+      r.height = 0;
+
     Result result(r);
     result.label_ = label_num < labels.size()
                         ? labels[label_num]
@@ -93,6 +106,7 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults() {
   if (!found_result) results_.clear();
   return true;
 }
+
 const int dynamic_vino_lib::ObjectDetection::getResultsLength() const {
   return static_cast<int>(results_.size());
 }

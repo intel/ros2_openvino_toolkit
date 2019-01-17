@@ -22,6 +22,7 @@
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
+#include <object_msgs/srv/detect_object.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <vector>
@@ -106,6 +107,7 @@ class ObjectDetection : public BaseInference {
    * @return The name of the Inference instance.
    */
   const std::string getName() const override;
+
  private:
   std::shared_ptr<Models::ObjectDetectionModel> valid_model_;
   std::vector<Result> results_;
