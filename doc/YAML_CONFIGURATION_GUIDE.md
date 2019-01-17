@@ -83,7 +83,7 @@ The name of the inference engine. Currently, the inference feature list is suppo
 
 #### model
 The path of the model. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
-![trained deep learning model](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/CVSDK_Flow.png "trained deep learning model")
+![trained deep learning model](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/CVSDK_Flow.png "trained deep learning model")
 
 #### engine
 **Note**:Currently, only supports CPU and GPU.</br>
