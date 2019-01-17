@@ -40,10 +40,12 @@ extern const std::string kInputType_Video;
 extern const std::string kInputType_StandardCamera;
 extern const std::string kInputType_CameraTopic;
 extern const std::string kInputType_RealSenseCamera;
+extern const std::string kInputType_ServiceImage;
 
 extern const std::string kOutputTpye_RViz;
 extern const std::string kOutputTpye_ImageWindow;
 extern const std::string kOutputTpye_RosTopic;
+extern const std::string kOutputTpye_RosService;
 
 extern const std::string kInferTpye_FaceDetection;
 extern const std::string kInferTpye_AgeGenderRecognition;

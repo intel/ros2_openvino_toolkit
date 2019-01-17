@@ -55,6 +55,8 @@ class BaseInputDevice : public Ros2Handler {
    * @return Whether the next frame is successfully read.
    */
   virtual bool read(cv::Mat* frame) = 0;
+  virtual bool readService(cv::Mat* frame, std::string config_path) { return true;};
+
   virtual void config() = 0;  //< TODO
   virtual ~BaseInputDevice() = default;
   /**

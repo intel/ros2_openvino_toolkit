@@ -47,8 +47,19 @@ bool dynamic_vino_lib::BaseInference::submitRequest() {
   return true;
 }
 
+bool dynamic_vino_lib::BaseInference::SynchronousRequest() {
+
+  if (engine_->getRequest() == nullptr) return false;
+  if (!enqueued_frames) return false;
+  enqueued_frames = 0;
+  results_fetched_ = false;
+  engine_->getRequest()->Infer();
+  return true;
+}
+
 bool dynamic_vino_lib::BaseInference::fetchResults() {
   if (results_fetched_) return false;
   results_fetched_ = true;
   return true;
 }
+

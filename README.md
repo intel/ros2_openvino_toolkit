@@ -81,7 +81,16 @@ Currently, the inference feature list is supported:
 ```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
 ### Service
-TBD
+- Object Detection Service:
+```/detect_object``` ([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))
+- Face Detection Service:
+```/detect_face``` ([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))
+- Age & Gender Detection Service:
+```/detect_age_gender``` ([people_msgs::srv::AgeGender](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/AgeGender.srv))
+- Headpose Detection Service:
+```/detect_head_pose``` ([people_msgs::srv::HeadPose](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/HeadPose.srv))
+- Emotion Detection Service:
+```/detect_emotion``` ([people_msgs::srv::Emotion](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/Emotion.srv))
 
 ### RViz
 RViz dispaly is also supported by the composited topic of original image frame with inference result.
@@ -165,11 +174,18 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_video.launch.py
 	```
-
+* run object detection service sample code input from Image  
+  Run image processing service:
+	```bash
+	ros2 run dynamic_vino_sample image_object_server
+	```
+  Run example application with an absolute path of an image on another console:
+	```bash
+	ros2 run dynamic_vino_sample image_object_client "~/Pictures/car.jpeg"
+	```
 # TODO Features
 * Support **result filtering** for inference process, so that the inference results can be filtered to different subsidiary inference. For example, given an image, firstly we do Object Detection on it, secondly we pass cars to vehicle brand recognition and pass license plate to license number recognition.
 * Design **resource manager** to better use such resources as models, engines, and other external plugins.
 * Develop GUI based **configuration and management tools** (and monitoring and diagnose tools), in order to provide easy entry for end users to simplify their operation. 
-
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 

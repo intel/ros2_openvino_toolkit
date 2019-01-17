@@ -119,6 +119,7 @@ class BaseInference {
    * @return Whether this operation is successful.
    */
   virtual bool submitRequest();
+  virtual bool SynchronousRequest();
 
   virtual const void observeOutput(
       const std::shared_ptr<Outputs::BaseOutput>& output) = 0;
@@ -172,6 +173,7 @@ class BaseInference {
   inline void setMaxBatchSize(int max_batch_size) {
     max_batch_size_ = max_batch_size;
   }
+  std::vector<Result> results_;
 
  private:
   std::shared_ptr<Engines::Engine> engine_;

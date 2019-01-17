@@ -92,6 +92,7 @@ class Pipeline {
    * @brief The callback function provided for all the inference network in the
    * pipeline.
    */
+  void runService(std::string config_path);
   void callback(const std::string& detection_name);
   /**
    * @brief Set the inference network to call the callback function as soon as
@@ -100,7 +101,7 @@ class Pipeline {
    */
   void setCallback();
   void printPipeline();
-  void outputHandler();
+  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> getOutputHandle() { return name_to_output_map_; } ;
   void setParams(PipelineParams pipeline_params) {
     params_ = std::make_shared<PipelineParams>(pipeline_params);
   };
