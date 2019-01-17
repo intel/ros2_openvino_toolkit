@@ -131,7 +131,7 @@ if [ "$OPENCV" == "1" ]; then
   
   echo $ROOT_PASSWD | sudo -S apt-get install -y build-essential
   echo $ROOT_PASSWD | sudo -S apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libdc1394-22-dev
 
   if [ $system_ver = "18.04" ]; then
     echo $ROOT_PASSWD | sudo -S add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
@@ -148,9 +148,9 @@ if [ "$OPENCV" == "1" ]; then
   echo "finish clone opencv"
 
   cd ~/code/opencv
-  git checkout 3.4.0
+  git checkout 3.4.2
   cd ~/code/opencv_contrib
-  git checkout 3.4.0
+  git checkout 3.4.2
 
   cd ~/code/opencv
   mkdir build && cd build
