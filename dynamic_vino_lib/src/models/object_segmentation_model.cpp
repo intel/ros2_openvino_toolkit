@@ -25,6 +25,26 @@ Models::ObjectSegmentationModel::ObjectSegmentationModel(
   const std::string& model_loc, int input_num, int output_num, int max_batch_size)
     : BaseModel(model_loc, input_num, output_num, max_batch_size){}
 
+void Models::ObjectSegmentationModel::checkNetworkSize(
+  int input_size, int output_size, 
+  InferenceEngine::CNNNetReader::Ptr net_reader) {
+  slog::info << "Checking input size" << slog::endl;
+  InferenceEngine::InputsDataMap input_info(
+      net_reader->getNetwork().getInputsInfo());
+  if (input_info.size() != input_size) {
+    throw std::logic_error(getModelName() + 
+          " should have " + std::to_string(input_size)+ " input");
+  }
+  // check output size
+  slog::info << "Checking output size" << slog::endl;
+  InferenceEngine::OutputsDataMap output_info(
+      net_reader->getNetwork().getOutputsInfo());
+  if (output_info.size() != output_size && output_info.size() != (output_size-1)) {
+    throw std::logic_error(getModelName() +
+          " should have " + std::to_string(output_size) + " output");
+  }
+}
+
 void Models::ObjectSegmentationModel::setLayerProperty(
     InferenceEngine::CNNNetReader::Ptr net_reader) {
   // set input property
@@ -33,7 +53,13 @@ void Models::ObjectSegmentationModel::setLayerProperty(
   auto inputInfoItem = *input_info_map.begin();
   inputInfoItem.second->setPrecision(InferenceEngine::Precision::U8);
   auto network = net_reader->getNetwork();
-  network.addOutput(std::string("detection_output"), 0);
+  try {
+    network.addOutput(std::string("detection_output"), 0);
+  }
+  catch (std::exception& error) {
+    throw std::logic_error(getModelName() +
+          "is failed when adding detection_output laryer.");
+  }
   network.setBatchSize(1);
   slog::info << "Batch size is "
              << std::to_string(net_reader->getNetwork().getBatchSize()) << slog::endl;

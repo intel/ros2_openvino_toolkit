@@ -43,7 +43,8 @@ class ObjectSegmentationModel : public BaseModel {
  protected:
   void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr&) override;
   void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-
+  void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
+ private:
   int max_proposal_count_;
   int object_size_;
   std::string input_;
