@@ -82,6 +82,7 @@ if [ "$ROS2_SRC" == "1" ]; then
     echo "file already exists, skip..."
   fi
 
+  rosdep update
   rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 python3-lark-parser rti-connext-dds-5.3.1 urdfdom_headers"
   colcon build --symlink-install --packages-ignore qt_gui_cpp rqt_gui_cpp
 fi
