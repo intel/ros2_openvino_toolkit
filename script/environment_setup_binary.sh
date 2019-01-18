@@ -193,6 +193,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   
   pip3 install numpy
+  pip3 install networkx
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu

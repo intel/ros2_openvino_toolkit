@@ -18,8 +18,7 @@ echo "Set CLEAN to $CLEAN"
 
 ROS2_SRC=`cat modules.conf | grep 'ros2_src'`
 ROS2_SRC=${ROS2_SRC##*=}
-echo "Set ROS2_SRC to $ROS2_SRC"
-
+echo "Set ROS2_SRC to $ROS2_SRC" 
 OPENCV=`cat modules.conf | grep 'opencv'`
 OPENCV=${OPENCV##*=}
 echo "Set OPENCV to $OPENCV"
@@ -261,6 +260,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   
   pip3 install numpy
+  pip3 install networkx
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
