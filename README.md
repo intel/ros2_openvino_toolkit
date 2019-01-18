@@ -123,6 +123,8 @@ One-step installation scripts are provided for the dependencies' installation. P
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
 		```bash
 		#object segmentation model
+		cd /opt/openvino_toolkit/dldt/model-optimizer/install_prerequisites
+		sudo ./install_prerequisites.sh
 		mkdir -p ~/Downloads/models
 		cd ~/Downloads/models
 		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
@@ -134,7 +136,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 		#object detection model
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
 		python3 downloader.py --name ssd300
-		python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/ssd300.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output/
+		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/ssd300.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output/
 	* download the optimized Intermediate Representation (IR) of model (excute _once_)<br>
 		```bash
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader

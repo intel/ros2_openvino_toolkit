@@ -117,28 +117,6 @@ include_directories (${librealsense2_INCLUDE_DIRS})
 # Create library file from sources.
 #add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
 
-add_executable(${PROJECT_NAME}
-  src/main.cpp
-)
-target_link_libraries(${PROJECT_NAME}
-  dl
-  cpu_extension
-  gflags)
-ament_target_dependencies(${PROJECT_NAME}
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "dynamic_vino_lib"
-  "InferenceEngine"
-  "people_msgs"
-  "vino_param_lib"
-  "yaml_cpp_vendor"
-)
-
-
 add_executable(vino_param_sample
   src/parameters.cpp
 )
@@ -176,30 +154,8 @@ ament_target_dependencies(pipeline_with_params
   "librealsense2"
 )
 
-add_executable(object_detection_with_params
-  src/object_detection_with_params.cpp
-)
-target_link_libraries(object_detection_with_params
-  dl
-  cpu_extension
-  gflags)
-ament_target_dependencies(object_detection_with_params
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "dynamic_vino_lib"
-  "InferenceEngine"
-  "people_msgs"
-  "vino_param_lib"
-  "OpenCV"
-  "librealsense2"
-) 
-
 add_executable(image_object_server
-  image_object_server.cpp
+  src/image_object_server.cpp
 )
 target_link_libraries(image_object_server
   dl
@@ -220,7 +176,7 @@ ament_target_dependencies(image_object_server
 )
 
 add_executable(image_object_client
-  image_object_client.cpp
+  src/image_object_client.cpp
 )
 target_link_libraries(image_object_client
   dl
@@ -240,22 +196,10 @@ ament_target_dependencies(image_object_client
   "OpenCV"
 )
 
-if(UNIX)
-    target_link_libraries( ${PROJECT_NAME} ${LIB_DL} pthread ${OpenCV_LIBRARIES})
-endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES "CMAKE_CXX_FLAGS" "${CMAKE_CXX_FLAGS} -fPIE"
-        COMPILE_PDB_NAME ${PROJECT_NAME})
-
-install(TARGETS ${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME})
-
 install(TARGETS vino_param_sample
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS pipeline_with_params
-  DESTINATION lib/${PROJECT_NAME})
-
-install(TARGETS object_detection_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_server

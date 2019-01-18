@@ -51,8 +51,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/opencv.git
 		git clone https://github.com/opencv/opencv_contrib.git
-		cd opencv && git checkout 3.4.0 && cd ..
-		cd opencv_contrib && git checkout 3.4.0 && cd ..
+		cd opencv && git checkout 3.4.2 && cd ..
+		cd opencv_contrib && git checkout 3.4.2 && cd ..
 		cd opencv
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=/home/<hostname>/code/opencv_contrib/modules/ ..
@@ -113,6 +113,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
 	# numpy
 	pip3 install numpy
+	pip3 install networkx
 	```
 	* Ubuntu 16.04
 		```bash

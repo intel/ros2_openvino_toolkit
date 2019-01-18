@@ -3,8 +3,8 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: FaceDetection
-      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
-      engine: CPU
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      engine: MYRIAD
       label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.labels
       batch: 1
     - name: AgeGenderRecognition

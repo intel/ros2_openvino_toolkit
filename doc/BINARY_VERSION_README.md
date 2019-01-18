@@ -4,7 +4,7 @@
 The [OpenVINO™](https://software.intel.com/en-us/openvino-toolkit) toolkit quickly deploys applications and solutions that emulate human vision. Based on Convolutional Neural Networks (CNN), the Toolkit extends computer vision (CV) workloads across Intel® hardware, maximizing performance.
 
 This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.intel.com/en-us/openvino-toolkit), providing the following features:
-* Support CPU and GPU platforms
+* Support CPU, GPU and Intel® Neural Compute Stick 2 platforms
 * Support standard USB camera and Intel® RealSense™ camera
 * Support Video or Image file as detection source
 * Face detection
@@ -33,6 +33,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
 
 ## 3. Environment Setup
+**Note**:You can choose to build the environment using *./environment_setup_binary.sh* script in the script subfolder.
+```bash
+./environment_setup_binary.sh
+```
+**Note**:You can also choose to follow the steps below to build the environment step by step.
 * Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
 * Install [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))<br>
     	**Note**: Please use  *root privileges* to run the installer when installing the core components.
@@ -41,24 +46,42 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	cd /opt/intel/computer_vision_sdk/install_dependencies
 	sudo ./install_NEO_OCL_driver.sh
 	```
+* Install [OpenCV 3.4 or later](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
+	```bash
+	[compiler] sudo apt-get install build-essential
+	[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+	[optional] sudo apt-get install python-dev python-numpy libtbb2 libtbb-dev libjpeg-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev 
+	mkdir -p ~/code && cd ~/code
+	git clone https://github.com/opencv/opencv.git
+	git clone https://github.com/opencv/opencv_contrib.git
+	cd opencv && git checkout 3.4.2 && cd ..
+	cd opencv_contrib && git checkout 3.4.2 && cd ..
+	cd opencv
+	mkdir build && cd build
+	cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=/home/<hostname>/code/opencv_contrib/modules/ ..
+	make -j8
+	sudo make install
+	```
+	* Additional steps are required on ubuntu 18.04
+		```bash
+		sudo add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+		sudo apt update
+		sudo apt install libjasper1 libjasper-dev
+		```
 - Other Dependencies
 	```bash
 	#librealsense dependency
 	sudo apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
 	sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-	# numpy
+	# numpy and networkx
 	pip3 install numpy
+	pip3 install networkx
 	# libboost
 	sudo apt-get install -y --no-install-recommends libboost-all-dev
 	cd /usr/lib/x86_64-linux-gnu
 	sudo ln -s libboost_python-py35.so libboost_python3.so
 	```
 ## 4. Building and Installation
-**Note**:You can choose to build the environment using *./environment_setup.sh* script in the script subfolder.
-```bash
-./environment_setup_binary.sh
-```
-**Note**:You can also choose to follow the steps below to build the environment step by step.
 * Build sample code under openvino toolkit
 	```bash
 	# root is required instead of sudo
@@ -69,8 +92,9 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	cmake ..
 	make
 	```
-* set ENV CPU_EXTENSION_LIB and GFLAGS_LIB
+* set ENV CPU_EXTENSION_LIB and GFLAGS_LIB and OpenCV_DIR
 	```bash
+	export OpenCV_DIR=$HOME/code/opencv/build
 	export CPU_EXTENSION_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so
 	export GFLAGS_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libgflags_nothreads.a
 	```
@@ -106,6 +130,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Preparation
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
 		```bash
+		cd /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/install_prerequisites
+		sudo ./install_prerequisites.sh
 		mkdir -p ~/Downloads/models
 		cd ~/Downloads/models
 		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
@@ -118,7 +144,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* copy label files (excute _once_)<br>
 		```bash
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
-		 sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP16
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
 		```
 	* set OpenVINO toolkit ENV
@@ -129,9 +156,9 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		```bash
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
-* run face detection sample code input from StandardCamera.
+* run face detection sample code input from StandardCamera.(connect Intel® Neural Compute Stick 2)
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_people.launch.py
+	ros2 launch dynamic_vino_sample pipeline_people_myriad.launch.py
 	```
 * run face detection sample code input from Image.
 	```bash
@@ -149,3 +176,12 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_video.launch.py
 	```
+## 6.Known Issues
+* Possible problems
+	* When running sample with Intel® Neural Compute Stick 2 occurred error:
+		```bash
+		E: [ncAPI] [         0] ncDeviceOpen:668	failed to find device
+		# or
+		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
+		```
+	> solution - Please reboot while connecting Intel® Neural Compute Stick 2.

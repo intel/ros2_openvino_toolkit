@@ -28,6 +28,10 @@ OPENCL=`cat modules.conf | grep 'opencl'`
 OPENCL=${OPENCL##*=}
 echo "Set OPENCL to $OPENCL"
 
+OPENCV=`cat modules.conf | grep 'opencv'`
+OPENCV=${OPENCV##*=}
+echo "Set OPENCV to $OPENCV"
+
 OTHER_DEPENDENCY=`cat modules.conf | grep 'other_dependency'`
 OTHER_DEPENDENCY=${OTHER_DEPENDENCY##*=}
 echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
@@ -124,9 +128,9 @@ if [ "$OPENVINO" == "1" ]; then
   echo "===================Installing OpenVINO Toolkit...======================="
 
   cd ~/Downloads
-  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/13521/l_openvino_toolkit_p_2018.3.343.tgz
-  tar -xvf l_openvino_toolkit_p_2018.3.343.tgz
-  cd l_openvino_toolkit_p_2018.3.343
+  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/14920/l_openvino_toolkit_p_2018.4.420.tgz
+  tar -xvf l_openvino_toolkit_p_2018.4.420.tgz
+  cd l_openvino_toolkit_p_2018.4.420
   echo $ROOT_PASSWD | sudo -S ./install_cv_sdk_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg
@@ -144,6 +148,43 @@ if [ "$OPENCL" == "1" ]; then
    echo "==== END install OpenCL ===="
 fi
 
+# Setup OpenCV
+if [ "$OPENCV" == "1" ]; then
+  echo "===================Installing OpenCV3 from Source...======================="
+  
+  echo $ROOT_PASSWD | sudo -S apt-get install -y build-essential
+  echo $ROOT_PASSWD | sudo -S apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libdc1394-22-dev
+
+  if [ $system_ver = "18.04" ]; then
+    echo $ROOT_PASSWD | sudo -S add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
+    echo $ROOT_PASSWD | sudo apt update
+    echo $ROOT_PASSWD | sudo apt install libjasper1 libjasper-dev
+  else
+    echo $ROOT_PASSWD | sudo -S apt-get install libjasper-dev 
+  fi
+
+  mkdir -p ~/code && cd ~/code
+  echo "begin clone opencv"
+  git clone https://github.com/opencv/opencv.git
+  git clone https://github.com/opencv/opencv_contrib.git
+  echo "finish clone opencv"
+
+  cd ~/code/opencv
+  git checkout 3.4.2
+  cd ~/code/opencv_contrib
+  git checkout 3.4.2
+
+  cd ~/code/opencv
+  mkdir build && cd build
+  cmake -DOPENCV_EXTRA_MODULES_PATH=$HOME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
+  make -j4
+  echo $ROOT_PASSWD | sudo -S make install
+  echo $ROOT_PASSWD | sudo -S ldconfig
+  
+  echo "==== END install OpenCV ===="
+fi
+
 # Setup other dependencies
 if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo "===================Setting UP OTHER_DEPENDENCY DEPENDENCY...======================="
@@ -152,6 +193,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   
   pip3 install numpy
+  pip3 install networkx
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu

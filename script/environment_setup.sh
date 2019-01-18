@@ -18,8 +18,7 @@ echo "Set CLEAN to $CLEAN"
 
 ROS2_SRC=`cat modules.conf | grep 'ros2_src'`
 ROS2_SRC=${ROS2_SRC##*=}
-echo "Set ROS2_SRC to $ROS2_SRC"
-
+echo "Set ROS2_SRC to $ROS2_SRC" 
 OPENCV=`cat modules.conf | grep 'opencv'`
 OPENCV=${OPENCV##*=}
 echo "Set OPENCV to $OPENCV"
@@ -131,7 +130,7 @@ if [ "$OPENCV" == "1" ]; then
   
   echo $ROOT_PASSWD | sudo -S apt-get install -y build-essential
   echo $ROOT_PASSWD | sudo -S apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libdc1394-22-dev
 
   if [ $system_ver = "18.04" ]; then
     echo $ROOT_PASSWD | sudo -S add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
@@ -148,9 +147,9 @@ if [ "$OPENCV" == "1" ]; then
   echo "finish clone opencv"
 
   cd ~/code/opencv
-  git checkout 3.4.0
+  git checkout 3.4.2
   cd ~/code/opencv_contrib
-  git checkout 3.4.0
+  git checkout 3.4.2
 
   cd ~/code/opencv
   mkdir build && cd build
@@ -261,6 +260,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
   
   pip3 install numpy
+  pip3 install networkx
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
