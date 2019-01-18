@@ -1,10 +1,6 @@
 # Copyright (c) 2018 Intel Corporation
 
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-
-#      http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License"); # you may not use this file except in compliance with the License.  # You may obtain a copy of the License at #      http://www.apache.org/licenses/LICENSE-2.0
 
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
@@ -59,6 +55,7 @@ find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
+find_package(librealsense2 REQUIRED)
 
 if(OpenCV_FOUND)
     message(STATUS "OPENCV is enabled")
@@ -107,35 +104,21 @@ include_directories (${OpenCV_INCLUDE_DIRS})
 include_directories (${PROJECT_SOURCE_DIR}/include)
 include_directories (${dynamic_vino_lib_INCLUDE_DIRS})
 include_directories (${vino_param_lib_INCLUDE_DIRS})
+include_directories (${InferenceEngine_INCLUDE_DIRS})
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../src)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
+include_directories (${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
+
+include_directories (${librealsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
 
 # Create library file from sources.
 #add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
 
-add_executable(${PROJECT_NAME}
-  main.cpp
-)
-target_link_libraries(${PROJECT_NAME}
-  dl
-  cpu_extension
-  gflags)
-ament_target_dependencies(${PROJECT_NAME}
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "dynamic_vino_lib"
-  "InferenceEngine"
-  "people_msgs"
-  "vino_param_lib"
-  "yaml_cpp_vendor"
-)
-
-
 add_executable(vino_param_sample
-  parameters.cpp
+  src/parameters.cpp
 )
 target_link_libraries(vino_param_sample
   dl
@@ -149,7 +132,7 @@ ament_target_dependencies(vino_param_sample
 )
 
 add_executable(pipeline_with_params
-  pipeline_with_params.cpp
+  src/pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
   dl
@@ -168,16 +151,17 @@ ament_target_dependencies(pipeline_with_params
   "vino_param_lib"
   "OpenCV"
   "rviz_yaml_cpp_vendor"
+  "librealsense2"
 )
 
-add_executable(object_detection_with_params
-  object_detection_with_params.cpp
+add_executable(image_object_server
+  src/image_object_server.cpp
 )
-target_link_libraries(object_detection_with_params
+target_link_libraries(image_object_server
   dl
   cpu_extension
   gflags)
-ament_target_dependencies(object_detection_with_params
+ament_target_dependencies(image_object_server
   "rclcpp"
   "rmw_implementation"
   "std_msgs"
@@ -189,19 +173,28 @@ ament_target_dependencies(object_detection_with_params
   "people_msgs"
   "vino_param_lib"
   "OpenCV"
-) 
-
-if(UNIX)
-    target_link_libraries( ${PROJECT_NAME} ${LIB_DL} pthread ${OpenCV_LIBRARIES})
-endif()
-set_target_properties(${PROJECT_NAME} PROPERTIES "CMAKE_CXX_FLAGS" "${CMAKE_CXX_FLAGS} -fPIE"
-        COMPILE_PDB_NAME ${PROJECT_NAME})
-
-install(DIRECTORY param
-        DESTINATION share/${PROJECT_NAME}/
 )
-install(TARGETS ${PROJECT_NAME}
-  DESTINATION lib/${PROJECT_NAME})
+
+add_executable(image_object_client
+  src/image_object_client.cpp
+)
+target_link_libraries(image_object_client
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_object_client
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
 
 install(TARGETS vino_param_sample
   DESTINATION lib/${PROJECT_NAME})
@@ -209,12 +202,27 @@ install(TARGETS vino_param_sample
 install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
-install(TARGETS object_detection_with_params
+install(TARGETS image_object_server
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS image_object_client
   DESTINATION lib/${PROJECT_NAME})
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 endif()
+
+# Install param files.
+install(DIRECTORY 
+  param
+  DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install launch files.
+install(DIRECTORY 
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 ament_package()

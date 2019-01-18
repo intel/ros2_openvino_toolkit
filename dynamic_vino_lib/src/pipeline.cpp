@@ -24,6 +24,8 @@
 #include <utility>
 
 #include <vino_param_lib/param_manager.hpp>
+#include "dynamic_vino_lib/inputs/base_input.hpp"
+#include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 
 using namespace InferenceEngine;
@@ -201,7 +203,7 @@ void Pipeline::runOnce() {
     auto detection_ptr = name_to_detection_map_[detection_name];
     detection_ptr->enqueue(frame_,
                            cv::Rect(width_ / 2, height_ / 2, width_, height_));
-    increaseInferenceCounter();
+    increaseInferenceCounter(); 
     detection_ptr->submitRequest();
   }
   std::unique_lock<std::mutex> lock(counter_mutex_);
@@ -212,6 +214,41 @@ void Pipeline::runOnce() {
   for (auto& pair : name_to_output_map_) {
     // slog::info << "Handling Output ..." << pair.first << slog::endl;
     pair.second->handleOutput();
+  }
+}
+
+void Pipeline::runService(std::string config_path) {
+
+  std::cout << "run service once" << std::endl;
+  initInferenceCounter();
+
+  if (!frame_.empty())
+  {
+    frame_.release();
+  }
+
+  if (!input_device_->readService(&frame_, config_path)) {
+    // throw std::logic_error("Failed to get frame from cv::VideoCapture");
+    slog::warn << "Failed to get frame from input_device." << slog::endl;
+  }
+  width_ = frame_.cols;
+  height_ = frame_.rows;
+  for (auto& pair : name_to_output_map_) {
+    pair.second->feedFrame(frame_);
+  }
+
+  auto pos = next_.equal_range(input_device_name_);
+  std::string detection_name = pos.first->second;
+  auto detection_ptr = name_to_detection_map_[detection_name];
+
+  detection_ptr->enqueue(frame_,
+                         cv::Rect(width_ / 2, height_ / 2, width_, height_));
+  detection_ptr->SynchronousRequest();
+
+  bool fetch_or_not = detection_ptr->fetchResults();
+
+  for (auto& pair : name_to_output_map_) {
+    detection_ptr->observeOutput(pair.second);
   }
 }
 
@@ -243,6 +280,7 @@ void Pipeline::setCallback() {
     pair.second->getEngine()->getRequest()->SetCompletionCallback(callb);
   }
 }
+
 void Pipeline::callback(const std::string& detection_name) {
   // slog::info<<"Hello callback ----> " << detection_name <<slog::endl;
   auto detection_ptr = name_to_detection_map_[detection_name];

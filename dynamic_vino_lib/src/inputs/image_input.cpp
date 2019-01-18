@@ -22,10 +22,10 @@
 #include <string>
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 
-// Image
 Input::Image::Image(const std::string& file) { file_.assign(file); }
 
 bool Input::Image::initialize() {
+  setFrameID("image_frame");
   image_ = cv::imread(file_);
   if (image_.data != NULL) {
     setInitStatus(true);
@@ -38,6 +38,23 @@ bool Input::Image::initialize() {
 }
 
 bool Input::Image::read(cv::Mat* frame) {
+  if (!isInit()) {
+    return false;
+  }
+  *frame = image_;
+  return true;
+}
+
+bool Input::Image::readService(cv::Mat* frame, std::string config_path) {
+
+  image_ = cv::imread(config_path);
+  if (image_.data != NULL) {
+    setInitStatus(true);
+    setWidth((size_t)image_.cols);
+    setHeight((size_t)image_.rows);
+  } else {
+    setInitStatus(false);
+  }
   if (!isInit()) {
     return false;
   }

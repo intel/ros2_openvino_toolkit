@@ -1,15 +1,10 @@
-#!/bin/bash -x
-set -euxo pipefail
+#!/bin/bash
+set -euo pipefail
 
-if [[ -n "$1" && -n "$2" ]]; then
-	HOST_NAME=$1
-	ROOT_PASSWD=$2
-	echo "set sudo password to $ROOT_PASSWD and your hostname is $HOST_NAME"
-else
-        echo "you have to input your hostname and sudo password!"
-        echo "    for example:./environment_setup.sh username password"
-	exit
-fi
+echo "Please Enter Your Password:"
+stty -echo
+read ROOT_PASSWD
+stty echo
 
 basedir=$PWD
 echo "Begin Environment Setup"
@@ -23,8 +18,7 @@ echo "Set CLEAN to $CLEAN"
 
 ROS2_SRC=`cat modules.conf | grep 'ros2_src'`
 ROS2_SRC=${ROS2_SRC##*=}
-echo "Set ROS2_SRC to $ROS2_SRC"
-
+echo "Set ROS2_SRC to $ROS2_SRC" 
 OPENCV=`cat modules.conf | grep 'opencv'`
 OPENCV=${OPENCV##*=}
 echo "Set OPENCV to $OPENCV"
@@ -40,10 +34,6 @@ echo "Set DLDT to $DLDT"
 MODEL_ZOO=`cat modules.conf | grep 'model_zoo'`
 MODEL_ZOO=${MODEL_ZOO##*=}
 echo "Set MODEL_ZOO to $MODEL_ZOO"
-
-LIBREALSENSE=`cat modules.conf | grep 'librealsense'`
-LIBREALSENSE=${LIBREALSENSE##*=}
-echo "Set LIBREALSENSE to $LIBREALSENSE"
 
 OTHER_DEPENDENCY=`cat modules.conf | grep 'other_dependency'`
 OTHER_DEPENDENCY=${OTHER_DEPENDENCY##*=}
@@ -140,7 +130,7 @@ if [ "$OPENCV" == "1" ]; then
   
   echo $ROOT_PASSWD | sudo -S apt-get install -y build-essential
   echo $ROOT_PASSWD | sudo -S apt-get install -y cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libjasper-dev libdc1394-22-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y python-dev python-numpy libtbb2 libtbb-dev libpng-dev libtiff-dev libdc1394-22-dev
 
   if [ $system_ver = "18.04" ]; then
     echo $ROOT_PASSWD | sudo -S add-apt-repository "deb http://security.ubuntu.com/ubuntu xenial-security main"
@@ -157,13 +147,13 @@ if [ "$OPENCV" == "1" ]; then
   echo "finish clone opencv"
 
   cd ~/code/opencv
-  git checkout 3.4.0
+  git checkout 3.4.2
   cd ~/code/opencv_contrib
-  git checkout 3.4.0
+  git checkout 3.4.2
 
   cd ~/code/opencv
   mkdir build && cd build
-  cmake -DOPENCV_EXTRA_MODULES_PATH=/home/$HOST_NAME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
+  cmake -DOPENCV_EXTRA_MODULES_PATH=$HOME/code/opencv_contrib/modules -DCMAKE_INSTALL_PREFIX=/usr/local -DBUILD_opencv_cnn_3dobj=OFF ..
   make -j4
   echo $ROOT_PASSWD | sudo -S make install
   echo $ROOT_PASSWD | sudo -S ldconfig
@@ -233,7 +223,9 @@ if [ "$DLDT" == "1" ]; then
   mkdir -p  ~/code && cd ~/code
   git clone https://github.com/opencv/dldt.git
   cd dldt/inference-engine/
-  git checkout 2018_R3
+  git checkout 2018_R4
+  git submodule init
+  git submodule update --recursive
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release ..
   make -j8
@@ -250,7 +242,7 @@ if [ "$MODEL_ZOO" == "1" ]; then
   mkdir -p ~/code && cd ~/code
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
-  git checkout e238a1ac6bfacf133be223dd9debade7bfcf7dc5
+  git checkout 2018_R4
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8
@@ -260,36 +252,15 @@ if [ "$MODEL_ZOO" == "1" ]; then
   echo "==== END install open_model_zoo ===="
 fi
 
-# Setup LIBREALSENSE
-if [ "$LIBREALSENSE" == "1" ]; then
-  echo "===================Setting Up LibRealSense...======================="
-  
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-  mkdir -p ~/code && cd ~/code
-  git clone https://github.com/IntelRealSense/librealsense
-  cd ~/code/librealsense
-  git checkout v2.14.1
-  mkdir build && cd build
-  cmake ../ -DBUILD_EXAMPLES=true
-  echo $ROOT_PASSWD | sudo -S make uninstall
-  make clean
-  make
-  echo $ROOT_PASSWD | sudo -S make install
-
-  cd ..
-  echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
-  echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
-  udevadm trigger
-  
-  echo "==== END install librealsense ===="
-fi
-
 # Setup other dependencies
 if [ "$OTHER_DEPENDENCY" == "1" ]; then
   echo "===================Setting UP OTHER_DEPENDENCY DEPENDENCY...======================="
   
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+  
   pip3 install numpy
+  pip3 install networkx
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu

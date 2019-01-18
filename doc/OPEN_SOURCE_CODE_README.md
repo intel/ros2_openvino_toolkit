@@ -38,7 +38,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ## 3. Environment Setup
 **Note**:You can choose to build the environment using *./environment_setup.sh* script in the script subfolder.
 ```bash
-./environment_setup.sh hostname password
+./environment_setup.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
 * Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
@@ -51,8 +51,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/opencv.git
 		git clone https://github.com/opencv/opencv_contrib.git
-		cd opencv && git checkout 3.3.1 && cd ..
-		cd opencv_contrib && git checkout 3.3.1 && cd ..
+		cd opencv && git checkout 3.4.2 && cd ..
+		cd opencv_contrib && git checkout 3.4.2 && cd ..
 		cd opencv
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -D OPENCV_EXTRA_MODULES_PATH=/home/<hostname>/code/opencv_contrib/modules/ ..
@@ -79,13 +79,14 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo cp -R intel-opencl/* /
 		sudo ldconfig
 		```
-		**Note**:On Ubuntu 18.04,replace libpng12-dev with libpng-dev in the *install_dependencies.sh* file.
 	* Install [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt)([guide](https://github.com/opencv/dldt/tree/2018/inference-engine))<br>
 		```bash
 		mkdir ~/code && cd ~/code
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
-		git checkout 2018_R3
+		git checkout 2018_R4
+		git submodule init
+		git submodule update --recursive
 		./install_dependencies.sh
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release ..
@@ -98,22 +99,21 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
-		git checkout e238a1ac6bfacf133be223dd9debade7bfcf7dc5
+		git checkout 2018_R4
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
 		sudo mkdir -p /opt/openvino_toolkit
 		sudo ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
-
-* Install Intel® RealSense™ SDK 2.0 [(tag v2.14.1)](https://github.com/IntelRealSense/librealsense/tree/v2.14.1)<br>
-	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/installation.md)(Recommended)<br>
-	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.14.1/doc/distribution_linux.md)<br>
-
 - Other Dependencies
 	```bash
+	#librealsense dependency
+	sudo apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+	sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
 	# numpy
 	pip3 install numpy
+	pip3 install networkx
 	```
 	* Ubuntu 16.04
 		```bash
@@ -143,6 +143,14 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/intel/ros2_openvino_toolkit
 	git clone https://github.com/intel/ros2_object_msgs
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
+	git clone https://github.com/ros2/message_filters.git
+	git clone https://github.com/ros-perception/image_common.git -b ros2
+	git clone https://github.com/IntelRealSense/librealsense.git -b ros2debian
+	git clone https://github.com/intel/ros2_intel_realsense.git
+	cd ~/ros2_overlay_ws/src/librealsense
+	sudo cp ./config/99-realsense-libusb.rules /etc/udev/rules.d/
+	sudo udevadm control --reload-rules
+	udevadm trigger
 	```
 
 * Build package
@@ -154,50 +162,3 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo mkdir -p /opt/openvino_toolkit
 	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
-	
-## 5. Running the Demo
-* Preparation
-	* download model file (excute _once_)<br>
-		```bash
-		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
-		python3 downloader.py --name face-detection-adas-0001
-		python3 downloader.py --name age-gender-recognition-retail-0013
-		python3 downloader.py --name emotions-recognition-retail-0003
-		python3 downloader.py --name head-pose-estimation-adas-0001
-		python3 downloader.py --name person-vehicle-bike-detection-crossroad-0078
-		```
-	* copy label files (excute _once_)<br>
-		```bash
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
-		```
-	* set ENV LD_LIBRARY_PATH<br>
-		```bash
-		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/openvino_toolkit/dldt/inference-engine/bin/intel64/Release/lib
-		```
-**Note**:In [pipeline_people_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml) and [pipeline_object_oss.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml),options for inputs parameter: StandardCamera or RealSenseCamera. Default is StandardCamera.
-* run sample code with parameters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_people_oss.yaml).
-	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_people_oss.yaml
-	```
-* run object detection sample code with paramters extracted from [yaml](https://github.com/intel/ros2_openvino_toolkit/blob/master/sample/param/pipeline_object_oss.yaml).
-	```bash
-	ros2 run dynamic_vino_sample pipeline_with_params -config /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/pipeline_object_oss.yaml
-	```
-
-## 6. Interfaces
-### 6.1 Topic
-- Face Detection:
-```/openvino_toolkit/faces```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Emotion Detection:
-```/openvino_toolkit/emotions```([people_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/EmotionsStamped.msg))
-- Age and Gender Detection:
-```/openvino_toolkit/age_genders```([people_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/AgeGenderStamped.msg))
-- Head Pose:
-```/openvino_toolkit/headposes```([people_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/HeadPoseStamped.msg))
-
-## 7. Known Issues
-- Parameters "-m_ag, -m_hp, -m_em" should be optional, but samples throw exception without them.
-- Parameters "-n_ag, -n_hp, -n_em" doesn't work. The maximum number of face/age/headpose/emotion is always 16.
-- Standard USB camera can be unexpected launched with input parameter "-i RealSenseCamera". 
-
-###### *Any security issue should be reported using process at https://01.org/security*

@@ -83,17 +83,17 @@ class BaseModel {
    */
   virtual void checkLayerProperty(
       const InferenceEngine::CNNNetReader::Ptr& network_reader) = 0;
+  /**
+   * @brief Set the layer property (layer layout, layer precision, etc.).
+   * @param[in] network_reader The reader of the network to be set.
+   */
   virtual void
-      /**
-       * @brief Set the layer property (layer layout, layer precision, etc.).
-       * @param[in] network_reader The reader of the network to be set.
-       */
       setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
+  virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
 
  private:
   friend class Engines::Engine;
 
-  void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
   InferenceEngine::CNNNetReader::Ptr net_reader_;
   std::vector<std::string> labels_;
   int input_num_;

@@ -29,6 +29,8 @@
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
+#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+#include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
@@ -38,9 +40,11 @@
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
+#include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
+#include "dynamic_vino_lib/outputs/ros_service_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
@@ -95,6 +99,7 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(
   return pipeline;
 }
 
+
 std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
 PipelineManager::parseInputDevice(
     const Params::ParamManager::PipelineParams& params) {
@@ -143,6 +148,8 @@ PipelineManager::parseOutput(
       object = std::make_shared<Outputs::ImageWindowOutput>("Results");
     } else if (name == kOutputTpye_RViz) {
       object = std::make_shared<Outputs::RvizOutput>();
+    } else if (name == kOutputTpye_RosService) {
+      object = std::make_shared<Outputs::RosServiceOutput>();
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
     }
@@ -191,6 +198,10 @@ PipelineManager::parseInference(
 
     } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
+
+    } else if (infer.name == kInferTpye_ObjectSegmentation) {
+      object = createObjectSegmentation(infer);
+
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -272,6 +283,22 @@ PipelineManager::createObjectDetection(
   // TODO: not implemented yet
 
   return createFaceDetection(infer);
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createObjectSegmentation(
+    const Params::ParamManager::InferenceParams& infer) {
+  auto obejct_segmentation_model =
+      std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, 1);
+  obejct_segmentation_model->modelInit();
+  auto obejct_segmentation_engine = std::make_shared<Engines::Engine>(
+      plugins_for_devices_[infer.engine], obejct_segmentation_model);
+  auto segmentation_inference_ptr = 
+    std::make_shared<dynamic_vino_lib::ObjectSegmentation>(0.5);
+  segmentation_inference_ptr->loadNetwork(obejct_segmentation_model);
+  segmentation_inference_ptr->loadEngine(obejct_segmentation_engine);
+
+  return segmentation_inference_ptr;
 }
 
 void PipelineManager::threadPipeline(const char* name) {

@@ -51,6 +51,11 @@ void Outputs::RvizOutput::accept(
 }
 
 void Outputs::RvizOutput::accept(
+    const std::vector<dynamic_vino_lib::ObjectSegmentationResult>& results) {
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(
     const std::vector<dynamic_vino_lib::EmotionsResult>& results) {
   image_window_output_->accept(results);
 }
@@ -78,7 +83,7 @@ void Outputs::RvizOutput::handleOutput() {
 
 std_msgs::msg::Header Outputs::RvizOutput::getHeader() {
   std_msgs::msg::Header header;
-  header.frame_id = "default_camera";
+  header.frame_id = getPipeline()->getInputDevice()->getFrameID();
 
   std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
   int64 ns = tp.time_since_epoch().count();

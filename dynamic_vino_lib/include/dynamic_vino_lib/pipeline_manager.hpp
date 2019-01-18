@@ -50,6 +50,7 @@ class PipelineManager {
 
   std::shared_ptr<Pipeline> createPipeline(
       const Params::ParamManager::PipelineParams& params);
+
   void removePipeline(const std::string& name);
   PipelineManager& updatePipeline(
       const std::string& name,
@@ -58,7 +59,7 @@ class PipelineManager {
   void runAll();
   void stopAll();
   void joinAll();
-
+  
   enum PipelineState {
     PipelineState_ThreadNotCreated,
     PipelineState_ThreadStopped,
@@ -72,6 +73,8 @@ class PipelineManager {
     std::shared_ptr<std::thread> thread;
     PipelineState state;
   };
+
+  std::map<std::string, PipelineData> getPipelines() { return pipelines_; };
 
  private:
   PipelineManager(){};
@@ -93,6 +96,8 @@ class PipelineManager {
   std::shared_ptr<dynamic_vino_lib::BaseInference> createHeadPoseEstimation(
       const Params::ParamManager::InferenceParams& infer);
   std::shared_ptr<dynamic_vino_lib::BaseInference> createObjectDetection(
+      const Params::ParamManager::InferenceParams& infer);
+  std::shared_ptr<dynamic_vino_lib::BaseInference> createObjectSegmentation(
       const Params::ParamManager::InferenceParams& infer);
 
   std::map<std::string, PipelineData> pipelines_;

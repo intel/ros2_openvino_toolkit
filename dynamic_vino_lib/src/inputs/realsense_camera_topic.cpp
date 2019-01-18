@@ -24,7 +24,7 @@
 
 #include <cv_bridge/cv_bridge.h>
 
-#define INPUT_TOPIC "/camera/color/image_raw"
+#define INPUT_TOPIC "/openvino_toolkit/image_raw"
 
 Input::RealSenseCameraTopic::RealSenseCameraTopic() : Node("realsense_topic") {
 
@@ -35,7 +35,7 @@ bool Input::RealSenseCameraTopic::initialize() {
   std::shared_ptr<rclcpp::Node> node(this);
   setHandler(node);
   sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-      "/camera/color/image_raw",
+      "/openvino_toolkit/image_raw",
       std::bind(&RealSenseCameraTopic::cb, this, std::placeholders::_1));
 
   image_count = 0;
@@ -44,6 +44,7 @@ bool Input::RealSenseCameraTopic::initialize() {
 
 void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg) {
   slog::info << "Receiving a new image from Camera topic." << slog::endl;
+  setFrameID(image_msg->header.frame_id);
   image = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
   ++image_count;
 }

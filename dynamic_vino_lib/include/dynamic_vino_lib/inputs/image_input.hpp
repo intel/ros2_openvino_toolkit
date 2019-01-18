@@ -56,6 +56,7 @@ class Image : public BaseInputDevice {
    * @return Whether the next frame is successfully read.
    */
   bool read(cv::Mat* frame) override;
+  bool readService(cv::Mat* frame, std::string config_path);
   void config() override;
 
  private:

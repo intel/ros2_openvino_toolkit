@@ -55,6 +55,8 @@ class BaseInputDevice : public Ros2Handler {
    * @return Whether the next frame is successfully read.
    */
   virtual bool read(cv::Mat* frame) = 0;
+  virtual bool readService(cv::Mat* frame, std::string config_path) { return true;};
+
   virtual void config() = 0;  //< TODO
   virtual ~BaseInputDevice() = default;
   /**
@@ -87,11 +89,23 @@ class BaseInputDevice : public Ros2Handler {
    * @param[in] is_init The initialization state to be set.
    */
   inline void setInitStatus(bool is_init) { is_init_ = is_init; }
+  /**
+   * @brief Set the frame_id of input device for ROSTopic outputs.
+   * @param[in] frame_id The frame_id of input device.
+   */
+  inline void setFrameID(std::string frame_id) {frame_id_ = frame_id; }
+  /**
+   * @brief Get the frame_id of input device.
+   * @return Frame_id of input device.
+   */
+  inline std::string getFrameID() { return frame_id_; }
+
 
  private:
   size_t width_ = 0;
   size_t height_ = 0;
   bool is_init_ = false;
+  std::string frame_id_;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_

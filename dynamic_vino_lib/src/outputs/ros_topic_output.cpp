@@ -23,6 +23,8 @@
 #include <string>
 #include <memory>
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
+#include "dynamic_vino_lib/pipeline_params.hpp"
+#include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
 
@@ -32,8 +34,10 @@ Outputs::RosTopicOutput::RosTopicOutput() {
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   node_ = rclcpp::Node::make_shared("topic_publisher");
-  pub_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-    "/openvino_toolkit/objects", 16);
+  pub_segmented_object_ = node_->create_publisher<people_msgs::msg::ObjectsInMasks>(
+    "/openvino_toolkit/segmented_obejcts", 16);
+  pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
+    "/openvino_toolkit/detected_objects", 16);
   pub_face_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
       "/openvino_toolkit/faces", 16);
   pub_emotion_ = node_->create_publisher<people_msgs::msg::EmotionsStamped>(
@@ -43,17 +47,41 @@ Outputs::RosTopicOutput::RosTopicOutput() {
   pub_headpose_ = node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
     "/openvino_toolkit/headposes", 16);
   emotions_topic_ = nullptr;
-  objects_topic_ = nullptr;
+  detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;
   age_gender_topic_ = nullptr;
   headpose_topic_ = nullptr;
+  segmented_objects_topic_ = nullptr;
 }
 
 void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame) {frame_ = frame.clone();}
 
+
+void Outputs::RosTopicOutput::accept(
+  const std::vector<dynamic_vino_lib::ObjectSegmentationResult>& results) {
+  segmented_objects_topic_ = std::make_shared<people_msgs::msg::ObjectsInMasks>();
+  people_msgs::msg::ObjectInMask object;
+  for (auto& r : results) {
+    // slog::info << ">";
+    auto loc = r.getLocation();
+    object.roi.x_offset = loc.x;
+    object.roi.y_offset = loc.y;
+    object.roi.width = loc.width;
+    object.roi.height = loc.height;
+    object.object_name = r.getLabel();
+    object.probability = r.getConfidence();
+    cv::Mat mask = r.getMask();
+    for (int h = 0; h < mask.size().height; ++h)
+      for (int w = 0; w < mask.size().width; ++w)
+          object.mask_array.push_back(mask.at<float>(h, w));
+    segmented_objects_topic_->objects_vector.push_back(object);
+  }
+}
+
+
 void Outputs::RosTopicOutput::accept(
   const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) {
-  objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
+  detected_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
   object_msgs::msg::ObjectInBox object;
   for (auto& r : results) {
     // slog::info << ">";
@@ -64,7 +92,7 @@ void Outputs::RosTopicOutput::accept(
     object.roi.height = loc.height;
     object.object.object_name = r.getLabel();
     object.object.probability = r.getConfidence();
-    objects_topic_->objects_vector.push_back(object);
+    detected_objects_topic_->objects_vector.push_back(object);
   }
 }
 
@@ -84,7 +112,7 @@ void Outputs::RosTopicOutput::accept(
     face.object.object_name = r.getLabel();
     face.object.probability = r.getConfidence();
     faces_topic_->objects_vector.push_back(face);
-    objects_topic_->objects_vector.push_back(face);
+    detected_objects_topic_->objects_vector.push_back(face);
   }
 }
 
@@ -150,11 +178,17 @@ void Outputs::RosTopicOutput::accept(
 
 void Outputs::RosTopicOutput::handleOutput() {
   auto header = getHeader();
-  if (objects_topic_ != nullptr) {
+  if (segmented_objects_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;
-    objects_topic_->header = header;
-    pub_object_->publish(objects_topic_);
-    objects_topic_ = nullptr;
+    segmented_objects_topic_->header = header;
+    pub_segmented_object_->publish(segmented_objects_topic_);
+    segmented_objects_topic_ = nullptr;
+  }
+  if (detected_objects_topic_ != nullptr) {
+    // slog::info << "publishing faces outputs." << slog::endl;
+    detected_objects_topic_->header = header;
+    pub_detected_object_->publish(detected_objects_topic_);
+    detected_objects_topic_ = nullptr;
   }
   if (faces_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;
@@ -186,8 +220,7 @@ void Outputs::RosTopicOutput::handleOutput() {
  */
 std_msgs::msg::Header Outputs::RosTopicOutput::getHeader() {
   std_msgs::msg::Header header;
-  header.frame_id = "default_camera";
-
+  header.frame_id = getPipeline()->getInputDevice()->getFrameID();
   std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
   int64 ns = tp.time_since_epoch().count();
   header.stamp.sec = ns/1000000000;

@@ -31,6 +31,8 @@
 #include <people_msgs/msg/age_gender_stamped.hpp>
 #include <people_msgs/msg/head_pose.hpp>
 #include <people_msgs/msg/head_pose_stamped.hpp>
+#include <people_msgs/msg/object_in_mask.hpp>
+#include <people_msgs/msg/objects_in_masks.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -61,11 +63,18 @@ class RosTopicOutput : public BaseOutput {
   void handleOutput() override;
   /**
    * @brief Generate ros topic infomation according to
+   * the object segmentation result.
+   * @param[in] results a bundle of object segmentation results.
+   */
+  void accept(
+    const std::vector<dynamic_vino_lib::ObjectSegmentationResult>& ) override;
+  /**
+   * @brief Generate ros topic infomation according to
    * the object detection result.
    * @param[in] results a bundle of object detection results.
    */
   void accept(
-    const std::vector<dynamic_vino_lib::ObjectDetectionResult>& results) override;
+    const std::vector<dynamic_vino_lib::ObjectDetectionResult>& ) override;
   /**
    * @brief Generate ros topic infomation according to
    * the face detection result.
@@ -96,8 +105,10 @@ class RosTopicOutput : public BaseOutput {
   std_msgs::msg::Header getHeader();
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;
-  rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_object_;
-  std::shared_ptr<object_msgs::msg::ObjectsInBoxes> objects_topic_; 
+  rclcpp::Publisher<people_msgs::msg::ObjectsInMasks>::SharedPtr pub_segmented_object_;
+  std::shared_ptr<people_msgs::msg::ObjectsInMasks> segmented_objects_topic_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_detected_object_;
+  std::shared_ptr<object_msgs::msg::ObjectsInBoxes> detected_objects_topic_; 
   rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_face_;
   std::shared_ptr<object_msgs::msg::ObjectsInBoxes> faces_topic_;
   rclcpp::Publisher<people_msgs::msg::EmotionsStamped>::SharedPtr pub_emotion_;

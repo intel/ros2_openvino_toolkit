@@ -1,0 +1,40 @@
+Pipelines:
+- name: people
+  inputs: [Video]
+  input_path: /home/houk/Desktop/video
+  infers:
+    - name: FaceDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
+      engine: CPU
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.labels
+      batch: 1
+    - name: AgeGenderRecognition
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+    - name: EmotionRecognition
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      engine: CPU
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
+      batch: 16
+    - name: HeadPoseEstimation
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [ImageWindow, RosTopic, RViz]
+  confidence_threshold: 0.2
+  connects:
+    - left: Video
+      right: [FaceDetection]
+    - left: FaceDetection
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]
+    - left: AgeGenderRecognition
+      right: [ImageWindow, RosTopic, RViz]
+    - left: EmotionRecognition
+      right: [ImageWindow, RosTopic, RViz]
+    - left: HeadPoseEstimation
+      right: [ImageWindow, RosTopic, RViz]
+
+Common:
