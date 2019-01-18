@@ -63,7 +63,6 @@ void Models::BaseModel::modelInit() {
   setLayerProperty(net_reader_);
 }
 
-
 void Models::BaseModel::checkNetworkSize(
     int input_size, int output_size,
     InferenceEngine::CNNNetReader::Ptr net_reader) {
@@ -73,7 +72,8 @@ void Models::BaseModel::checkNetworkSize(
   InferenceEngine::InputsDataMap input_info(
       net_reader->getNetwork().getInputsInfo());
   if (input_info.size() != input_size) {
-    throw std::logic_error(getModelName() + " should have only one input");
+    throw std::logic_error(getModelName() + 
+          " should have " + std::to_string(input_size)+ " input");
   }
   // check output size
   slog::info << "Checking output size" << slog::endl;
@@ -81,7 +81,7 @@ void Models::BaseModel::checkNetworkSize(
       net_reader->getNetwork().getOutputsInfo());
   if (output_info.size() != output_size) {
     throw std::logic_error(getModelName() +
-                           "network should have only one output");
+          " should have " + std::to_string(output_size) + " output");
   }
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
 }
