@@ -73,8 +73,9 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	#librealsense dependency
 	sudo apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
 	sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-	# numpy
+	# numpy and networkx
 	pip3 install numpy
+	pip3 install networkx
 	# libboost
 	sudo apt-get install -y --no-install-recommends libboost-all-dev
 	cd /usr/lib/x86_64-linux-gnu
@@ -129,6 +130,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Preparation
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
 		```bash
+		cd /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/install_prerequisites
+		sudo ./install_prerequisites.sh
 		mkdir -p ~/Downloads/models
 		cd ~/Downloads/models
 		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
