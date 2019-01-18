@@ -113,6 +113,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
 	# numpy
 	pip3 install numpy
+	pip3 install networkx
 	```
 	* Ubuntu 16.04
 		```bash
