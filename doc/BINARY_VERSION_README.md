@@ -79,7 +79,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	# libboost
 	sudo apt-get install -y --no-install-recommends libboost-all-dev
 	cd /usr/lib/x86_64-linux-gnu
-	sudo ln -s libboost_python-py35.so libboost_python3.so
+	sudo ln -sf libboost_python-py35.so libboost_python3.so
 	```
 ## 4. Building and Installation
 * Build sample code under openvino toolkit
@@ -92,9 +92,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	cmake ..
 	make
 	```
-* set ENV CPU_EXTENSION_LIB and GFLAGS_LIB and OpenCV_DIR
+* set ENV CPU_EXTENSION_LIB and GFLAGS_LIB
 	```bash
-	export OpenCV_DIR=$HOME/code/opencv/build
 	export CPU_EXTENSION_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libcpu_extension.so
 	export GFLAGS_LIB=/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib/libgflags_nothreads.a
 	```
@@ -119,11 +118,12 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```
 	source ~/ros2_ws/install/local_setup.bash
 	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
+	export OpenCV_DIR=$HOME/code/opencv/build
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
 	source ./install/local_setup.bash
  	sudo mkdir -p /opt/openvino_toolkit
- 	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
+ 	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
 	
 ## 5. Running the Demo
@@ -139,7 +139,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd mask_rcnn_inception_v2_coco_2018_01_28
 		python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
 		sudo mkdir -p /opt/models
-		sudo ln -s ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
+		sudo ln -sf ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
 		```
 	* copy label files (excute _once_)<br>
 		```bash
@@ -147,10 +147,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP16
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-		```
-	* set OpenVINO toolkit ENV
-		```bash
-		source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 		```
 	* set ENV LD_LIBRARY_PATH
 		```bash
@@ -185,3 +181,4 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
 	> solution - Please reboot while connecting Intel® Neural Compute Stick 2.
+

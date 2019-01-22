@@ -41,7 +41,7 @@ echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
 if [ "$CLEAN" == "1" ]; then
   echo "===================Cleaning...===================================="
   
-  rm -rf ~/code
+  echo $ROOT_PASSWD | sudo -S rm -rf ~/code
   rm -rf ~/ros2_ws
   echo $ROOT_PASSWD | sudo -S rm -rf /opt/intel
   rm -rf ~/Downloads/l_openvino_toolkit*
@@ -160,7 +160,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
-     echo $ROOT_PASSWD | sudo -S ln -s libboost_python-py35.so libboost_python3.so
+     echo $ROOT_PASSWD | sudo -S ln -sf libboost_python-py35.so libboost_python3.so
   elif [ $system_ver = "18.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      echo $ROOT_PASSWD | sudo -S apt install libboost-python1.62.0
