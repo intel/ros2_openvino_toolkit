@@ -44,7 +44,7 @@ echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
 if [ "$CLEAN" == "1" ]; then
   echo "===================Cleaning...===================================="
   
-  rm -rf ~/code
+  echo $ROOT_PASSWD | sudo -S rm -rf ~/code
   rm -rf ~/ros2_ws
   echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
   if [[ $system_ver = "16.04" && -L "/usr/lib/x86_64-linux-gnu/libboost_python3.so" ]]; then
@@ -193,7 +193,7 @@ if [ "$DLDT" == "1" ]; then
   cmake -DCMAKE_BUILD_TYPE=Release ..
   make -j8
   echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
-  echo $ROOT_PASSWD | sudo -S ln -s ~/code/dldt /opt/openvino_toolkit/dldt
+  echo $ROOT_PASSWD | sudo -S ln -sf ~/code/dldt /opt/openvino_toolkit/dldt
   
   echo "==== END install DLDT ===="
 fi
@@ -210,7 +210,7 @@ if [ "$MODEL_ZOO" == "1" ]; then
   cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8
   echo $ROOT_PASSWD | sudo -S mkdir -p /opt/openvino_toolkit
-  echo $ROOT_PASSWD | sudo -S ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
+  echo $ROOT_PASSWD | sudo -S ln -sf ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
   
   echo "==== END install open_model_zoo ===="
 fi
@@ -227,7 +227,7 @@ if [ "$OTHER_DEPENDENCY" == "1" ]; then
   if [ $system_ver = "16.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      cd /usr/lib/x86_64-linux-gnu
-     echo $ROOT_PASSWD | sudo -S ln -s libboost_python-py35.so libboost_python3.so
+     echo $ROOT_PASSWD | sudo -S ln -sf libboost_python-py35.so libboost_python3.so
   elif [ $system_ver = "18.04" ]; then
      echo $ROOT_PASSWD | sudo -S apt-get install -y --no-install-recommends libboost-all-dev
      echo $ROOT_PASSWD | sudo -S apt install libboost-python1.62.0
