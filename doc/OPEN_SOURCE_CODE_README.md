@@ -92,7 +92,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cmake -DCMAKE_BUILD_TYPE=Release ..
 		make -j8
 		sudo mkdir -p /opt/openvino_toolkit
-		sudo ln -s ~/code/dldt /opt/openvino_toolkit/dldt
+		sudo ln -sf ~/code/dldt /opt/openvino_toolkit/dldt
 		```
 	* Install [Open Model Zoo](https://github.com/opencv/open_model_zoo)([guide](https://github.com/opencv/open_model_zoo/tree/2018/demos))<br>
 		```bash
@@ -104,7 +104,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
 		sudo mkdir -p /opt/openvino_toolkit
-		sudo ln -s ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
+		sudo ln -sf ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
 - Other Dependencies
 	```bash
@@ -120,7 +120,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		# libboost
 		sudo apt-get install -y --no-install-recommends libboost-all-dev
 		cd /usr/lib/x86_64-linux-gnu
-		sudo ln -s libboost_python-py35.so libboost_python3.so
+		sudo ln -sf libboost_python-py35.so libboost_python3.so
 		```
 	* Ubuntu 18.04
 		```bash
@@ -160,5 +160,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	colcon build --symlink-install
 	source ./install/local_setup.bash
 	sudo mkdir -p /opt/openvino_toolkit
-	sudo ln -s ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
+	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
+
