@@ -34,7 +34,8 @@ std::string getConfigPath(int argc, char * argv[]) {
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content,
                                 &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/param/image_object_server.yaml";
+  //return prefix_path + "/share/dynamic_vino_sample/param/image_object_server.yaml";
+  return prefix_path + "/share/dynamic_vino_sample/param/" + argv[1];
 }
 
 int main(int argc, char ** argv) {
