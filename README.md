@@ -179,11 +179,11 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 run dynamic_vino_sample image_object_server
+	ros2 run dynamic_vino_sample image_object_server "image_object_server_oss.yaml"
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
-	ros2 run dynamic_vino_sample image_object_client "~/Pictures/car.jpeg"
+	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
 	```
 
 # TODO Features
