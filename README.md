@@ -63,7 +63,7 @@ Currently, the inference feature list is supported:
 ### Topic
 #### Subscribed Topic
 - Image topic:
-```/camera/color/image_raw```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
+```/openvino_toolkit/image_raw```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 #### Published Topic
 - Face Detection:
 ```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
@@ -167,6 +167,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run object detection sample code input from RealSenseCamera.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
+	```
+* run object detection sample code input from RealSenseCameraTopic.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
 	```
 * run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
