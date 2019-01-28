@@ -168,6 +168,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
 	```
+* run object detection sample code input from RealSenseCameraTopic.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
+	```
 * run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
