@@ -1,0 +1,22 @@
+Pipelines:
+- name: object
+  inputs: [RealSenseCameraTopic]
+  infers:
+    - name: ObjectDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [ImageWindow, RosTopic, RViz]
+  confidence_threshold: 0.2
+  connects:
+    - left: RealSenseCameraTopic
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [ImageWindow]
+    - left: ObjectDetection
+      right: [RosTopic]
+    - left: ObjectDetection
+      right: [RViz]
+
+OpenvinoCommon:
