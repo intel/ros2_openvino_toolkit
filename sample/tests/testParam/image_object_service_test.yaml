@@ -1,0 +1,19 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  infers:
+    - name: ObjectDetection
+      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output/ssd300.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [RosService]
+  confidence_threshold: 0.2
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosService]
+  input_path: "/home/intel/Pictures/car.png"
+
+Common:
