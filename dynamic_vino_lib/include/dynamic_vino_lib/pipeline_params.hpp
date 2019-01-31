@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief a header file with declaration of Pipeline class
@@ -59,19 +57,19 @@ extern const std::string kInferTpye_ObjectSegmentation;
  * @brief This class is a pipeline parameter management that stores parameters
  * of a given pipeline
  */
-class PipelineParams {
- public:
+class PipelineParams
+{
+public:
   PipelineParams(const std::string& name);
   PipelineParams(const Params::ParamManager::PipelineParams& params);
-  static Params::ParamManager::PipelineParams getPipeline(
-      const std::string& name);
+  static Params::ParamManager::PipelineParams getPipeline(const std::string& name);
   PipelineParams& operator=(const Params::ParamManager::PipelineParams& params);
   void update();
   void update(const Params::ParamManager::PipelineParams& params);
   bool isOutputTo(std::string& name);
   bool isGetFps();
 
- private:
+private:
   Params::ParamManager::PipelineParams params_;
 };
 

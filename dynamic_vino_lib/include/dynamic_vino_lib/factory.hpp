@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief a header file with declaration of Factory class
@@ -21,7 +19,6 @@
 
 #ifndef DYNAMIC_VINO_LIB__FACTORY_HPP_
 #define DYNAMIC_VINO_LIB__FACTORY_HPP_
-
 
 #include <inference_engine.hpp>
 
@@ -38,8 +35,9 @@
 * class corresponding to
 * the input string
 */
-class Factory {
- public:
+class Factory
+{
+public:
   /**
   * @brief This function produces the derived input device class corresponding
   * to the input string
@@ -49,7 +47,7 @@ class Factory {
   * @return the instance of derived input device referenced by a smart pointer
   */
   static std::shared_ptr<Input::BaseInputDevice> makeInputDeviceByName(
-      const std::string& input_device_name, const std::string& input_file_path="");
+      const std::string& input_device_name, const std::string& input_file_path = "");
   /**
   * @brief This function produces the derived inference plugin corresponding to
   * the input string
@@ -61,10 +59,9 @@ class Factory {
   * @return the instance of derived inference plugin referenced by a smart
   * pointer
   */
-  static std::unique_ptr<InferenceEngine::InferencePlugin> makePluginByName(
-      const std::string& device_name,
-      const std::string& custom_cpu_library_message,
-      const std::string& custom_cldnn_message, bool performance_message);
+  static std::unique_ptr<InferenceEngine::InferencePlugin>
+  makePluginByName(const std::string& device_name, const std::string& custom_cpu_library_message,
+                   const std::string& custom_cldnn_message, bool performance_message);
 };
 
 #endif  // DYNAMIC_VINO_LIB__FACTORY_HPP_
