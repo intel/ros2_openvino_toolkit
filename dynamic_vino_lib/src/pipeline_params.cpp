@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief a header file with declaration of Pipeline class
@@ -45,15 +43,18 @@ const std::string kInferTpye_HeadPoseEstimation = "HeadPoseEstimation";
 const std::string kInferTpye_ObjectDetection = "ObjectDetection";
 const std::string kInferTpye_ObjectSegmentation = "ObjectSegmentation";
 
-PipelineParams::PipelineParams(const std::string& name) { params_.name = name; }
+PipelineParams::PipelineParams(const std::string & name)
+{
+  params_.name = name;
+}
 
-PipelineParams::PipelineParams(
-    const Params::ParamManager::PipelineParams& params) {
+PipelineParams::PipelineParams(const Params::ParamManager::PipelineParams & params)
+{
   params_ = params;
 }
 
-PipelineParams& PipelineParams::operator=(
-    const Params::ParamManager::PipelineParams& params) {
+PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineParams & params)
+{
   params_.name = params.name;
   params_.infers = params.infers;
   params_.inputs = params.inputs;
@@ -63,35 +64,37 @@ PipelineParams& PipelineParams::operator=(
   return *this;
 }
 
-Params::ParamManager::PipelineParams PipelineParams::getPipeline(
-    const std::string& name) {
+Params::ParamManager::PipelineParams PipelineParams::getPipeline(const std::string & name)
+{
   return Params::ParamManager::getInstance().getPipeline(name);
 }
 
-void PipelineParams::update() {
+void PipelineParams::update()
+{
   if (!params_.name.empty()) {
     params_ = getPipeline(params_.name);
   }
 }
 
-void PipelineParams::update(
-    const Params::ParamManager::PipelineParams& params) {
+void PipelineParams::update(const Params::ParamManager::PipelineParams & params)
+{
   params_ = params;
 }
 
-bool PipelineParams::isOutputTo(std::string& output) {
-  if (std::find(params_.outputs.begin(), params_.outputs.end(), output) !=
-      params_.outputs.end()) {
+bool PipelineParams::isOutputTo(std::string & output)
+{
+  if (std::find(params_.outputs.begin(), params_.outputs.end(), output) != params_.outputs.end()) {
     return true;
   }
   return false;
 }
 
-bool PipelineParams::isGetFps() {
+bool PipelineParams::isGetFps()
+{
   /**< Only "Image" input can't computing FPS >**/
   if (params_.inputs.size() == 0) {
     return false;
   }
-  return std::find(params_.inputs.begin(), params_.inputs.end(),
-                   kInputType_Image) == params_.inputs.end();
+  return std::find(params_.inputs.begin(), params_.inputs.end(), kInputType_Image) ==
+         params_.inputs.end();
 }

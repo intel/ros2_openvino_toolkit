@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief a header file with declaration of Pipeline Manager class
@@ -49,8 +47,9 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
 
-std::shared_ptr<Pipeline> PipelineManager::createPipeline(
-    const Params::ParamManager::PipelineParams& params) {
+std::shared_ptr<Pipeline>
+PipelineManager::createPipeline(const Params::ParamManager::PipelineParams & params)
+{
   if (params.name == "") {
     throw std::logic_error("The name of pipeline won't be empty!");
   }
@@ -61,8 +60,7 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(
 
   auto inputs = parseInputDevice(params);
   if (inputs.size() != 1) {
-    slog::err << "currently one pipeline only supports ONE input."
-              << slog::endl;
+    slog::err << "currently one pipeline only supports ONE input." << slog::endl;
     return nullptr;
   }
   for (auto it = inputs.begin(); it != inputs.end(); ++it) {
@@ -99,12 +97,11 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(
   return pipeline;
 }
 
-
 std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
-PipelineManager::parseInputDevice(
-    const Params::ParamManager::PipelineParams& params) {
+PipelineManager::parseInputDevice(const Params::ParamManager::PipelineParams & params)
+{
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> inputs;
-  for (auto& name : params.inputs) {
+  for (auto & name : params.inputs) {
     slog::info << "Parsing InputDvice: " << name << slog::endl;
     std::shared_ptr<Input::BaseInputDevice> device = nullptr;
     if (name == kInputType_RealSenseCamera) {
@@ -136,10 +133,10 @@ PipelineManager::parseInputDevice(
 }
 
 std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-PipelineManager::parseOutput(
-    const Params::ParamManager::PipelineParams& params) {
+PipelineManager::parseOutput(const Params::ParamManager::PipelineParams & params)
+{
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> outputs;
-  for (auto& name : params.outputs) {
+  for (auto & name : params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
     if (name == kOutputTpye_RosTopic) {
@@ -163,17 +160,16 @@ PipelineManager::parseOutput(
 }
 
 std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
-PipelineManager::parseInference(
-    const Params::ParamManager::PipelineParams& params) {
+PipelineManager::parseInference(const Params::ParamManager::PipelineParams & params)
+{
   /**< update plugins for devices >**/
   auto pcommon = Params::ParamManager::getInstance().getCommon();
   std::string FLAGS_l = pcommon.custom_cpu_library;
   std::string FLAGS_c = pcommon.custom_cldnn_library;
   bool FLAGS_pc = pcommon.enable_performance_count;
 
-  std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
-      inferences;
-  for (auto& infer : params.infers) {
+  std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>> inferences;
+  for (auto & infer : params.infers) {
     if (infer.name.empty() || infer.model.empty()) {
       continue;
     }
@@ -181,27 +177,21 @@ PipelineManager::parseInference(
     std::shared_ptr<dynamic_vino_lib::BaseInference> object = nullptr;
     if (plugins_for_devices_.find(infer.engine) == plugins_for_devices_.end()) {
       plugins_for_devices_[infer.engine] =
-          *Factory::makePluginByName(infer.engine, FLAGS_l, FLAGS_c, FLAGS_pc);
+        *Factory::makePluginByName(infer.engine, FLAGS_l, FLAGS_c, FLAGS_pc);
     }
 
     if (infer.name == kInferTpye_FaceDetection) {
       object = createFaceDetection(infer);
-
     } else if (infer.name == kInferTpye_AgeGenderRecognition) {
       object = createAgeGenderRecognition(infer);
-
     } else if (infer.name == kInferTpye_EmotionRecognition) {
       object = createEmotionRecognition(infer);
-
     } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
-
     } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
-
     } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
-
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -216,16 +206,15 @@ PipelineManager::parseInference(
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createFaceDetection(
-    const Params::ParamManager::InferenceParams& infer) {
+PipelineManager::createFaceDetection(const Params::ParamManager::InferenceParams & infer)
+{
   // TODO: add batch size in param_manager
-  auto face_detection_model =
-      std::make_shared<Models::FaceDetectionModel>(infer.model, 1, 1, 1);
+  auto face_detection_model = std::make_shared<Models::FaceDetectionModel>(infer.model, 1, 1, 1);
   face_detection_model->modelInit();
-  auto face_detection_engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[infer.engine], face_detection_model);
+  auto face_detection_engine =
+    std::make_shared<Engines::Engine>(plugins_for_devices_[infer.engine], face_detection_model);
   auto face_inference_ptr = std::make_shared<dynamic_vino_lib::FaceDetection>(
-      0.5);  // TODO: add output_threshold in param_manager
+    0.5);    // TODO: add output_threshold in param_manager
   face_inference_ptr->loadNetwork(face_detection_model);
   face_inference_ptr->loadEngine(face_detection_engine);
 
@@ -233,13 +222,11 @@ PipelineManager::createFaceDetection(
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createAgeGenderRecognition(
-    const Params::ParamManager::InferenceParams& param) {
-  auto model =
-      std::make_shared<Models::AgeGenderDetectionModel>(param.model, 1, 2, 16);
+PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceParams & param)
+{
+  auto model = std::make_shared<Models::AgeGenderDetectionModel>(param.model, 1, 2, 16);
   model->modelInit();
-  auto engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[param.engine], model);
+  auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::AgeGenderDetection>();
   infer->loadNetwork(model);
   infer->loadEngine(engine);
@@ -248,13 +235,11 @@ PipelineManager::createAgeGenderRecognition(
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createEmotionRecognition(
-    const Params::ParamManager::InferenceParams& param) {
-  auto model =
-      std::make_shared<Models::EmotionDetectionModel>(param.model, 1, 1, 16);
+PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceParams & param)
+{
+  auto model = std::make_shared<Models::EmotionDetectionModel>(param.model, 1, 1, 16);
   model->modelInit();
-  auto engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[param.engine], model);
+  auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::EmotionsDetection>();
   infer->loadNetwork(model);
   infer->loadEngine(engine);
@@ -263,13 +248,11 @@ PipelineManager::createEmotionRecognition(
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createHeadPoseEstimation(
-    const Params::ParamManager::InferenceParams& param) {
-  auto model =
-      std::make_shared<Models::HeadPoseDetectionModel>(param.model, 1, 3, 16);
+PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceParams & param)
+{
+  auto model = std::make_shared<Models::HeadPoseDetectionModel>(param.model, 1, 3, 16);
   model->modelInit();
-  auto engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[param.engine], model);
+  auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::HeadPoseDetection>();
   infer->loadNetwork(model);
   infer->loadEngine(engine);
@@ -278,33 +261,33 @@ PipelineManager::createHeadPoseEstimation(
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createObjectDetection(
-    const Params::ParamManager::InferenceParams& infer) {
+PipelineManager::createObjectDetection(const Params::ParamManager::InferenceParams & infer)
+{
   // TODO: not implemented yet
 
   return createFaceDetection(infer);
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createObjectSegmentation(
-    const Params::ParamManager::InferenceParams& infer) {
+PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceParams & infer)
+{
   auto obejct_segmentation_model =
-      std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, 1);
+    std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, 1);
   obejct_segmentation_model->modelInit();
   auto obejct_segmentation_engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[infer.engine], obejct_segmentation_model);
-  auto segmentation_inference_ptr = 
-    std::make_shared<dynamic_vino_lib::ObjectSegmentation>(0.5);
+    plugins_for_devices_[infer.engine], obejct_segmentation_model);
+  auto segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(0.5);
   segmentation_inference_ptr->loadNetwork(obejct_segmentation_model);
   segmentation_inference_ptr->loadEngine(obejct_segmentation_engine);
 
   return segmentation_inference_ptr;
 }
 
-void PipelineManager::threadPipeline(const char* name) {
-  PipelineData& p = pipelines_[name];
+void PipelineManager::threadPipeline(const char * name)
+{
+  PipelineData & p = pipelines_[name];
   while (p.state == PipelineState_ThreadRunning && p.pipeline != nullptr) {
-    for (auto& node : p.spin_nodes) {
+    for (auto & node : p.spin_nodes) {
       rclcpp::spin_some(node);
     }
     p.pipeline->runOnce();
@@ -312,20 +295,21 @@ void PipelineManager::threadPipeline(const char* name) {
   }
 }
 
-void PipelineManager::runAll() {
+void PipelineManager::runAll()
+{
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if (it->second.state != PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadRunning;
     }
     if (it->second.thread == nullptr) {
-      it->second.thread =
-          std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
-                                        it->second.params.name.c_str());
+      it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
+          it->second.params.name.c_str());
     }
   }
 }
 
-void PipelineManager::stopAll() {
+void PipelineManager::stopAll()
+{
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if (it->second.state == PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadStopped;
@@ -333,10 +317,10 @@ void PipelineManager::stopAll() {
   }
 }
 
-void PipelineManager::joinAll() {
+void PipelineManager::joinAll()
+{
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    if (it->second.thread != nullptr &&
-        it->second.state == PipelineState_ThreadRunning) {
+    if (it->second.thread != nullptr && it->second.state == PipelineState_ThreadRunning) {
       it->second.thread->join();
     }
   }
