@@ -17,10 +17,10 @@
  * @file realsense_camera_topic.cpp
  */
 
+#include <cv_bridge/cv_bridge.h>
+#include <memory>
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-
-#include <cv_bridge/cv_bridge.h>
 
 #define INPUT_TOPIC "/openvino_toolkit/image_raw"
 

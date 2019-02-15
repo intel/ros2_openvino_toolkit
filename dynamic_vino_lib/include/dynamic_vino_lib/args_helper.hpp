@@ -35,39 +35,32 @@
 /**
 * @brief This function check input args and find images in given folder
 */
-void readImagesArguments(std::vector<std::string>& images, const std::string& arg)
+void readImagesArguments(std::vector<std::string> & images, const std::string & arg)
 {
   struct stat sb;
-  if (stat(arg.c_str(), &sb) != 0)
-  {
+  if (stat(arg.c_str(), &sb) != 0) {
     std::cout << "[ WARNING ] File " << arg << " cannot be opened!" << std::endl;
     return;
   }
-  if (S_ISDIR(sb.st_mode))
-  {
-    DIR* dp;
+  if (S_ISDIR(sb.st_mode)) {
+    DIR * dp;
     dp = opendir(arg.c_str());
-    if (dp == nullptr)
-    {
+    if (dp == nullptr) {
       std::cout << "[ WARNING ] Directory " << arg << " cannot be opened!" << std::endl;
       return;
     }
 
-    struct dirent* ep;
-    while (nullptr != (ep = readdir(dp)))
-    {
+    struct dirent * ep;
+    while (nullptr != (ep = readdir(dp))) {
       std::string fileName = ep->d_name;
-      if (fileName == "." || fileName == "..")
-      {
+      if (fileName == "." || fileName == "..") {
         continue;
       }
-      std::cout << "[ INFO ] Add file  " << ep->d_name << " from directory " << arg << "."
-                << std::endl;
+      std::cout << "[ INFO ] Add file  " << ep->d_name << " from directory " << arg << "." <<
+        std::endl;
       images.push_back(arg + "/" + ep->d_name);
     }
-  }
-  else
-  {
+  } else {
     images.push_back(arg);
   }
 }
@@ -76,23 +69,19 @@ void readImagesArguments(std::vector<std::string>& images, const std::string& ar
 * @brief This function find -i/--images key in input args
 *        It's necessary to process multiple values for single key
 */
-void parseImagesArguments(std::vector<std::string>& images)
+void parseImagesArguments(std::vector<std::string> & images)
 {
   std::vector<std::string> args = gflags::GetArgvs();
   bool readArguments = false;
-  for (size_t i = 0; i < args.size(); i++)
-  {
-    if (args.at(i) == "-i" || args.at(i) == "--images")
-    {
+  for (size_t i = 0; i < args.size(); i++) {
+    if (args.at(i) == "-i" || args.at(i) == "--images") {
       readArguments = true;
       continue;
     }
-    if (!readArguments)
-    {
+    if (!readArguments) {
       continue;
     }
-    if (args.at(i).c_str()[0] == '-')
-    {
+    if (args.at(i).c_str()[0] == '-') {
       break;
     }
     readImagesArguments(images, args.at(i));

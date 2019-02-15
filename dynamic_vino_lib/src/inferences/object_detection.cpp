@@ -133,7 +133,8 @@ const std::string dynamic_vino_lib::ObjectDetection::getName() const
   return valid_model_->getModelName();
 }
 const void
-dynamic_vino_lib::ObjectDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput> & output)
+dynamic_vino_lib::ObjectDetection::observeOutput(
+  const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {
     output->accept(results_);

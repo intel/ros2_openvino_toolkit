@@ -26,8 +26,7 @@
 #include "dynamic_vino_lib/inputs/video_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
-
-using namespace InferenceEngine;
+#include "inference_engine.hpp"
 
 std::shared_ptr<Input::BaseInputDevice> Factory::makeInputDeviceByName(
   const std::string & input_device_name, const std::string & input_file_path)
@@ -49,33 +48,38 @@ std::shared_ptr<Input::BaseInputDevice> Factory::makeInputDeviceByName(
   }
 }
 
-std::unique_ptr<InferencePlugin>
+std::unique_ptr<InferenceEngine::InferencePlugin>
 Factory::makePluginByName(
   const std::string & device_name,
   const std::string & custom_cpu_library_message,                         // FLAGS_l
   const std::string & custom_cldnn_message,                               // FLAGS_c
   bool performance_message)
 {  // FLAGS_pc
-  InferencePlugin plugin =
-    PluginDispatcher({"../../../lib/intel64", ""}).getPluginByDevice(device_name);
+  InferenceEngine::InferencePlugin plugin =
+    InferenceEngine::PluginDispatcher({"../../../lib/intel64", ""})
+    .getPluginByDevice(device_name);
   /** Printing plugin version **/
   printPluginVersion(plugin, std::cout);
   /** Load extensions for the CPU plugin **/
   if ((device_name.find("CPU") != std::string::npos)) {
-    plugin.AddExtension(std::make_shared<Extensions::Cpu::CpuExtensions>());
+    plugin.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>());
     if (!custom_cpu_library_message.empty()) {
       // CPU(MKLDNN) extensions are loaded as a shared library and passed as a
       // pointer to base
       // extension
-      auto extension_ptr = make_so_pointer<IExtension>(custom_cpu_library_message);
+      auto extension_ptr =
+        InferenceEngine::make_so_pointer<InferenceEngine::IExtension>(custom_cpu_library_message);
       plugin.AddExtension(extension_ptr);
     }
   } else if (!custom_cldnn_message.empty()) {
     // Load Extensions for other plugins not CPU
-    plugin.SetConfig({ {PluginConfigParams::KEY_CONFIG_FILE, custom_cldnn_message}});
+    plugin.SetConfig(
+      { {InferenceEngine::PluginConfigParams::KEY_CONFIG_FILE, custom_cldnn_message}});
   }
   if (performance_message) {
-    plugin.SetConfig({ {PluginConfigParams::KEY_PERF_COUNT, PluginConfigParams::YES}});
+    plugin.SetConfig({ {InferenceEngine::PluginConfigParams::KEY_PERF_COUNT,
+          InferenceEngine::PluginConfigParams::YES}});
   }
-  return std::make_unique<InferencePlugin>(InferenceEngine::InferenceEnginePluginPtr(plugin));
+  return std::make_unique<InferenceEngine::InferencePlugin>(
+    InferenceEngine::InferenceEnginePluginPtr(plugin));
 }

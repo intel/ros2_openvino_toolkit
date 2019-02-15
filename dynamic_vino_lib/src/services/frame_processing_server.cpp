@@ -18,6 +18,8 @@
 #include <vino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
+#include <string>
+#include <map>
 
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
@@ -181,4 +183,4 @@ void FrameProcessingServer::cbObjectDetection(
   }
 }
 
-}  // namespace frame_processing_service
+}  // namespace vino_service

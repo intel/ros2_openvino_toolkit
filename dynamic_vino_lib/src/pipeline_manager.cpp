@@ -17,11 +17,12 @@
  * @file pipeline_manager.cpp
  */
 
+#include <vino_param_lib/param_manager.hpp>
 #include <memory>
 #include <string>
 #include <utility>
+#include <map>
 
-#include <vino_param_lib/param_manager.hpp>
 #include "dynamic_vino_lib/factory.hpp"
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
@@ -208,13 +209,13 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineParams & par
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createFaceDetection(const Params::ParamManager::InferenceParams & infer)
 {
-  // TODO: add batch size in param_manager
+  // TODO(batch_size): add batch size in param_manager
   auto face_detection_model = std::make_shared<Models::FaceDetectionModel>(infer.model, 1, 1, 1);
   face_detection_model->modelInit();
   auto face_detection_engine =
     std::make_shared<Engines::Engine>(plugins_for_devices_[infer.engine], face_detection_model);
   auto face_inference_ptr = std::make_shared<dynamic_vino_lib::FaceDetection>(
-    0.5);    // TODO: add output_threshold in param_manager
+    0.5);    // TODO(output_threshold): add output_threshold in param_manager
   face_inference_ptr->loadNetwork(face_detection_model);
   face_inference_ptr->loadEngine(face_detection_engine);
 
@@ -263,7 +264,7 @@ PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceP
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(const Params::ParamManager::InferenceParams & infer)
 {
-  // TODO: not implemented yet
+  // TODO(TBD): not implemented yet
 
   return createFaceDetection(infer);
 }

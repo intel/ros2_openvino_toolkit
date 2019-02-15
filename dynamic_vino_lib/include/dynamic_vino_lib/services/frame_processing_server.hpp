@@ -11,11 +11,9 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef DYNAMIC_VINO_LIB__FRAME_PROCESSING_SERVER_HPP_
-#define DYNAMIC_VINO_LIB__FRAME_PROCESSING_SERVER_HPP_
+#ifndef DYNAMIC_VINO_LIB__SERVICES__FRAME_PROCESSING_SERVER_HPP_
+#define DYNAMIC_VINO_LIB__SERVICES__FRAME_PROCESSING_SERVER_HPP_
 
-#include <memory>
-#include <iostream>
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
@@ -32,6 +30,9 @@
 #include <object_msgs/srv/detect_object.hpp>
 
 #include <rclcpp/rclcpp.hpp>
+#include <memory>
+#include <iostream>
+#include <string>
 
 namespace vino_service
 {
@@ -67,5 +68,5 @@ private:
   rclcpp::Service<people_msgs::srv::HeadPose>::SharedPtr head_pose_service_;
   rclcpp::Service<object_msgs::srv::DetectObject>::SharedPtr object_service_;
 };
-}  // namespace frame_processing_service
-#endif  // DYNAMIC_VINO_LIB__FRAME_PROCESSING_SERVER_HPP_
+}  // namespace vino_service
+#endif  // DYNAMIC_VINO_LIB__SERVICES__FRAME_PROCESSING_SERVER_HPP_

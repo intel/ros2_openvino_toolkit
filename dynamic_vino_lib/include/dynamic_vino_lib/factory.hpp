@@ -47,7 +47,7 @@ public:
   * @return the instance of derived input device referenced by a smart pointer
   */
   static std::shared_ptr<Input::BaseInputDevice> makeInputDeviceByName(
-      const std::string& input_device_name, const std::string& input_file_path = "");
+    const std::string & input_device_name, const std::string & input_file_path = "");
   /**
   * @brief This function produces the derived inference plugin corresponding to
   * the input string
@@ -60,8 +60,9 @@ public:
   * pointer
   */
   static std::unique_ptr<InferenceEngine::InferencePlugin>
-  makePluginByName(const std::string& device_name, const std::string& custom_cpu_library_message,
-                   const std::string& custom_cldnn_message, bool performance_message);
+  makePluginByName(
+    const std::string & device_name, const std::string & custom_cpu_library_message,
+    const std::string & custom_cldnn_message, bool performance_message);
 };
 
 #endif  // DYNAMIC_VINO_LIB__FACTORY_HPP_

@@ -20,11 +20,12 @@
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__RVIZ_OUTPUT_HPP_
 #define DYNAMIC_VINO_LIB__OUTPUTS__RVIZ_OUTPUT_HPP_
 
-#include <vector>
-#include <string>
-
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
+#include <vector>
+#include <string>
+#include <memory>
+
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 
@@ -37,7 +38,7 @@ namespace Outputs
 class RvizOutput : public BaseOutput
 {
 public:
-  explicit RvizOutput();
+  RvizOutput();
   /**
    * @brief Construct frame for rviz
    * @param[in] A frame.

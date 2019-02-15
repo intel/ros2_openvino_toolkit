@@ -63,7 +63,8 @@ void Outputs::RosServiceOutput::accept(
   }
 }
 
-void Outputs::RosServiceOutput::accept(const std::vector<dynamic_vino_lib::EmotionsResult> & results)
+void Outputs::RosServiceOutput::accept(
+  const std::vector<dynamic_vino_lib::EmotionsResult> & results)
 {
   for (auto r : results) {
     auto loc = r.getLocation();
@@ -98,7 +99,8 @@ void Outputs::RosServiceOutput::accept(
   }
 }
 
-void Outputs::RosServiceOutput::accept(const std::vector<dynamic_vino_lib::HeadPoseResult> & results)
+void Outputs::RosServiceOutput::accept(
+  const std::vector<dynamic_vino_lib::HeadPoseResult> & results)
 {
   for (auto r : results) {
     auto loc = r.getLocation();

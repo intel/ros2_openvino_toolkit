@@ -20,6 +20,8 @@
 #define DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_
 
 #include <opencv2/opencv.hpp>
+#include <vector>
+#include <string>
 #include "dynamic_vino_lib/inputs/ros2_handler.hpp"
 
 /**

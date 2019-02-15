@@ -34,6 +34,7 @@
 #include <object_msgs/srv/detect_object.hpp>
 #include <string>
 #include <vector>
+#include <memory>
 
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"

@@ -119,7 +119,7 @@ private:
   const std::string window_name_;
   float focal_length_;
   cv::Mat camera_matrix_;
-  std::vector<std::vector<short>> colors_ = {
+  std::vector<std::vector<int>> colors_ = {
     {128, 64, 128}, {232, 35, 244}, {70, 70, 70}, {156, 102, 102}, {153, 153, 190},
     {153, 153, 153}, {30, 170, 250}, {0, 220, 220}, {35, 142, 107}, {152, 251, 152},
     {180, 130, 70}, {60, 20, 220}, {0, 0, 255}, {142, 0, 0}, {70, 0, 0},

@@ -17,16 +17,15 @@
  * @file pipeline.cpp
  */
 
+#include <vino_param_lib/param_manager.hpp>
 #include <memory>
 #include <string>
 #include <utility>
+#include <map>
 
-#include <vino_param_lib/param_manager.hpp>
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
-
-using namespace InferenceEngine;
 
 Pipeline::Pipeline(const std::string & name)
 {

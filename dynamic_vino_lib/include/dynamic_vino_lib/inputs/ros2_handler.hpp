@@ -21,6 +21,7 @@
 #define DYNAMIC_VINO_LIB__INPUTS__ROS2_HANDLER_HPP_
 
 #include <rclcpp/rclcpp.hpp>
+#include <memory>
 
 namespace Input
 {
@@ -40,6 +41,6 @@ private:
   std::shared_ptr<rclcpp::Node> node_;
 };
 
-}  // namespace
+}  // namespace Input
 
-#endif  // DYNAMIC_VINO_LIB__INPUTS__ROS_HANDLER_HPP_
+#endif  // DYNAMIC_VINO_LIB__INPUTS__ROS2_HANDLER_HPP_

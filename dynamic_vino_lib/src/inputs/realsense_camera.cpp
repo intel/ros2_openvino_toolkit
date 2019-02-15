@@ -87,7 +87,7 @@ bool Input::RealSenseCamera::read(cv::Mat * frame)
     return false;
   }
   cv::Mat(cv::Size(static_cast<int>(getWidth()), static_cast<int>(getHeight())), CV_8UC3,
-    (void *)color_frame.get_data(), cv::Mat::AUTO_STEP)
+    const_cast<void *>(color_frame.get_data()), cv::Mat::AUTO_STEP)
   .copyTo(*frame);
   return true;
 }

@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include "vino_param_lib/param_manager.hpp"
+#include <vino_param_lib/slog.hpp>
 #include <yaml-cpp/yaml.h>
 #include <fstream>
 #include <iostream>
 #include <map>
 #include <string>
 #include <vector>
-#include <vino_param_lib/slog.hpp>
 
 namespace Params
 {
