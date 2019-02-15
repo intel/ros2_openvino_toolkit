@@ -46,7 +46,10 @@
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
-static bool test_pass = false;
+static bool face_test_pass = false;
+static bool emotion_test_pass = false;
+static bool ageGender_test_pass = false;
+static bool headPose_test_pass = false;
 
 template<typename DurationT>
 void wait_for_future(
@@ -65,9 +68,9 @@ void wait_for_future(
     " milliseconds\n";
 }
 
-TEST(UnitTestImageDetection, testImageDetection)
+TEST(UnitTestFaceDetection, testFaceDetection)
 {
-  auto node = rclcpp::Node::make_shared("openvino_image_test");
+  auto node = rclcpp::Node::make_shared("openvino_face_test");
   rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
   custom_qos_profile.depth = 16;
   std::promise<bool> sub_called;
@@ -75,25 +78,7 @@ TEST(UnitTestImageDetection, testImageDetection)
 
   auto openvino_faceDetection_callback =
     [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
-      test_pass = true;
-      sub_called.set_value(true);
-    };
-
-  auto openvino_emotionRecognition_callback =
-    [&sub_called](const people_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
-      test_pass = true;
-      sub_called.set_value(true);
-    };
-
-  auto openvino_ageGender_callback =
-    [&sub_called](const people_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
-      test_pass = true;
-      sub_called.set_value(true);
-    };
-
-  auto openvino_headPose_callback =
-    [&sub_called](const people_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
-      test_pass = true;
+      face_test_pass = true;
       sub_called.set_value(true);
     };
 
@@ -104,14 +89,92 @@ TEST(UnitTestImageDetection, testImageDetection)
     auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
       "/openvino_toolkit/detected_objects", openvino_faceDetection_callback, custom_qos_profile);
 
+    executor.spin_once(std::chrono::seconds(0));
+
+    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
+
+    EXPECT_TRUE(face_test_pass);
+  }
+}
+
+TEST(UnitTestFaceDetection, testEmotionDetection)
+{
+  auto node = rclcpp::Node::make_shared("openvino_emotion_test");
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
+  custom_qos_profile.depth = 16;
+  std::promise<bool> sub_called;
+  std::shared_future<bool> sub_called_future(sub_called.get_future());
+
+  auto openvino_emotionRecognition_callback =
+    [&sub_called](const people_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
+      emotion_test_pass = true;
+      sub_called.set_value(true);
+    };
+
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(node);
+
+  {
     auto sub2 = node->create_subscription<people_msgs::msg::EmotionsStamped>(
       "/ros2_openvino_toolkit/emotions_recognition", openvino_emotionRecognition_callback,
       custom_qos_profile);
 
+    executor.spin_once(std::chrono::seconds(0));
+
+    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
+
+    EXPECT_TRUE(emotion_test_pass);
+  }
+}
+
+TEST(UnitTestFaceDetection, testageGenderDetection)
+{
+  auto node = rclcpp::Node::make_shared("openvino_ageGender_test");
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
+  custom_qos_profile.depth = 16;
+  std::promise<bool> sub_called;
+  std::shared_future<bool> sub_called_future(sub_called.get_future());
+
+  auto openvino_ageGender_callback =
+    [&sub_called](const people_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
+      ageGender_test_pass = true;
+      sub_called.set_value(true);
+    };
+
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(node);
+
+  {
     auto sub3 = node->create_subscription<people_msgs::msg::AgeGenderStamped>(
       "/ros2_openvino_toolkit/age_genders_Recognition", openvino_ageGender_callback,
       custom_qos_profile);
 
+    executor.spin_once(std::chrono::seconds(0));
+
+    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
+
+    EXPECT_TRUE(ageGender_test_pass);
+  }
+}
+
+TEST(UnitTestFaceDetection, testheadPoseDetection)
+{
+  auto node = rclcpp::Node::make_shared("openvino_headPose_test");
+  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
+  custom_qos_profile.depth = 16;
+  std::promise<bool> sub_called;
+  std::shared_future<bool> sub_called_future(sub_called.get_future());
+
+  auto openvino_headPose_callback =
+    [&sub_called](const people_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
+      headPose_test_pass = true;
+      sub_called.set_value(true);
+    };
+
+  rclcpp::executors::SingleThreadedExecutor executor;
+  executor.add_node(node);
+
+  {
     auto sub4 = node->create_subscription<people_msgs::msg::HeadPoseStamped>(
       "/ros2_openvino_toolkit/headposes_estimation", openvino_headPose_callback,
       custom_qos_profile);
@@ -120,7 +183,7 @@ TEST(UnitTestImageDetection, testImageDetection)
 
     wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
 
-    EXPECT_TRUE(test_pass);
+    EXPECT_TRUE(headPose_test_pass);
   }
 }
 
