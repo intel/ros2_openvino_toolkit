@@ -20,11 +20,9 @@ limitations under the License.
   <name>vino_param_lib</name>
   <version>0.3.0</version>
   <description>Library for ROS2 OpenVINO parameter management</description>
-  <author email="wei.zhi.liu@intel.com">Weizhi Liu</author>
-  <author email="chao1.li@intel.com">Chao Li</author>
-  <author email="hongkun.chen@intel.com">Hongkun Chen</author>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
   <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
+  <maintainer email="hongkun.chen@intel.com">Hongkun Chen</maintainer>
 
   <license>Apache 2.0</license>
 
