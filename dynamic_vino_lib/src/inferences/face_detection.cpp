@@ -34,6 +34,6 @@ dynamic_vino_lib::FaceDetectionResult::FaceDetectionResult(
     : ObjectDetectionResult(location){}
 
 // FaceDetection
-dynamic_vino_lib::FaceDetection::FaceDetection(double show_output_thresh)
-    : ObjectDetection(show_output_thresh){}
+dynamic_vino_lib::FaceDetection::FaceDetection(bool checkroi, double show_output_thresh)
+    : ObjectDetection(checkroi, show_output_thresh){}
 

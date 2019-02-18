@@ -62,6 +62,7 @@ class ParamManager  // singleton
     std::string engine;
     std::string model;
     std::string label;
+    bool checkroi;
   };
   struct PipelineParams {
     std::string name;

@@ -88,6 +88,7 @@ void operator>>(const YAML::Node& node, ParamManager::InferenceParams& infer) {
   YAML_PARSE(node, "model", infer.model)
   YAML_PARSE(node, "engine", infer.engine)
   YAML_PARSE(node, "label", infer.label)
+  YAML_PARSE(node, "checkroi", infer.checkroi)
   slog::info << "Inference Params:name=" << infer.name << slog::endl;
 }
 

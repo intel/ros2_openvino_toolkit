@@ -59,7 +59,7 @@ class ObjectDetectionResult : public Result {
 class ObjectDetection : public BaseInference {
  public:
   using Result = dynamic_vino_lib::ObjectDetectionResult;
-  explicit ObjectDetection(double);
+  explicit ObjectDetection(bool, double);
   ~ObjectDetection() override;
   /**
    * @brief Load the face detection model.
@@ -116,6 +116,7 @@ class ObjectDetection : public BaseInference {
   int max_proposal_count_;
   int object_size_;
   double show_output_thresh_ = 0;
+  bool checkroi_ = false;
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__OBJECT_DETECTION_HPP_

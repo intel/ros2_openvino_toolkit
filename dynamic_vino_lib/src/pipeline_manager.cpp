@@ -218,18 +218,7 @@ PipelineManager::parseInference(
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createFaceDetection(
     const Params::ParamManager::InferenceParams& infer) {
-  // TODO: add batch size in param_manager
-  auto face_detection_model =
-      std::make_shared<Models::FaceDetectionModel>(infer.model, 1, 1, 1);
-  face_detection_model->modelInit();
-  auto face_detection_engine = std::make_shared<Engines::Engine>(
-      plugins_for_devices_[infer.engine], face_detection_model);
-  auto face_inference_ptr = std::make_shared<dynamic_vino_lib::FaceDetection>(
-      0.5);  // TODO: add output_threshold in param_manager
-  face_inference_ptr->loadNetwork(face_detection_model);
-  face_inference_ptr->loadEngine(face_detection_engine);
-
-  return face_inference_ptr;
+  return createObjectDetection(infer);
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
@@ -280,9 +269,18 @@ PipelineManager::createHeadPoseEstimation(
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
     const Params::ParamManager::InferenceParams& infer) {
-  // TODO: not implemented yet
+  // TODO: add batch size in param_manager
+  auto object_detection_model =
+      std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, 1);
+  object_detection_model->modelInit();
+  auto object_detection_engine = std::make_shared<Engines::Engine>(
+      plugins_for_devices_[infer.engine], object_detection_model);
+  auto object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
+      infer.checkroi, 0.5);  // TODO: add output_threshold in param_manager
+  object_inference_ptr->loadNetwork(object_detection_model);
+  object_inference_ptr->loadEngine(object_detection_engine);
 
-  return createFaceDetection(infer);
+  return object_inference_ptr;
 }
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>

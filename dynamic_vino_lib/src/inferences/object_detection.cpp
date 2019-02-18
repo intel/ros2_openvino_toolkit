@@ -29,8 +29,8 @@ dynamic_vino_lib::ObjectDetectionResult::ObjectDetectionResult(
     const cv::Rect& location)
     : Result(location){}
 // ObjectDetection
-dynamic_vino_lib::ObjectDetection::ObjectDetection(double show_output_thresh)
-    : show_output_thresh_(show_output_thresh),
+dynamic_vino_lib::ObjectDetection::ObjectDetection(bool checkroi, double show_output_thresh)
+    : show_output_thresh_(show_output_thresh), checkroi_(checkroi), 
       dynamic_vino_lib::BaseInference(){}
 dynamic_vino_lib::ObjectDetection::~ObjectDetection() = default;
 void dynamic_vino_lib::ObjectDetection::loadNetwork(
@@ -71,24 +71,11 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults() {
     cv::Rect r;
     auto label_num = static_cast<int>(detections[i * object_size_ + 1]);
     std::vector<std::string>& labels = valid_model_->getLabels();
-
     r.x = static_cast<int>(detections[i * object_size_ + 3] * width_);
-    if (r.x < 0)
-      r.x = 0;
-
     r.y = static_cast<int>(detections[i * object_size_ + 4] * height_);
-    if (r.y < 0)
-      r.y = 0;
-
     r.width = static_cast<int>(detections[i * object_size_ + 5] * width_ - r.x);
-    if (r.width < 0)
-      r.width = 0;
-
-    r.height =
-        static_cast<int>(detections[i * object_size_ + 6] * height_ - r.y);
-    if (r.height < 0)
-      r.height = 0;
-
+    r.height = static_cast<int>(detections[i * object_size_ + 6] * height_ - r.y);
+    if (checkroi_) r &= cv::Rect(0, 0, width_, height_);
     Result result(r);
     result.label_ = label_num < labels.size()
                         ? labels[label_num]
