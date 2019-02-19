@@ -13,13 +13,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
-<package format="3">
+<package format="2">
   <name>dynamic_vino_sample</name>
   <version>0.3.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
-  <author email="wei.zhi.liu@intel.com">Weizhi Liu</author>
-  <author email="chao1.li@intel.com">Chao Li</author>
-  <author email="hongkun.chen@intel.com">Hongkun Chen</author>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
   <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
   <license>Apache License 2.0</license>
@@ -56,6 +53,7 @@ limitations under the License.
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -129,24 +129,30 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ## 5. Running the Demo
 * Preparation
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
-		```bash
-		cd /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/install_prerequisites
-		sudo ./install_prerequisites.sh
-		mkdir -p ~/Downloads/models
-		cd ~/Downloads/models
-		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
-		tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
-		cd mask_rcnn_inception_v2_coco_2018_01_28
-		python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
-		sudo mkdir -p /opt/models
-		sudo ln -sf ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
-		```
+      ```bash
+      #object segmentation model
+      cd /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/install_prerequisites
+      sudo ./install_prerequisites.sh
+      mkdir -p ~/Downloads/models
+      cd ~/Downloads/models
+      wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
+      tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
+      cd mask_rcnn_inception_v2_coco_2018_01_28
+      python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
+      sudo mkdir -p /opt/models
+      sudo ln -sf ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
+      #object detection model
+      cd /opt/intel/computer_vision_sdk/deployment_tools/model_downloader
+      sudo python3 downloader.py --name ssd300
+      sudo python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/ssd300.caffemodel --output_dir /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/output/
+      ```
 	* copy label files (excute _once_)<br>
 		```bash
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP16
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/ssd300.labels /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/output
 		```
 	* set ENV LD_LIBRARY_PATH
 		```bash
@@ -164,10 +170,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object.launch.py
 	```
-* run object detection sample code input from RealSenseCameraTopic.
-	```bash
-	ros2 launch dynamic_vino_sample pipeline_object_topic.launch.py
-	```
 * run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
@@ -179,7 +181,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 run dynamic_vino_sample image_object_server "image_object_server.yaml"
+	ros2 launch dynamic_vino_sample image_object_server.launch.py
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
@@ -195,4 +197,5 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
 	> solution - Please reboot while connecting Intel® Neural Compute Stick 2.
+
 

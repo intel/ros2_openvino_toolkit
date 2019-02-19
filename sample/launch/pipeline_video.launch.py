@@ -22,19 +22,22 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param', 'pipeline_video.yaml');
-    default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch', 'rviz/default.rviz');
+    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
+                                'pipeline_video.yaml')
+    default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
+                                'rviz/default.rviz')
     return LaunchDescription([
-        #openvino detection
+        # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/segmented_obejcts', '/ros2_openvino_toolkit/segmented_obejcts'),
+                ('/openvino_toolkit/segmented_obejcts',
+                 '/ros2_openvino_toolkit/segmented_obejcts'),
                 ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
-        #rviz
+        # Rviz
         launch_ros.actions.Node(
             package='rviz2', node_executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]),
