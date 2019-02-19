@@ -23,11 +23,11 @@ include_directories(include
 
 add_library(${PROJECT_NAME} SHARED
   src/param_manager.cpp
-  )
+)
 
 ament_target_dependencies(${PROJECT_NAME}
   "yaml_cpp_vendor"
-  )
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

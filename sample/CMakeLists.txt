@@ -1,12 +1,14 @@
 # Copyright (c) 2018 Intel Corporation
-
-# Licensed under the Apache License, Version 2.0 (the "License"); # you may not use this file except in compliance with the License.  # You may obtain a copy of the License at #      http://www.apache.org/licenses/LICENSE-2.0
-
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#http://www.apache.org/licenses/LICENSE-2.0
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 cmake_minimum_required(VERSION 3.5)
 project(dynamic_vino_sample)
 
@@ -20,7 +22,7 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-if (CMAKE_BUILD_TYPE EQUAL "RELEASE")
+if(CMAKE_BUILD_TYPE EQUAL "RELEASE")
   message(STATUS "Create Release Build.")
   set(CMAKE_CXX_FLAGS "-O2 ${CMAKE_CXX_FLAGS}")
 else()
@@ -74,44 +76,44 @@ if( BUILD_SAMPLE_NAME AND NOT ${BUILD_SAMPLE_NAME} STREQUAL ${PROJECT_NAME} )
     return()
 endif()
 
-set (CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
+set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
 
 add_library(cpu_extension SHARED IMPORTED)
 set_target_properties(cpu_extension PROPERTIES
   IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
-set (Gflags_lib $ENV{GFLAGS_LIB})
+set(Gflags_lib $ENV{GFLAGS_LIB})
 
 add_library(gflags STATIC IMPORTED)
 set_target_properties(gflags PROPERTIES
   IMPORTED_LOCATION $ENV{GFLAGS_LIB})
 
-file (GLOB MAIN_SRC
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-        )
+file(GLOB MAIN_SRC
+  ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+)
 
-file (GLOB MAIN_HEADERS
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-        ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
-        )
+file(GLOB MAIN_HEADERS
+  ${CMAKE_CURRENT_SOURCE_DIR}/*.h
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/*.h
+)
 
 # Create named folders for the sources within the .vcproj
 # Empty name lists them directly under the .vcproj
 source_group("src" FILES ${MAIN_SRC})
 source_group("include" FILES ${MAIN_HEADERS})
 
-include_directories (${OpenCV_INCLUDE_DIRS})
-include_directories (${PROJECT_SOURCE_DIR}/include)
-include_directories (${dynamic_vino_lib_INCLUDE_DIRS})
-include_directories (${vino_param_lib_INCLUDE_DIRS})
-include_directories (${InferenceEngine_INCLUDE_DIRS})
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples)
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../src)
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
-include_directories (${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
+include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${dynamic_vino_lib_INCLUDE_DIRS})
+include_directories(${vino_param_lib_INCLUDE_DIRS})
+include_directories(${InferenceEngine_INCLUDE_DIRS})
+include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples)
+include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
+include_directories(${InferenceEngine_INCLUDE_DIRS}/../src)
+include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
+include_directories(${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
 
-include_directories (${librealsense2_INCLUDE_DIRS})
+include_directories(${librealsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
 
 # Create library file from sources.
@@ -128,7 +130,6 @@ ament_target_dependencies(vino_param_sample
   "vino_param_lib"
   "dynamic_vino_lib"
   "rviz_yaml_cpp_vendor"
-
 )
 
 add_executable(pipeline_with_params
@@ -208,21 +209,81 @@ install(TARGETS image_object_server
 install(TARGETS image_object_client
   DESTINATION lib/${PROJECT_NAME})
 
-if(BUILD_TESTING)
-  find_package(ament_lint_auto REQUIRED)
-  ament_lint_auto_find_test_dependencies()
-endif()
-
 # Install param files.
-install(DIRECTORY 
+install(DIRECTORY
   param
   DESTINATION share/${PROJECT_NAME}/
 )
 
+# Install param files.
+install(DIRECTORY
+  tests/testParam
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 # Install launch files.
-install(DIRECTORY 
+install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
 )
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  find_package(InferenceEngine REQUIRED)
+  find_package(rclcpp REQUIRED)
+  find_package(vino_param_lib REQUIRED)
+  find_package(OpenCV REQUIRED)
+  find_package(object_msgs REQUIRED)
+  find_package(people_msgs REQUIRED)
+  find_package(ament_index_cpp REQUIRED)
+  find_package(yaml_cpp_vendor REQUIRED)
+  find_package(class_loader REQUIRED)
+  find_package(dynamic_vino_lib REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  macro(custom_gtest target)
+    ament_add_gtest(${target} ${ARGN})
+    if(TARGET ${target})
+      target_include_directories(${target} PUBLIC
+        ${${PROJECT_NAME}_INCLUDE_DIRS}
+      )
+      target_link_libraries(${target}
+        dl
+        cpu_extension
+        gflags)
+      ament_target_dependencies(${target}
+        "rclcpp"
+        "InferenceEngine"
+        "vino_param_lib"
+        "OpenCV"
+        "object_msgs"
+        "people_msgs"
+        "ament_index_cpp"
+        "yaml_cpp_vendor"
+        "class_loader"
+        "dynamic_vino_lib")
+    endif()
+  endmacro()
+
+  custom_gtest(unittest_createPipelineCheck
+    "tests/lib/unittest_createPipelineCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_faceDetection
+    "tests/topic/unittest_faceDetectionCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_objectDetection
+    "tests/topic/unittest_objectDetectionCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_imageDetection
+    "tests/topic/unittest_imageCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_segmentation
+    "tests/topic/unittest_segmentationCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_objectService
+    "tests/service/unittest_objectService.cpp"
+    TIMEOUT 300)
+
+endif()
 
 ament_package()

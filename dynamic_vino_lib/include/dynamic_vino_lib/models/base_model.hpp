@@ -1,18 +1,16 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief A header file with declaration for BaseModel Class
@@ -28,19 +26,22 @@
 
 #include "inference_engine.hpp"
 
-namespace Engines {
+namespace Engines
+{
 class Engine;
 }
 
-namespace Models {
+namespace Models
+{
 /**
  * @class BaseModel
  * @brief This class represents the network given by .xml and .bin file
  */
-class BaseModel {
+class BaseModel
+{
   using Ptr = std::shared_ptr<BaseModel>;
 
- public:
+public:
   /**
    * @brief Initialize the class with given .xml, .bin and .labels file. It will
    * also check whether the number of input and output are fit.
@@ -51,18 +52,23 @@ class BaseModel {
    * @param[in] batch_size The number of batch size the network should have.
    * @return Whether the input device is successfully turned on.
    */
-  BaseModel(const std::string& model_loc, int input_num, int output_num,
-            int batch_size);
+  BaseModel(const std::string & model_loc, int input_num, int output_num, int batch_size);
   /**
    * @brief Get the label vector.
    * @return The label vector.
    */
-  inline std::vector<std::string>& getLabels() { return labels_; }
+  inline std::vector<std::string> & getLabels()
+  {
+    return labels_;
+  }
   /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
    */
-  inline const int getMaxBatchSize() const { return max_batch_size_; }
+  inline const int getMaxBatchSize() const
+  {
+    return max_batch_size_;
+  }
   /**
    * @brief Initialize the model. During the process the class will check
    * the network input, output size, check layer property and
@@ -75,23 +81,21 @@ class BaseModel {
    */
   virtual const std::string getModelName() const = 0;
 
- protected:
+protected:
   /**
    * @brief Check whether the layer property
    * (output layer name, output layer type, etc.) is right
    * @param[in] network_reader The reader of the network to be checked.
    */
-  virtual void checkLayerProperty(
-      const InferenceEngine::CNNNetReader::Ptr& network_reader) = 0;
+  virtual void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr & network_reader) = 0;
   /**
    * @brief Set the layer property (layer layout, layer precision, etc.).
    * @param[in] network_reader The reader of the network to be set.
    */
-  virtual void
-      setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
+  virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
   virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
 
- private:
+private:
   friend class Engines::Engine;
 
   InferenceEngine::CNNNetReader::Ptr net_reader_;
