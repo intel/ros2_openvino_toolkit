@@ -183,7 +183,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 run dynamic_vino_sample image_object_server "image_object_server_oss.yaml"
+	ros2 launch dynamic_vino_sample image_object_server_oss.launch.py
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
@@ -197,3 +197,4 @@ One-step installation scripts are provided for the dependencies' installation. P
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+
