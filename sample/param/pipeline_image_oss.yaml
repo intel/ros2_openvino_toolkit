@@ -8,6 +8,7 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: AgeGenderRecognition
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/age_gender/dldt/age-gender-recognition-retail-0013.xml 
       engine: CPU

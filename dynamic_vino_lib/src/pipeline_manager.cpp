@@ -263,7 +263,7 @@ PipelineManager::createObjectDetection(
   auto object_detection_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], object_detection_model);
   auto object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
-    infer.checkroi, 0.5);    // TODO(weizhi): add output_threshold in param_manager
+    infer.enable_roi_constraint, 0.5);    // TODO(weizhi): add output_threshold in param_manager
   object_inference_ptr->loadNetwork(object_detection_model);
   object_inference_ptr->loadEngine(object_detection_engine);
 

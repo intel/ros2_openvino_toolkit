@@ -7,6 +7,7 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
   outputs: [ImageWindow, RosTopic, RViz]
   confidence_threshold: 0.2
   connects:

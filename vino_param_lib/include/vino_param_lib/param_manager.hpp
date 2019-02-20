@@ -64,7 +64,7 @@ public:
     std::string engine;
     std::string model;
     std::string label;
-    bool checkroi;
+    bool enable_roi_constraint;
   };
   struct PipelineParams
   {
