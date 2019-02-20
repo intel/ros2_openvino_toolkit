@@ -150,6 +150,7 @@ void ParamManager::print() const
       slog::info << "\t\tModel: " << infer.model << slog::endl;
       slog::info << "\t\tEngine: " << infer.engine << slog::endl;
       slog::info << "\t\tLabel: " << infer.label << slog::endl;
+      slog::info << "\t\tEnable_roi_constraint: " << infer.enable_roi_constraint <<slog::endl;
     }
 
     slog::info << "\tConnections: " << slog::endl;
