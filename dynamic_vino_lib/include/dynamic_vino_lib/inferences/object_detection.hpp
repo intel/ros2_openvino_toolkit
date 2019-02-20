@@ -125,7 +125,7 @@ private:
   int max_proposal_count_;
   int object_size_;
   double show_output_thresh_ = 0;
-  bool checkroi_ = false;
+  bool enable_roi_constraint_ = false;
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__OBJECT_DETECTION_HPP_

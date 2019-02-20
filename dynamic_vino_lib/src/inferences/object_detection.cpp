@@ -29,8 +29,11 @@ dynamic_vino_lib::ObjectDetectionResult::ObjectDetectionResult(const cv::Rect & 
 {
 }
 // ObjectDetection
-dynamic_vino_lib::ObjectDetection::ObjectDetection(bool checkroi, double show_output_thresh)
-: show_output_thresh_(show_output_thresh), checkroi_(checkroi), dynamic_vino_lib::BaseInference()
+dynamic_vino_lib::ObjectDetection::ObjectDetection(
+  bool enable_roi_constraint,
+  double show_output_thresh)
+: show_output_thresh_(show_output_thresh),
+  enable_roi_constraint_(enable_roi_constraint), dynamic_vino_lib::BaseInference()
 {
 }
 
@@ -85,7 +88,7 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults()
     r.y = static_cast<int>(detections[i * object_size_ + 4] * height_);
     r.width = static_cast<int>(detections[i * object_size_ + 5] * width_ - r.x);
     r.height = static_cast<int>(detections[i * object_size_ + 6] * height_ - r.y);
-    if (checkroi_) {r &= cv::Rect(0, 0, width_, height_);}
+    if (enable_roi_constraint_) {r &= cv::Rect(0, 0, width_, height_);}
     Result result(r);
     result.label_ = label_num < labels.size() ? labels[label_num] :
       std::string("label #") + std::to_string(label_num);

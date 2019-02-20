@@ -33,7 +33,9 @@ dynamic_vino_lib::FaceDetectionResult::FaceDetectionResult(const cv::Rect & loca
 }
 
 // FaceDetection
-dynamic_vino_lib::FaceDetection::FaceDetection(bool checkroi, double show_output_thresh)
-: ObjectDetection(checkroi, show_output_thresh)
+dynamic_vino_lib::FaceDetection::FaceDetection(
+  bool enable_roi_constraint,
+  double show_output_thresh)
+: ObjectDetection(enable_roi_constraint, show_output_thresh)
 {
 }
