@@ -189,6 +189,16 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
 	```
+* run face detection service sample code input from Image  
+  Run image processing service:
+	```bash
+	ros2 run dynamic_vino_sample image_people_server "image_people_server.yaml"
+	```
+  Run example application with an absolute path of an image on another console:
+	```bash
+	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
+	```
+
 
 # TODO Features
 * Support **result filtering** for inference process, so that the inference results can be filtered to different subsidiary inference. For example, given an image, firstly we do Object Detection on it, secondly we pass cars to vehicle brand recognition and pass license plate to license number recognition.

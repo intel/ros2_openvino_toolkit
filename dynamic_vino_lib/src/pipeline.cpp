@@ -245,6 +245,31 @@ void Pipeline::runService(std::string config_path)
   for (auto & pair : name_to_output_map_) {
     detection_ptr->observeOutput(pair.second);
   }
+
+  for (auto pos = next_.equal_range(detection_name); pos.first != pos.second; ++pos.first) {
+    std::string next_name = pos.first->second;
+    // if next is output, then print
+    if (output_names_.find(next_name) != output_names_.end()) {
+      // name_to_output_map_[next_name]->accept(*detection_ptr->getResult());
+      detection_ptr->observeOutput(name_to_output_map_[next_name]);
+    } else {
+      auto detection_ptr_iter = name_to_detection_map_.find(next_name);
+      if (detection_ptr_iter != name_to_detection_map_.end()) {
+        auto next_detection_ptr = detection_ptr_iter->second;
+        for (size_t i = 0; i < detection_ptr->getResultsLength(); ++i) {
+          const dynamic_vino_lib::Result * prev_result = detection_ptr->getLocationResult(i);
+          auto clippedRect = prev_result->getLocation() & cv::Rect(0, 0, width_, height_);
+          cv::Mat next_input = frame_(clippedRect);
+          next_detection_ptr->enqueue(next_input, prev_result->getLocation());
+          next_detection_ptr->SynchronousRequest();
+          next_detection_ptr->fetchResults();
+          for (auto & pair : name_to_output_map_) {
+            next_detection_ptr->observeOutput(pair.second);
+          }
+        }
+      }
+    }
+  }
 }
 
 void Pipeline::printPipeline()

@@ -6,7 +6,7 @@ Pipelines:
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
       engine: CPU
       label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.labels
-      batch: 1
+      batch: 16
     - name: AgeGenderRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
@@ -22,19 +22,19 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow, RosTopic, RViz]
+  outputs: [RosService]
   confidence_threshold: 0.2
   connects:
     - left: Image
       right: [FaceDetection]
     - left: FaceDetection
-      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, RosService]
     - left: AgeGenderRecognition
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosService]
     - left: EmotionRecognition
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosService]
     - left: HeadPoseEstimation
-      right: [ImageWindow, RosTopic, RViz]
-  input_path: "/home/intel/Pictures/timg.jpeg"
+      right: [RosService]
+  input_path: "~/Pictures/face.jpeg"
 
 Common:

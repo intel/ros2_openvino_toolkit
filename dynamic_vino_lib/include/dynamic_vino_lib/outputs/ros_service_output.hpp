@@ -89,7 +89,12 @@ public:
    * @param[in] An head pose detection result objetc.
    */
   void accept(const std::vector<dynamic_vino_lib::HeadPoseResult> &) override;
-  void setResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
+
+  void setResponseForObject(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
+  void setResponseForFace(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
+  void setResponseForAgeGender(std::shared_ptr<people_msgs::srv::AgeGender::Response> response);
+  void setResponseForEmotion(std::shared_ptr<people_msgs::srv::Emotion::Response> response);
+  void setResponseForHeadPose(std::shared_ptr<people_msgs::srv::HeadPose::Response> response);
 
 private:
   std_msgs::msg::Header getHeader();
@@ -99,9 +104,13 @@ private:
   object_msgs::msg::ObjectInBox object_;
   std::vector<object_msgs::msg::ObjectInBox> objects_;
   object_msgs::msg::ObjectInBox face_;
+  std::vector<object_msgs::msg::ObjectInBox> faces_;
   people_msgs::msg::Emotion emotion_;
+  std::vector<people_msgs::msg::Emotion> emotions_;
   people_msgs::msg::AgeGender ag_;
+  std::vector<people_msgs::msg::AgeGender> ags_;
   people_msgs::msg::HeadPose hp_;
+  std::vector<people_msgs::msg::HeadPose> hps_;
 };
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__ROS_SERVICE_OUTPUT_HPP_

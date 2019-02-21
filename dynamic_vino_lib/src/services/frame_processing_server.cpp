@@ -78,32 +78,6 @@ void FrameProcessingServer::cbFaceDetection(
   const std::shared_ptr<object_msgs::srv::DetectObject::Request> request,
   std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
-  /*
-std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-PipelineManager::getInstance().getPipelines();
-for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-  PipelineManager::PipelineData& p = pipelines_[it->second.params.name.c_str()];
-  //p.pipeline->runService(request->image_path);
-  //auto output_handle = p.pipeline->getOutputHandle();
-
-  for (auto& pair : output_handle) {
-    if (pair.first.compare("FaceDetection")) {
-      pair.second -> setResponse(response);
-      response->objects.inference_time_ms = 11.11;
-    }
-  }
-  */
-  // p.pipeline->runService(request->image_path);
-  response->objects.inference_time_ms = 11.11;
-  //}
-}
-
-void FrameProcessingServer::cbAgeGenderRecognition(
-  const std::shared_ptr<people_msgs::srv::AgeGender::Request> request,
-  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
-{
-  std::cout << "inside cb" << std::endl;
-
   std::map<std::string, PipelineManager::PipelineData> pipelines_ =
     PipelineManager::getInstance().getPipelines();
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
@@ -112,11 +86,28 @@ void FrameProcessingServer::cbAgeGenderRecognition(
     auto output_handle = p.pipeline->getOutputHandle();
 
     for (auto & pair : output_handle) {
-      if (pair.first.compare("AgeGenderRecognition")) {
-        pair.second->setResponse(response);
+      if (!pair.first.compare("RosService")) {
+        pair.second->setResponseForObject(response);
       }
     }
-    // p.pipeline->runService(request->image_path);
+  }
+}
+
+void FrameProcessingServer::cbAgeGenderRecognition(
+  const std::shared_ptr<people_msgs::srv::AgeGender::Request> request,
+  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
+{
+  std::map<std::string, PipelineManager::PipelineData> pipelines_ =
+    PipelineManager::getInstance().getPipelines();
+  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
+    PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
+    auto output_handle = p.pipeline->getOutputHandle();
+
+    for (auto & pair : output_handle) {
+      if (!pair.first.compare("RosService")) {
+        pair.second->setResponseForAgeGender(response);
+      }
+    }
   }
 }
 
@@ -124,21 +115,17 @@ void FrameProcessingServer::cbEmotionRecognition(
   const std::shared_ptr<people_msgs::srv::Emotion::Request> request,
   std::shared_ptr<people_msgs::srv::Emotion::Response> response)
 {
-  std::cout << "inside cb" << std::endl;
-
   std::map<std::string, PipelineManager::PipelineData> pipelines_ =
     PipelineManager::getInstance().getPipelines();
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
     auto output_handle = p.pipeline->getOutputHandle();
 
     for (auto & pair : output_handle) {
-      if (pair.first.compare("EmotionRecognition")) {
-        pair.second->setResponse(response);
+      if (!pair.first.compare("RosService")) {
+        pair.second->setResponseForEmotion(response);
       }
     }
-    // p.pipeline->runService(request->image_path);
   }
 }
 
@@ -146,21 +133,17 @@ void FrameProcessingServer::cbHeadPoseRecognition(
   const std::shared_ptr<people_msgs::srv::HeadPose::Request> request,
   std::shared_ptr<people_msgs::srv::HeadPose::Response> response)
 {
-  std::cout << "inside cb" << std::endl;
-
   std::map<std::string, PipelineManager::PipelineData> pipelines_ =
     PipelineManager::getInstance().getPipelines();
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
     auto output_handle = p.pipeline->getOutputHandle();
 
     for (auto & pair : output_handle) {
-      if (pair.first.compare("HeadPoseEstimation")) {
-        pair.second->setResponse(response);
+      if (!pair.first.compare("RosService")) {
+        pair.second->setResponseForHeadPose(response);
       }
     }
-    // p.pipeline->runService(request->image_path);
   }
 }
 
@@ -177,10 +160,9 @@ void FrameProcessingServer::cbObjectDetection(
 
     for (auto & pair : output_handle) {
       if (!pair.first.compare("RosService")) {
-        pair.second->setResponse(response);
+        pair.second->setResponseForObject(response);
       }
     }
   }
 }
-
 }  // namespace vino_service

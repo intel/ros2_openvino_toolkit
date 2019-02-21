@@ -18,8 +18,8 @@
 #include <memory>
 #include <string>
 
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
+#include "dynamic_vino_lib/services/frame_processing_server.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
@@ -32,8 +32,9 @@ std::string getConfigPath(int argc, char * argv[])
 {
   std::string content;
   std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/param/image_object_server.yaml";
+  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content,
+    &prefix_path);
+  return prefix_path + "/share/dynamic_vino_sample/param/" + argv[1];
 }
 
 int main(int argc, char ** argv)

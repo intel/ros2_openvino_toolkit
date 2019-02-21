@@ -50,7 +50,6 @@ void Outputs::RosServiceOutput::accept(
   const std::vector<dynamic_vino_lib::FaceDetectionResult> & results)
 {
   for (auto r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     face_.roi.x_offset = loc.x;
     face_.roi.y_offset = loc.y;
@@ -58,8 +57,7 @@ void Outputs::RosServiceOutput::accept(
     face_.roi.height = loc.height;
     face_.object.object_name = r.getLabel();
     face_.object.probability = r.getConfidence();
-    // faces_topic_->objects_vector.push_back(face);
-    // objects_topic_->objects_vector.push_back(face);
+    faces_.push_back(face_);
   }
 }
 
@@ -73,7 +71,7 @@ void Outputs::RosServiceOutput::accept(
     emotion_.roi.width = loc.width;
     emotion_.roi.height = loc.height;
     emotion_.emotion = r.getLabel();
-    // emotions_topic_->emotions.push_back(emotion);
+    emotions_.push_back(emotion_);
   }
 }
 
@@ -95,7 +93,7 @@ void Outputs::RosServiceOutput::accept(
       ag_.gender = "Female";
       ag_.gender_confidence = 1.0 - male_prob;
     }
-    // age_gender_topic_->objects.push_back(ag);
+    ags_.push_back(ag_);
   }
 }
 
@@ -111,16 +109,39 @@ void Outputs::RosServiceOutput::accept(
     hp_.yaw = r.getAngleY();
     hp_.pitch = r.getAngleP();
     hp_.roll = r.getAngleR();
-    // headpose_topic_->headposes.push_back(hp);
+    hps_.push_back(hp_);
   }
 }
 
-// void Outputs::RosServiceOutput::handleOutput()
 
-void Outputs::RosServiceOutput::setResponse(
+void Outputs::RosServiceOutput::setResponseForObject(
   std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
   response->objects.objects_vector = objects_;
+}
+
+void Outputs::RosServiceOutput::setResponseForFace(
+  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+{
+  response->objects.objects_vector = faces_;
+}
+
+void Outputs::RosServiceOutput::setResponseForAgeGender(
+  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
+{
+  response->age_gender.objects = ags_;
+}
+
+void Outputs::RosServiceOutput::setResponseForEmotion(
+  std::shared_ptr<people_msgs::srv::Emotion::Response> response)
+{
+  response->emotion.emotions = emotions_;
+}
+
+void Outputs::RosServiceOutput::setResponseForHeadPose(
+  std::shared_ptr<people_msgs::srv::HeadPose::Response> response)
+{
+  response->headpose.headposes = hps_;
 }
 
 /**

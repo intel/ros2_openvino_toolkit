@@ -25,7 +25,7 @@ int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 
-  auto node = rclcpp::Node::make_shared("service_example");
+  auto node = rclcpp::Node::make_shared("service_example_for_object");
   if (argc != 2) {
     RCLCPP_INFO(node->get_logger(), "Usage: ros2 run dynamic_vino_sample image_object_client"
       "<image_path>");

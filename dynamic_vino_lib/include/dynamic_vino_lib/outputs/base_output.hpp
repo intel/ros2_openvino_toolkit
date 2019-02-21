@@ -112,10 +112,16 @@ public:
   int getFPS() const;
 
   void setPipeline(Pipeline * const pipeline);
-  virtual void setResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::Emotion::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
+  virtual void setResponseForObject(
+    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
+  virtual void setResponseForFace(
+    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
+  virtual void setResponseForAgeGender(
+    std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {}
+  virtual void setResponseForEmotion(
+    std::shared_ptr<people_msgs::srv::Emotion::Response> response) {}
+  virtual void setResponseForHeadPose(
+    std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
 
