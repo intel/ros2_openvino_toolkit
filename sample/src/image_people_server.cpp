@@ -27,14 +27,33 @@
 #include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "extension/ext_list.hpp"
+#include "utility.hpp"
+
+bool parseAndCheckCommandLine(int argc, char ** argv)
+{
+  // -----Parsing and validation of input args---------------------------
+  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
+  if (FLAGS_h) {
+    showUsageForParam();
+    return false;
+  }
+
+  return true;
+}
 
 std::string getConfigPath(int argc, char * argv[])
 {
+  if (parseAndCheckCommandLine(argc, argv)) {
+    if (!FLAGS_config.empty()) {
+      return FLAGS_config;
+    }
+  }
+
   std::string content;
   std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content,
-    &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/param/" + argv[1];
+  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
+  // slog::info << "prefix_path=" << prefix_path << slog::endl;
+  return prefix_path + "/share/dynamic_vino_sample/param/image_people_server.yaml";
 }
 
 int main(int argc, char ** argv)

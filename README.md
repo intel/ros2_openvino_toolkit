@@ -192,7 +192,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run face detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 run dynamic_vino_sample image_people_server "image_people_server.yaml"
+	ros2 launch dynamic_vino_sample image_people_server_oss.launch.py
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
