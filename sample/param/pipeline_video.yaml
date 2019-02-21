@@ -8,8 +8,8 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
+      confidence_threshold: 0.5
   outputs: [ImageWindow, RosTopic, RViz]
-  confidence_threshold: 0.2
   connects:
     - left: Video
       right: [ObjectSegmentation]

@@ -256,14 +256,13 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
   const Params::ParamManager::InferenceParams & infer)
 {
-  // TODO(weizhi): add batch size in param_manager
   auto object_detection_model =
     std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, 1);
   object_detection_model->modelInit();
   auto object_detection_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], object_detection_model);
   auto object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
-    infer.enable_roi_constraint, 0.5);    // TODO(weizhi): add output_threshold in param_manager
+    infer.enable_roi_constraint, infer.confidence_threshold);
   object_inference_ptr->loadNetwork(object_detection_model);
   object_inference_ptr->loadEngine(object_detection_engine);
 
@@ -278,7 +277,8 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceP
   obejct_segmentation_model->modelInit();
   auto obejct_segmentation_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], obejct_segmentation_model);
-  auto segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(0.5);
+  auto segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(
+    infer.confidence_threshold);
   segmentation_inference_ptr->loadNetwork(obejct_segmentation_model);
   segmentation_inference_ptr->loadEngine(obejct_segmentation_engine);
 
