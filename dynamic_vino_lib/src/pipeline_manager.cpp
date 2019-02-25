@@ -29,6 +29,7 @@
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
@@ -40,6 +41,7 @@
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
+#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
@@ -193,6 +195,8 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineParams & par
       object = createObjectDetection(infer);
     } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
+    } else if (infer.name == kInferTpye_PersonReidentification) {
+      object = createPersonReidentification(infer);
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -216,7 +220,7 @@ PipelineManager::createFaceDetection(
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceParams & param)
 {
-  auto model = std::make_shared<Models::AgeGenderDetectionModel>(param.model, 1, 2, 16);
+  auto model = std::make_shared<Models::AgeGenderDetectionModel>(param.model, 1, 2, param.batch);
   model->modelInit();
   auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::AgeGenderDetection>();
@@ -229,7 +233,7 @@ PipelineManager::createAgeGenderRecognition(const Params::ParamManager::Inferenc
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceParams & param)
 {
-  auto model = std::make_shared<Models::EmotionDetectionModel>(param.model, 1, 1, 16);
+  auto model = std::make_shared<Models::EmotionDetectionModel>(param.model, 1, 1, param.batch);
   model->modelInit();
   auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::EmotionsDetection>();
@@ -242,7 +246,7 @@ PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceP
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceParams & param)
 {
-  auto model = std::make_shared<Models::HeadPoseDetectionModel>(param.model, 1, 3, 16);
+  auto model = std::make_shared<Models::HeadPoseDetectionModel>(param.model, 1, 3, param.batch);
   model->modelInit();
   auto engine = std::make_shared<Engines::Engine>(plugins_for_devices_[param.engine], model);
   auto infer = std::make_shared<dynamic_vino_lib::HeadPoseDetection>();
@@ -257,7 +261,7 @@ PipelineManager::createObjectDetection(
   const Params::ParamManager::InferenceParams & infer)
 {
   auto object_detection_model =
-    std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, 1);
+    std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, infer.batch);
   object_detection_model->modelInit();
   auto object_detection_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], object_detection_model);
@@ -273,7 +277,7 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceParams & infer)
 {
   auto obejct_segmentation_model =
-    std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, 1);
+    std::make_shared<Models::ObjectSegmentationModel>(infer.model, 1, 2, infer.batch);
   obejct_segmentation_model->modelInit();
   auto obejct_segmentation_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], obejct_segmentation_model);
@@ -283,6 +287,22 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceP
   segmentation_inference_ptr->loadEngine(obejct_segmentation_engine);
 
   return segmentation_inference_ptr;
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createPersonReidentification(
+    const Params::ParamManager::InferenceParams& infer) {
+  auto person_reidentification_model =
+      std::make_shared<Models::PersonReidentificationModel>(infer.model, 1, 1, infer.batch);
+  person_reidentification_model->modelInit();
+  auto person_reidentification_engine = std::make_shared<Engines::Engine>(
+      plugins_for_devices_[infer.engine], person_reidentification_model);
+  auto reidentification_inference_ptr = 
+    std::make_shared<dynamic_vino_lib::PersonReidentification>(0.7);
+  reidentification_inference_ptr->loadNetwork(person_reidentification_model);
+  reidentification_inference_ptr->loadEngine(person_reidentification_engine);
+
+  return reidentification_inference_ptr;
 }
 
 void PipelineManager::threadPipeline(const char * name)

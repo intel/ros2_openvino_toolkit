@@ -52,6 +52,13 @@ public:
   /**
    * @brief Generate image window output content according to
    * the object segmentation result.
+   * @param[in] A person reidentification result objetc.
+   */
+  void accept(
+      const std::vector<dynamic_vino_lib::PersonReidentificationResult> & ) override;
+  /**
+   * @brief Generate image window output content according to
+   * the object segmentation result.
    * @param[in] An obejct segmentation result objetc.
    */
   void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &) override;

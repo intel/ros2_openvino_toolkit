@@ -46,6 +46,16 @@ void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
   }
 }
 
+void Outputs::ImageWindowOutput::accept(
+    const std::vector<dynamic_vino_lib::PersonReidentificationResult>& results) {
+  for (unsigned i = 0; i < results.size(); i++) {
+    OutputData output;
+    output.rect = results[i].getLocation();
+    output.desc = "[" + results[i].getPersonID() + "]";
+    outputs_.push_back(output);
+  }
+} 
+
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
