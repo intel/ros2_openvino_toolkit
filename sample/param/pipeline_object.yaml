@@ -1,6 +1,6 @@
 Pipelines:
 - name: object
-  inputs: [StandardCamera]
+  inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml
@@ -11,7 +11,7 @@ Pipelines:
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
-    - left: StandardCamera
+    - left: RealSenseCamera
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [ImageWindow]
