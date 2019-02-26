@@ -94,7 +94,7 @@ public:
   void accept(const std::vector<dynamic_vino_lib::AgeGenderResult> &) override;
 
 private:
-  void initOutputs(unsigned size);
+  unsigned findOutput(const cv::Rect &);
   /**
    * @brief Calculate the axises of the coordinates for showing
    * the image window.

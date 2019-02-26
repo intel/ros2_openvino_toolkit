@@ -113,7 +113,6 @@ std::string dynamic_vino_lib::PersonReidentification::findMatchPerson(
         best_match_ind = i;
       }
   }
-  std::cout<<"Similarity: "<<best_match_sim<<std::endl;
   if (best_match_sim > match_thresh_) {
     recorded_persons_[best_match_ind] = new_person;
     return id + std::to_string(best_match_ind);

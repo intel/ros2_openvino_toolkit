@@ -46,13 +46,26 @@ void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
   }
 }
 
+unsigned Outputs::ImageWindowOutput::findOutput(
+  const cv::Rect& result_rect) {
+  for (unsigned i = 0; i < outputs_.size(); i++) {
+    if (outputs_[i].rect == result_rect) 
+      return i;
+  }
+  OutputData output;
+  output.desc = "";
+  output.scalar = cv::Scalar(255, 0, 0);
+  outputs_.push_back(output);
+  return outputs_.size()-1;
+}
+
 void Outputs::ImageWindowOutput::accept(
     const std::vector<dynamic_vino_lib::PersonReidentificationResult>& results) {
   for (unsigned i = 0; i < results.size(); i++) {
-    OutputData output;
-    output.rect = results[i].getLocation();
-    output.desc = "[" + results[i].getPersonID() + "]";
-    outputs_.push_back(output);
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += "[" + results[i].getPersonID() + "]";
   }
 } 
 
@@ -90,23 +103,18 @@ void Outputs::ImageWindowOutput::mergeMask(
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    slog::err << "the size of Object Segmentation and Output Vector is not equal!" << slog::endl;
-    return;
-  }
   for (unsigned i = 0; i < results.size(); i++) {
-    outputs_[i].rect = results[i].getLocation();
+    cv:: Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     auto fd_conf = results[i].getConfidence();
     if (fd_conf >= 0) {
       std::ostringstream ostream;
       ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
-      outputs_[i].desc += ostream.str();
+      outputs_[target_index].desc += ostream.str();
     }
     auto label = results[i].getLabel();
-    outputs_[i].desc += "[" + label + "]";
+    outputs_[target_index].desc += "[" + label + "]";
   }
   mergeMask(results);
 }
@@ -114,23 +122,16 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::FaceDetectionResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    // throw std::logic_error("size is not equal!");
-    slog::err << "the size of Face Detection and Output Vector is not equal!" << slog::endl;
-    return;
-  }
-  for (unsigned i = 0; i < results.size(); i++) {
-    // outputs_[i].desc.str("");
-    outputs_[i].rect = results[i].getLocation();
 
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv:: Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     auto fd_conf = results[i].getConfidence();
     if (fd_conf >= 0) {
       std::ostringstream ostream;
       ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
-      outputs_[i].desc += ostream.str();
+      outputs_[target_index].desc += ostream.str();
     }
   }
 }
@@ -138,67 +139,48 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::ObjectDetectionResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    // throw std::logic_error("size is not equal!");
-    slog::err << "the size of Face Detection and Output Vector is not equal!" << slog::endl;
-    return;
-  }
   for (unsigned i = 0; i < results.size(); i++) {
-    // outputs_[i].desc.str("");
-    outputs_[i].rect = results[i].getLocation();
-
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     auto fd_conf = results[i].getConfidence();
     if (fd_conf >= 0) {
       std::ostringstream ostream;
       ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
-      outputs_[i].desc += ostream.str();
+      outputs_[target_index].desc += ostream.str();
     }
     auto label = results[i].getLabel();
-    outputs_[i].desc += "[" + label + "]";
+    outputs_[target_index].desc += "[" + label + "]";
   }
 }
 
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::EmotionsResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    // throw std::logic_error("size is not equal!");
-    slog::err << "the size of Emotion Detection and Output Vector is not equal!" << slog::endl;
-    return;
-  }
   for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     std::ostringstream ostream;
     ostream << "[" << results[i].getLabel() << "]";
-    outputs_[i].desc += ostream.str();
+    outputs_[target_index].desc += ostream.str();
   }
 }
 
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::AgeGenderResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    // throw std::logic_error("size is not equal!");
-    slog::err << "the size of AgeGender Detection and Output Vector is not equal!" << slog::endl;
-    return;
-  }
   for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     std::ostringstream ostream;
-    // auto age = results[i].getAge();
     ostream << "[Y" << std::fixed << std::setprecision(0) << results[i].getAge() << "]";
-    outputs_[i].desc += ostream.str();
+    outputs_[target_index].desc += ostream.str();
 
     auto male_prob = results[i].getMaleProbability();
     if (male_prob < 0.5) {
-      outputs_[i].scalar = cv::Scalar(0, 0, 255);
+      outputs_[target_index].scalar = cv::Scalar(0, 0, 255);
     }
   }
 }
@@ -237,16 +219,11 @@ cv::Mat Outputs::ImageWindowOutput::getRotationTransform(double yaw, double pitc
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::HeadPoseResult> & results)
 {
-  if (outputs_.size() == 0) {
-    initOutputs(results.size());
-  }
-  if (outputs_.size() != results.size()) {
-    // throw std::logic_error("size is not equal!");
-    slog::err << "the size of HeadPose Detection and Output Vector is not equal!" << slog::endl;
-    return;
-  }
   for (unsigned i = 0; i < results.size(); i++) {
     auto result = results[i];
+    cv::Rect result_rect = result.getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
     double yaw = result.getAngleY();
     double pitch = result.getAngleP();
     double roll = result.getAngleR();
@@ -255,11 +232,11 @@ void Outputs::ImageWindowOutput::accept(
     cv::Mat r = getRotationTransform(yaw, pitch, roll);
     cv::Rect location = result.getLocation();
     auto cp = cv::Point(location.x + location.width / 2, location.y + location.height / 2);
-    outputs_[i].hp_cp = cp;
-    outputs_[i].hp_x = calcAxis(r, scale, 0, 0, cp);
-    outputs_[i].hp_y = calcAxis(r, 0, -scale, 0, cp);
-    outputs_[i].hp_ze = calcAxis(r, 0, 0, -scale, cp);
-    outputs_[i].hp_zs = calcAxis(r, 0, 0, scale, cp);
+    outputs_[target_index].hp_cp = cp;
+    outputs_[target_index].hp_x = calcAxis(r, scale, 0, 0, cp);
+    outputs_[target_index].hp_y = calcAxis(r, 0, -scale, 0, cp);
+    outputs_[target_index].hp_ze = calcAxis(r, 0, 0, -scale, cp);
+    outputs_[target_index].hp_zs = calcAxis(r, 0, 0, scale, cp);
   }
 }
 
@@ -297,13 +274,4 @@ void Outputs::ImageWindowOutput::handleOutput()
   decorateFrame();
   cv::imshow(window_name_, frame_);
   cv::waitKey(1);
-}
-
-void Outputs::ImageWindowOutput::initOutputs(unsigned size)
-{
-  outputs_.resize(size);
-  for (unsigned i = 0; i < size; i++) {
-    outputs_[i].desc = "";
-    outputs_[i].scalar = cv::Scalar(255, 0, 0);
-  }
 }
