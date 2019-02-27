@@ -15,13 +15,13 @@ Pipelines:
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.7
-  outputs: [ImageWindow, RViz]
+  outputs: [ImageWindow, RViz, RosTopic]
   connects:
     - left: StandardCamera
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [PersonReidentification]
     - left: PersonReidentification
-      right: [ImageWindow]
+      right: [ImageWindow, RViz, RosTopic]
 
 OpenvinoCommon:

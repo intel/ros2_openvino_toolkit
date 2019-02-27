@@ -32,6 +32,8 @@ Outputs::RosTopicOutput::RosTopicOutput()
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   node_ = rclcpp::Node::make_shared("topic_publisher");
+  pub_person_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
+    "/openvino_toolkit/reidentified_persons", 16);
   pub_segmented_object_ = node_->create_publisher<people_msgs::msg::ObjectsInMasks>(
     "/openvino_toolkit/segmented_obejcts", 16);
   pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
@@ -50,11 +52,29 @@ Outputs::RosTopicOutput::RosTopicOutput()
   age_gender_topic_ = nullptr;
   headpose_topic_ = nullptr;
   segmented_objects_topic_ = nullptr;
+  person_reid_topic_ = nullptr;
 }
 
 void Outputs::RosTopicOutput::feedFrame(const cv::Mat & frame)
 {
   frame_ = frame.clone();
+}
+
+void Outputs::RosTopicOutput::accept(
+  const std::vector<dynamic_vino_lib::PersonReidentificationResult> & results)
+{
+  person_reid_topic_ = std::make_shared<people_msgs::msg::ReidentificationStamped>();
+  people_msgs::msg::Reidentification person;
+  for (auto & r : results) {
+    // slog::info << ">";
+    auto loc = r.getLocation();
+    person.roi.x_offset = loc.x;
+    person.roi.y_offset = loc.y;
+    person.roi.width = loc.width;
+    person.roi.height = loc.height;
+    person.identity = r.getPersonID();
+    person_reid_topic_->reidentified_vector.push_back(person);
+  }
 }
 
 void Outputs::RosTopicOutput::accept(
@@ -182,6 +202,12 @@ void Outputs::RosTopicOutput::accept(const std::vector<dynamic_vino_lib::HeadPos
 void Outputs::RosTopicOutput::handleOutput()
 {
   auto header = getHeader();
+  if (person_reid_topic_ != nullptr) {
+    // slog::info << "publishing faces outputs." << slog::endl;
+    person_reid_topic_->header = header;
+    pub_person_reid_->publish(person_reid_topic_);
+    person_reid_topic_ = nullptr;
+  }
   if (segmented_objects_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;
     segmented_objects_topic_->header = header;
