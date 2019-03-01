@@ -299,7 +299,7 @@ PipelineManager::createPersonReidentification(
   auto person_reidentification_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], person_reidentification_model);
   auto reidentification_inference_ptr =
-    std::make_shared<dynamic_vino_lib::PersonReidentification>(0.7);
+    std::make_shared<dynamic_vino_lib::PersonReidentification>(infer.confidence_threshold);
   reidentification_inference_ptr->loadNetwork(person_reidentification_model);
   reidentification_inference_ptr->loadEngine(person_reidentification_engine);
 
