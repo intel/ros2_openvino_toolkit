@@ -156,6 +156,13 @@ public:
    * @return The name of the Inference instance.
    */
   virtual const std::string getName() const = 0;
+  /**
+   * @brief Get the max batch size of one inference.
+   */
+  inline int getMaxBatchSize()
+  {
+    return max_batch_size_;
+  }
 
 protected:
   /**
@@ -185,6 +192,7 @@ protected:
   {
     max_batch_size_ = max_batch_size;
   }
+
   std::vector<Result> results_;
 
 private:
