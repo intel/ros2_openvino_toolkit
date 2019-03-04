@@ -20,167 +20,85 @@
 #include <memory>
 #include <string>
 #include <map>
+#include <chrono>
+#include <thread>
 
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+#include <people_msgs/srv/people.hpp>
+#include <object_msgs/srv/detect_object.hpp>
+
 
 namespace vino_service
 {
-FrameProcessingServer::FrameProcessingServer(
-  const std::string service_name,
-  const std::string config_path)
+template <typename T>
+FrameProcessingServer<T>::FrameProcessingServer(
+  const std::string & service_name
+, const std::string & config_path)
 : Node("node_with_service")
+, service_name_(service_name)
+, config_path_(config_path)
+{
+  initService(config_path);
+}
+
+template <typename T>
+void FrameProcessingServer<T>::initService(
+ const std::string & config_path)
 {
   Params::ParamManager::getInstance().parse(config_path);
   Params::ParamManager::getInstance().print();
   auto pcommon = Params::ParamManager::getInstance().getCommon();
   auto pipelines = Params::ParamManager::getInstance().getPipelines();
 
-  if (pipelines.size() < 1) {
-    throw std::logic_error("Pipeline parameters should be set!");
+  if (pipelines.size() != 1) {
+    throw std::logic_error("1 and only 1 pipeline can be set to FrameProcessServer!");
   }
 
   for (auto & p : pipelines) {
     PipelineManager::getInstance().createPipeline(p);
   }
 
-  for (auto & p : pipelines) {
-    for (unsigned int i = 0; i < p.infers.size(); i++) {
-      if (!p.infers[i].name.compare("FaceDetection")) {
-        face_service_ = create_service<object_msgs::srv::DetectObject>(
-          "/detect_face", std::bind(&FrameProcessingServer::cbFaceDetection, this,
+  service_ = create_service<T>("/openvino_toolkit/service",
+        std::bind(&FrameProcessingServer::cbService, this,
           std::placeholders::_1, std::placeholders::_2));
-      } else if (!p.infers[i].name.compare("AgeGenderRecognition")) {
-        age_gender_service_ = create_service<people_msgs::srv::AgeGender>(
-          "/detect_age_gender", std::bind(&FrameProcessingServer::cbAgeGenderRecognition, this,
-          std::placeholders::_1, std::placeholders::_2));
-      } else if (!p.infers[i].name.compare("EmotionRecognition")) {
-        emotion_service_ = create_service<people_msgs::srv::Emotion>(
-          "/detect_emotion", std::bind(&FrameProcessingServer::cbEmotionRecognition, this,
-          std::placeholders::_1, std::placeholders::_2));
-      } else if (!p.infers[i].name.compare("HeadPoseEstimation")) {
-        head_pose_service_ = create_service<people_msgs::srv::HeadPose>(
-          "/detect_head_pose", std::bind(&FrameProcessingServer::cbHeadPoseRecognition, this,
-          std::placeholders::_1, std::placeholders::_2));
-      } else if (!p.infers[i].name.compare("ObjectDetection")) {
-        object_service_ = create_service<object_msgs::srv::DetectObject>(
-          "/detect_object", std::bind(&FrameProcessingServer::cbObjectDetection, this,
-          std::placeholders::_1, std::placeholders::_2));
-      }
-    }
-  }
 }
 
-void FrameProcessingServer::cbFaceDetection(
-  const std::shared_ptr<object_msgs::srv::DetectObject::Request> request,
-  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
-{
-  /*
-std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-PipelineManager::getInstance().getPipelines();
-for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-  PipelineManager::PipelineData& p = pipelines_[it->second.params.name.c_str()];
-  //p.pipeline->runService(request->image_path);
-  //auto output_handle = p.pipeline->getOutputHandle();
-
-  for (auto& pair : output_handle) {
-    if (pair.first.compare("FaceDetection")) {
-      pair.second -> setResponse(response);
-      response->objects.inference_time_ms = 11.11;
-    }
-  }
-  */
-  // p.pipeline->runService(request->image_path);
-  response->objects.inference_time_ms = 11.11;
-  //}
-}
-
-void FrameProcessingServer::cbAgeGenderRecognition(
-  const std::shared_ptr<people_msgs::srv::AgeGender::Request> request,
-  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
-{
-  std::cout << "inside cb" << std::endl;
-
-  std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-    PipelineManager::getInstance().getPipelines();
-  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
-    auto output_handle = p.pipeline->getOutputHandle();
-
-    for (auto & pair : output_handle) {
-      if (pair.first.compare("AgeGenderRecognition")) {
-        pair.second->setResponse(response);
-      }
-    }
-    // p.pipeline->runService(request->image_path);
-  }
-}
-
-void FrameProcessingServer::cbEmotionRecognition(
-  const std::shared_ptr<people_msgs::srv::Emotion::Request> request,
-  std::shared_ptr<people_msgs::srv::Emotion::Response> response)
-{
-  std::cout << "inside cb" << std::endl;
-
-  std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-    PipelineManager::getInstance().getPipelines();
-  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
-    auto output_handle = p.pipeline->getOutputHandle();
-
-    for (auto & pair : output_handle) {
-      if (pair.first.compare("EmotionRecognition")) {
-        pair.second->setResponse(response);
-      }
-    }
-    // p.pipeline->runService(request->image_path);
-  }
-}
-
-void FrameProcessingServer::cbHeadPoseRecognition(
-  const std::shared_ptr<people_msgs::srv::HeadPose::Request> request,
-  std::shared_ptr<people_msgs::srv::HeadPose::Response> response)
-{
-  std::cout << "inside cb" << std::endl;
-
-  std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-    PipelineManager::getInstance().getPipelines();
-  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
-    auto output_handle = p.pipeline->getOutputHandle();
-
-    for (auto & pair : output_handle) {
-      if (pair.first.compare("HeadPoseEstimation")) {
-        pair.second->setResponse(response);
-      }
-    }
-    // p.pipeline->runService(request->image_path);
-  }
-}
-
-void FrameProcessingServer::cbObjectDetection(
-  const std::shared_ptr<object_msgs::srv::DetectObject::Request> request,
-  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+template<typename T>
+void FrameProcessingServer<T>::cbService(
+  const std::shared_ptr<typename T::Request> request,
+  std::shared_ptr<typename T::Response> response)
 {
   std::map<std::string, PipelineManager::PipelineData> pipelines_ =
     PipelineManager::getInstance().getPipelines();
-  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
+  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it)
+  {
     PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
-    p.pipeline->runService(request->image_path);
+    auto input = p.pipeline->getInputDevice();
+    Input::Config config;
+    config.path = request->image_path;
+    input->config(config);
+    p.pipeline->runOnce();
     auto output_handle = p.pipeline->getOutputHandle();
 
-    for (auto & pair : output_handle) {
-      if (!pair.first.compare("RosService")) {
-        pair.second->setResponse(response);
+    for (auto & pair : output_handle)
+    {
+      if (!pair.first.compare(kOutputTpye_RosService))
+      {
+        //slog::info << "[FrameProcessingServer] Handling Output:" << pair.first.c_str() << slog::endl;
+        pair.second->setServiceResponse(response);
+        pair.second->clearData();
+        return; //TODO, return directly, suppose only 1 pipeline dealing with 1 request.
       }
     }
   }
+  
+  slog::info << "[FrameProcessingServer] Callback finished!" << slog::endl;
 }
 
+template class FrameProcessingServer<object_msgs::srv::DetectObject>;
+template class FrameProcessingServer<people_msgs::srv::People>;
 }  // namespace vino_service

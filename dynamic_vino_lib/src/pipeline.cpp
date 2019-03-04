@@ -214,39 +214,6 @@ void Pipeline::runOnce()
   }
 }
 
-void Pipeline::runService(std::string config_path)
-{
-  std::cout << "run service once" << std::endl;
-  initInferenceCounter();
-
-  if (!frame_.empty()) {
-    frame_.release();
-  }
-
-  if (!input_device_->readService(&frame_, config_path)) {
-    // throw std::logic_error("Failed to get frame from cv::VideoCapture");
-    slog::warn << "Failed to get frame from input_device." << slog::endl;
-  }
-  width_ = frame_.cols;
-  height_ = frame_.rows;
-  for (auto & pair : name_to_output_map_) {
-    pair.second->feedFrame(frame_);
-  }
-
-  auto pos = next_.equal_range(input_device_name_);
-  std::string detection_name = pos.first->second;
-  auto detection_ptr = name_to_detection_map_[detection_name];
-
-  detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
-  detection_ptr->SynchronousRequest();
-
-  bool fetch_or_not = detection_ptr->fetchResults();
-
-  for (auto & pair : name_to_output_map_) {
-    detection_ptr->observeOutput(pair.second);
-  }
-}
-
 void Pipeline::printPipeline()
 {
   for (auto & current_node : next_) {

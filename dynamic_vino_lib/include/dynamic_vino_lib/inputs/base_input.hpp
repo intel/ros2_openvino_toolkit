@@ -31,6 +31,11 @@
  */
 namespace Input
 {
+struct Config
+{
+  std::string path;
+};
+
 class BaseInputDevice : public Ros2Handler
 {
 public:
@@ -62,7 +67,7 @@ public:
     return true;
   }
 
-  virtual void config() = 0;  //< TODO
+  virtual void config(const Config&){}; 
   virtual ~BaseInputDevice() = default;
   /**
    * @brief Get the width of the frame read from input device.

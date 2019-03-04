@@ -187,6 +187,16 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
 	```
+* run people detection service sample code input from Image  
+  Run image processing service:
+	```bash
+	ros2 launch dynamic_vino_sample image_people_server.launch.py
+	```
+  Run example application with an absolute path of an image on another console:
+	```bash
+	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
+	```
+
 
 ## 6.Known Issues
 * Possible problems

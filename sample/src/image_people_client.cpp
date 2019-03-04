@@ -14,34 +14,31 @@
 
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
+#include <opencv2/opencv.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <memory>
+#include <iomanip>
 
 #include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include <people_msgs/srv/people.hpp>
+#include <people_msgs/msg/persons_stamped.hpp>
 
 int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
 
-  std::cout << "object client" << std::endl;
-  auto node = rclcpp::Node::make_shared("service_example");
+  auto node = rclcpp::Node::make_shared("service_example_for_face");
+  if (argc != 2) {
+    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run dynamic_vino_sample image_object_client"
+      "<image_path>");
+    return -1;
+  }
 
-  std::string image_path = "/home/intel/Pictures/timg.jpeg";
+  std::string image_path = argv[1];
 
-  std::cout << "******0000" << std::endl;
-
-  auto client = node->create_client<object_msgs::srv::DetectObject>("/detect_face");
-  std::cout << "******face client created" << std::endl;
-  auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
-  std::cout << "******face request created" << std::endl;
-
-  auto client = node->create_client<object_msgs::srv::DetectObject>("/detect_face");
-  std::cout << "******face client created" << std::endl;
-  auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
-  std::cout << "******face request created" << std::endl;
-
-  // request->image_path = argv[1];
+  auto client = node->create_client<people_msgs::srv::People>("/openvino_toolkit/service");
+  auto request = std::make_shared<people_msgs::srv::People::Request>();
   request->image_path = image_path;
 
   while (!client->wait_for_service(std::chrono::seconds(1))) {
@@ -54,15 +51,33 @@ int main(int argc, char ** argv)
 
   auto result = client->async_send_request(request);
 
-  std::cout << "******result got" << std::endl;
-
   if (rclcpp::spin_until_future_complete(node, result) ==
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    auto srv = result.get();
+    
+    auto people = result.get();
 
-    std::cout << "******srv got" << std::endl;
-
-    std::cout << "***********" << srv->objects.inference_time_ms << std::endl;
+    if(people->persons.emotions.size() == 0 && people->persons.agegenders.size() == 0 &&
+      people->persons.headposes.size() == 0)
+    {
+      RCLCPP_INFO(node->get_logger(), "Get response, but no any person found.");
+      return 0;
+    }
+    RCLCPP_INFO(node->get_logger(), "Found persons...");
+    std::cout << "Emotions:";
+    for(auto e : people->persons.emotions)
+    {
+      std::cout << e.emotion.c_str() << "   ";
+    }
+    std::cout << std::endl;
+    
+    std::cout << "AgeGender:";
+    for(auto a : people->persons.agegenders)
+    {
+      std::cout << a.age << "," << a.gender.c_str() << "   ";
+    }
+    std::cout << std::endl;
+  } else {
+    RCLCPP_WARN(node->get_logger(), "NO response received!!");
   }
 }

@@ -36,7 +36,7 @@ void Models::HeadPoseDetectionModel::checkLayerProperty(
 {
   slog::info << "Checking Head Pose network outputs" << slog::endl;
   InferenceEngine::OutputsDataMap outputInfo(net_reader->getNetwork().getOutputsInfo());
-  std::map<std::string, bool> layerNames = { {output_angle_r_, false},
+  std::map<std::string, bool> layerNames = {{output_angle_r_, false},
     {output_angle_p_, false},
     {output_angle_y_, false}};
 

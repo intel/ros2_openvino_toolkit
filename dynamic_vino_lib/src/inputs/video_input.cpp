@@ -57,8 +57,3 @@ bool Input::Video::read(cv::Mat * frame)
   cap.grab();
   return cap.retrieve(*frame);
 }
-
-void Input::Video::config()
-{
-  // TODO(weizhi): config
-}
