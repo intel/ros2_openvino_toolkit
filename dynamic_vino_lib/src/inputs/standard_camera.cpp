@@ -58,8 +58,3 @@ bool Input::StandardCamera::read(cv::Mat * frame)
   cap.grab();
   return cap.retrieve(*frame);
 }
-
-void Input::StandardCamera::config()
-{
-  // TODO(weizhi): config
-}

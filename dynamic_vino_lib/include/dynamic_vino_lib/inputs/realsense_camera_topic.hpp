@@ -48,7 +48,6 @@ public:
     return true;
   }
   bool read(cv::Mat * frame) override;
-  void config() override;
 
 private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;

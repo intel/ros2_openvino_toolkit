@@ -53,7 +53,7 @@ std::string getConfigPath(int argc, char * argv[])
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
   // slog::info << "prefix_path=" << prefix_path << slog::endl;
-  return prefix_path + "/share/dynamic_vino_sample/param/image_object_server.yaml";
+  return prefix_path + "/share/dynamic_vino_sample/param/image_object_server_oss.yaml";
 }
 
 int main(int argc, char ** argv)
@@ -63,7 +63,8 @@ int main(int argc, char ** argv)
   std::string config_path = getConfigPath(argc, argv);
 
   try {
-    auto node = std::make_shared<vino_service::FrameProcessingServer>("frame_processing_server",
+    std::string service_name = "frame_processing_server";
+    auto node = std::make_shared<vino_service::FrameProcessingServer<object_msgs::srv::DetectObject>>(service_name,
         config_path);
     rclcpp::spin(node);
   } catch (...) {
