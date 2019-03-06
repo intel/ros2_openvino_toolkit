@@ -91,4 +91,3 @@ bool Input::RealSenseCamera::read(cv::Mat * frame)
   .copyTo(*frame);
   return true;
 }
-

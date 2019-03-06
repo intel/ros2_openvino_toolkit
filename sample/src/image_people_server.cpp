@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <people_msgs/srv/people.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -28,7 +29,6 @@
 #include "inference_engine.hpp"
 #include "extension/ext_list.hpp"
 #include "utility.hpp"
-#include <people_msgs/srv/people.hpp>
 
 bool parseAndCheckCommandLine(int argc, char ** argv)
 {
@@ -65,8 +65,8 @@ int main(int argc, char ** argv)
   std::string config_path = getConfigPath(argc, argv);
 
   try {
-    auto node = std::make_shared<vino_service::FrameProcessingServer<people_msgs::srv::People>>("service_people_detection",
-        config_path);
+    auto node = std::make_shared<vino_service::FrameProcessingServer
+        <people_msgs::srv::People>>("service_people_detection", config_path);
     rclcpp::spin(node);
   } catch (...) {
     std::cout << "[ERROR] [service_people_detection]: " <<

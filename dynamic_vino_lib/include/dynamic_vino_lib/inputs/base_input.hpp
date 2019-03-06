@@ -66,8 +66,7 @@ public:
   {
     return true;
   }
-
-  virtual void config(const Config&){}; 
+  virtual void config(const Config &) {}
   virtual ~BaseInputDevice() = default;
   /**
    * @brief Get the width of the frame read from input device.

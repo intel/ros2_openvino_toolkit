@@ -166,7 +166,7 @@ void ParamManager::print() const
       slog::info << "\t\tLabel: " << infer.label << slog::endl;
       slog::info << "\t\tBatch: " << infer.batch << slog::endl;
       slog::info << "\t\tConfidence_threshold: " << infer.confidence_threshold << slog::endl;
-      slog::info << "\t\tEnable_roi_constraint: " << infer.enable_roi_constraint <<slog::endl;
+      slog::info << "\t\tEnable_roi_constraint: " << infer.enable_roi_constraint << slog::endl;
     }
 
     slog::info << "\tConnections: " << slog::endl;

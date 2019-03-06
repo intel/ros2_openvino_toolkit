@@ -62,4 +62,3 @@ bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
 
   return true;
 }
-

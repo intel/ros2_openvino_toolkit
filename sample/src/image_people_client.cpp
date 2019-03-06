@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <people_msgs/srv/people.hpp>
+#include <people_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 #include <opencv2/opencv.hpp>
@@ -21,8 +23,6 @@
 #include <iomanip>
 
 #include "dynamic_vino_lib/services/frame_processing_server.hpp"
-#include <people_msgs/srv/people.hpp>
-#include <people_msgs/msg/persons_stamped.hpp>
 
 int main(int argc, char ** argv)
 {
@@ -54,10 +54,9 @@ int main(int argc, char ** argv)
   if (rclcpp::spin_until_future_complete(node, result) ==
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
-    
     auto people = result.get();
 
-    if(people->persons.emotions.size() == 0 && people->persons.agegenders.size() == 0 &&
+    if (people->persons.emotions.size() == 0 && people->persons.agegenders.size() == 0 &&
       people->persons.headposes.size() == 0)
     {
       RCLCPP_INFO(node->get_logger(), "Get response, but no any person found.");
@@ -65,15 +64,12 @@ int main(int argc, char ** argv)
     }
     RCLCPP_INFO(node->get_logger(), "Found persons...");
     std::cout << "Emotions:";
-    for(auto e : people->persons.emotions)
-    {
+    for (auto e : people->persons.emotions) {
       std::cout << e.emotion.c_str() << "   ";
     }
     std::cout << std::endl;
-    
     std::cout << "AgeGender:";
-    for(auto a : people->persons.agegenders)
-    {
+    for (auto a : people->persons.agegenders) {
       std::cout << a.age << "," << a.gender.c_str() << "   ";
     }
     std::cout << std::endl;

@@ -120,7 +120,6 @@ public:
   int getFPS() const;
 
   void setPipeline(Pipeline * const pipeline);
-  
   virtual void setServiceResponse(
     std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
   virtual void setServiceResponseForFace(
@@ -133,10 +132,8 @@ public:
     std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
   virtual void setServiceResponse(
     std::shared_ptr<people_msgs::srv::People::Response> response) {}
-  
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
-  
   virtual void clearData() {}
 
 protected:
