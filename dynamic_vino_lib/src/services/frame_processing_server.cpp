@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include <people_msgs/srv/people.hpp>
+#include <object_msgs/srv/detect_object.hpp>
 
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
@@ -28,26 +30,23 @@
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include <people_msgs/srv/people.hpp>
-#include <object_msgs/srv/detect_object.hpp>
-
 
 namespace vino_service
 {
-template <typename T>
+template<typename T>
 FrameProcessingServer<T>::FrameProcessingServer(
-  const std::string & service_name
-, const std::string & config_path)
-: Node("node_with_service")
-, service_name_(service_name)
-, config_path_(config_path)
+  const std::string & service_name,
+  const std::string & config_path)
+: Node("node_with_service"),
+  service_name_(service_name),
+  config_path_(config_path)
 {
   initService(config_path);
 }
 
-template <typename T>
+template<typename T>
 void FrameProcessingServer<T>::initService(
- const std::string & config_path)
+  const std::string & config_path)
 {
   Params::ParamManager::getInstance().parse(config_path);
   Params::ParamManager::getInstance().print();
@@ -63,8 +62,8 @@ void FrameProcessingServer<T>::initService(
   }
 
   service_ = create_service<T>("/openvino_toolkit/service",
-        std::bind(&FrameProcessingServer::cbService, this,
-          std::placeholders::_1, std::placeholders::_2));
+      std::bind(&FrameProcessingServer::cbService, this,
+      std::placeholders::_1, std::placeholders::_2));
 }
 
 template<typename T>
@@ -74,8 +73,7 @@ void FrameProcessingServer<T>::cbService(
 {
   std::map<std::string, PipelineManager::PipelineData> pipelines_ =
     PipelineManager::getInstance().getPipelines();
-  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it)
-  {
+  for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
     auto input = p.pipeline->getInputDevice();
     Input::Config config;
@@ -84,18 +82,14 @@ void FrameProcessingServer<T>::cbService(
     p.pipeline->runOnce();
     auto output_handle = p.pipeline->getOutputHandle();
 
-    for (auto & pair : output_handle)
-    {
-      if (!pair.first.compare(kOutputTpye_RosService))
-      {
-        //slog::info << "[FrameProcessingServer] Handling Output:" << pair.first.c_str() << slog::endl;
+    for (auto & pair : output_handle) {
+      if (!pair.first.compare(kOutputTpye_RosService)) {
         pair.second->setServiceResponse(response);
         pair.second->clearData();
-        return; //TODO, return directly, suppose only 1 pipeline dealing with 1 request.
+        return;  // TODO(weizhi) , return directly, suppose only 1 pipeline dealing with 1 request.
       }
     }
   }
-  
   slog::info << "[FrameProcessingServer] Callback finished!" << slog::endl;
 }
 

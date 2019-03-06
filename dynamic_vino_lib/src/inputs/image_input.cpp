@@ -51,10 +51,10 @@ bool Input::Image::read(cv::Mat * frame)
 
 void Input::Image::config(const Input::Config & config)
 {
-  if(config.path != "")
-  {
+  if (config.path != "") {
     file_.assign(config.path);
     initialize();
-    slog::info << "Image Input device was reinitialized with new file:" << config.path.c_str() << slog::endl;
+    slog::info << "Image Input device was reinitialized with new file:" <<
+      config.path.c_str() << slog::endl;
   }
 }

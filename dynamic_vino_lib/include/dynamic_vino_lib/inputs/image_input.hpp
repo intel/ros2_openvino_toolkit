@@ -63,7 +63,7 @@ public:
    */
   bool read(cv::Mat * frame) override;
 
-  void config(const Config&) override;
+  void config(const Config &) override;
 
 private:
   cv::Mat image_;

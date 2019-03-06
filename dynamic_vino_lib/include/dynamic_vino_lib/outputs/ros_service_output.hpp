@@ -66,7 +66,6 @@ public:
 
 private:
   const std::string service_name_;
-
 };
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__ROS_SERVICE_OUTPUT_HPP_

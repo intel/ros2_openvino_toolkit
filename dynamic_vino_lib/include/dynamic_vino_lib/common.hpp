@@ -209,7 +209,7 @@ static UNUSED std::ostream & operator<<(std::ostream & os, const PluginVersion &
 
 inline void printPluginVersion(InferenceEngine::InferenceEnginePluginPtr ptr, std::ostream & stream)
 {
-  const PluginVersion * pluginVersion;
+  const PluginVersion * pluginVersion = nullptr;
   ptr->GetVersion((const InferenceEngine::Version * &)pluginVersion);
   stream << pluginVersion << std::endl;
 }
