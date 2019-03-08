@@ -82,8 +82,13 @@ if [ "$ROS2_SRC" == "1" ]; then
   fi
 
   rosdep update
-  rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 python3-lark-parser rti-connext-dds-5.3.1 urdfdom_headers"
-  colcon build --symlink-install --packages-ignore qt_gui_cpp rqt_gui_cpp
+  if [ $system_ver = "16.04" ]; then
+    rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 python3-lark-parser rti-connext-dds-5.3.1 urdfdom_headers"
+    colcon build --symlink-install --packages-ignore qt_gui_cpp rqt_gui_cpp
+  else
+    rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers"
+    colcon build --symlink-install
+  fi
 fi
 
 #setup OPENVINO
@@ -91,9 +96,9 @@ if [ "$OPENVINO" == "1" ]; then
   echo "===================Installing OpenVINO Toolkit...======================="
 
   cd ~/Downloads
-  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/14920/l_openvino_toolkit_p_2018.4.420.tgz
-  tar -xvf l_openvino_toolkit_p_2018.4.420.tgz
-  cd l_openvino_toolkit_p_2018.4.420
+  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15078/l_openvino_toolkit_p_2018.5.455.tgz
+  tar -xvf l_openvino_toolkit_p_2018.5.455.tgz
+  cd l_openvino_toolkit_p_2018.5.455
   echo $ROOT_PASSWD | sudo -S ./install_cv_sdk_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg
