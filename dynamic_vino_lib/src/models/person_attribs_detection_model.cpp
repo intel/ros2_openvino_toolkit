@@ -47,12 +47,12 @@ void Models::PersonAttribsDetectionModel::checkLayerProperty(
   InferenceEngine::InputsDataMap input_info_map(
     net_reader->getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
-      throw std::logic_error("Person Attribs topology should have only one input");
+    throw std::logic_error("Person Attribs topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
   if (input_info_map.size() != 1) {
-      throw std::logic_error("Person Attribs Network expects networks having one output");
+    throw std::logic_error("Person Attribs Network expects networks having one output");
   }
 }
 

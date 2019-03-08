@@ -28,8 +28,8 @@ Pipelines:
     - left: ObjectDetection
       right: [PersonReidentification, PersonAttribsDetection]
     - left: PersonReidentification
-      right: [ImageWindow]
+      right: [ImageWindow, RViz, RosTopic]
     - left: PersonAttribsDetection
-      right: [ImageWindow]
+      right: [ImageWindow, RViz, RosTopic]
 
 OpenvinoCommon:

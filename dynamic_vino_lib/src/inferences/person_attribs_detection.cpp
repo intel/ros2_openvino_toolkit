@@ -26,7 +26,8 @@
 
 // PersonAttribsDetectionResult
 dynamic_vino_lib::PersonAttribsDetectionResult::PersonAttribsDetectionResult(
-  const cv::Rect & location) : Result(location) {}
+  const cv::Rect & location)
+: Result(location) {}
 
 // PersonAttribsDetection
 dynamic_vino_lib::PersonAttribsDetection::PersonAttribsDetection(double attribs_confidence)
@@ -71,11 +72,11 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   const float * output_values = request->GetBlob(output)->buffer().as<float *>();
   int net_attrib_length = net_attributes_.size();
   for (int i = 0; i < getResultsLength(); i++) {
-    results_[i].male_probability_ = output_values[i*net_attrib_length];
+    results_[i].male_probability_ = output_values[i * net_attrib_length];
     std::string attrib = "";
     for (int j = 1; j < net_attrib_length; j++) {
-      attrib += (output_values[i*net_attrib_length+j] > attribs_confidence_)
-        ? net_attributes_[j] + ", ": "";
+      attrib += (output_values[i * net_attrib_length + j] > attribs_confidence_) ?
+        net_attributes_[j] + ", " : "";
     }
     results_[i].attributes_ = attrib;
     found_result = true;

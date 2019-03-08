@@ -114,7 +114,7 @@ private:
   std::vector<Result> results_;
   double attribs_confidence_;
   const std::vector<std::string> net_attributes_ = {"is male", "hat",
-  "longsleeves", "longpants", "longhair", "coatjacket"};
+    "longsleeves", "longpants", "longhair", "coatjacket"};
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__PERSON_ATTRIBS_DETECTION_HPP_
