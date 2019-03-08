@@ -15,13 +15,21 @@ Pipelines:
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.7
+    - name: PersonAttribsDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-attributes-recognition-crossroad-0031/FP32/person-attributes-recognition-crossroad-0031.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
   outputs: [ImageWindow, RViz, RosTopic]
   connects:
     - left: StandardCamera
       right: [ObjectDetection]
     - left: ObjectDetection
-      right: [PersonReidentification]
+      right: [PersonReidentification, PersonAttribsDetection]
     - left: PersonReidentification
-      right: [ImageWindow, RViz, RosTopic]
+      right: [ImageWindow]
+    - left: PersonAttribsDetection
+      right: [ImageWindow]
 
 OpenvinoCommon:
