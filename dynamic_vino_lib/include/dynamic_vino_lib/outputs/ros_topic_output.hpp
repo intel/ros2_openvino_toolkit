@@ -114,7 +114,7 @@ public:
    */
   void accept(const std::vector<dynamic_vino_lib::HeadPoseResult> &) override;
 
-private:
+protected:
   std_msgs::msg::Header getHeader();
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;

@@ -36,37 +36,24 @@
 
 namespace vino_service
 {
+template<typename T>
 class FrameProcessingServer : public rclcpp::Node
 {
 public:
-  explicit FrameProcessingServer(const std::string service_name, const std::string config_path);
+  explicit FrameProcessingServer(
+    const std::string & service_name,
+    const std::string & config_path);
+  void initService(const std::string & config_path);
 
 private:
-  void cbFaceDetection(
-    const std::shared_ptr<object_msgs::srv::DetectObject::Request> request,
-    std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
+  void cbService(
+    const std::shared_ptr<typename T::Request> request,
+    std::shared_ptr<typename T::Response> response);
 
-  void cbAgeGenderRecognition(
-    const std::shared_ptr<people_msgs::srv::AgeGender::Request> request,
-    std::shared_ptr<people_msgs::srv::AgeGender::Response> response);
-
-  void cbEmotionRecognition(
-    const std::shared_ptr<people_msgs::srv::Emotion::Request> request,
-    std::shared_ptr<people_msgs::srv::Emotion::Response> response);
-
-  void cbHeadPoseRecognition(
-    const std::shared_ptr<people_msgs::srv::HeadPose::Request> request,
-    std::shared_ptr<people_msgs::srv::HeadPose::Response> response);
-
-  void cbObjectDetection(
-    const std::shared_ptr<object_msgs::srv::DetectObject::Request> request,
-    std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
-
-  rclcpp::Service<object_msgs::srv::DetectObject>::SharedPtr face_service_;
-  rclcpp::Service<people_msgs::srv::AgeGender>::SharedPtr age_gender_service_;
-  rclcpp::Service<people_msgs::srv::Emotion>::SharedPtr emotion_service_;
-  rclcpp::Service<people_msgs::srv::HeadPose>::SharedPtr head_pose_service_;
-  rclcpp::Service<object_msgs::srv::DetectObject>::SharedPtr object_service_;
+  // rclcpp::Service<T::template>::SharedPtr service_;
+  std::shared_ptr<rclcpp::Service<T>> service_;
+  std::string service_name_;
+  std::string config_path_;
 };
 }  // namespace vino_service
 #endif  // DYNAMIC_VINO_LIB__SERVICES__FRAME_PROCESSING_SERVER_HPP_

@@ -19,6 +19,7 @@
 
 #include <string>
 #include "dynamic_vino_lib/inputs/image_input.hpp"
+#include "dynamic_vino_lib/slog.hpp"
 
 Input::Image::Image(const std::string & file)
 {
@@ -48,24 +49,12 @@ bool Input::Image::read(cv::Mat * frame)
   return true;
 }
 
-bool Input::Image::readService(cv::Mat * frame, std::string config_path)
+void Input::Image::config(const Input::Config & config)
 {
-  image_ = cv::imread(config_path);
-  if (image_.data != NULL) {
-    setInitStatus(true);
-    setWidth((size_t)image_.cols);
-    setHeight((size_t)image_.rows);
-  } else {
-    setInitStatus(false);
+  if (config.path != "") {
+    file_.assign(config.path);
+    initialize();
+    slog::info << "Image Input device was reinitialized with new file:" <<
+      config.path.c_str() << slog::endl;
   }
-  if (!isInit()) {
-    return false;
-  }
-  *frame = image_;
-  return true;
-}
-
-void Input::Image::config()
-{
-  // TODO(weizhi): config
 }

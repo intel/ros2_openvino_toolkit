@@ -209,7 +209,7 @@ static UNUSED std::ostream & operator<<(std::ostream & os, const PluginVersion &
 
 inline void printPluginVersion(InferenceEngine::InferenceEnginePluginPtr ptr, std::ostream & stream)
 {
-  const PluginVersion * pluginVersion;
+  const PluginVersion * pluginVersion = nullptr;
   ptr->GetVersion((const InferenceEngine::Version * &)pluginVersion);
   stream << pluginVersion << std::endl;
 }
@@ -308,7 +308,7 @@ static UNUSED void writeOutputBmp(
 {
   unsigned int seed = (unsigned int)time(NULL);
   // Known colors for training classes from Cityscape dataset
-  static std::vector<Color> colors = { {128, 64, 128}, {232, 35, 244}, {70, 70, 70},
+  static std::vector<Color> colors = {{128, 64, 128}, {232, 35, 244}, {70, 70, 70},
     {156, 102, 102}, {153, 153, 190}, {153, 153, 153},
     {30, 170, 250}, {0, 220, 220}, {35, 142, 107},
     {152, 251, 152}, {180, 130, 70}, {60, 20, 220},
@@ -497,7 +497,7 @@ static UNUSED void addRectangles(
   unsigned char * data, size_t height, size_t width,
   std::vector<int> rectangles, std::vector<int> classes)
 {
-  std::vector<Color> colors = { {128, 64, 128}, {232, 35, 244}, {70, 70, 70},
+  std::vector<Color> colors = {{128, 64, 128}, {232, 35, 244}, {70, 70, 70},
     {156, 102, 102}, {153, 153, 190}, {153, 153, 153},
     {30, 170, 250}, {0, 220, 220}, {35, 142, 107},
     {152, 251, 152}, {180, 130, 70}, {60, 20, 220},
@@ -1071,7 +1071,7 @@ static UNUSED void addRectangles(
   unsigned char * data, size_t height, size_t width,
   std::vector<DetectedObject> detectedObjects)
 {
-  std::vector<Color> colors = { {128, 64, 128}, {232, 35, 244}, {70, 70, 70},
+  std::vector<Color> colors = {{128, 64, 128}, {232, 35, 244}, {70, 70, 70},
     {156, 102, 102}, {153, 153, 190}, {153, 153, 153},
     {30, 170, 250}, {0, 220, 220}, {35, 142, 107},
     {152, 251, 152}, {180, 130, 70}, {60, 20, 220},

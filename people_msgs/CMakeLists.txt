@@ -30,6 +30,7 @@ find_package(builtin_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(object_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Emotion.msg"
@@ -38,6 +39,7 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/AgeGenderStamped.msg"
   "msg/HeadPose.msg"
   "msg/HeadPoseStamped.msg"
+  "msg/PersonsStamped.msg"
   "msg/ObjectInMask.msg"
   "msg/ObjectsInMasks.msg"
   "msg/Reidentification.msg"
@@ -47,7 +49,8 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "srv/AgeGender.srv"
   "srv/Emotion.srv"
   "srv/HeadPose.srv"
-  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs geometry_msgs
+  "srv/People.srv"
+  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs object_msgs geometry_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

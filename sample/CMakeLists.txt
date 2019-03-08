@@ -176,6 +176,27 @@ ament_target_dependencies(image_object_server
   "OpenCV"
 )
 
+add_executable(image_people_server
+  src/image_people_server.cpp
+)
+target_link_libraries(image_people_server
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_people_server
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
 add_executable(image_object_client
   src/image_object_client.cpp
 )
@@ -184,6 +205,27 @@ target_link_libraries(image_object_client
   cpu_extension
   gflags)
 ament_target_dependencies(image_object_client
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
+add_executable(image_people_client
+  src/image_people_client.cpp
+)
+target_link_libraries(image_people_client
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_people_client
   "rclcpp"
   "rmw_implementation"
   "std_msgs"
@@ -206,7 +248,13 @@ install(TARGETS pipeline_with_params
 install(TARGETS image_object_server
   DESTINATION lib/${PROJECT_NAME})
 
+install(TARGETS image_people_server
+  DESTINATION lib/${PROJECT_NAME})
+
 install(TARGETS image_object_client
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
 # Install param files.

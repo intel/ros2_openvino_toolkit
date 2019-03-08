@@ -86,11 +86,7 @@ public:
    * Data flow from input device to inference network, then to output device.
    */
   void runOnce();
-  /**
-   * @brief The callback function provided for all the inference network in the
-   * pipeline.
-   */
-  void runService(std::string config_path);
+
   void callback(const std::string & detection_name);
   /**
    * @brief Set the inference network to call the callback function as soon as

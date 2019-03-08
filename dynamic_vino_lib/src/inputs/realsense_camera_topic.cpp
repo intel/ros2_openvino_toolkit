@@ -62,8 +62,3 @@ bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
 
   return true;
 }
-
-void Input::RealSenseCameraTopic::config()
-{
-  // TODO(weizhi): config
-}

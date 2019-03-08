@@ -91,7 +91,3 @@ bool Input::RealSenseCamera::read(cv::Mat * frame)
   .copyTo(*frame);
   return true;
 }
-void Input::RealSenseCamera::config()
-{
-  // TODO(weizhi): config
-}
