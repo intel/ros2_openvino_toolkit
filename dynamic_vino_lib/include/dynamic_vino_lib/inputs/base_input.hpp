@@ -23,6 +23,7 @@
 #include <vector>
 #include <string>
 #include "dynamic_vino_lib/inputs/ros2_handler.hpp"
+#include <std_msgs/msg/header.hpp>
 
 /**
  * @class BaseInputDevice
@@ -120,24 +121,34 @@ public:
    * @brief Set the frame_id of input device for ROSTopic outputs.
    * @param[in] frame_id The frame_id of input device.
    */
-  inline void setFrameID(std::string frame_id)
+  inline void setHeader(std::string frame_id)
   {
-    frame_id_ = frame_id;
+    header_.frame_id = frame_id;
+    std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+    int64 ns = tp.time_since_epoch().count();
+    header_.stamp.sec = ns / 1000000000;
+    header_.stamp.nanosec = ns % 1000000000;
   }
+
+  inline void setHeader(std_msgs::msg::Header header)
+  {
+    header_ = header;
+  }
+
   /**
    * @brief Get the frame_id of input device.
    * @return Frame_id of input device.
    */
-  inline std::string getFrameID()
+  inline std_msgs::msg::Header getHeader()
   {
-    return frame_id_;
+    return header_;
   }
 
 private:
   size_t width_ = 0;
   size_t height_ = 0;
   bool is_init_ = false;
-  std::string frame_id_;
+  std_msgs::msg::Header header_;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_

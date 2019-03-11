@@ -276,11 +276,5 @@ void Outputs::RosTopicOutput::handleOutput()
  */
 std_msgs::msg::Header Outputs::RosTopicOutput::getHeader()
 {
-  std_msgs::msg::Header header;
-  header.frame_id = getPipeline()->getInputDevice()->getFrameID();
-  std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-  int64 ns = tp.time_since_epoch().count();
-  header.stamp.sec = ns / 1000000000;
-  header.stamp.nanosec = ns % 1000000000;
-  return header;
+  return getPipeline()->getInputDevice()->getHeader();
 }
