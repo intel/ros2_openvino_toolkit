@@ -62,6 +62,20 @@ unsigned Outputs::ImageWindowOutput::findOutput(
 }
 
 void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    if (results[i].getMaleProbability() < 0.5) {
+      outputs_[target_index].scalar = cv::Scalar(0, 0, 255);
+    }
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += "[" + results[i].getAttributes() + "]";
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::PersonReidentificationResult> & results)
 {
   for (unsigned i = 0; i < results.size(); i++) {

@@ -45,6 +45,7 @@
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/inferences/person_reidentification.hpp"
+#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -60,6 +61,12 @@ class BaseOutput
 {
 public:
   BaseOutput() = default;
+  /**
+   * @brief Generate output content according to the person reidentification result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> &)
+  {
+  }
   /**
    * @brief Generate output content according to the person reidentification result.
    */

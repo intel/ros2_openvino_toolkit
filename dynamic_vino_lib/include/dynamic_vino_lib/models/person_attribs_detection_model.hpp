@@ -13,23 +13,23 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for PersonReidentificationModel Class
- * @file person_reidentification_model.h
+ * @brief A header file with declaration for PersonAttribsDetectionModel Class
+ * @file person_attribs_detection_model.h
  */
-#ifndef DYNAMIC_VINO_LIB__MODELS__PERSON_REIDENTIFICATION_MODEL_HPP_
-#define DYNAMIC_VINO_LIB__MODELS__PERSON_REIDENTIFICATION_MODEL_HPP_
+#ifndef DYNAMIC_VINO_LIB__MODELS__PERSON_ATTRIBS_DETECTION_MODEL_HPP_
+#define DYNAMIC_VINO_LIB__MODELS__PERSON_ATTRIBS_DETECTION_MODEL_HPP_
 #include <string>
 #include "dynamic_vino_lib/models/base_model.hpp"
 namespace Models
 {
 /**
- * @class PersonReidentificationModel
- * @brief This class generates the person reidentification model.
+ * @class PersonAttribsDetectionModel
+ * @brief This class generates the person attributes detection model.
  */
-class PersonReidentificationModel : public BaseModel
+class PersonAttribsDetectionModel : public BaseModel
 {
 public:
-  PersonReidentificationModel(const std::string &, int, int, int);
+  PersonAttribsDetectionModel(const std::string &, int, int, int);
   inline const std::string getInputName() {return input_;}
   inline const std::string getOutputName() {return output_;}
   /**
@@ -45,4 +45,4 @@ protected:
   std::string output_;
 };
 }  // namespace Models
-#endif  // DYNAMIC_VINO_LIB__MODELS__PERSON_REIDENTIFICATION_MODEL_HPP_
+#endif  // DYNAMIC_VINO_LIB__MODELS__PERSON_ATTRIBS_DETECTION_MODEL_HPP_
