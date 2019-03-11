@@ -23,7 +23,6 @@
 // RealSenseCamera
 bool Input::RealSenseCamera::initialize()
 {
-  setFrameID("realsense_camera_frame");
   cfg_.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 30);
   setInitStatus(pipe_.start(cfg_));
   setWidth(640);
@@ -47,7 +46,6 @@ bool Input::RealSenseCamera::initialize()
 }
 bool Input::RealSenseCamera::initialize(size_t width, size_t height)
 {
-  setFrameID("realsense_camera_frame");
   if (3 * width != 4 * height) {
     slog::err << "The aspect ratio must be 4:3 when using RealSense camera" << slog::endl;
     return false;
@@ -89,5 +87,6 @@ bool Input::RealSenseCamera::read(cv::Mat * frame)
   cv::Mat(cv::Size(static_cast<int>(getWidth()), static_cast<int>(getHeight())), CV_8UC3,
     const_cast<void *>(color_frame.get_data()), cv::Mat::AUTO_STEP)
   .copyTo(*frame);
+  setHeader("realsense_camera_frame");
   return true;
 }
