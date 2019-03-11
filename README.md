@@ -115,6 +115,51 @@ See below pictures for the demo result snapshots.
 # Installation & Launching
 **NOTE:** Intel releases 2 different series of OpenVINO Toolkit, we call them as [OpenSource Version](https://github.com/opencv/dldt/) and [Tarball Version](https://software.intel.com/en-us/openvino-toolkit). This guidelie uses OpenSource Version as the installation and launching example. **If you want to use Tarball version, please follow [the guide for Tarball Version](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/BINARY_VERSION_README.md).**
 
+## Enable Intel® Neural Compute Stick 2 (Intel® NCS 2) under the OpenVINO Open Source version (Optional) </br>
+1. Intel Distribution of OpenVINO toolkit </br>
+	* Download OpenVINO toolkit by following the [guide](https://software.intel.com/en-us/openvino-toolkit/choose-download)</br>
+	```bash
+	cd ~/Downloads
+	wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15078/l_openvino_toolkit_p_2018.5.455.tgz
+	```
+	* Install OpenVINO toolkit by following the [guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux) </br>
+	```bash
+	cd ~/Downloads
+	tar -xvf l_openvino_toolkit_p_2018.5.455.tgz
+	cd l_openvino_toolkit_p_2018.5.455
+	# root is required instead of sudo
+	sudo -E ./install_cv_sdk_dependencies.sh
+	sudo ./install_GUI.sh
+	# build sample code under OpenVINO toolkit
+	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
+ 	cd /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/
+ 	mkdir build
+	cd build
+ 	cmake ..
+ 	make
+	```
+	* Configure the Neural Compute Stick USB Driver
+	```bash
+	cd ~/Downloads
+	cat <<EOF > 97-usbboot.rules
+	SUBSYSTEM=="usb", ATTRS{idProduct}=="2150", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+	SUBSYSTEM=="usb", ATTRS{idProduct}=="2485", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+	SUBSYSTEM=="usb", ATTRS{idProduct}=="f63b", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+	EOF
+	sudo cp 97-usbboot.rules /etc/udev/rules.d/
+	sudo udevadm control --reload-rules
+	sudo udevadm trigger
+	sudo ldconfig
+	rm 97-usbboot.rules
+	```
+	
+2. Configure the environment (you can write the configuration to your ~/.basrch file)</br>
+	**Note**: If you used root privileges to install the OpenVINO binary package, it installs the Intel Distribution of OpenVINO toolkit in this directory: */opt/intel/openvino_<version>/*
+	```bash
+	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
+	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
+	```
+	
 ## Dependencies Installation
 One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/OPEN_SOURCE_CODE_README.md) for details.
 
@@ -199,7 +244,6 @@ One-step installation scripts are provided for the dependencies' installation. P
 	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
 	```
 
-
 # TODO Features
 * Support **result filtering** for inference process, so that the inference results can be filtered to different subsidiary inference. For example, given an image, firstly we do Object Detection on it, secondly we pass cars to vehicle brand recognition and pass license plate to license number recognition.
 * Design **resource manager** to better use such resources as models, engines, and other external plugins.
@@ -207,4 +251,5 @@ One-step installation scripts are provided for the dependencies' installation. P
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+
 
