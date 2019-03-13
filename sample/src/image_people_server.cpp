@@ -68,6 +68,8 @@ int main(int argc, char ** argv)
     auto node = std::make_shared<vino_service::FrameProcessingServer
         <people_msgs::srv::People>>("service_people_detection", config_path);
     rclcpp::spin(node);
+  } catch (std::exception & e) {
+    std::cout << e.what() << std::endl;
   } catch (...) {
     std::cout << "[ERROR] [service_people_detection]: " <<
       "exception caught" << std::endl;
