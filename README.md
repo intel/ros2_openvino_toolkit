@@ -58,6 +58,7 @@ Currently, the inference feature list is supported:
 |Object Detection| object detection based on SSD-based trained models.|
 |Vehicle Detection| Vehicle and passenger detection based on Intel models.|
 |Object Segmentation| object detection and segmentation.|
+|Person Reidentification| Person Reidentification based on object detection.|
 
 ## ROS interfaces and outputs
 ### Topic
@@ -77,6 +78,8 @@ Currently, the inference feature list is supported:
 ```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))
 - Object Segmentation:
 ```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ObjectsInMasks.msg))
+- Person Reidentification:
+```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ReidentificationStamped.msg))
 - Rviz Output:
 ```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
@@ -111,6 +114,9 @@ See below pictures for the demo result snapshots.
 
 * object segmentation input from video
 ![object_segmentation_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/object_segmentation.gif "object segmentation demo video")
+
+* Person Reidentification input from standard camera
+![person_reidentification_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/person-reidentification.gif "person reidentification demo video")
 
 # Installation & Launching
 **NOTE:** Intel releases 2 different series of OpenVINO Toolkit, we call them as [OpenSource Version](https://github.com/opencv/dldt/) and [Tarball Version](https://software.intel.com/en-us/openvino-toolkit). This guidelie uses OpenSource Version as the installation and launching example. **If you want to use Tarball version, please follow [the guide for Tarball Version](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/BINARY_VERSION_README.md).**
@@ -189,6 +195,8 @@ One-step installation scripts are provided for the dependencies' installation. P
 		python3 downloader.py --name age-gender-recognition-retail-0013
 		python3 downloader.py --name emotions-recognition-retail-0003
 		python3 downloader.py --name head-pose-estimation-adas-0001
+		python3 downloader.py --name person-detection-retail-0013
+		python3 downloader.py --name person-reidentification-retail-0076
 		```
 	* copy label files (excute _once_)<br>
 		```bash
@@ -224,6 +232,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run object segmentation sample code input from Video.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_video.launch.py
+	```
+* run person reidentification sample code input from StandardCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_reidentification_oss.launch.py
 	```
 * run object detection service sample code input from Image  
   Run image processing service:
