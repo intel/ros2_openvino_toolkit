@@ -178,6 +178,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_video.launch.py
 	```
+* run person reidentification sample code input from StandardCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
+	```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
