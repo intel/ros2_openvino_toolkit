@@ -315,22 +315,25 @@ if(BUILD_TESTING)
 
   custom_gtest(unittest_createPipelineCheck
     "tests/lib/unittest_createPipelineCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_faceDetection
     "tests/topic/unittest_faceDetectionCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_objectDetection
     "tests/topic/unittest_objectDetectionCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_imageDetection
     "tests/topic/unittest_imageCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_segmentation
     "tests/topic/unittest_segmentationCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_objectService
     "tests/service/unittest_objectService.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
+  custom_gtest(unittest_peopleService
+    "tests/service/unittest_peopleService.cpp"
+    TIMEOUT 100)
 
 endif()
 
