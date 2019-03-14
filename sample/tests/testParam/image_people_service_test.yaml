@@ -24,18 +24,18 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [RosService, RViz]
+  outputs: [RosService]
   connects:
     - left: Image
       right: [FaceDetection]
     - left: FaceDetection
-      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, RosService, RViz]
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, RosService]
     - left: AgeGenderRecognition
-      right: [RosService, RViz]
+      right: [RosService]
     - left: EmotionRecognition
-      right: [RosService, RViz]
+      right: [RosService]
     - left: HeadPoseEstimation
-      right: [RosService, RViz]
-  input_path: "~/Pictures/face.jpeg"
+      right: [RosService]
+  input_path: "/home/intel/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/team.png"
 
 Common:

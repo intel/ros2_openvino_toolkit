@@ -55,7 +55,6 @@ int main(int argc, char ** argv)
     rclcpp::executor::FutureReturnCode::SUCCESS)
   {
     auto people = result.get();
-
     if (people->persons.emotions.size() == 0 && people->persons.agegenders.size() == 0 &&
       people->persons.headposes.size() == 0)
     {
@@ -63,16 +62,24 @@ int main(int argc, char ** argv)
       return 0;
     }
     RCLCPP_INFO(node->get_logger(), "Found persons...");
-    std::cout << "Emotions:";
-    for (auto e : people->persons.emotions) {
-      std::cout << e.emotion.c_str() << "   ";
+
+    for (unsigned int i = 0; i < people->persons.faces.size(); i++) {
+      RCLCPP_INFO(node->get_logger(), "%d: object: %s", i,
+        people->persons.faces[i].object.object_name.c_str());
+      RCLCPP_INFO(node->get_logger(), "prob: %f",
+        people->persons.faces[i].object.probability);
+      RCLCPP_INFO(
+        node->get_logger(), "location: (%d, %d, %d, %d)",
+        people->persons.faces[i].roi.x_offset, people->persons.faces[i].roi.y_offset,
+        people->persons.faces[i].roi.width, people->persons.faces[i].roi.height);
+      RCLCPP_INFO(node->get_logger(), "Emotions: %s",
+        people->persons.emotions[i].emotion.c_str());
+      RCLCPP_INFO(node->get_logger(), "Age: %f, Gender: %s",
+        people->persons.agegenders[i].age, people->persons.agegenders[i].gender.c_str());
+      RCLCPP_INFO(node->get_logger(), "Yaw, Pitch and Roll for head pose is: (%f, %f, %f),",
+        people->persons.headposes[i].yaw, people->persons.headposes[i].pitch,
+        people->persons.headposes[i].roll);
     }
-    std::cout << std::endl;
-    std::cout << "AgeGender:";
-    for (auto a : people->persons.agegenders) {
-      std::cout << a.age << "," << a.gender.c_str() << "   ";
-    }
-    std::cout << std::endl;
   } else {
     RCLCPP_WARN(node->get_logger(), "NO response received!!");
   }
