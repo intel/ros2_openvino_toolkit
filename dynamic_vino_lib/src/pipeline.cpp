@@ -214,39 +214,6 @@ void Pipeline::runOnce()
   }
 }
 
-void Pipeline::runService(std::string config_path)
-{
-  std::cout << "run service once" << std::endl;
-  initInferenceCounter();
-
-  if (!frame_.empty()) {
-    frame_.release();
-  }
-
-  if (!input_device_->readService(&frame_, config_path)) {
-    // throw std::logic_error("Failed to get frame from cv::VideoCapture");
-    slog::warn << "Failed to get frame from input_device." << slog::endl;
-  }
-  width_ = frame_.cols;
-  height_ = frame_.rows;
-  for (auto & pair : name_to_output_map_) {
-    pair.second->feedFrame(frame_);
-  }
-
-  auto pos = next_.equal_range(input_device_name_);
-  std::string detection_name = pos.first->second;
-  auto detection_ptr = name_to_detection_map_[detection_name];
-
-  detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
-  detection_ptr->SynchronousRequest();
-
-  bool fetch_or_not = detection_ptr->fetchResults();
-
-  for (auto & pair : name_to_output_map_) {
-    detection_ptr->observeOutput(pair.second);
-  }
-}
-
 void Pipeline::printPipeline()
 {
   for (auto & current_node : next_) {
@@ -288,22 +255,24 @@ void Pipeline::callback(const std::string & detection_name)
     std::string next_name = pos.first->second;
     // if next is output, then print
     if (output_names_.find(next_name) != output_names_.end()) {
-      // name_to_output_map_[next_name]->accept(*detection_ptr->getResult());
       detection_ptr->observeOutput(name_to_output_map_[next_name]);
     } else {
-      // slog::info << "Inference ... ";
       auto detection_ptr_iter = name_to_detection_map_.find(next_name);
       if (detection_ptr_iter != name_to_detection_map_.end()) {
         auto next_detection_ptr = detection_ptr_iter->second;
-        for (size_t i = 0; i < detection_ptr->getResultsLength(); ++i) {
+        size_t result_length = detection_ptr->getResultsLength();
+        size_t batch_size = next_detection_ptr->getMaxBatchSize();
+        for (size_t i = 0; i < result_length; ++i) {
           const dynamic_vino_lib::Result * prev_result = detection_ptr->getLocationResult(i);
           auto clippedRect = prev_result->getLocation() & cv::Rect(0, 0, width_, height_);
           cv::Mat next_input = frame_(clippedRect);
           next_detection_ptr->enqueue(next_input, prev_result->getLocation());
-        }
-        if (detection_ptr->getResultsLength() > 0) {
-          increaseInferenceCounter();
-          next_detection_ptr->submitRequest();
+          if ((i + 1) == result_length || (i + 1) % batch_size == 0) {
+            increaseInferenceCounter();
+            next_detection_ptr->submitRequest();
+            auto request = next_detection_ptr->getEngine()->getRequest();
+            request->Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+          }
         }
       }
     }

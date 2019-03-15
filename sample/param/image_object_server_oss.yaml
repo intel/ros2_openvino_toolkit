@@ -7,13 +7,14 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [RosService]
-  confidence_threshold: 0.2
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [RosService, RViz]
   connects:
     - left: Image
       right: [ObjectDetection]
     - left: ObjectDetection
-      right: [RosService]
+      right: [RosService, RViz]
   input_path: "/home/intel/Pictures/car.png"
 
 Common:

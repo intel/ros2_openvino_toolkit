@@ -51,6 +51,8 @@ const char kInferTpye_EmotionRecognition[] = "EmotionRecognition";
 const char kInferTpye_HeadPoseEstimation[] = "HeadPoseEstimation";
 const char kInferTpye_ObjectDetection[] = "ObjectDetection";
 const char kInferTpye_ObjectSegmentation[] = "ObjectSegmentation";
+const char kInferTpye_PersonReidentification[] = "PersonReidentification";
+const char kInferTpye_PersonAttribsDetection[] = "PersonAttribsDetection";
 
 /**
  * @class PipelineParams

@@ -30,6 +30,8 @@ void operator>>(const YAML::Node & node, std::vector<std::string> & list);
 void operator>>(const YAML::Node & node, std::multimap<std::string, std::string> & connect);
 void operator>>(const YAML::Node & node, std::string & str);
 void operator>>(const YAML::Node & node, bool & val);
+void operator>>(const YAML::Node & node, int & val);
+void operator>>(const YAML::Node & node, float & val);
 void operator>>(const YAML::Node & node, ParamManager::CommonParams & common);
 
 #define YAML_PARSE(node, key, val) \
@@ -91,6 +93,9 @@ void operator>>(const YAML::Node & node, ParamManager::InferenceParams & infer)
   YAML_PARSE(node, "model", infer.model)
   YAML_PARSE(node, "engine", infer.engine)
   YAML_PARSE(node, "label", infer.label)
+  YAML_PARSE(node, "batch", infer.batch)
+  YAML_PARSE(node, "confidence_threshold", infer.confidence_threshold)
+  YAML_PARSE(node, "enable_roi_constraint", infer.enable_roi_constraint)
   slog::info << "Inference Params:name=" << infer.name << slog::endl;
 }
 
@@ -126,6 +131,16 @@ void operator>>(const YAML::Node & node, bool & val)
   val = node.as<bool>();
 }
 
+void operator>>(const YAML::Node & node, int & val)
+{
+  val = node.as<int>();
+}
+
+void operator>>(const YAML::Node & node, float & val)
+{
+  val = node.as<float>();
+}
+
 void ParamManager::print() const
 {
   slog::info << "--------parameters DUMP---------------------" << slog::endl;
@@ -149,6 +164,9 @@ void ParamManager::print() const
       slog::info << "\t\tModel: " << infer.model << slog::endl;
       slog::info << "\t\tEngine: " << infer.engine << slog::endl;
       slog::info << "\t\tLabel: " << infer.label << slog::endl;
+      slog::info << "\t\tBatch: " << infer.batch << slog::endl;
+      slog::info << "\t\tConfidence_threshold: " << infer.confidence_threshold << slog::endl;
+      slog::info << "\t\tEnable_roi_constraint: " << infer.enable_roi_constraint << slog::endl;
     }
 
     slog::info << "\tConnections: " << slog::endl;

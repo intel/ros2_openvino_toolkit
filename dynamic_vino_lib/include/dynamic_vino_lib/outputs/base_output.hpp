@@ -30,6 +30,7 @@
 #include <people_msgs/msg/head_pose_stamped.hpp>
 #include <people_msgs/srv/age_gender.hpp>
 #include <people_msgs/srv/emotion.hpp>
+#include <people_msgs/srv/people.hpp>
 #include <people_msgs/srv/head_pose.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 #include <string>
@@ -43,6 +44,8 @@
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
+#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -59,14 +62,26 @@ class BaseOutput
 public:
   BaseOutput() = default;
   /**
- * @brief Generate output content according to the object segmentation result.
- */
+   * @brief Generate output content according to the person reidentification result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> &)
+  {
+  }
+  /**
+   * @brief Generate output content according to the person reidentification result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::PersonReidentificationResult> &)
+  {
+  }
+  /**
+   * @brief Generate output content according to the object segmentation result.
+   */
   virtual void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &)
   {
   }
   /**
- * @brief Generate output content according to the object detection result.
- */
+   * @brief Generate output content according to the object detection result.
+   */
   virtual void accept(const std::vector<dynamic_vino_lib::ObjectDetectionResult> &)
   {
   }
@@ -112,12 +127,21 @@ public:
   int getFPS() const;
 
   void setPipeline(Pipeline * const pipeline);
-  virtual void setResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::Emotion::Response> response) {}
-  virtual void setResponse(std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
+  virtual void setServiceResponse(
+    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
+  virtual void setServiceResponseForFace(
+    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
+  virtual void setServiceResponse(
+    std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {}
+  virtual void setServiceResponse(
+    std::shared_ptr<people_msgs::srv::Emotion::Response> response) {}
+  virtual void setServiceResponse(
+    std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
+  virtual void setServiceResponse(
+    std::shared_ptr<people_msgs::srv::People::Response> response) {}
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
+  virtual void clearData() {}
 
 protected:
   cv::Mat frame_;

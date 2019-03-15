@@ -54,7 +54,7 @@ public:
 class FaceDetection : public ObjectDetection
 {
 public:
-  explicit FaceDetection(double);
+  explicit FaceDetection(bool, double);
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__FACE_DETECTION_HPP_

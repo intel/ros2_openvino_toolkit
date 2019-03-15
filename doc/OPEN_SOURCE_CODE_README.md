@@ -15,11 +15,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Demo application to show above detection and recognitions
 
 ## 2. Prerequisite
-- An x86_64 computer running Ubuntu 16.04 and Ubuntu 18.04. Below processors are supported:
+- An x86_64 computer running Ubuntu 18.04. Below processors are supported:
 	* 6th-8th Generation Intel® Core™
 	* Intel® Xeon® v5 family
 	* Intel®  Xeon® v6 family
-- ROS2 [Bouncy](https://github.com/ros2/ros2/wiki)
+- ROS2 [Crystal](https://github.com/ros2/ros2/wiki)
 
 - OpenVINO™ Toolkit Open Source<br>
   	* The [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt) that helps to enable fast, heterogeneous deep learning inferencing for Intel® processors (CPU and GPU/Intel® Processor Graphics), and supports more than 100 public and custom models.<br>
@@ -41,7 +41,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ./environment_setup.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
-* Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
+* Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install OpenVINO™ Toolkit Open Source<br>
 	* Install [OpenCV 3.3 or later](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
 		```bash
@@ -84,7 +84,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir ~/code && cd ~/code
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
-		git checkout 2018_R4
+		git checkout 2018_R5
 		git submodule init
 		git submodule update --recursive
 		./install_dependencies.sh
@@ -99,7 +99,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
-		git checkout 2018_R4
+		git checkout 2018_R5
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8

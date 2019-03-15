@@ -83,8 +83,13 @@ if [ "$ROS2_SRC" == "1" ]; then
   fi
 
   rosdep update
-  rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 python3-lark-parser rti-connext-dds-5.3.1 urdfdom_headers"
-  colcon build --symlink-install --packages-ignore qt_gui_cpp rqt_gui_cpp
+  if [ $system_ver = "16.04" ]; then
+    rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 python3-lark-parser rti-connext-dds-5.3.1 urdfdom_headers"
+    colcon build --symlink-install --packages-ignore qt_gui_cpp rqt_gui_cpp
+  else
+    rosdep install --from-paths src --ignore-src --rosdistro crystal -y --skip-keys "console_bridge fastcdr fastrtps libopensplice67 libopensplice69 rti-connext-dds-5.3.1 urdfdom_headers"
+    colcon build --symlink-install
+  fi
 fi
 
 # Setup OpenCV
@@ -186,7 +191,7 @@ if [ "$DLDT" == "1" ]; then
   mkdir -p  ~/code && cd ~/code
   git clone https://github.com/opencv/dldt.git
   cd dldt/inference-engine/
-  git checkout 2018_R4
+  git checkout 2018_R5
   git submodule init
   git submodule update --recursive
   mkdir build && cd build
@@ -205,7 +210,7 @@ if [ "$MODEL_ZOO" == "1" ]; then
   mkdir -p ~/code && cd ~/code
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
-  git checkout 2018_R4
+  git checkout 2018_R5
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8

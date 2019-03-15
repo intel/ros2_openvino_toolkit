@@ -7,6 +7,8 @@ Pipelines:
       engine: CPU
       label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.labels
       batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: AgeGenderRecognition
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
@@ -22,19 +24,18 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
-  outputs: [ImageWindow, RosTopic, RViz]
-  confidence_threshold: 0.2
+  outputs: [RosService, RViz]
   connects:
     - left: Image
       right: [FaceDetection]
     - left: FaceDetection
-      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, RosService, RViz]
     - left: AgeGenderRecognition
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosService, RViz]
     - left: EmotionRecognition
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosService, RViz]
     - left: HeadPoseEstimation
-      right: [ImageWindow, RosTopic, RViz]
-  input_path: "/home/intel/Pictures/timg.jpeg"
+      right: [RosService, RViz]
+  input_path: "~/Pictures/face.jpeg"
 
 Common:

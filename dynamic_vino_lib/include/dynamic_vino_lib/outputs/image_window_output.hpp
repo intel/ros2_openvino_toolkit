@@ -51,6 +51,20 @@ public:
   void handleOutput() override;
   /**
    * @brief Generate image window output content according to
+   * the person attributes detetection result.
+   * @param[in] A person attributes detection result objetc.
+   */
+  void accept(
+    const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> &) override;
+  /**
+   * @brief Generate image window output content according to
+   * the person reidentification result.
+   * @param[in] A person reidentification result objetc.
+   */
+  void accept(
+    const std::vector<dynamic_vino_lib::PersonReidentificationResult> &) override;
+  /**
+   * @brief Generate image window output content according to
    * the object segmentation result.
    * @param[in] An obejct segmentation result objetc.
    */
@@ -87,7 +101,7 @@ public:
   void accept(const std::vector<dynamic_vino_lib::AgeGenderResult> &) override;
 
 private:
-  void initOutputs(unsigned size);
+  unsigned findOutput(const cv::Rect &);
   /**
    * @brief Calculate the axises of the coordinates for showing
    * the image window.

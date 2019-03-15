@@ -21,7 +21,6 @@
 // StandardCamera
 bool Input::StandardCamera::initialize()
 {
-  setFrameID("standard_camera_frame");
   setInitStatus(cap.open(0));
   setWidth((size_t)cap.get(CV_CAP_PROP_FRAME_WIDTH));
   setHeight((size_t)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
@@ -30,7 +29,6 @@ bool Input::StandardCamera::initialize()
 
 bool Input::StandardCamera::initialize(int camera_num)
 {
-  setFrameID("standard_camera_frame");
   setInitStatus(cap.open(camera_num));
   setWidth((size_t)cap.get(CV_CAP_PROP_FRAME_WIDTH));
   setHeight((size_t)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
@@ -39,7 +37,6 @@ bool Input::StandardCamera::initialize(int camera_num)
 
 bool Input::StandardCamera::initialize(size_t width, size_t height)
 {
-  setFrameID("standard_camera_frame");
   setWidth(width);
   setHeight(height);
   setInitStatus(cap.open(0));
@@ -56,10 +53,6 @@ bool Input::StandardCamera::read(cv::Mat * frame)
     return false;
   }
   cap.grab();
+  setHeader("standard_camera_frame");
   return cap.retrieve(*frame);
-}
-
-void Input::StandardCamera::config()
-{
-  // TODO(weizhi): config
 }

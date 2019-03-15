@@ -31,6 +31,10 @@
 #include <people_msgs/msg/head_pose_stamped.hpp>
 #include <people_msgs/msg/object_in_mask.hpp>
 #include <people_msgs/msg/objects_in_masks.hpp>
+#include <people_msgs/msg/reidentification.hpp>
+#include <people_msgs/msg/reidentification_stamped.hpp>
+#include <people_msgs/msg/person_attribute.hpp>
+#include <people_msgs/msg/person_attribute_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -61,6 +65,18 @@ public:
    * functions with ros topic.
    */
   void handleOutput() override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the person attributes detection result.
+   * @param[in] results a bundle of person attributes detection results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> &) override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the person reidentification result.
+   * @param[in] results a bundle of person reidentification results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::PersonReidentificationResult> &) override;
   /**
    * @brief Generate ros topic infomation according to
    * the object segmentation result.
@@ -98,10 +114,14 @@ public:
    */
   void accept(const std::vector<dynamic_vino_lib::HeadPoseResult> &) override;
 
-private:
+protected:
   std_msgs::msg::Header getHeader();
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;
+  rclcpp::Publisher<people_msgs::msg::PersonAttributeStamped>::SharedPtr pub_person_attribs_;
+  std::shared_ptr<people_msgs::msg::PersonAttributeStamped> person_attribs_topic_;
+  rclcpp::Publisher<people_msgs::msg::ReidentificationStamped>::SharedPtr pub_person_reid_;
+  std::shared_ptr<people_msgs::msg::ReidentificationStamped> person_reid_topic_;
   rclcpp::Publisher<people_msgs::msg::ObjectsInMasks>::SharedPtr pub_segmented_object_;
   std::shared_ptr<people_msgs::msg::ObjectsInMasks> segmented_objects_topic_;
   rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_detected_object_;

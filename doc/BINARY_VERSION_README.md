@@ -15,11 +15,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 * Demo application to show above detection and recognitions
 
 ## 2. Prerequisite
-- An x86_64 computer running Ubuntu 16.04. Below processors are supported:
+- An x86_64 computer running Ubuntu 18.04. Below processors are supported:
 	* 6th-8th Generation Intel® Core™
 	* Intel® Xeon® v5 family
 	* Intel®  Xeon® v6 family
-- ROS2 [Bouncy](https://github.com/ros2/ros2/wiki)
+- ROS2 [Crystal](https://github.com/ros2/ros2/wiki)
 - [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit)
 - RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
 - Graphics are required only if you use a GPU. The official system requirements for GPU are:
@@ -38,7 +38,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ./environment_setup_binary.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
-* Install ROS2 [Bouncy](https://github.com/ros2/ros2/wiki) ([guide](https://github.com/ros2/ros2/wiki/Linux-Development-Setup))<br>
+* Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))<br>
     	**Note**: Please use  *root privileges* to run the installer when installing the core components.
 * Install OpenCL Driver for GPU
@@ -178,6 +178,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_video.launch.py
 	```
+* run person reidentification sample code input from StandardCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
+	```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
@@ -187,6 +191,16 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
 	```
+* run people detection service sample code input from Image  
+  Run image processing service:
+	```bash
+	ros2 launch dynamic_vino_sample image_people_server.launch.py
+	```
+  Run example application with an absolute path of an image on another console:
+	```bash
+	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
+	```
+
 
 ## 6.Known Issues
 * Possible problems
@@ -196,6 +210,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		# or
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
-	> solution - Please reboot while connecting Intel® Neural Compute Stick 2.
+	> solution - Please refer to the [guide](https://software.intel.com/en-us/neural-compute-stick/get-started) to set up the environment.
 
 

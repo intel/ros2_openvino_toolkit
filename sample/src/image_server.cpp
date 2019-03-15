@@ -44,8 +44,9 @@ int main(int argc, char ** argv)
   std::cout << "***config path is " << config_path << std::endl;
 
   try {
-    auto node = std::make_shared<vino_service::FrameProcessingServer>("frame_processing_server",
-        config_path);
+    std::string service_name = "frame_processing_server";
+    auto node = std::make_shared<vino_service::FrameProcessingServer
+        <object_msgs::srv::DetectObject>>(service_name, config_path);
     rclcpp::spin(node);
   } catch (...) {
     std::cout << "[ERROR] [frame_processing_server]: " <<

@@ -36,7 +36,7 @@ TEST(UnitTestObject, testObject)
 {
   auto node = rclcpp::Node::make_shared("openvino_object_service_test");
 
-  auto client = node->create_client<object_msgs::srv::DetectObject>("detect_object");
+  auto client = node->create_client<object_msgs::srv::DetectObject>("/openvino_toolkit/service");
   auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
 
   std::string buffer = generate_file_path("data/images/car_vihecle.png");

@@ -74,11 +74,11 @@ Factory::makePluginByName(
   } else if (!custom_cldnn_message.empty()) {
     // Load Extensions for other plugins not CPU
     plugin.SetConfig(
-      { {InferenceEngine::PluginConfigParams::KEY_CONFIG_FILE, custom_cldnn_message}});
+      {{InferenceEngine::PluginConfigParams::KEY_CONFIG_FILE, custom_cldnn_message}});
   }
   if (performance_message) {
-    plugin.SetConfig({ {InferenceEngine::PluginConfigParams::KEY_PERF_COUNT,
-          InferenceEngine::PluginConfigParams::YES}});
+    plugin.SetConfig({{InferenceEngine::PluginConfigParams::KEY_PERF_COUNT,
+        InferenceEngine::PluginConfigParams::YES}});
   }
   return std::make_unique<InferenceEngine::InferencePlugin>(
     InferenceEngine::InferenceEnginePluginPtr(plugin));

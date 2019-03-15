@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of RosTopicOutput class
- * @file ros_topic_output.cpp
+ * @brief a header file with declaration of RosServiceOutput class
+ * @file ros_service_output.cpp
  */
 
 #include <vector>
@@ -25,115 +25,80 @@
 
 // Outputs::RosServiceOutput::RosServiceOutput()
 
-void Outputs::RosServiceOutput::feedFrame(const cv::Mat & frame)
-{
-  frame_ = frame.clone();
-}
 
-void Outputs::RosServiceOutput::accept(
-  const std::vector<dynamic_vino_lib::ObjectDetectionResult> & results)
-{
-  objects_.clear();
-  for (auto & r : results) {
-    auto loc = r.getLocation();
-    object_.roi.x_offset = loc.x;
-    object_.roi.y_offset = loc.y;
-    object_.roi.width = loc.width;
-    object_.roi.height = loc.height;
-    object_.object.object_name = r.getLabel();
-    object_.object.probability = r.getConfidence();
-    objects_.push_back(object_);
-  }
-}
-
-void Outputs::RosServiceOutput::accept(
-  const std::vector<dynamic_vino_lib::FaceDetectionResult> & results)
-{
-  for (auto r : results) {
-    // slog::info << ">";
-    auto loc = r.getLocation();
-    face_.roi.x_offset = loc.x;
-    face_.roi.y_offset = loc.y;
-    face_.roi.width = loc.width;
-    face_.roi.height = loc.height;
-    face_.object.object_name = r.getLabel();
-    face_.object.probability = r.getConfidence();
-    // faces_topic_->objects_vector.push_back(face);
-    // objects_topic_->objects_vector.push_back(face);
-  }
-}
-
-void Outputs::RosServiceOutput::accept(
-  const std::vector<dynamic_vino_lib::EmotionsResult> & results)
-{
-  for (auto r : results) {
-    auto loc = r.getLocation();
-    emotion_.roi.x_offset = loc.x;
-    emotion_.roi.y_offset = loc.y;
-    emotion_.roi.width = loc.width;
-    emotion_.roi.height = loc.height;
-    emotion_.emotion = r.getLabel();
-    // emotions_topic_->emotions.push_back(emotion);
-  }
-}
-
-void Outputs::RosServiceOutput::accept(
-  const std::vector<dynamic_vino_lib::AgeGenderResult> & results)
-{
-  for (auto r : results) {
-    auto loc = r.getLocation();
-    ag_.roi.x_offset = loc.x;
-    ag_.roi.y_offset = loc.y;
-    ag_.roi.width = loc.width;
-    ag_.roi.height = loc.height;
-    ag_.age = r.getAge();
-    auto male_prob = r.getMaleProbability();
-    if (male_prob > 0.5) {
-      ag_.gender = "Male";
-      ag_.gender_confidence = male_prob;
-    } else {
-      ag_.gender = "Female";
-      ag_.gender_confidence = 1.0 - male_prob;
-    }
-    // age_gender_topic_->objects.push_back(ag);
-  }
-}
-
-void Outputs::RosServiceOutput::accept(
-  const std::vector<dynamic_vino_lib::HeadPoseResult> & results)
-{
-  for (auto r : results) {
-    auto loc = r.getLocation();
-    hp_.roi.x_offset = loc.x;
-    hp_.roi.y_offset = loc.y;
-    hp_.roi.width = loc.width;
-    hp_.roi.height = loc.height;
-    hp_.yaw = r.getAngleY();
-    hp_.pitch = r.getAngleP();
-    hp_.roll = r.getAngleR();
-    // headpose_topic_->headposes.push_back(hp);
-  }
-}
-
-// void Outputs::RosServiceOutput::handleOutput()
-
-void Outputs::RosServiceOutput::setResponse(
+void Outputs::RosServiceOutput::setServiceResponse(
   std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
-  response->objects.objects_vector = objects_;
+  if (detected_objects_topic_ != nullptr && detected_objects_topic_->objects_vector.size() > 0) {
+    response->objects.objects_vector = detected_objects_topic_->objects_vector;
+  } else if (faces_topic_ != nullptr && faces_topic_->objects_vector.size() > 0) {
+    response->objects.objects_vector = faces_topic_->objects_vector;
+  }
 }
 
-/**
- * TODO: implement the value gain
- */
-std_msgs::msg::Header Outputs::RosServiceOutput::getHeader()
+void Outputs::RosServiceOutput::setResponseForFace(
+  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
-  std_msgs::msg::Header header;
-  header.frame_id = "default_camera";
+  if (faces_topic_ != nullptr && faces_topic_->objects_vector.size() > 0) {
+    response->objects.objects_vector = faces_topic_->objects_vector;
+  }
+}
 
-  std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-  int64 ns = tp.time_since_epoch().count();
-  header.stamp.sec = ns / 1000000000;
-  header.stamp.nanosec = ns % 1000000000;
-  return header;
+void Outputs::RosServiceOutput::setServiceResponse(
+  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
+{
+  if (age_gender_topic_ != nullptr) {
+    response->age_gender.objects = age_gender_topic_->objects;
+  }
+}
+
+void Outputs::RosServiceOutput::setServiceResponse(
+  std::shared_ptr<people_msgs::srv::Emotion::Response> response)
+{
+  if (emotions_topic_ != nullptr) {
+    response->emotion.emotions = emotions_topic_->emotions;
+  }
+}
+
+void Outputs::RosServiceOutput::setServiceResponse(
+  std::shared_ptr<people_msgs::srv::HeadPose::Response> response)
+{
+  if (headpose_topic_ != nullptr) {
+    response->headpose.headposes = headpose_topic_->headposes;
+  }
+}
+
+void Outputs::RosServiceOutput::setServiceResponse(
+  std::shared_ptr<people_msgs::srv::People::Response> response)
+{
+  slog::info << "in People::Response ...";
+  if (faces_topic_ != nullptr) {
+    slog::info << "[FACES],";
+    response->persons.faces = faces_topic_->objects_vector;
+  } else if (detected_objects_topic_ != nullptr) {
+    slog::info << "[FACES(objects)],";
+    response->persons.faces = detected_objects_topic_->objects_vector;
+  }
+  if (age_gender_topic_ != nullptr) {
+    slog::info << "[AGE_GENDER],";
+    response->persons.agegenders = age_gender_topic_->objects;
+  }
+  if (emotions_topic_ != nullptr) {
+    slog::info << "[EMOTION],";
+    response->persons.emotions = emotions_topic_->emotions;
+  }
+  if (headpose_topic_ != nullptr) {
+    slog::info << "[HEADPOSE],";
+    response->persons.headposes = headpose_topic_->headposes;
+  }
+  slog::info << "DONE!" << slog::endl;
+}
+
+void Outputs::RosServiceOutput::clearData()
+{
+  faces_topic_ = nullptr;
+  detected_objects_topic_ = nullptr;
+  age_gender_topic_ = nullptr;
+  emotions_topic_ = nullptr;
+  headpose_topic_ = nullptr;
 }

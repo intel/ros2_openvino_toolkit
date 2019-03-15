@@ -64,6 +64,9 @@ public:
     std::string engine;
     std::string model;
     std::string label;
+    int batch;
+    float confidence_threshold = 0.5;
+    bool enable_roi_constraint = false;
   };
   struct PipelineParams
   {

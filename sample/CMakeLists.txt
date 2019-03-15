@@ -176,6 +176,27 @@ ament_target_dependencies(image_object_server
   "OpenCV"
 )
 
+add_executable(image_people_server
+  src/image_people_server.cpp
+)
+target_link_libraries(image_people_server
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_people_server
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
 add_executable(image_object_client
   src/image_object_client.cpp
 )
@@ -184,6 +205,27 @@ target_link_libraries(image_object_client
   cpu_extension
   gflags)
 ament_target_dependencies(image_object_client
+  "rclcpp"
+  "rmw_implementation"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "vino_param_lib"
+  "OpenCV"
+)
+
+add_executable(image_people_client
+  src/image_people_client.cpp
+)
+target_link_libraries(image_people_client
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(image_people_client
   "rclcpp"
   "rmw_implementation"
   "std_msgs"
@@ -206,7 +248,13 @@ install(TARGETS pipeline_with_params
 install(TARGETS image_object_server
   DESTINATION lib/${PROJECT_NAME})
 
+install(TARGETS image_people_server
+  DESTINATION lib/${PROJECT_NAME})
+
 install(TARGETS image_object_client
+  DESTINATION lib/${PROJECT_NAME})
+
+install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
 # Install param files.
@@ -267,22 +315,25 @@ if(BUILD_TESTING)
 
   custom_gtest(unittest_createPipelineCheck
     "tests/lib/unittest_createPipelineCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_faceDetection
     "tests/topic/unittest_faceDetectionCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_objectDetection
     "tests/topic/unittest_objectDetectionCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_imageDetection
     "tests/topic/unittest_imageCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_segmentation
     "tests/topic/unittest_segmentationCheck.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
   custom_gtest(unittest_objectService
     "tests/service/unittest_objectService.cpp"
-    TIMEOUT 300)
+    TIMEOUT 100)
+  custom_gtest(unittest_peopleService
+    "tests/service/unittest_peopleService.cpp"
+    TIMEOUT 100)
 
 endif()
 
