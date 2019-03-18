@@ -48,7 +48,7 @@ public:
     return true;
   }
   bool read(cv::Mat * frame) override;
-  
+
 private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
   cv::Mat image_;

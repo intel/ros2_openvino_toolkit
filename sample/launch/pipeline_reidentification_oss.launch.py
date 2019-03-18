@@ -33,7 +33,8 @@ def generate_launch_description():
             arguments=['-config', default_yaml],
             remappings=[
                 ('/openvino_toolkit/detected_objects', '/ros2_openvino_toolkit/detected_objects'),
-                ('/openvino_toolkit/reidentified_persons', '/ros2_openvino_toolkit/reidentified_persons'),
+                ('/openvino_toolkit/reidentified_persons',
+                 '/ros2_openvino_toolkit/reidentified_persons'),
                 ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
