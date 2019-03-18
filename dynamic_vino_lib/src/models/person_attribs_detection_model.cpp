@@ -19,7 +19,7 @@
 #include <string>
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-// Validated Object Detection Network
+// Validated Person Attributes Detection Network
 Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
   const std::string & model_loc, int input_num, int output_num, int max_batch_size)
 : BaseModel(model_loc, input_num, output_num, max_batch_size) {}
@@ -51,7 +51,7 @@ void Models::PersonAttribsDetectionModel::checkLayerProperty(
   }
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
-  if (input_info_map.size() != 1) {
+  if (output_info_map.size() != 1) {
     throw std::logic_error("Person Attribs Network expects networks having one output");
   }
 }
