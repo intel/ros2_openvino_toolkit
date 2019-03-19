@@ -51,6 +51,13 @@ public:
   void handleOutput() override;
   /**
    * @brief Generate image window output content according to
+   * the landmarks detetection result.
+   * @param[in] A landmarks detection result objetc.
+   */
+  void accept(
+    const std::vector<dynamic_vino_lib::LandmarksDetectionResult> &) override;
+  /**
+   * @brief Generate image window output content according to
    * the person attributes detetection result.
    * @param[in] A person attributes detection result objetc.
    */
@@ -127,6 +134,7 @@ private:
     cv::Point hp_y;   // for headpose, end point of yAxis
     cv::Point hp_zs;  // for headpose, start point of zAxis
     cv::Point hp_ze;  // for headpose, end point of zAxis
+    std::vector<cv::Point> landmarks;
   };
 
   std::vector<OutputData> outputs_;
