@@ -53,6 +53,7 @@ const char kInferTpye_ObjectDetection[] = "ObjectDetection";
 const char kInferTpye_ObjectSegmentation[] = "ObjectSegmentation";
 const char kInferTpye_PersonReidentification[] = "PersonReidentification";
 const char kInferTpye_PersonAttribsDetection[] = "PersonAttribsDetection";
+const char kInferTpye_LandmarksDetection[] = "LandmarksDetection";
 
 /**
  * @class PipelineParams
