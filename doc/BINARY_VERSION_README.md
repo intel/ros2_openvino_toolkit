@@ -68,6 +68,27 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo apt update
 		sudo apt install libjasper1 libjasper-dev
 		```
+- Install Intel® RealSense™ SDK 2.0 [(tag v2.17.1)](https://github.com/IntelRealSense/librealsense/tree/v2.17.1)<br>
+	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/installation.md)(Recommended)<br>
+		```bash
+		 sudo apt-get install git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+		 sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+		 mkdir -p ~/code && cd ~/code
+		 git clone https://github.com/IntelRealSense/librealsense
+		 cd ~/code/librealsense
+		 git checkout v2.17.1
+		 mkdir build && cd build
+		 cmake ../ -DBUILD_EXAMPLES=true
+		 sudo make uninstall 
+		 make clean
+		 make
+		 sudo make install
+		 cd ..
+		 sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+		 sudo udevadm control --reload-rules
+		 udevadm trigger
+		```
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/distribution_linux.md)<br>
 - Other Dependencies
 	```bash
 	#librealsense dependency
@@ -106,12 +127,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
 	git clone https://github.com/ros-perception/image_common.git -b ros2
-	git clone https://github.com/IntelRealSense/librealsense.git -b ros2debian
 	git clone https://github.com/intel/ros2_intel_realsense.git
-	cd ~/ros2_overlay_ws/src/librealsense
-	sudo cp ./config/99-realsense-libusb.rules /etc/udev/rules.d/
-	sudo udevadm control --reload-rules
-	udevadm trigger
 	```
 
 * Build package
@@ -211,5 +227,6 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
 	> solution - Please refer to the [guide](https://software.intel.com/en-us/neural-compute-stick/get-started) to set up the environment.
+
 
 
