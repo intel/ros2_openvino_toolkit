@@ -225,7 +225,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
 	```
-* run object detection sample code input from RealSenseCameraTopic.
+* run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
 	```
