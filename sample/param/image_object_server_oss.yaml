@@ -3,7 +3,7 @@ Pipelines:
   inputs: [Image]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output/ssd300.xml
+      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
