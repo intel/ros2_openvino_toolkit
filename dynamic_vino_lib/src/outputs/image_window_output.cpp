@@ -62,17 +62,25 @@ unsigned Outputs::ImageWindowOutput::findOutput(
 }
 
 void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::FaceReidentificationResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += "[" + results[i].getFaceID() + "]";
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::LandmarksDetectionResult> & results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
-    cv::Mat landmarks = results[i].getLandmarks();
-    for (int j = 0; j < landmarks.rows; j++){
-      int col = int (landmarks.at<float>(j, 0) * result_rect.width);
-      int row = int (landmarks.at<float>(j, 1) * result_rect.height);
-      cv::Point landmark_point(result_rect.x + col, result_rect.y + row);
-      outputs_[target_index].landmarks.push_back(landmark_point);
+    std::vector<cv::Point> landmark_points = results[i].getLandmarks();
+    for (int j = 0; j < landmark_points.size(); j++){
+      outputs_[target_index].landmarks.push_back(landmark_points[j]);
     }
   }
 }

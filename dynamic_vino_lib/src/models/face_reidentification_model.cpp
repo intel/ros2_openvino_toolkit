@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of PersonReidentificationModel class
- * @file person_reidentification_model.cpp
+ * @brief a header file with declaration of FaceReidentificationModel class
+ * @file face_reidentification_model.cpp
  */
 #include <string>
-#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
+#include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-// Validated Person Reidentification Network
-Models::PersonReidentificationModel::PersonReidentificationModel(
+// Validated Face Reidentification Network
+Models::FaceReidentificationModel::FaceReidentificationModel(
   const std::string & model_loc, int input_num, int output_num, int max_batch_size)
 : BaseModel(model_loc, input_num, output_num, max_batch_size) {}
 
-void Models::PersonReidentificationModel::setLayerProperty(
+void Models::FaceReidentificationModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
 {
   // set input property
@@ -36,15 +36,18 @@ void Models::PersonReidentificationModel::setLayerProperty(
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
+  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
+  output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
   // set input and output layer name
   input_ = input_info_map.begin()->first;
   output_ = output_info_map.begin()->first;
 }
 
-void Models::PersonReidentificationModel::checkLayerProperty(
+void Models::FaceReidentificationModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader) {}
 
-const std::string Models::PersonReidentificationModel::getModelName() const
+const std::string Models::FaceReidentificationModel::getModelName() const
 {
-  return "Person Reidentification";
+  return "Face Reidentification";
 }
