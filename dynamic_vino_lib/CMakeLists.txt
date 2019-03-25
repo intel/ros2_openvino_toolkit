@@ -183,6 +183,7 @@ add_library(${PROJECT_NAME} SHARED
         src/pipeline_manager.cpp
         src/engines/engine.cpp
         src/inferences/base_inference.cpp
+        src/inferences/base_reidentification.cpp
         src/inferences/emotions_detection.cpp
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp

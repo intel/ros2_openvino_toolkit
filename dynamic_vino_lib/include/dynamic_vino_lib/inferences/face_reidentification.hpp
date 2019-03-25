@@ -25,6 +25,7 @@
 #include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
+#include "dynamic_vino_lib/inferences/base_reidentification.hpp"
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 // namespace
@@ -43,65 +44,6 @@ public:
 
 private:
   std::string face_id_ = "No.#";
-};
-
-
-class FaceTracker
-{
-public:
-  explicit FaceTracker(int, double, double);
-  /**
-   * @brief Process the new detected face.
-   * @param[in] feature The new detected face feature.
-   * @return The detected face ID.
-   */
-  int processNewTrack(const std::vector<float>& feature);
-
-private:
-  /**
-   * @brief Find the matched track from the recorded tracks.
-   * @param[in] feature The input track's feature.
-   * @return The matched track ID, -1 if it's not matched.
-   */
-  int findMatchTrack(const std::vector<float>& feature);
-  /**
-   * @brief Update the matched track's feature by the new track.
-   * @param[in] track_id The matched track ID.
-   * @param[in] feature The matched track's feature
-   */
-  void updateMatchTrack(int track_id, const std::vector<float>& feature);
-  /**
-   * @brief Update the recorded tracks' lost.
-   */
-  void updateAllTracksLost();
-  /**
-   * @brief Remove the old tracks from the recorded tracks.
-   */
-  void removeOldTracks();
-  /**
-   * @brief Add a new track to the recorded tracks.
-   * @param[in] feature A track's feature.
-   */
-  void addNewTrack(const std::vector<float>& feature);
-  /**
-   * @brief Calculate the cosine similarity between two features.
-   * @return The simlarity result.
-   */
-  double calcSimilarity(
-    const std::vector<float> & feature_a, const std::vector<float> & feature_b);
-
-  struct Track
-  {
-    int lost;
-    std::vector<float> feature;
-  };
-  
-  int drop_lost_thresh_ = 10000;
-  int max_track_id_ = -1;
-  double max_match_similarity_ = 0;
-  double same_track_thresh_ = 0.8;
-  double new_track_thresh_ = 0.4;
-  std::unordered_map<int, Track> recorded_tracks_;
 };
 
 /**
@@ -160,15 +102,11 @@ public:
    * @return The name of the Inference instance.
    */
   const std::string getName() const override;
-  float calcSimilarity(const std::vector<float> & face_a, const std::vector<float> & face_b);
-  std::string findMatchFace(const std::vector<float> & new_face);
 
 private:
   std::shared_ptr<Models::FaceReidentificationModel> valid_model_;
   std::vector<Result> results_;
-  std::shared_ptr<dynamic_vino_lib::FaceTracker> face_tracker_;
-  std::vector<std::vector<float>> recorded_faces_;
-  double match_thresh_ = 0;
+  std::shared_ptr<dynamic_vino_lib::Tracker> face_tracker_;
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__FACE_REIDENTIFICATION_HPP_
