@@ -14,15 +14,23 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
+    - name: FaceReidentification
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-reidentification-retail-0071/FP32/face-reidentification-retail-0071.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
   outputs: [ImageWindow]
   connects:
     - left: StandardCamera
       right: [FaceDetection]
     - left: FaceDetection
-      right: [LandmarksDetection]
+      right: [LandmarksDetection, FaceReidentification]
     - left: FaceDetection
       right: [ImageWindow]
     - left: LandmarksDetection
+      right: [ImageWindow]
+    - left: FaceReidentification
       right: [ImageWindow]
 
 Common:

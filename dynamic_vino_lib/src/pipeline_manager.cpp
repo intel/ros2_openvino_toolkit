@@ -32,6 +32,7 @@
 #include "dynamic_vino_lib/inferences/person_reidentification.hpp"
 #include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/landmarks_detection.hpp"
+#include "dynamic_vino_lib/inferences/face_reidentification.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
@@ -45,6 +46,7 @@
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/models/person_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
+#include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
@@ -205,6 +207,8 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineParams & par
       object = createPersonAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LandmarksDetection) {
       object = createLandmarksDetection(infer);
+    } else if (infer.name == kInferTpye_FaceReidentification) {
+      object = createFaceReidentification(infer);
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -348,6 +352,22 @@ PipelineManager::createLandmarksDetection(
   return landmarks_inference_ptr;
 }
 
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createFaceReidentification(
+  const Params::ParamManager::InferenceParams & infer)
+{
+  auto face_reidentification_model =
+    std::make_shared<Models::FaceReidentificationModel>(infer.model, 1, 1, infer.batch);
+  face_reidentification_model->modelInit();
+  auto face_reidentification_engine = std::make_shared<Engines::Engine>(
+    plugins_for_devices_[infer.engine], face_reidentification_model);
+  auto face_reid_ptr =
+    std::make_shared<dynamic_vino_lib::FaceReidentification>(infer.confidence_threshold);
+  face_reid_ptr->loadNetwork(face_reidentification_model);
+  face_reid_ptr->loadEngine(face_reidentification_engine);
+
+  return face_reid_ptr;
+}
 
 void PipelineManager::threadPipeline(const char * name)
 {
