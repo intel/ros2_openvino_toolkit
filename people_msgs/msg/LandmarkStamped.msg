@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This message can represent a reidentified target and its ID
-string identity  					# target ID
-sensor_msgs/RegionOfInterest roi    # region of interest
+# This message can represent the detected ROIs and their landmarks
+std_msgs/Header header        			# timestamp in header is the time the sensor captured the raw data
+Landmark[] landmarks					# landmarks vector for different ROIs

@@ -13,8 +13,7 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of BaseReidentification class and
- * BaseReidentificationResult class
+ * @brief a header file with declaration of BaseReidentification class
  * @file base_reidentification.cpp
  */
 #include "dynamic_vino_lib/inferences/base_reidentification.hpp"

@@ -27,6 +27,10 @@
 // namespace
 namespace dynamic_vino_lib
 {
+/**
+ * @class Tracker
+ * @brief Class for storing and tracking the detected objects.
+ */
 class Tracker
 {
 public:

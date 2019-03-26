@@ -39,6 +39,18 @@ void Outputs::RvizOutput::feedFrame(const cv::Mat & frame)
 }
 
 void Outputs::RvizOutput::accept(
+  const std::vector<dynamic_vino_lib::FaceReidentificationResult> & results)
+{
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(
+  const std::vector<dynamic_vino_lib::LandmarksDetectionResult> & results)
+{
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(
   const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> & results)
 {
   image_window_output_->accept(results);

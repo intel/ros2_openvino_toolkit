@@ -19,18 +19,18 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
-      confidence_threshold: 0.5
-  outputs: [ImageWindow]
+      confidence_threshold: 0.9
+  outputs: [ImageWindow, RosTopic, RViz]
   connects:
     - left: StandardCamera
       right: [FaceDetection]
     - left: FaceDetection
       right: [LandmarksDetection, FaceReidentification]
     - left: FaceDetection
-      right: [ImageWindow]
+      right: [ImageWindow, RosTopic, RViz]
     - left: LandmarksDetection
-      right: [ImageWindow]
+      right: [ImageWindow, RosTopic, RViz]
     - left: FaceReidentification
-      right: [ImageWindow]
+      right: [ImageWindow, RosTopic, RViz]
 
 Common:
