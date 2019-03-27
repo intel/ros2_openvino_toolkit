@@ -259,7 +259,7 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::decorateFrame()
 {
   if (getPipeline()->getParameters()->isGetFps()) {
-    int fps = getFPS();
+    int fps = getPipeline()->getFPS();
     std::stringstream ss;
     ss << "FPS: " << fps;
     cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX, 0.5,
