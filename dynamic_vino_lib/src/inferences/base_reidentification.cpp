@@ -96,7 +96,7 @@ void dynamic_vino_lib::Tracker::updateMatchTrack(
 
 void dynamic_vino_lib::Tracker::removeEarlestTrack()
 {
-  int64 earlest_time = LONG_MAX;
+  int64_t earlest_time = LONG_MAX;
   auto remove_iter = recorded_tracks_.begin();
   for (auto iter = recorded_tracks_.begin(); iter != recorded_tracks_.end(); iter++) {
     if (iter->second.lastest_update_time < earlest_time) {
@@ -120,11 +120,11 @@ int dynamic_vino_lib::Tracker::addNewTrack(const std::vector<float> & feature)
   return max_track_id_;
 }
 
-int64 dynamic_vino_lib::Tracker::getCurrentTime()
+int64_t dynamic_vino_lib::Tracker::getCurrentTime()
 {
   auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(
     std::chrono::system_clock::now());
-  return static_cast<int64>(tp.time_since_epoch().count());
+  return static_cast<int64_t>(tp.time_since_epoch().count());
 }
 
 bool dynamic_vino_lib::Tracker::saveTracksToFile(std::string filepath)
@@ -157,7 +157,7 @@ bool dynamic_vino_lib::Tracker::loadTracksFromFile(std::string filepath)
   recorded_tracks_.clear();
   while (!infile.eof()) {
     int track_id;
-    int64 lastest_update_time;
+    int64_t lastest_update_time;
     std::vector<float> feature;
     infile >> track_id >> lastest_update_time;
     for (int num = 0; num < 256; num++) {
