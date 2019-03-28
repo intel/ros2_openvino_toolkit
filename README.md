@@ -268,4 +268,4 @@ One-step installation scripts are provided for the dependencies' installation. P
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
-
+###### *Any security issue should be reported using process at https://01.org/security*
