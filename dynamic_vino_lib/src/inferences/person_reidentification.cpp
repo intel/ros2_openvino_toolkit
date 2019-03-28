@@ -33,7 +33,7 @@ dynamic_vino_lib::PersonReidentificationResult::PersonReidentificationResult(
 dynamic_vino_lib::PersonReidentification::PersonReidentification(double match_thresh)
 : dynamic_vino_lib::BaseInference()
 {
-  person_tracker_ = std::make_shared<dynamic_vino_lib::Tracker>(100000, match_thresh, 0.3);
+  person_tracker_ = std::make_shared<dynamic_vino_lib::Tracker>(1000, match_thresh, 0.3);
 }
 
 dynamic_vino_lib::PersonReidentification::~PersonReidentification() = default;

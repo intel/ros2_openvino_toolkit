@@ -1,5 +1,3 @@
-
-
 // Copyright (c) 2018 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,6 +20,7 @@
 #define DYNAMIC_VINO_LIB__INFERENCES__BASE_REIDENTIFICATION_HPP_
 #include <vector>
 #include <cmath>
+#include <string>
 #include <unordered_map>
 
 // namespace
@@ -40,50 +39,55 @@ public:
    * @param[in] feature The new detected track feature.
    * @return The detected track ID.
    */
-  int processNewTrack(const std::vector<float>& feature);
+  int processNewTrack(const std::vector<float> & feature);
 
 private:
   /**
-   * @brief Find the matched track from the recorded tracks.
+   * @brief Find the most similar track from the recorded tracks.
    * @param[in] feature The input track's feature.
-   * @return The matched track ID, -1 if it's not matched.
+   * @param[in] most similar track's ID to be recorded.
+   * @return similarity with the most similar track.
    */
-  int findMatchTrack(const std::vector<float>& feature);
+  double findMostSimilarTrack(const std::vector<float> & feature, int & most_similar_id);
   /**
    * @brief Update the matched track's feature by the new track.
    * @param[in] track_id The matched track ID.
    * @param[in] feature The matched track's feature
    */
-  void updateMatchTrack(int track_id, const std::vector<float>& feature);
+  void updateMatchTrack(int track_id, const std::vector<float> & feature);
   /**
-   * @brief Update the recorded tracks' lost.
+   * @brief Remove the earlest track from the recorded tracks.
    */
-  void updateAllTracksLost();
+  void removeEarlestTrack();
   /**
-   * @brief Remove the old tracks from the recorded tracks.
-   */
-  void removeOldTracks();
-  /**
-   * @brief Add a new track to the recorded tracks.
+   * @brief Add a new track to the recorded tracks, remove oldest track if needed.
    * @param[in] feature A track's feature.
+   * @return new added track's ID.
    */
-  void addNewTrack(const std::vector<float>& feature);
+  int addNewTrack(const std::vector<float> & feature);
   /**
    * @brief Calculate the cosine similarity between two features.
    * @return The simlarity result.
    */
   double calcSimilarity(
     const std::vector<float> & feature_a, const std::vector<float> & feature_b);
+  /**
+   * @brief get the current millisecond count since epoch.
+   * @return millisecond count since epoch.
+   */
+  int64 getCurrentTime();
+
+  bool saveTracksToFile(std::string filepath);
+  bool loadTracksFromFile(std::string filepath);
 
   struct Track
   {
-    int lost;
+    int64 lastest_update_time;
     std::vector<float> feature;
   };
-  
-  int lost_track_thresh_ = 10000;
+
+  int max_record_size_ = 1000;
   int max_track_id_ = -1;
-  double max_match_similarity_ = 0;
   double same_track_thresh_ = 0.9;
   double new_track_thresh_ = 0.3;
   std::unordered_map<int, Track> recorded_tracks_;

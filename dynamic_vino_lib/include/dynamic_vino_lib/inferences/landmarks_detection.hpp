@@ -55,7 +55,7 @@ class LandmarksDetection : public BaseInference
 {
 public:
   using Result = dynamic_vino_lib::LandmarksDetectionResult;
-  explicit LandmarksDetection();
+  LandmarksDetection();
   ~LandmarksDetection() override;
   /**
    * @brief Load the landmarks detection model.

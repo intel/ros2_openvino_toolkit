@@ -16,51 +16,56 @@
  * @brief a header file with declaration of BaseReidentification class
  * @file base_reidentification.cpp
  */
+#include <vector>
+#include <utility>
+#include <climits>
+#include <chrono>
+#include <fstream>
+#include <string>
 #include "dynamic_vino_lib/inferences/base_reidentification.hpp"
+#include "dynamic_vino_lib/slog.hpp"
 
 // Tracker
 dynamic_vino_lib::Tracker::Tracker(
-  int lost_track_thresh, double same_track_thresh, double new_track_thresh)
-: lost_track_thresh_(lost_track_thresh),
+  int max_record_size, double same_track_thresh, double new_track_thresh)
+: max_record_size_(max_record_size),
   same_track_thresh_(same_track_thresh),
   new_track_thresh_(new_track_thresh) {}
 
-int dynamic_vino_lib::Tracker::processNewTrack(const std::vector<float>& feature)
+int dynamic_vino_lib::Tracker::processNewTrack(const std::vector<float> & feature)
 {
-  int track_id = findMatchTrack(feature);
-  updateAllTracksLost();
-  if (track_id >= 0 and max_match_similarity_ > same_track_thresh_) {
-    updateMatchTrack(track_id, feature);
+  int most_similar_id;
+  double similarity = findMostSimilarTrack(feature, most_similar_id);
+  if (similarity > same_track_thresh_) {
+    updateMatchTrack(most_similar_id, feature);
+  } else if (similarity < new_track_thresh_) {
+    most_similar_id = addNewTrack(feature);
   }
-  else if (max_match_similarity_ < new_track_thresh_) {
-    addNewTrack(feature);
-    track_id = max_track_id_;
-  }
-  removeOldTracks();
-  return track_id;
+  return most_similar_id;
 }
 
-int dynamic_vino_lib::Tracker::findMatchTrack(const std::vector<float>& feature)
+double dynamic_vino_lib::Tracker::findMostSimilarTrack(
+  const std::vector<float> & feature, int & most_similar_id)
 {
-  double max_sim = 0;
-  int match_track_id = -1;
+  double max_similarity = 0;
+  most_similar_id = -1;
   for (auto iter = recorded_tracks_.begin(); iter != recorded_tracks_.end(); iter++) {
     double sim = calcSimilarity(feature, iter->second.feature);
-    if (sim > max_sim) {
-      max_sim = sim;
-      match_track_id = iter->first;
+    if (sim > max_similarity) {
+      max_similarity = sim;
+      most_similar_id = iter->first;
     }
   }
-  max_match_similarity_ = max_sim;
-  return match_track_id;
+  return max_similarity;
 }
 
 double dynamic_vino_lib::Tracker::calcSimilarity(
-  const std::vector<float> & feature_a, const std::vector<float> & feature_b) {
+  const std::vector<float> & feature_a, const std::vector<float> & feature_b)
+{
   if (feature_a.size() != feature_b.size()) {
-    throw std::logic_error("cosine similarity can't be called for vectors of different lengths: "
-            "feature_a size = " + std::to_string(feature_a.size()) +
-            "feature_b size = " + std::to_string(feature_b.size()));
+    slog::err << "cosine similarity can't be called for vectors of different lengths: " <<
+      "feature_a size = " << std::to_string(feature_a.size()) <<
+      "feature_b size = " << std::to_string(feature_b.size()) << slog::endl;
   }
   float mul_sum, denom_a, denom_b, value_a, value_b;
   mul_sum = denom_a = denom_b = value_a = value_b = 0;
@@ -72,41 +77,100 @@ double dynamic_vino_lib::Tracker::calcSimilarity(
     denom_b += value_b * value_b;
   }
   if (denom_a == 0 || denom_b == 0) {
-    throw std::logic_error("cosine similarity is not defined whenever one or both "
-            "input vectors are zero-vectors.");
+    slog::err << "cosine similarity is not defined whenever one or both "
+      "input vectors are zero-vectors." << slog::endl;
   }
   return mul_sum / (sqrt(denom_a) * sqrt(denom_b));
 }
 
 void dynamic_vino_lib::Tracker::updateMatchTrack(
-  int track_id, const std::vector<float>& feature) {
+  int track_id, const std::vector<float> & feature)
+{
   if (recorded_tracks_.find(track_id) != recorded_tracks_.end()) {
     recorded_tracks_[track_id].feature.assign(feature.begin(), feature.end());
-    recorded_tracks_[track_id].lost = 0;
-  }
-  else {
-    throw std::logic_error("updating a non-existing track.");
-  }
-}
-
-void dynamic_vino_lib::Tracker::updateAllTracksLost() {
-  for (auto iter = recorded_tracks_.begin(); iter != recorded_tracks_.end(); iter++) {
-    iter->second.lost += 1;
+    recorded_tracks_[track_id].lastest_update_time = getCurrentTime();
+  } else {
+    slog::err << "updating a non-existing track." << slog::endl;
   }
 }
 
-void dynamic_vino_lib::Tracker::removeOldTracks() {
+void dynamic_vino_lib::Tracker::removeEarlestTrack()
+{
+  int64 earlest_time = LONG_MAX;
+  auto remove_iter = recorded_tracks_.begin();
   for (auto iter = recorded_tracks_.begin(); iter != recorded_tracks_.end(); iter++) {
-    if (iter->second.lost > lost_track_thresh_) {
-      recorded_tracks_.erase(iter);
+    if (iter->second.lastest_update_time < earlest_time) {
+      earlest_time = iter->second.lastest_update_time;
+      remove_iter = iter;
     }
   }
+  recorded_tracks_.erase(remove_iter);
 }
 
-void dynamic_vino_lib::Tracker::addNewTrack(const std::vector<float>& feature) {
+int dynamic_vino_lib::Tracker::addNewTrack(const std::vector<float> & feature)
+{
   Track track;
-  track.lost = 0;
+  track.lastest_update_time = getCurrentTime();
   track.feature.assign(feature.begin(), feature.end());
+  if (recorded_tracks_.size() >= max_record_size_) {
+    removeEarlestTrack();
+  }
   max_track_id_ += 1;
   recorded_tracks_.insert(std::pair<int, Track>(max_track_id_, track));
+  return max_track_id_;
+}
+
+int64 dynamic_vino_lib::Tracker::getCurrentTime()
+{
+  auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(
+    std::chrono::system_clock::now());
+  return static_cast<int64>(tp.time_since_epoch().count());
+}
+
+bool dynamic_vino_lib::Tracker::saveTracksToFile(std::string filepath)
+{
+  std::ofstream outfile(filepath);
+  if (!outfile.is_open()) {
+    slog::err << "file not exists in file path: " << filepath << slog::endl;
+    return false;
+  }
+  for (auto record : recorded_tracks_) {
+    outfile << record.first << " " <<
+      record.second.lastest_update_time << " ";
+    for (auto elem : record.second.feature) {
+      outfile << elem << " ";
+    }
+    outfile << "\n";
+  }
+  outfile.close();
+  slog::info << "sucessfully save tracks into file: " << filepath << slog::endl;
+  return true;
+}
+
+bool dynamic_vino_lib::Tracker::loadTracksFromFile(std::string filepath)
+{
+  std::ifstream infile(filepath);
+  if (!infile.is_open()) {
+    slog::err << "file not exists in file path: " << filepath << slog::endl;
+    return false;
+  }
+  recorded_tracks_.clear();
+  while (!infile.eof()) {
+    int track_id;
+    int64 lastest_update_time;
+    std::vector<float> feature;
+    infile >> track_id >> lastest_update_time;
+    for (int num = 0; num < 256; num++) {
+      float elem;
+      infile >> elem;
+      feature.push_back(elem);
+    }
+    Track track;
+    track.lastest_update_time = lastest_update_time;
+    track.feature = feature;
+    recorded_tracks_[track_id] = track;
+  }
+  infile.close();
+  slog::info << "sucessfully load tracks from file: " << filepath << slog::endl;
+  return true;
 }
