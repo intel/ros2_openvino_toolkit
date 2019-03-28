@@ -72,16 +72,16 @@ bool dynamic_vino_lib::LandmarksDetection::fetchResults()
   const float * output_values = request->GetBlob(output)->buffer().as<float *>();
   int result_length = request->GetBlob(output)->getTensorDesc().getDims()[1];
   for (int i = 0; i < getResultsLength(); i++) {
-      std::vector<float> coordinates = std::vector<float>(
-        output_values + result_length * i, output_values + result_length * (i + 1));
-      for (int j = 0; j < result_length; j += 2) {
-        cv::Rect rect = results_[i].getLocation();
-        int col = int (coordinates[j] * rect.width);
-        int row = int (coordinates[j+1] * rect.height);
-        cv::Point landmark_point(rect.x + col, rect.y + row);
-        results_[i].landmark_points_.push_back(landmark_point);
-      }
-      found_result = true;
+    std::vector<float> coordinates = std::vector<float>(
+      output_values + result_length * i, output_values + result_length * (i + 1));
+    for (int j = 0; j < result_length; j += 2) {
+      cv::Rect rect = results_[i].getLocation();
+      int col = static_cast<int>(coordinates[j] * rect.width);
+      int row = static_cast<int>(coordinates[j + 1] * rect.height);
+      cv::Point landmark_point(rect.x + col, rect.y + row);
+      results_[i].landmark_points_.push_back(landmark_point);
+    }
+    found_result = true;
   }
   if (!found_result) {results_.clear();}
   return true;

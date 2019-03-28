@@ -79,7 +79,7 @@ void Outputs::ImageWindowOutput::accept(
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
     std::vector<cv::Point> landmark_points = results[i].getLandmarks();
-    for (int j = 0; j < landmark_points.size(); j++){
+    for (int j = 0; j < landmark_points.size(); j++) {
       outputs_[target_index].landmarks.push_back(landmark_points[j]);
     }
   }

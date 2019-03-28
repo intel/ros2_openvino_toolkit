@@ -31,8 +31,9 @@ dynamic_vino_lib::FaceReidentificationResult::FaceReidentificationResult(
 
 // FaceReidentification
 dynamic_vino_lib::FaceReidentification::FaceReidentification(double match_thresh)
-: dynamic_vino_lib::BaseInference() {
-  face_tracker_ = std::make_shared<dynamic_vino_lib::Tracker>(100000, match_thresh, 0.3);
+: dynamic_vino_lib::BaseInference()
+{
+  face_tracker_ = std::make_shared<dynamic_vino_lib::Tracker>(1000, match_thresh, 0.3);
 }
 
 dynamic_vino_lib::FaceReidentification::~FaceReidentification() = default;
