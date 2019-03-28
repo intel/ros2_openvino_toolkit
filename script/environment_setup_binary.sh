@@ -76,7 +76,7 @@ if [ "$ROS2_SRC" == "1" ]; then
 
   mkdir -p ~/ros2_ws/src
   cd ~/ros2_ws
-  wget https://raw.githubusercontent.com/ros2/ros2/crystal/ros2.repos
+  wget https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
   vcs-import src < ros2.repos
 
   if [ ! -f "/etc/ros/rosdep/sources.list.d/20-default.list" ]; then
