@@ -75,14 +75,14 @@ private:
    * @brief get the current millisecond count since epoch.
    * @return millisecond count since epoch.
    */
-  int64 getCurrentTime();
+  int64_t getCurrentTime();
 
   bool saveTracksToFile(std::string filepath);
   bool loadTracksFromFile(std::string filepath);
 
   struct Track
   {
-    int64 lastest_update_time;
+    int64_t lastest_update_time;
     std::vector<float> feature;
   };
 
