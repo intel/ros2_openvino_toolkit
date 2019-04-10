@@ -184,13 +184,13 @@ int Pipeline::getCatagoryOrder(const std::string name)
 void Pipeline::runOnce()
 {
   initInferenceCounter();
-  countFPS();
 
   if (!input_device_->read(&frame_)) {
     // throw std::logic_error("Failed to get frame from cv::VideoCapture");
     slog::warn << "Failed to get frame from input_device." << slog::endl;
     return;
   }
+  countFPS();
   width_ = frame_.cols;
   height_ = frame_.rows;
   for (auto & pair : name_to_output_map_) {
