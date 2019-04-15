@@ -57,7 +57,7 @@ find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(librealsense2 REQUIRED)
+find_package(realsense2 REQUIRED)
 
 if(OpenCV_FOUND)
     message(STATUS "OPENCV is enabled")
@@ -113,7 +113,7 @@ include_directories(${InferenceEngine_INCLUDE_DIRS}/../src)
 include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
 include_directories(${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
 
-include_directories(${librealsense2_INCLUDE_DIRS})
+include_directories(${realsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
 
 # Create library file from sources.
@@ -152,7 +152,7 @@ ament_target_dependencies(pipeline_with_params
   "vino_param_lib"
   "OpenCV"
   "rviz_yaml_cpp_vendor"
-  "librealsense2"
+  "realsense2"
 )
 
 add_executable(image_object_server

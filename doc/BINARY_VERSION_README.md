@@ -68,6 +68,27 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo apt update
 		sudo apt install libjasper1 libjasper-dev
 		```
+- Install Intel® RealSense™ SDK 2.0 [(tag v2.17.1)](https://github.com/IntelRealSense/librealsense/tree/v2.17.1)<br>
+	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/installation.md)(Recommended)<br>
+		```bash
+		 sudo apt-get install git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+		 sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+		 mkdir -p ~/code && cd ~/code
+		 git clone https://github.com/IntelRealSense/librealsense
+		 cd ~/code/librealsense
+		 git checkout v2.17.1
+		 mkdir build && cd build
+		 cmake ../ -DBUILD_EXAMPLES=true
+		 sudo make uninstall 
+		 make clean
+		 make
+		 sudo make install
+		 cd ..
+		 sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+		 sudo udevadm control --reload-rules
+		 udevadm trigger
+		```
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/distribution_linux.md)<br>
 - Other Dependencies
 	```bash
 	#librealsense dependency
@@ -106,12 +127,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
 	git clone https://github.com/ros-perception/image_common.git -b ros2
-	git clone https://github.com/IntelRealSense/librealsense.git -b ros2debian
 	git clone https://github.com/intel/ros2_intel_realsense.git
-	cd ~/ros2_overlay_ws/src/librealsense
-	sudo cp ./config/99-realsense-libusb.rules /etc/udev/rules.d/
-	sudo udevadm control --reload-rules
-	udevadm trigger
 	```
 
 * Build package
@@ -143,8 +159,11 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
       sudo ln -sf ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
       #object detection model
       cd /opt/intel/computer_vision_sdk/deployment_tools/model_downloader
-      sudo python3 downloader.py --name ssd300
-      sudo python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/ssd300.caffemodel --output_dir /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/output/
+      sudo python3 ./downloader.py --name mobilenet-ssd
+      #FP32 precision model
+      sudo python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+      #FP16 precision model
+      sudo python3 /opt/intel/computer_vision_sdk/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
       ```
 	* copy label files (excute _once_)<br>
 		```bash
@@ -152,10 +171,12 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP16
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/ssd300.labels /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/ssd/300/caffe/output
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/intel/computer_vision_sdk/deployment_tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
 		```
-	* set ENV LD_LIBRARY_PATH
+	* set ENV LD_LIBRARY_PATH and environment
 		```bash
+		source /opt/intel/computer_vision_sdk/bin/setupvars.sh
 		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
 		```
 * run face detection sample code input from StandardCamera.(connect Intel® Neural Compute Stick 2)
@@ -166,11 +187,15 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_image.launch.py
 	```
-* run object detection sample code input from RealSenseCamera.
+* run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object.launch.py
 	```
-* run object segmentation sample code input from RealSenseCameraTopic.
+* run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_object_topic.launch.py
+	```
+* run object segmentation sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
 	```
@@ -211,5 +236,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
 	> solution - Please refer to the [guide](https://software.intel.com/en-us/neural-compute-stick/get-started) to set up the environment.
+
+
 
 

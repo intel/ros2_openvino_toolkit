@@ -186,8 +186,11 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo ln -s ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
 		#object detection model
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
-		python3 downloader.py --name ssd300
-		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/ssd300.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output/
+		python3 ./downloader.py --name mobilenet-ssd
+		#FP32 precision model
+		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+		#FP16 precision model
+		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
 	* download the optimized Intermediate Representation (IR) of model (excute _once_)<br>
 		```bash
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
@@ -203,7 +206,8 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/ssd300.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/ssd/300/caffe/output
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
 		```
 	* set ENV LD_LIBRARY_PATH<br>
 		```bash
@@ -217,11 +221,11 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_image_oss.launch.py
 	```
-* run object detection sample code input from RealSenseCamera.
+* run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
 	```
-* run object detection sample code input from RealSenseCameraTopic.
+* run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
 	```
@@ -264,4 +268,4 @@ One-step installation scripts are provided for the dependencies' installation. P
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
-
+###### *Any security issue should be reported using process at https://01.org/security*

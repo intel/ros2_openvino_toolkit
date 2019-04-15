@@ -32,6 +32,10 @@ OPENCV=`cat modules.conf | grep 'opencv'`
 OPENCV=${OPENCV##*=}
 echo "Set OPENCV to $OPENCV"
 
+LIBREALSENSE=`cat modules.conf | grep 'librealsense'`
+LIBREALSENSE=${LIBREALSENSE##*=}
+echo "Set LIBREALSENSE to $LIBREALSENSE"
+
 OTHER_DEPENDENCY=`cat modules.conf | grep 'other_dependency'`
 OTHER_DEPENDENCY=${OTHER_DEPENDENCY##*=}
 echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
@@ -72,7 +76,7 @@ if [ "$ROS2_SRC" == "1" ]; then
 
   mkdir -p ~/ros2_ws/src
   cd ~/ros2_ws
-  wget https://raw.githubusercontent.com/ros2/ros2/crystal/ros2.repos
+  wget https://raw.githubusercontent.com/ros2/ros2/master/ros2.repos
   vcs-import src < ros2.repos
 
   if [ ! -f "/etc/ros/rosdep/sources.list.d/20-default.list" ]; then
@@ -114,6 +118,29 @@ if [ "$OPENCL" == "1" ]; then
    echo $ROOT_PASSWD | sudo -S ./install_NEO_OCL_driver.sh
 
    echo "==== END install OpenCL ===="
+fi
+
+# Setup LIBREALSENSE
+if [ "$LIBREALSENSE" == "1" ]; then
+  echo "===================Setting Up LibRealSense...======================="
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+  mkdir -p ~/code && cd ~/code
+  git clone https://github.com/IntelRealSense/librealsense
+  cd ~/code/librealsense
+  git checkout v2.17.1
+  mkdir build && cd build
+  cmake ../ -DBUILD_EXAMPLES=true
+  echo $ROOT_PASSWD | sudo -S make uninstall
+  make clean
+  make
+  echo $ROOT_PASSWD | sudo -S make install
+
+  cd ..
+  echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+  echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
+  udevadm trigger
+  echo "==== END install librealsense ===="
 fi
 
 # Setup OpenCV

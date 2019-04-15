@@ -190,6 +190,7 @@ void Pipeline::runOnce()
     slog::warn << "Failed to get frame from input_device." << slog::endl;
     return;
   }
+  countFPS();
   width_ = frame_.cols;
   height_ = frame_.rows;
   for (auto & pair : name_to_output_map_) {
@@ -288,15 +289,40 @@ void Pipeline::initInferenceCounter()
   counter_ = 0;
   cv_.notify_all();
 }
+
 void Pipeline::increaseInferenceCounter()
 {
   std::lock_guard<std::mutex> lk(counter_mutex_);
   ++counter_;
   // slog::info << "counter = " << counter_ << slog::endl;
 }
+
 void Pipeline::decreaseInferenceCounter()
 {
   std::lock_guard<std::mutex> lk(counter_mutex_);
   --counter_;
   // slog::info << "counter = " << counter_ << slog::endl;
 }
+
+void Pipeline::countFPS()
+{
+  static int fps = 0;
+
+  static auto t_start = std::chrono::high_resolution_clock::now();
+  static int frame_cnt = 0;
+
+  frame_cnt++;
+
+  auto t_end = std::chrono::high_resolution_clock::now();
+  typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
+  ms secondDetection = std::chrono::duration_cast<ms>(t_end - t_start);
+
+  if (secondDetection.count() > 1000) {
+    fps = frame_cnt;
+    setFPS(fps);
+    frame_cnt = 0;
+    t_start = t_end;
+  }
+
+} 
+
