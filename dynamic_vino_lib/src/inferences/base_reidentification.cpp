@@ -22,6 +22,7 @@
 #include <chrono>
 #include <fstream>
 #include <string>
+#include <functional>
 #include "dynamic_vino_lib/inferences/base_reidentification.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
