@@ -21,6 +21,8 @@
 #include <vector>
 #include <cmath>
 #include <string>
+#include <thread>
+#include <mutex>
 #include <unordered_map>
 
 // namespace
@@ -90,6 +92,7 @@ private:
   int max_track_id_ = -1;
   double same_track_thresh_ = 0.9;
   double new_track_thresh_ = 0.3;
+  std::mutex tracks_mtx_;
   std::unordered_map<int, Track> recorded_tracks_;
 };
 
