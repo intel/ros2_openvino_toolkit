@@ -46,14 +46,24 @@ echo "Set OTHER_DEPENDENCY to $OTHER_DEPENDENCY"
 
 # Clean Existing Directories
 if [ "$CLEAN" == "1" ]; then
-  echo "===================Cleaning...===================================="
-  
-  echo $ROOT_PASSWD | sudo -S rm -rf ~/code
-  rm -rf ~/ros2_ws
-  echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
-  if [[ $system_ver = "16.04" && -L "/usr/lib/x86_64-linux-gnu/libboost_python3.so" ]]; then
-    echo $ROOT_PASSWD | sudo -S rm /usr/lib/x86_64-linux-gnu/libboost_python3.so
-  fi
+  echo "===================Clean Existing Directories...===================================="
+
+  read -n1 -p "The clean operation will delete some manually created directories,
+  including ~/code, ~/ros2_ws, /opt/intel, /opt/openvino_toolkit, and OpenVINO tar ball.
+  Do you want to clean existing directories[Y/N]?" answer
+  case $answer in
+        Y|y) echo
+                echo "===================Cleaning...===================================="
+  		echo $ROOT_PASSWD | sudo -S rm -rf ~/code
+  		rm -rf ~/ros2_ws
+  		echo $ROOT_PASSWD | sudo -S rm -rf /opt/openvino_toolkit
+  		if [[ $system_ver = "16.04" && -L "/usr/lib/x86_64-linux-gnu/libboost_python3.so" ]]; then
+    			echo $ROOT_PASSWD | sudo -S rm /usr/lib/x86_64-linux-gnu/libboost_python3.so
+  		fi
+                echo "===================Clean finish...====================================";;
+        N|n) echo
+                echo "===================not clean, continue...====================================";;
+  esac
 fi
 
 # Setup ROS2 from src
