@@ -33,7 +33,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
 
 ## 3. Environment Setup
-**Note**:You can choose to build the environment using *./environment_setup_binary.sh* script in the script subfolder.
+**Note**:You can choose to build the environment using *./environment_setup_binary.sh* script in the script subfolder.The *modules.conf* file in the same directory as the .sh file is the configuration file that controls the installation process.You can modify the *modules.conf* to customize your installation process.
 ```bash
 ./environment_setup_binary.sh
 ```
