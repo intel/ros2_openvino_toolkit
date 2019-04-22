@@ -80,9 +80,9 @@ int main(int argc, char ** argv)
       cv::Point left_top = cv::Point(xmin, ymin);
       cv::Point right_bottom = cv::Point(xmax, ymax);
       cv::rectangle(image, left_top, right_bottom, cv::Scalar(0, 255, 0), 1, 8, 0);
-      cv::rectangle(image, cvPoint(xmin, ymin), cvPoint(xmax, ymin + 20), cv::Scalar(0, 255, 0),
+      cv::rectangle(image, cv::Point(xmin, ymin), cv::Point(xmax, ymin + 20), cv::Scalar(0, 255, 0),
         -1);
-      cv::putText(image, ss.str(), cvPoint(xmin + 5, ymin + 20), cv::FONT_HERSHEY_PLAIN, 1,
+      cv::putText(image, ss.str(), cv::Point(xmin + 5, ymin + 20), cv::FONT_HERSHEY_PLAIN, 1,
         cv::Scalar(0, 0, 255), 1);
     }
     cv::imshow("image_detection", image);
