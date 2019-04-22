@@ -19,7 +19,7 @@
 #include <string>
 #include "dynamic_vino_lib/models/person_reidentification_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-// Validated Object Detection Network
+// Validated Person Reidentification Network
 Models::PersonReidentificationModel::PersonReidentificationModel(
   const std::string & model_loc, int input_num, int output_num, int max_batch_size)
 : BaseModel(model_loc, input_num, output_num, max_batch_size) {}

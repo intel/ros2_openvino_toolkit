@@ -24,6 +24,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 - OpenVINO™ Toolkit Open Source<br>
   	* The [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt) that helps to enable fast, heterogeneous deep learning inferencing for Intel® processors (CPU and GPU/Intel® Processor Graphics), and supports more than 100 public and custom models.<br>
 	* [Open Model Zoo](https://github.com/opencv/open_model_zoo) includes 20+ pre-trained deep learning models to expedite development and improve deep learning inference on Intel® processors (CPU, Intel Processor Graphics, FPGA, VPU), along with many samples to easily get started.
+
 - RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
 - Graphics are required only if you use a GPU. The official system requirements for GPU are:
 	* 6th to 8th generation Intel® Core™ processors with Iris® Pro graphics and Intel® HD Graphics
@@ -36,7 +37,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
 
 ## 3. Environment Setup
-**Note**:You can choose to build the environment using *./environment_setup.sh* script in the script subfolder.
+**Note**:You can choose to build the environment using *./environment_setup_binary.sh* script in the script subfolder.The *modules.conf* file in the same directory as the .sh file is the configuration file that controls the installation process.You can modify the *modules.conf* to customize your installation process.
 ```bash
 ./environment_setup.sh
 ```
@@ -106,6 +107,29 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo mkdir -p /opt/openvino_toolkit
 		sudo ln -sf ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
+	
+- Install Intel® RealSense™ SDK 2.0 [(tag v2.17.1)](https://github.com/IntelRealSense/librealsense/tree/v2.17.1)<br>
+	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/installation.md)(Recommended)<br>
+		```bash
+		 sudo apt-get install git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
+		 sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
+		 mkdir -p ~/code && cd ~/code
+		 git clone https://github.com/IntelRealSense/librealsense
+		 cd ~/code/librealsense
+		 git checkout v2.17.1
+		 mkdir build && cd build
+		 cmake ../ -DBUILD_EXAMPLES=true
+		 sudo make uninstall 
+		 make clean
+		 make
+		 sudo make install
+		 cd ..
+		 sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
+		 sudo udevadm control --reload-rules
+		 udevadm trigger
+		```
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/distribution_linux.md)<br>
+
 - Other Dependencies
 	```bash
 	#librealsense dependency
@@ -145,12 +169,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
 	git clone https://github.com/ros-perception/image_common.git -b ros2
-	git clone https://github.com/IntelRealSense/librealsense.git -b ros2debian
 	git clone https://github.com/intel/ros2_intel_realsense.git
-	cd ~/ros2_overlay_ws/src/librealsense
-	sudo cp ./config/99-realsense-libusb.rules /etc/udev/rules.d/
-	sudo udevadm control --reload-rules
-	udevadm trigger
 	```
 
 * Build package
@@ -162,4 +181,5 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo mkdir -p /opt/openvino_toolkit
 	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
 	```
+
 

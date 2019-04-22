@@ -19,13 +19,14 @@
 #ifndef DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_
 #define DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_
 
+#include <std_msgs/msg/header.hpp>
 #include <opencv2/opencv.hpp>
 #include <opencv2/highgui/highgui_c.h>
 #include <opencv2/videoio/videoio_c.h>
+#include <std_msgs/msg/header.hpp>
 #include <vector>
 #include <string>
 #include "dynamic_vino_lib/inputs/ros2_handler.hpp"
-#include <std_msgs/msg/header.hpp>
 
 /**
  * @class BaseInputDevice

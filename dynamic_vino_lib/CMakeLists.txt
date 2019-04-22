@@ -43,8 +43,8 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(librealsense2)
-if(NOT librealsense2_FOUND)
+find_package(realsense2)
+if(NOT realsense2_FOUND)
   message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
 endif()
 
@@ -166,14 +166,14 @@ include_directories(
     ${InferenceEngine_INCLUDE_DIRS}/../samples
     ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
     ${InferenceEngine_INCLUDE_DIRS}/../src
-    ${librealsense2_INCLUDE_DIRS}
+    ${realsense2_INCLUDE_DIRS}
 )
 
 if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES ${librealsense2_LIBRARIES} ${OpenCV_LIBS} cpu_extension)
+set(DEPENDENCIES realsense2 ${OpenCV_LIBS} cpu_extension)
 
 add_library(${PROJECT_NAME} SHARED
         src/services/frame_processing_server.cpp
@@ -183,6 +183,7 @@ add_library(${PROJECT_NAME} SHARED
         src/pipeline_manager.cpp
         src/engines/engine.cpp
         src/inferences/base_inference.cpp
+        src/inferences/base_reidentification.cpp
         src/inferences/emotions_detection.cpp
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp
@@ -191,6 +192,8 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/object_segmentation.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
+        src/inferences/landmarks_detection.cpp
+        src/inferences/face_reidentification.cpp
         src/inputs/realsense_camera.cpp
         src/inputs/realsense_camera_topic.cpp
         src/inputs/standard_camera.cpp
@@ -205,6 +208,8 @@ add_library(${PROJECT_NAME} SHARED
         src/models/object_segmentation_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
+        src/models/landmarks_detection_model.cpp
+        src/models/face_reidentification_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp
@@ -223,7 +228,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "people_msgs"
   "ament_index_cpp"
   "class_loader"
-  "librealsense2"
+  "realsense2"
   "cv_bridge"
   "vino_param_lib"
   "yaml_cpp_vendor"

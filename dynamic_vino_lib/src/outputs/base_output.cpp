@@ -15,28 +15,6 @@
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 
-int Outputs::BaseOutput::getFPS() const
-{
-  static int fps = 0;
-
-  static auto t_start = std::chrono::high_resolution_clock::now();
-  static int frame_cnt = 0;
-
-  frame_cnt++;
-
-  auto t_end = std::chrono::high_resolution_clock::now();
-  typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
-  ms secondDetection = std::chrono::duration_cast<ms>(t_end - t_start);
-
-  if (secondDetection.count() > 1000) {
-    fps = frame_cnt;
-    frame_cnt = 0;
-    t_start = t_end;
-  }
-
-  return fps;
-}
-
 void Outputs::BaseOutput::setPipeline(Pipeline * const pipeline)
 {
   pipeline_ = pipeline;

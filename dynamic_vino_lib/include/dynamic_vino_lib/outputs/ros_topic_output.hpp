@@ -35,6 +35,8 @@
 #include <people_msgs/msg/reidentification_stamped.hpp>
 #include <people_msgs/msg/person_attribute.hpp>
 #include <people_msgs/msg/person_attribute_stamped.hpp>
+#include <people_msgs/msg/landmark.hpp>
+#include <people_msgs/msg/landmark_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -65,6 +67,18 @@ public:
    * functions with ros topic.
    */
   void handleOutput() override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the face attributes detection result.
+   * @param[in] results a bundle of face attributes detection results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::FaceReidentificationResult> &) override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the landmarks detection result.
+   * @param[in] results a bundle of landmarks detection results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::LandmarksDetectionResult> &) override;
   /**
    * @brief Generate ros topic infomation according to
    * the person attributes detection result.
@@ -118,6 +132,10 @@ protected:
   std_msgs::msg::Header getHeader();
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;
+  rclcpp::Publisher<people_msgs::msg::LandmarkStamped>::SharedPtr pub_landmarks_;
+  std::shared_ptr<people_msgs::msg::LandmarkStamped> landmarks_topic_;
+  rclcpp::Publisher<people_msgs::msg::ReidentificationStamped>::SharedPtr pub_face_reid_;
+  std::shared_ptr<people_msgs::msg::ReidentificationStamped> face_reid_topic_;
   rclcpp::Publisher<people_msgs::msg::PersonAttributeStamped>::SharedPtr pub_person_attribs_;
   std::shared_ptr<people_msgs::msg::PersonAttributeStamped> person_attribs_topic_;
   rclcpp::Publisher<people_msgs::msg::ReidentificationStamped>::SharedPtr pub_person_reid_;
