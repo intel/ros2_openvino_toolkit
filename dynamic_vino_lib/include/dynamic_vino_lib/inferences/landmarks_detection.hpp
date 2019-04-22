@@ -13,52 +13,54 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for PersonReidentification Class
- * @file person_reidentification.hpp
+ * @brief A header file with declaration for LandmarksDetection Class
+ * @file landmarks_detection.hpp
  */
-#ifndef DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
-#define DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
+#ifndef DYNAMIC_VINO_LIB__INFERENCES__LANDMARKS_DETECTION_HPP_
+#define DYNAMIC_VINO_LIB__INFERENCES__LANDMARKS_DETECTION_HPP_
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <vector>
 #include <string>
-#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
+#include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
-#include "dynamic_vino_lib/inferences/base_reidentification.hpp"
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 // namespace
 namespace dynamic_vino_lib
 {
 /**
- * @class PersonReidentificationResult
- * @brief Class for storing and processing face detection result.
+ * @class LandmarksDetectionResult
+ * @brief Class for storing and processing landmarks detection result.
  */
-class PersonReidentificationResult : public Result
+class LandmarksDetectionResult : public Result
 {
 public:
-  friend class PersonReidentification;
-  explicit PersonReidentificationResult(const cv::Rect & location);
-  std::string getPersonID() const {return person_id_;}
+  friend class LandmarksDetection;
+  explicit LandmarksDetectionResult(const cv::Rect & location);
+  std::vector<cv::Point> getLandmarks() const
+  {
+    return landmark_points_;
+  }
 
 private:
-  std::string person_id_ = "No.#";
+  std::vector<cv::Point> landmark_points_;
 };
 /**
- * @class PersonReidentification
- * @brief Class to load face detection model and perform face detection.
+ * @class LandmarksDetection
+ * @brief Class to load landmarks detection model and perform landmarks detection.
  */
-class PersonReidentification : public BaseInference
+class LandmarksDetection : public BaseInference
 {
 public:
-  using Result = dynamic_vino_lib::PersonReidentificationResult;
-  explicit PersonReidentification(double);
-  ~PersonReidentification() override;
+  using Result = dynamic_vino_lib::LandmarksDetectionResult;
+  LandmarksDetection();
+  ~LandmarksDetection() override;
   /**
-   * @brief Load the face detection model.
+   * @brief Load the landmarks detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::PersonReidentificationModel>);
+  void loadNetwork(std::shared_ptr<Models::LandmarksDetectionModel>);
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.
@@ -103,9 +105,8 @@ public:
   const std::string getName() const override;
 
 private:
-  std::shared_ptr<Models::PersonReidentificationModel> valid_model_;
+  std::shared_ptr<Models::LandmarksDetectionModel> valid_model_;
   std::vector<Result> results_;
-  std::shared_ptr<dynamic_vino_lib::Tracker> person_tracker_;
 };
 }  // namespace dynamic_vino_lib
-#endif  // DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
+#endif  // DYNAMIC_VINO_LIB__INFERENCES__LANDMARKS_DETECTION_HPP_

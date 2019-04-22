@@ -13,18 +13,18 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of PersonAttribsDetectionModel class
- * @file person_attribs_detection_model.cpp
+ * @brief a header file with declaration of LandmarksDetectionModel class
+ * @file landmarks_detection_model.cpp
  */
 #include <string>
-#include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
+#include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-// Validated Person Attributes Detection Network
-Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
+// Validated Landmarks Detection Network
+Models::LandmarksDetectionModel::LandmarksDetectionModel(
   const std::string & model_loc, int input_num, int output_num, int max_batch_size)
 : BaseModel(model_loc, input_num, output_num, max_batch_size) {}
 
-void Models::PersonAttribsDetectionModel::setLayerProperty(
+void Models::LandmarksDetectionModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
 {
   // set input property
@@ -36,27 +36,30 @@ void Models::PersonAttribsDetectionModel::setLayerProperty(
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
+  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
+  output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
   // set input and output layer name
   input_ = input_info_map.begin()->first;
   output_ = output_info_map.begin()->first;
 }
 
-void Models::PersonAttribsDetectionModel::checkLayerProperty(
+void Models::LandmarksDetectionModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader)
 {
   InferenceEngine::InputsDataMap input_info_map(
     net_reader->getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
-    throw std::logic_error("Person Attribs topology should have only one input");
+    throw std::logic_error("Landmarks Detection topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
-    throw std::logic_error("Person Attribs Network expects networks having one output");
+    throw std::logic_error("Landmarks Detection Network expects networks having one output");
   }
 }
 
-const std::string Models::PersonAttribsDetectionModel::getModelName() const
+const std::string Models::LandmarksDetectionModel::getModelName() const
 {
-  return "Person Attributes Detection";
+  return "Landmarks Detection";
 }

@@ -62,6 +62,30 @@ unsigned Outputs::ImageWindowOutput::findOutput(
 }
 
 void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::FaceReidentificationResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += "[" + results[i].getFaceID() + "]";
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::LandmarksDetectionResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    std::vector<cv::Point> landmark_points = results[i].getLandmarks();
+    for (int j = 0; j < landmark_points.size(); j++) {
+      outputs_[target_index].landmarks.push_back(landmark_points[j]);
+    }
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::PersonAttribsDetectionResult> & results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
@@ -279,6 +303,9 @@ void Outputs::ImageWindowOutput::decorateFrame()
     if (o.hp_zs != o.hp_ze) {
       cv::line(frame_, o.hp_zs, o.hp_ze, cv::Scalar(255, 0, 0), 2);
       cv::circle(frame_, o.hp_ze, 3, cv::Scalar(255, 0, 0), 2);
+    }
+    for (int i = 0; i < o.landmarks.size(); i++) {
+      cv::circle(frame_, o.landmarks[i], 3, cv::Scalar(255, 0, 0), 2);
     }
   }
   outputs_.clear();

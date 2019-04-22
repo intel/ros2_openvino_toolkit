@@ -13,16 +13,16 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for PersonReidentification Class
- * @file person_reidentification.hpp
+ * @brief A header file with declaration for FaceReidentification Class
+ * @file face_reidentification.hpp
  */
-#ifndef DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
-#define DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
+#ifndef DYNAMIC_VINO_LIB__INFERENCES__FACE_REIDENTIFICATION_HPP_
+#define DYNAMIC_VINO_LIB__INFERENCES__FACE_REIDENTIFICATION_HPP_
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <vector>
 #include <string>
-#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
+#include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inferences/base_reidentification.hpp"
@@ -32,33 +32,34 @@
 namespace dynamic_vino_lib
 {
 /**
- * @class PersonReidentificationResult
- * @brief Class for storing and processing face detection result.
+ * @class FaceReidentificationResult
+ * @brief Class for storing and processing face reidentification result.
  */
-class PersonReidentificationResult : public Result
+class FaceReidentificationResult : public Result
 {
 public:
-  friend class PersonReidentification;
-  explicit PersonReidentificationResult(const cv::Rect & location);
-  std::string getPersonID() const {return person_id_;}
+  friend class FaceReidentification;
+  explicit FaceReidentificationResult(const cv::Rect & location);
+  std::string getFaceID() const {return face_id_;}
 
 private:
-  std::string person_id_ = "No.#";
+  std::string face_id_ = "No.#";
 };
+
 /**
- * @class PersonReidentification
- * @brief Class to load face detection model and perform face detection.
+ * @class FaceReidentification
+ * @brief Class to load face reidentification model and perform face reidentification.
  */
-class PersonReidentification : public BaseInference
+class FaceReidentification : public BaseInference
 {
 public:
-  using Result = dynamic_vino_lib::PersonReidentificationResult;
-  explicit PersonReidentification(double);
-  ~PersonReidentification() override;
+  using Result = dynamic_vino_lib::FaceReidentificationResult;
+  explicit FaceReidentification(double);
+  ~FaceReidentification() override;
   /**
-   * @brief Load the face detection model.
+   * @brief Load the face reidentification model.
    */
-  void loadNetwork(std::shared_ptr<Models::PersonReidentificationModel>);
+  void loadNetwork(std::shared_ptr<Models::FaceReidentificationModel>);
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.
@@ -92,7 +93,7 @@ public:
    */
   const dynamic_vino_lib::Result * getLocationResult(int idx) const override;
   /**
-   * @brief Show the observed detection result either through image window
+   * @brief Show the observed reidentification result either through image window
      or ROS topic.
    */
   const void observeOutput(const std::shared_ptr<Outputs::BaseOutput> & output);
@@ -103,9 +104,9 @@ public:
   const std::string getName() const override;
 
 private:
-  std::shared_ptr<Models::PersonReidentificationModel> valid_model_;
+  std::shared_ptr<Models::FaceReidentificationModel> valid_model_;
   std::vector<Result> results_;
-  std::shared_ptr<dynamic_vino_lib::Tracker> person_tracker_;
+  std::shared_ptr<dynamic_vino_lib::Tracker> face_tracker_;
 };
 }  // namespace dynamic_vino_lib
-#endif  // DYNAMIC_VINO_LIB__INFERENCES__PERSON_REIDENTIFICATION_HPP_
+#endif  // DYNAMIC_VINO_LIB__INFERENCES__FACE_REIDENTIFICATION_HPP_
