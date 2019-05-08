@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 #include <utility>
+#include <stack>
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 
 namespace dynamic_vino_lib

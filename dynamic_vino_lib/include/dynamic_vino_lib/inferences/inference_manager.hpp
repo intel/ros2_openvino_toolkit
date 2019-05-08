@@ -1,26 +1,25 @@
-/*
- * Copyright (c) 2018 Intel Corporation
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright (c) 2018 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 /**
  * @brief a header file with declaration of Inference Manager class
  * @file inference_manager.hpp
  */
-#ifndef DYNAMIC_VINO_LIB__INFERENCE_MANAGER_HPP_
-#define DYNAMIC_VINO_LIB__INFERENCE_MANAGER_HPP_
+#ifndef DYNAMIC_VINO_LIB__INFERENCES__INFERENCE_MANAGER_HPP_
+#define DYNAMIC_VINO_LIB__INFERENCES__INFERENCE_MANAGER_HPP_
 
+#include <vino_param_lib/param_manager.hpp>
 #include <atomic>
 #include <future>
 #include <map>
@@ -28,8 +27,7 @@
 #include <mutex>
 #include <set>
 #include <string>
-
-#include <vino_param_lib/param_manager.hpp>
+#include <vector>
 #include "dynamic_vino_lib/pipeline.hpp"
 
 /**
@@ -103,4 +101,4 @@ private:
   std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
 };
 
-#endif  // DYNAMIC_VINO_LIB__INFERENCE_MANAGER_HPP_
+#endif  // DYNAMIC_VINO_LIB__INFERENCES__INFERENCE_MANAGER_HPP_
