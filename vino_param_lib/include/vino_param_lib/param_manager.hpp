@@ -58,7 +58,7 @@ public:
    */
   void print() const;
 
-  struct InferenceParams
+  struct InferenceRawData
   {
     std::string name;
     std::string engine;
@@ -67,17 +67,26 @@ public:
     int batch;
     float confidence_threshold = 0.5;
     bool enable_roi_constraint = false;
+  };  
+
+  struct FilterRawData {
+    std::string input;
+    std::string output;
+    std::string filter_conditions;
   };
-  struct PipelineParams
+
+  struct PipelineRawData
   {
     std::string name;
-    std::vector<InferenceParams> infers;
+    std::vector<InferenceRawData> infers;
     std::vector<std::string> inputs;
     std::vector<std::string> outputs;
     std::multimap<std::string, std::string> connects;
     std::string input_meta;
+    std::vector<FilterRawData> filters;
   };
-  struct CommonParams
+  
+  struct CommonRawData
   {
     std::string custom_cpu_library;
     std::string custom_cldnn_library;
@@ -101,9 +110,9 @@ public:
 
   /**
    * @brief Retrieve pipeline parameters.
-   * @return A list of struct PipelineParams storing all pipeline parameters.
+   * @return A list of struct PipelineRawData storing all pipeline parameters.
    */
-  std::vector<PipelineParams> getPipelines() const
+  std::vector<PipelineRawData> getPipelines() const
   {
     return pipelines_;
   }
@@ -114,13 +123,13 @@ public:
    * @param[in] name: the name of the pipeline to be retrieved.
    * @return The pipeline paratmeters, or throw a loginc error.
    */
-  PipelineParams getPipeline(const std::string & name) const;
+  PipelineRawData getPipeline(const std::string & name) const;
 
   /**
    * @brief Retrieve common parameters.
-   * @return struct CommonParams storing all common parameters.
+   * @return struct CommonRawData storing all common parameters.
    */
-  CommonParams getCommon() const
+  CommonRawData getCommon() const
   {
     return common_;
   }
@@ -132,8 +141,8 @@ private:
   ParamManager(ParamManager const &);
   void operator=(ParamManager const &);
 
-  std::vector<PipelineParams> pipelines_;
-  CommonParams common_;
+  std::vector<PipelineRawData> pipelines_;
+  CommonRawData common_;
 };
 
 }  // namespace Params

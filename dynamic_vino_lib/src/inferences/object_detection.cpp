@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <stack>
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
@@ -35,6 +36,8 @@ dynamic_vino_lib::ObjectDetection::ObjectDetection(
 : show_output_thresh_(show_output_thresh),
   enable_roi_constraint_(enable_roi_constraint), dynamic_vino_lib::BaseInference()
 {
+  result_filter_ = std::make_shared<Filter>();
+  result_filter_->init();
 }
 
 dynamic_vino_lib::ObjectDetection::~ObjectDetection() = default;
@@ -112,19 +115,104 @@ const int dynamic_vino_lib::ObjectDetection::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
-const dynamic_vino_lib::Result * dynamic_vino_lib::ObjectDetection::getLocationResult(int idx) const
+
+const dynamic_vino_lib::ObjectDetection::Result *
+dynamic_vino_lib::ObjectDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
+
 const std::string dynamic_vino_lib::ObjectDetection::getName() const
 {
   return valid_model_->getModelName();
 }
-const void
-dynamic_vino_lib::ObjectDetection::observeOutput(
+
+const void dynamic_vino_lib::ObjectDetection::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
+}
+
+const std::vector<cv::Rect> dynamic_vino_lib::ObjectDetection::getFilteredROIs(
+  const std::string filter_conditions) const
+{
+  result_filter_->acceptResults(results_);
+  result_filter_->acceptFilterConditions(filter_conditions);
+  return result_filter_->getFilteredLocations();
+}
+
+
+// ObjectDetectionResultFilter
+dynamic_vino_lib::ObjectDetectionResultFilter::ObjectDetectionResultFilter() {}
+
+void dynamic_vino_lib::ObjectDetectionResultFilter::init()
+{
+  key_to_function_.insert(std::make_pair<std::string,
+    bool (*)(const Result &, const std::string &, const std::string &)>(
+      "label", isValidLabel));
+  key_to_function_.insert(std::make_pair<std::string,
+    bool (*)(const Result &, const std::string &, const std::string &)>(
+      "confidence", isValidConfidence));
+}
+
+void dynamic_vino_lib::ObjectDetectionResultFilter::acceptResults(
+  const std::vector<Result> & results)
+{
+  results_ = results;
+}
+
+std::vector<cv::Rect>
+dynamic_vino_lib::ObjectDetectionResultFilter::getFilteredLocations()
+{
+  std::vector<cv::Rect> locations;
+  for (auto result : results_) {
+    if (isValidResult(result)) {
+      locations.push_back(result.getLocation());
+    }
+  }
+  return locations;
+}
+
+bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidLabel(
+  const Result & result, const std::string & op, const std::string & target)
+{
+  if (!op.compare("==")) {
+    return !target.compare(result.getLabel());
+  } else if (!op.compare("!=")) {
+    return target.compare(result.getLabel());
+  } else {
+    slog::err << "Invalid operator " << op << " for label comparsion" << slog::endl;
+    return false;
+  }
+}
+
+bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidConfidence(
+  const Result & result, const std::string & op, const std::string & target)
+{
+  float confidence = 0;
+  try {
+    confidence = std::stof(target);
+  } catch (...) {
+    slog::err << "Failed when converting string " << target << " to float" << slog::endl;
+  }
+  if (!op.compare("<=")) {
+    return result.getConfidence() <= confidence;
+  } else if (!op.compare(">=")) {
+    return result.getConfidence() >= confidence;
+  } else if (!op.compare("<")) {
+    return result.getConfidence() < confidence;
+  } else if (!op.compare(">")) {
+    return result.getConfidence() > confidence;
+  } else {
+    slog::err << "Invalid operator " << op << " for confidence comparsion" << slog::endl;
+    return false;
+  }
+}
+
+bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidResult(
+  const Result & result)
+{
+  ISVALIDRESULT(key_to_function_, result);
 }

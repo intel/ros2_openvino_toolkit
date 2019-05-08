@@ -28,12 +28,12 @@ PipelineParams::PipelineParams(const std::string & name)
   params_.name = name;
 }
 
-PipelineParams::PipelineParams(const Params::ParamManager::PipelineParams & params)
+PipelineParams::PipelineParams(const Params::ParamManager::PipelineRawData & params)
 {
   params_ = params;
 }
 
-PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineParams & params)
+PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineRawData & params)
 {
   params_.name = params.name;
   params_.infers = params.infers;
@@ -44,7 +44,7 @@ PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineP
   return *this;
 }
 
-Params::ParamManager::PipelineParams PipelineParams::getPipeline(const std::string & name)
+Params::ParamManager::PipelineRawData PipelineParams::getPipeline(const std::string & name)
 {
   return Params::ParamManager::getInstance().getPipeline(name);
 }
@@ -56,7 +56,7 @@ void PipelineParams::update()
   }
 }
 
-void PipelineParams::update(const Params::ParamManager::PipelineParams & params)
+void PipelineParams::update(const Params::ParamManager::PipelineRawData & params)
 {
   params_ = params;
 }
@@ -77,4 +77,15 @@ bool PipelineParams::isGetFps()
   }
   return std::find(params_.inputs.begin(), params_.inputs.end(), kInputType_Image) ==
          params_.inputs.end();
+}
+
+std::string PipelineParams::findFilterConditions(
+  const std::string & input, const std::string & output)
+{
+  for (auto filter : params_.filters) {
+    if (!input.compare(filter.input) && !output.compare(filter.output)) {
+      return filter.filter_conditions;
+    }
+  }
+  return "";
 }

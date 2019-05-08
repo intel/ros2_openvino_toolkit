@@ -163,6 +163,8 @@ public:
   {
     return max_batch_size_;
   }
+  virtual const std::vector<cv::Rect> getFilteredROIs(
+    const std::string filter_conditions) const = 0;
 
 protected:
   /**

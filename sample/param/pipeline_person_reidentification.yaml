@@ -3,9 +3,9 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-detection-retail-0013/FP32/person-detection-retail-0013.xml
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/person-vehicle-bike-detection-crossroad-0078/FP32/person-vehicle-bike-detection-crossroad-0078.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
@@ -20,7 +20,7 @@ Pipelines:
     - left: StandardCamera
       right: [ObjectDetection]
     - left: ObjectDetection
-      right: [PersonReidentification]
+      right: [{PersonReidentification: (label == person && confidence >= 0.7)}]
     - left: PersonReidentification
       right: [ImageWindow, RViz, RosTopic]
 
