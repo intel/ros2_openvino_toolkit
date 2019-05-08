@@ -125,6 +125,9 @@ public:
    */
   const void observeOutput(const std::shared_ptr<Outputs::BaseOutput> & output) override;
 
+  const std::vector<cv::Rect> getFilteredROIs(
+    const std::string filter_conditions) const override;
+
 private:
   std::shared_ptr<Models::AgeGenderDetectionModel> valid_model_;
   std::vector<Result> results_;

@@ -129,3 +129,17 @@ const void dynamic_vino_lib::EmotionsDetection::observeOutput(
     output->accept(results_);
   }
 }
+
+const std::vector<cv::Rect> dynamic_vino_lib::EmotionsDetection::getFilteredROIs(
+  const std::string filter_conditions) const
+{
+  if (!filter_conditions.empty()) {
+    slog::err << "Emotion detection does not support filtering now! " <<
+      "Filter conditions: " << filter_conditions << slog::endl;
+  }
+  std::vector<cv::Rect> filtered_rois;
+  for (auto res : results_) {
+    filtered_rois.push_back(res.getLocation());
+  }
+  return filtered_rois;
+}

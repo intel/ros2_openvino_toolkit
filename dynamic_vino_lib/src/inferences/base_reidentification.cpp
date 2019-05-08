@@ -97,7 +97,7 @@ void dynamic_vino_lib::Tracker::updateMatchTrack(
 
 void dynamic_vino_lib::Tracker::removeEarlestTrack()
 {
-  std::lock_guard<std::mutex> lk (tracks_mtx_);
+  std::lock_guard<std::mutex> lk(tracks_mtx_);
   int64_t earlest_time = LONG_MAX;
   auto remove_iter = recorded_tracks_.begin();
   for (auto iter = recorded_tracks_.begin(); iter != recorded_tracks_.end(); iter++) {
@@ -108,7 +108,7 @@ void dynamic_vino_lib::Tracker::removeEarlestTrack()
   }
   recorded_tracks_.erase(remove_iter);
 }
-  
+
 
 int dynamic_vino_lib::Tracker::addNewTrack(const std::vector<float> & feature)
 {
@@ -116,7 +116,7 @@ int dynamic_vino_lib::Tracker::addNewTrack(const std::vector<float> & feature)
     std::thread remove_thread(std::bind(&Tracker::removeEarlestTrack, this));
     remove_thread.detach();
   }
-  std::lock_guard<std::mutex> lk (tracks_mtx_);
+  std::lock_guard<std::mutex> lk(tracks_mtx_);
   Track track;
   track.lastest_update_time = getCurrentTime();
   track.feature.assign(feature.begin(), feature.end());

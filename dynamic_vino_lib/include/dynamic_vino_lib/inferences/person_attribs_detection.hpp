@@ -108,6 +108,8 @@ public:
    * @return The name of the Inference instance.
    */
   const std::string getName() const override;
+  const std::vector<cv::Rect> getFilteredROIs(
+    const std::string filter_conditions) const override;
 
 private:
   std::shared_ptr<Models::PersonAttribsDetectionModel> valid_model_;
