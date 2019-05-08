@@ -19,7 +19,7 @@
 
 #include <string>
 #include <memory>
-
+#include <vector>
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 

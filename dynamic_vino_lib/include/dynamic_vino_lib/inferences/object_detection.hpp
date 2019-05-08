@@ -26,6 +26,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <map>
 #include "dynamic_vino_lib/models/object_detection_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"

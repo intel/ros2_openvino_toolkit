@@ -21,6 +21,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <vector>
 #include <map>
 
 #include "dynamic_vino_lib/inputs/base_input.hpp"
@@ -325,5 +326,4 @@ void Pipeline::countFPS()
     frame_cnt = 0;
     t_start = t_end;
   }
-
 }

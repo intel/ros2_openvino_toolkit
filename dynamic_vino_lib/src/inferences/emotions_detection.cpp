@@ -20,7 +20,7 @@
 
 #include <memory>
 #include <string>
-
+#include <vector>
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"

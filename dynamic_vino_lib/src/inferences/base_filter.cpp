@@ -16,9 +16,11 @@
  * @brief An implementation file with implementation for BaseFilter Class
  * @file base_filter.cpp
  */
-#include <stack>
-#include "dynamic_vino_lib/inferences/base_filter.hpp"
 
+#include "dynamic_vino_lib/inferences/base_filter.hpp"
+#include <stack>
+#include <string>
+#include <vector>
 
 dynamic_vino_lib::BaseFilter::BaseFilter() {}
 

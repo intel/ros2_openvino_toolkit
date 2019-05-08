@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <utility>
 #include <stack>
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
@@ -149,12 +150,8 @@ dynamic_vino_lib::ObjectDetectionResultFilter::ObjectDetectionResultFilter() {}
 
 void dynamic_vino_lib::ObjectDetectionResultFilter::init()
 {
-  key_to_function_.insert(std::make_pair<std::string,
-    bool (*)(const Result &, const std::string &, const std::string &)>(
-      "label", isValidLabel));
-  key_to_function_.insert(std::make_pair<std::string,
-    bool (*)(const Result &, const std::string &, const std::string &)>(
-      "confidence", isValidConfidence));
+  key_to_function_.insert(std::make_pair("label", isValidLabel));
+  key_to_function_.insert(std::make_pair("confidence", isValidConfidence));
 }
 
 void dynamic_vino_lib::ObjectDetectionResultFilter::acceptResults(
