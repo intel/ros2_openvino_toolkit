@@ -71,8 +71,8 @@ std::vector<std::string> dynamic_vino_lib::BaseFilter::split(
   seperators.push_back("(");
   seperators.push_back(")");
   std::vector<std::string> infix_conditions;
-  int last_pos = 0;
-  for (int pos = 0; pos < filter_conditions.length(); pos++) {
+  int last_pos = 0, pos = 0;
+  for (pos = 0; pos < filter_conditions.length(); pos++) {
     for (auto sep : seperators) {
       if (!sep.compare(filter_conditions.substr(pos, sep.length()))) {
         std::string elem = filter_conditions.substr(last_pos, pos - last_pos);
@@ -86,6 +86,9 @@ std::vector<std::string> dynamic_vino_lib::BaseFilter::split(
         break;
       }
     }
+  }
+  if (last_pos != pos) {
+    infix_conditions.push_back(filter_conditions.substr(last_pos, pos - last_pos));
   }
   return infix_conditions;
 }
@@ -101,6 +104,9 @@ void dynamic_vino_lib::BaseFilter::infixToSuffix(
       while (!operator_stack.empty() && operator_stack.top().compare("(")) {
         suffix_conditons_.push_back(operator_stack.top());
         operator_stack.pop();
+      }
+      if (operator_stack.empty()) {
+        slog::err << "Brackets mismatch in filter_conditions!" << slog::endl;
       }
       operator_stack.pop();
     } else if (isRelationOperator(elem) || isLogicOperator(elem)) {

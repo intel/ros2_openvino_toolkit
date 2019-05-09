@@ -115,15 +115,20 @@ public:
         result_stack.push(elem); \
       } \
       else { \
-        std::string str1 = result_stack.top(); \
-        result_stack.pop(); \
-        std::string str2 = result_stack.top(); \
-        result_stack.pop(); \
-        if (key_to_function.count(str2)) { \
-          result_stack.push(boolToStr(key_to_function[str2](result, elem, str1))); \
+        try { \
+          std::string str1 = result_stack.top(); \
+          result_stack.pop(); \
+          std::string str2 = result_stack.top(); \
+          result_stack.pop(); \
+          if (key_to_function.count(str2)) { \
+            result_stack.push(boolToStr(key_to_function[str2](result, elem, str1))); \
+          } \
+          else { \
+            result_stack.push(boolToStr(logicOperation(str1, elem, str2))); \
+          } \
         } \
-        else { \
-          result_stack.push(boolToStr(logicOperation(str1, elem, str2))); \
+        catch (...) { \
+          slog::err << "Invalid filter conditions format!" << slog::endl; \
         } \
       } \
     } \
