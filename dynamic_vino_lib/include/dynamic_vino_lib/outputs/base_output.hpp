@@ -48,6 +48,8 @@
 #include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/landmarks_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_reidentification.hpp"
+#include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
+#include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -63,6 +65,18 @@ class BaseOutput
 {
 public:
   BaseOutput() = default;
+  /**
+   * @brief Generate output content according to the license plate detection result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::LicensePlateDetectionResult> &)
+  {
+  }
+  /**
+   * @brief Generate output content according to the vehicle attributes detection result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::VehicleAttribsDetectionResult> &)
+  {
+  }
   /**
    * @brief Generate output content according to the face reidentification result.
    */
