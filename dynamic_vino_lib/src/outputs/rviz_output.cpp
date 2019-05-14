@@ -25,12 +25,13 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
 
-Outputs::RvizOutput::RvizOutput()
+Outputs::RvizOutput::RvizOutput(std::string pipeline_name):
+  pipeline_name_(pipeline_name)
 {
   node_ = rclcpp::Node::make_shared("image_publisher");
   image_topic_ = nullptr;
-  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>("/openvino_toolkit/images", 16);
-  image_window_output_ = std::make_shared<Outputs::ImageWindowOutput>("WindowForRviz", 950);
+  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>("/openvino_toolkit/"+pipeline_name_+"/images", 16);
+  image_window_output_ = std::make_shared<Outputs::ImageWindowOutput>(pipeline_name_, 950);
 }
 
 void Outputs::RvizOutput::feedFrame(const cv::Mat & frame)

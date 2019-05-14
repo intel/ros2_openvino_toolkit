@@ -28,6 +28,7 @@
 Outputs::ImageWindowOutput::ImageWindowOutput(const std::string & window_name, int focal_length)
 : window_name_(window_name), focal_length_(focal_length)
 {
+  cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
 }
 
 void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
@@ -336,7 +337,6 @@ void Outputs::ImageWindowOutput::decorateFrame()
 
 void Outputs::ImageWindowOutput::handleOutput()
 {
-  cv::namedWindow(window_name_, cv::WINDOW_AUTOSIZE);
   decorateFrame();
   cv::imshow(window_name_, frame_);
   cv::waitKey(1);
