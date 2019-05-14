@@ -102,6 +102,27 @@ public:
   bool logicOperation(const std::string &, const std::string &, const std::string &);
 
   /**
+   * @brief Compare two strings with a given relational operator.
+   * @param[in] A string, an relational operator, the other string.
+   * @return True if valid, false if not.
+   */
+  static bool stringCompare(const std::string &, const std::string &, const std::string &);
+
+  /**
+   * @brief Compare two floats with a given relational operator.
+   * @param[in] A float number, an relational operator, the other float number.
+   * @return True if valid, false if not.
+   */
+  static bool floatCompare(float, const std::string &, float);
+
+  /**
+   * @brief Convert a string into a float number.
+   * @param[in] A string to be converted.
+   * @return The converted float number, 0 if string is invalid.
+   */
+  static float stringToFloat(const std::string &);
+  
+  /**
    * @brief A macro to decide whether a given result satisfies the filter condition.
    * @param[in] A key to function mapping, a given result.
    * @return True if valid, false if not.

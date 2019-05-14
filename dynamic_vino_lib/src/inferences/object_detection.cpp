@@ -175,37 +175,13 @@ dynamic_vino_lib::ObjectDetectionResultFilter::getFilteredLocations()
 bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidLabel(
   const Result & result, const std::string & op, const std::string & target)
 {
-  if (!op.compare("==")) {
-    return !target.compare(result.getLabel());
-  } else if (!op.compare("!=")) {
-    return target.compare(result.getLabel());
-  } else {
-    slog::err << "Invalid operator " << op << " for label comparsion" << slog::endl;
-    return false;
-  }
+  return stringCompare(result.getLabel(), op, target);
 }
 
 bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidConfidence(
   const Result & result, const std::string & op, const std::string & target)
 {
-  float confidence = 0;
-  try {
-    confidence = std::stof(target);
-  } catch (...) {
-    slog::err << "Failed when converting string " << target << " to float" << slog::endl;
-  }
-  if (!op.compare("<=")) {
-    return result.getConfidence() <= confidence;
-  } else if (!op.compare(">=")) {
-    return result.getConfidence() >= confidence;
-  } else if (!op.compare("<")) {
-    return result.getConfidence() < confidence;
-  } else if (!op.compare(">")) {
-    return result.getConfidence() > confidence;
-  } else {
-    slog::err << "Invalid operator " << op << " for confidence comparsion" << slog::endl;
-    return false;
-  }
+  return floatCompare(result.getConfidence(), op, stringToFloat(target));
 }
 
 bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidResult(

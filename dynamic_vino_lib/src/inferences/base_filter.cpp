@@ -34,6 +34,26 @@ void dynamic_vino_lib::BaseFilter::acceptFilterConditions(
   }
 }
 
+bool dynamic_vino_lib::BaseFilter::isRelationOperator(const std::string & str)
+{
+  if (std::find(relation_operators_.begin(), relation_operators_.end(), str) !=
+    relation_operators_.end())
+  {
+    return true;
+  }
+  return false;
+}
+
+bool dynamic_vino_lib::BaseFilter::isLogicOperator(const std::string & str)
+{
+  if (std::find(logic_operators_.begin(), logic_operators_.end(), str) !=
+    logic_operators_.end())
+  {
+    return true;
+  }
+  return false;
+}
+
 bool dynamic_vino_lib::BaseFilter::isPriorTo(
   const std::string & operator1, const std::string & operator2)
 {
@@ -41,6 +61,28 @@ bool dynamic_vino_lib::BaseFilter::isPriorTo(
     return true;
   }
   return false;
+}
+
+std::string dynamic_vino_lib::BaseFilter::boolToStr(bool value)
+{
+  if (value) {return "true";}
+  return "false";
+}
+
+bool dynamic_vino_lib::BaseFilter::strToBool(const std::string & value)
+{
+  if (!value.compare("true")) {return true;} else if (!value.compare("false")) {
+    return false;
+  } else {
+    slog::err << "Invalid string: " << value << " for bool conversion!" << slog::endl;
+  }
+  return false;
+}
+
+const std::vector<std::string> &
+dynamic_vino_lib::BaseFilter::getSuffixConditions() const
+{
+  return suffix_conditons_;
 }
 
 bool dynamic_vino_lib::BaseFilter::logicOperation(
@@ -56,10 +98,45 @@ bool dynamic_vino_lib::BaseFilter::logicOperation(
   }
 }
 
-const std::vector<std::string> &
-dynamic_vino_lib::BaseFilter::getSuffixConditions() const
+bool dynamic_vino_lib::BaseFilter::stringCompare(
+  const std::string & candidate, const std::string & op, const std::string & target)
 {
-  return suffix_conditons_;
+  if (!op.compare("==")) {
+    return !target.compare(candidate);
+  } else if (!op.compare("!=")) {
+    return target.compare(candidate);
+  } else {
+    slog::err << "Invalid operator " << op << " for label comparsion" << slog::endl;
+    return false;
+  }
+}
+
+bool dynamic_vino_lib::BaseFilter::floatCompare(
+  float candidate, const std::string & op, float target)
+{
+  if (!op.compare("<=")) {
+    return candidate <= target;
+  } else if (!op.compare(">=")) {
+    return candidate >= target;
+  } else if (!op.compare("<")) {
+    return candidate < target;
+  } else if (!op.compare(">")) {
+    return candidate > target;
+  } else {
+    slog::err << "Invalid operator " << op << " for confidence comparsion" << slog::endl;
+    return false;
+  }
+}
+
+float dynamic_vino_lib::BaseFilter::stringToFloat(const std::string & candidate)
+{
+  float result = 0;
+  try {
+    result = std::stof(candidate);
+  } catch (...) {
+    slog::err << "Failed when converting string " << candidate << " to float" << slog::endl;
+  }
+  return result;
 }
 
 std::vector<std::string> dynamic_vino_lib::BaseFilter::split(
@@ -123,42 +200,6 @@ void dynamic_vino_lib::BaseFilter::infixToSuffix(
     suffix_conditons_.push_back(operator_stack.top());
     operator_stack.pop();
   }
-}
-
-std::string dynamic_vino_lib::BaseFilter::boolToStr(bool value)
-{
-  if (value) {return "true";}
-  return "false";
-}
-
-bool dynamic_vino_lib::BaseFilter::strToBool(const std::string & value)
-{
-  if (!value.compare("true")) {return true;} else if (!value.compare("false")) {
-    return false;
-  } else {
-    slog::err << "Invalid string: " << value << " for bool conversion!" << slog::endl;
-  }
-  return false;
-}
-
-bool dynamic_vino_lib::BaseFilter::isRelationOperator(const std::string & str)
-{
-  if (std::find(relation_operators_.begin(), relation_operators_.end(), str) !=
-    relation_operators_.end())
-  {
-    return true;
-  }
-  return false;
-}
-
-bool dynamic_vino_lib::BaseFilter::isLogicOperator(const std::string & str)
-{
-  if (std::find(logic_operators_.begin(), logic_operators_.end(), str) !=
-    logic_operators_.end())
-  {
-    return true;
-  }
-  return false;
 }
 
 std::string dynamic_vino_lib::BaseFilter::strip(const std::string & str)
