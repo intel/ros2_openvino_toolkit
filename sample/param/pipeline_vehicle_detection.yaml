@@ -1,0 +1,34 @@
+Pipelines:
+- name: object
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
+      engine: CPU
+      label: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.labels
+      batch: 1
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+    - name: VehicleAttribsDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+    - name: LicensePlateDetection
+      model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+  outputs: [ImageWindow, RViz, RosTopic]
+  connects:
+    - left: StandardCamera
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [{VehicleAttribsDetection: label == vehicle}, {LicensePlateDetection: label == license}]
+    - left: ObjectDetection
+      right: [ImageWindow] 
+    - left: VehicleAttribsDetection
+      right: [ImageWindow]
+    - left: LicensePlateDetection
+      right: [ImageWindow]
+
+OpenvinoCommon:

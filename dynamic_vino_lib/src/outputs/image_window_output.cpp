@@ -62,6 +62,29 @@ unsigned Outputs::ImageWindowOutput::findOutput(
 }
 
 void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::LicensePlateDetectionResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += ("[" + results[i].getLicense() + "]");
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::VehicleAttribsDetectionResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    outputs_[target_index].desc += 
+     ("[" + results[i].getColor() + "," + results[i].getType() + "]");
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::FaceReidentificationResult> & results)
 {
   for (unsigned i = 0; i < results.size(); i++) {

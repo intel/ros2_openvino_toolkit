@@ -27,11 +27,9 @@ dynamic_vino_lib::BaseFilter::BaseFilter() {}
 void dynamic_vino_lib::BaseFilter::acceptFilterConditions(
   const std::string & filter_conditions)
 {
-  if (striped_conditions_.empty()) {
-    striped_conditions_ = strip(filter_conditions);
-    std::vector<std::string> infix_conditions = split(striped_conditions_);
-    infixToSuffix(infix_conditions);
-  }
+  striped_conditions_ = strip(filter_conditions);
+  std::vector<std::string> infix_conditions = split(striped_conditions_);
+  infixToSuffix(infix_conditions);
 }
 
 bool dynamic_vino_lib::BaseFilter::isRelationOperator(const std::string & str)
