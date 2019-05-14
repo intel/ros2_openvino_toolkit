@@ -25,7 +25,8 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput()
+Outputs::RosTopicOutput::RosTopicOutput(std::string pipeline_name):
+  pipeline_name_(pipeline_name)
 {
   // rmw_qos_profile_t qos = rmw_qos_profile_default;
   // qos.depth = 10;
@@ -33,25 +34,28 @@ Outputs::RosTopicOutput::RosTopicOutput()
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   node_ = rclcpp::Node::make_shared("topic_publisher");
   pub_landmarks_ = node_->create_publisher<people_msgs::msg::LandmarkStamped>(
-    "/openvino_toolkit/detected_landmarks", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/detected_landmarks", 16);
   pub_face_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/reidentified_faces", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/reidentified_faces", 16);
   pub_person_attribs_ = node_->create_publisher<people_msgs::msg::PersonAttributeStamped>(
-    "/openvino_toolkit/person_attributes", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/person_attributes", 16);
   pub_person_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/reidentified_persons", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/reidentified_persons", 16);
   pub_segmented_object_ = node_->create_publisher<people_msgs::msg::ObjectsInMasks>(
-    "/openvino_toolkit/segmented_obejcts", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/segmented_obejcts", 16);
   pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-    "/openvino_toolkit/detected_objects", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/detected_objects", 16);
   pub_face_ =
-    node_->create_publisher<object_msgs::msg::ObjectsInBoxes>("/openvino_toolkit/faces", 16);
+    node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
+      "/openvino_toolkit/" + pipeline_name_ + "/faces", 16);
   pub_emotion_ =
-    node_->create_publisher<people_msgs::msg::EmotionsStamped>("/openvino_toolkit/emotions", 16);
+    node_->create_publisher<people_msgs::msg::EmotionsStamped>(
+      "/openvino_toolkit/" + pipeline_name_ + "/emotions", 16);
   pub_age_gender_ = node_->create_publisher<people_msgs::msg::AgeGenderStamped>(
-    "/openvino_toolkit/age_genders", 16);
+    "/openvino_toolkit/" + pipeline_name_ + "/age_genders", 16);
   pub_headpose_ =
-    node_->create_publisher<people_msgs::msg::HeadPoseStamped>("/openvino_toolkit/headposes", 16);
+    node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
+      "/openvino_toolkit/" + pipeline_name_ + "/headposes", 16);
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;

@@ -55,7 +55,7 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
-
+#include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
 std::shared_ptr<Pipeline>
 PipelineManager::createPipeline(const Params::ParamManager::PipelineParams & params)
 {
@@ -149,13 +149,13 @@ PipelineManager::parseOutput(const Params::ParamManager::PipelineParams & params
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
     if (name == kOutputTpye_RosTopic) {
-      object = std::make_shared<Outputs::RosTopicOutput>();
+      object = std::make_shared<Outputs::RosTopicOutput>(params.name);
     } else if (name == kOutputTpye_ImageWindow) {
-      object = std::make_shared<Outputs::ImageWindowOutput>("Results");
+      object = std::make_shared<Outputs::ImageWindowOutput>(params.name);
     } else if (name == kOutputTpye_RViz) {
-      object = std::make_shared<Outputs::RvizOutput>();
+      object = std::make_shared<Outputs::RvizOutput>(params.name);
     } else if (name == kOutputTpye_RosService) {
-      object = std::make_shared<Outputs::RosServiceOutput>();
+      object = std::make_shared<Outputs::RosServiceOutput>(params.name);
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
     }
@@ -372,11 +372,15 @@ PipelineManager::createFaceReidentification(
 void PipelineManager::threadPipeline(const char * name)
 {
   PipelineData & p = pipelines_[name];
-  while (p.state == PipelineState_ThreadRunning && p.pipeline != nullptr) {
+  while (p.state != PipelineState_ThreadStopped && p.pipeline != nullptr) {
+
     for (auto & node : p.spin_nodes) {
       rclcpp::spin_some(node);
     }
-    p.pipeline->runOnce();
+    if(p.state != PipelineState_ThreadPasued)
+    {
+      p.pipeline->runOnce();
+    }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
@@ -394,6 +398,13 @@ void PipelineManager::runAll()
   }
 }
 
+void PipelineManager::runService() 
+{
+   auto node = std::make_shared<vino_service::PipelineProcessingServer
+             <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
+   rclcpp::spin(node);
+}
+
 void PipelineManager::stopAll()
 {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
@@ -405,6 +416,9 @@ void PipelineManager::stopAll()
 
 void PipelineManager::joinAll()
 {
+  auto service_thread = std::make_shared<std::thread>(&PipelineManager::runService,this);
+  service_thread->join();// pipeline service
+
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if (it->second.thread != nullptr && it->second.state == PipelineState_ThreadRunning) {
       it->second.thread->join();

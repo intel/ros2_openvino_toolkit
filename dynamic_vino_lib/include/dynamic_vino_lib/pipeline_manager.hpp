@@ -58,13 +58,15 @@ public:
   void runAll();
   void stopAll();
   void joinAll();
+  void runService(); 
 
   enum PipelineState
   {
-    PipelineState_ThreadNotCreated,
-    PipelineState_ThreadStopped,
-    PipelineState_ThreadRunning,
-    PipelineState_Error
+    PipelineState_ThreadNotCreated = 0,
+    PipelineState_ThreadStopped = 1,
+    PipelineState_ThreadRunning = 2,
+    PipelineState_ThreadPasued = 3,
+    PipelineState_Error = 4
   };
   struct PipelineData
   {
@@ -78,6 +80,11 @@ public:
   std::map<std::string, PipelineData> getPipelines()
   {
     return pipelines_;
+  }
+
+  std::map<std::string, PipelineData> * getPipelinesPtr()
+  {
+    return &pipelines_;
   }
 
 private:

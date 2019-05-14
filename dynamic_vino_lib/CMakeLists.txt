@@ -57,6 +57,7 @@ find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
+find_package(pipeline_srv_msgs REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
@@ -176,6 +177,7 @@ endif()
 set(DEPENDENCIES realsense2 ${OpenCV_LIBS} cpu_extension)
 
 add_library(${PROJECT_NAME} SHARED
+        src/services/pipeline_processing_server.cpp
         src/services/frame_processing_server.cpp
         src/factory.cpp
         src/pipeline.cpp
@@ -226,6 +228,7 @@ ament_target_dependencies(${PROJECT_NAME}
   "sensor_msgs"
   "object_msgs"
   "people_msgs"
+  "pipeline_srv_msgs"
   "ament_index_cpp"
   "class_loader"
   "realsense2"
