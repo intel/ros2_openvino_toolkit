@@ -13,20 +13,21 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of ObjectDetectionModel class
+ * @brief a header file with declaration of ObjectDetectionSSDModel class
  * @file object_detection_model.cpp
  */
 #include <string>
-#include "dynamic_vino_lib/models/object_detection_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Object Detection Network
-Models::ObjectDetectionModel::ObjectDetectionModel(
+Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
   const std::string & model_loc, int input_num,
   int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size)
+: ObjectDetectionModel(model_loc, input_num, output_num, max_batch_size)
 {
 }
-void Models::ObjectDetectionModel::setLayerProperty(InferenceEngine::CNNNetReader::Ptr net_reader)
+
+void Models::ObjectDetectionSSDModel::setLayerProperty(InferenceEngine::CNNNetReader::Ptr net_reader)
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
@@ -42,7 +43,8 @@ void Models::ObjectDetectionModel::setLayerProperty(InferenceEngine::CNNNetReade
   input_ = input_info_map.begin()->first;
   output_ = output_info_map.begin()->first;
 }
-void Models::ObjectDetectionModel::checkLayerProperty(
+
+void Models::ObjectDetectionSSDModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader)
 {
   slog::info << "Checking Object Detection outputs" << slog::endl;
@@ -79,6 +81,7 @@ void Models::ObjectDetectionModel::checkLayerProperty(
   const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
   max_proposal_count_ = static_cast<int>(output_dims[2]);
   slog::info << "max proposal count is: " << max_proposal_count_ << slog::endl;
+
   object_size_ = static_cast<int>(output_dims[3]);
   if (object_size_ != 7) {
     throw std::logic_error("Object Detection network output layer should have 7 as a last "
@@ -91,7 +94,8 @@ void Models::ObjectDetectionModel::checkLayerProperty(
             std::to_string(output_dims.size()));
   }
 }
-const std::string Models::ObjectDetectionModel::getModelName() const
+
+const std::string Models::ObjectDetectionSSDModel::getModelName() const
 {
   return "Object Detection";
 }

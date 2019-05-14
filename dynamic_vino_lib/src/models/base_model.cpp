@@ -21,6 +21,7 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+#include <iostream>
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
@@ -36,12 +37,15 @@ Models::BaseModel::BaseModel(
   if (model_loc.empty()) {
     throw std::logic_error("model file name is empty!");
   }
+
   net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
 }
 
 void Models::BaseModel::modelInit()
 {
   slog::info << "Loading network files" << slog::endl;
+  slog::info << "Loading network files" << slog::endl;
+
   // Read network model
   net_reader_->ReadNetwork(model_loc_);
   // Set batch size to given max_batch_size_
@@ -84,3 +88,9 @@ void Models::BaseModel::checkNetworkSize(
   }
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
 }
+
+Models::ObjectDetectionModel::ObjectDetectionModel(const std::string& model_loc,
+                                               int input_num, int output_num,
+                                               int max_batch_size)
+    : BaseModel(model_loc, input_num, output_num, max_batch_size){}
+

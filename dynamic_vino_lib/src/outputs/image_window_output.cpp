@@ -294,6 +294,8 @@ void Outputs::ImageWindowOutput::decorateFrame()
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
       o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
+    std::cout << " Description:: " << o.desc << std::endl;
+    std::cout << " Position: " << o.rect.x << " " << o.rect.y << std::endl;
     if (o.hp_cp != o.hp_x) {
       cv::line(frame_, o.hp_cp, o.hp_x, cv::Scalar(0, 0, 255), 2);
     }

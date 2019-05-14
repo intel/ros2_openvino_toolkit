@@ -63,6 +63,7 @@ public:
     std::string name;
     std::string engine;
     std::string model;
+    std::string model_type;
     std::string label;
     int batch;
     float confidence_threshold = 0.5;

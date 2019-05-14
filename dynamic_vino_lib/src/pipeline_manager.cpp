@@ -48,6 +48,8 @@
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
@@ -102,7 +104,7 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineParams & par
 
   pipeline->setCallback();
   slog::info << "One Pipeline Created!" << slog::endl;
-  pipeline->printPipeline();
+  //pipeline->printPipeline();
   return pipeline;
 }
 
@@ -272,13 +274,30 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
   const Params::ParamManager::InferenceParams & infer)
 {
-  auto object_detection_model =
-    std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, infer.batch);
+  std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
+  std::shared_ptr<dynamic_vino_lib::ObjectDetection> object_inference_ptr;
+
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD)
+  {
+    object_detection_model = 
+      std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, 1, 1, 1);
+
+    object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetectionSSD>(
+      infer.enable_roi_constraint, infer.confidence_threshold); // To-do theshold configuration
+  }
+
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2)
+  {
+    object_detection_model = 
+      std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, 1, 1, 1);
+
+    object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetectionYolov2>(
+      infer.confidence_threshold); // To-do theshold configuration
+  }
+
   object_detection_model->modelInit();
   auto object_detection_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], object_detection_model);
-  auto object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
-    infer.enable_roi_constraint, infer.confidence_threshold);
   object_inference_ptr->loadNetwork(object_detection_model);
   object_inference_ptr->loadEngine(object_detection_engine);
 
@@ -384,9 +403,11 @@ void PipelineManager::threadPipeline(const char * name)
 void PipelineManager::runAll()
 {
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
+
     if (it->second.state != PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadRunning;
     }
+
     if (it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
           it->second.params.name.c_str());

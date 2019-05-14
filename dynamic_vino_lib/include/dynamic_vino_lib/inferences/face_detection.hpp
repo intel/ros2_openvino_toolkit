@@ -30,7 +30,8 @@
 
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
-#include "dynamic_vino_lib/inferences/object_detection.hpp"
+#include "dynamic_vino_lib/inferences/base_inference.hpp"
+#include "dynamic_vino_lib/inferences/object_detection_ssd.hpp"
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 
@@ -51,7 +52,7 @@ public:
  * @class FaceDetection
  * @brief Class to load face detection model and perform face detection.
  */
-class FaceDetection : public ObjectDetection
+class FaceDetection : public ObjectDetectionSSD
 {
 public:
   explicit FaceDetection(bool, double);

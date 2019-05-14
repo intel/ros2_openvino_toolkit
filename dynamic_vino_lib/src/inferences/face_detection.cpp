@@ -36,6 +36,6 @@ dynamic_vino_lib::FaceDetectionResult::FaceDetectionResult(const cv::Rect & loca
 dynamic_vino_lib::FaceDetection::FaceDetection(
   bool enable_roi_constraint,
   double show_output_thresh)
-: ObjectDetection(enable_roi_constraint, show_output_thresh)
+: ObjectDetectionSSD(enable_roi_constraint, show_output_thresh)
 {
 }

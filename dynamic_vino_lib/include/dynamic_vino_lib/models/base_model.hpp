@@ -94,17 +94,30 @@ protected:
    */
   virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
   virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
+  InferenceEngine::CNNNetReader::Ptr net_reader_;
 
 private:
   friend class Engines::Engine;
 
-  InferenceEngine::CNNNetReader::Ptr net_reader_;
   std::vector<std::string> labels_;
   int input_num_;
   int output_num_;
   int max_batch_size_;
   std::string model_loc_;
 };
+
+class ObjectDetectionModel : public BaseModel
+{
+ public:
+  ObjectDetectionModel(const std::string& a, int b, int c, int d);
+  virtual inline const int getMaxProposalCount() { return max_proposal_count_; }
+  virtual inline const int getObjectSize() { return object_size_; }
+
+ protected:
+  int max_proposal_count_;
+  int object_size_;
+};
+
 }  // namespace Models
 
 #endif  // DYNAMIC_VINO_LIB__MODELS__BASE_MODEL_HPP_

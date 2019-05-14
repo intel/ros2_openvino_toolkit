@@ -91,6 +91,7 @@ void operator>>(const YAML::Node & node, ParamManager::InferenceParams & infer)
 {
   YAML_PARSE(node, "name", infer.name)
   YAML_PARSE(node, "model", infer.model)
+  YAML_PARSE(node, "model_type", infer.model_type)
   YAML_PARSE(node, "engine", infer.engine)
   YAML_PARSE(node, "label", infer.label)
   YAML_PARSE(node, "batch", infer.batch)

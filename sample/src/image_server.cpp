@@ -41,7 +41,6 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
 
   std::string config_path = getConfigPath(argc, argv);
-  std::cout << "***config path is " << config_path << std::endl;
 
   try {
     std::string service_name = "frame_processing_server";

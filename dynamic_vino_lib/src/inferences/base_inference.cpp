@@ -24,8 +24,12 @@
 // Result
 dynamic_vino_lib::Result::Result(const cv::Rect & location)
 {
-  location_ = location;
+   location_ = location;
 }
+
+// ObjectDetectionResult
+dynamic_vino_lib::ObjectDetectionResult::ObjectDetectionResult(const cv::Rect & location)
+ : Result(location){}
 
 // BaseInference
 dynamic_vino_lib::BaseInference::BaseInference() = default;
@@ -42,10 +46,10 @@ bool dynamic_vino_lib::BaseInference::submitRequest()
   if (engine_->getRequest() == nullptr) {
     return false;
   }
-  if (!enqueued_frames) {
+  if (!enqueued_frames_) {
     return false;
   }
-  enqueued_frames = 0;
+  enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->StartAsync();
   return true;
@@ -56,10 +60,10 @@ bool dynamic_vino_lib::BaseInference::SynchronousRequest()
   if (engine_->getRequest() == nullptr) {
     return false;
   }
-  if (!enqueued_frames) {
+  if (!enqueued_frames_) {
     return false;
   }
-  enqueued_frames = 0;
+  enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->Infer();
   return true;

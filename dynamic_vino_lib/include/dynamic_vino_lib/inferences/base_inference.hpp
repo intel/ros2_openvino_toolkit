@@ -28,6 +28,9 @@
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 
+#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
+
 namespace Outputs
 {
 class BaseOutput;
@@ -76,6 +79,7 @@ class Result
 {
 public:
   friend class BaseInference;
+  Result() {};
   explicit Result(const cv::Rect & location);
   inline const cv::Rect getLocation() const
   {
@@ -114,7 +118,7 @@ public:
    */
   inline const int getEnqueuedNum() const
   {
-    return enqueued_frames;
+    return enqueued_frames_;
   }
   /**
    * @brief Enqueue a frame to this class.
@@ -175,14 +179,14 @@ protected:
     const cv::Mat & frame, const cv::Rect &, float scale_factor, int batch_index,
     const std::string & input_name)
   {
-    if (enqueued_frames == max_batch_size_) {
+    if (enqueued_frames_ == max_batch_size_) {
       slog::warn << "Number of " << getName() << "input more than maximum(" << max_batch_size_ <<
         ") processed by inference" << slog::endl;
       return false;
     }
     InferenceEngine::Blob::Ptr input_blob = engine_->getRequest()->GetBlob(input_name);
     matU8ToBlob<T>(frame, input_blob, scale_factor, batch_index);
-    enqueued_frames += 1;
+    enqueued_frames_ += 1;
     return true;
   }
   /**
@@ -194,13 +198,40 @@ protected:
   }
 
   std::vector<Result> results_;
+  std::shared_ptr<Engines::Engine> engine_;
+  int enqueued_frames_ = 0;
 
 private:
-  std::shared_ptr<Engines::Engine> engine_;
   int max_batch_size_ = 1;
-  int enqueued_frames = 0;
   bool results_fetched_ = false;
 };
+
+class ObjectDetectionResult : public Result {
+ public:
+  friend class ObjectDetection;
+  explicit ObjectDetectionResult(const cv::Rect& location);
+  std::string getLabel() const { return label_; }
+  /**
+   * @brief Get the confidence that the detected area is a face.
+   * @return The confidence value. 
+   */
+  float getConfidence() const { return confidence_; }
+  bool operator<(const ObjectDetectionResult &s2) const
+  {
+    return this->confidence_ > s2.confidence_;
+  }
+
+  std::string label_ = "";
+  float confidence_ = -1;
+};
+
+class ObjectDetection : public BaseInference
+{
+ public:
+  ObjectDetection() {};
+  virtual void loadNetwork(std::shared_ptr<Models::ObjectDetectionModel>) = 0;
+};
+
 }  // namespace dynamic_vino_lib
 
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__BASE_INFERENCE_HPP_

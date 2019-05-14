@@ -187,7 +187,8 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/emotions_detection.cpp
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp
-        src/inferences/object_detection.cpp
+        src/inferences/object_detection_ssd.cpp
+        src/inferences/object_detection_yolov2.cpp
         src/inferences/head_pose_detection.cpp
         src/inferences/object_segmentation.cpp
         src/inferences/person_reidentification.cpp
@@ -203,13 +204,14 @@ add_library(${PROJECT_NAME} SHARED
         src/models/emotion_detection_model.cpp
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
-        src/models/object_detection_model.cpp
         src/models/head_pose_detection_model.cpp
         src/models/object_segmentation_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
         src/models/landmarks_detection_model.cpp
         src/models/face_reidentification_model.cpp
+        src/models/object_detection_ssd_model.cpp
+        src/models/object_detection_yolov2_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp

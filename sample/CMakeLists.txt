@@ -240,10 +240,10 @@ ament_target_dependencies(image_people_client
 )
 
 install(TARGETS vino_param_sample
-  DESTINATION lib/${PROJECT_NAME})
+ DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS pipeline_with_params
-  DESTINATION lib/${PROJECT_NAME})
+ DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_server
   DESTINATION lib/${PROJECT_NAME})

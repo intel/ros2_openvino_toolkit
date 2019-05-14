@@ -39,6 +39,7 @@
 
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
+#include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
 #include "gflags/gflags.h"
@@ -110,7 +111,7 @@ int main(int argc, char * argv[])
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p);
     }
-
+    
     PipelineManager::getInstance().runAll();
     PipelineManager::getInstance().joinAll();
   } catch (const std::exception & error) {
