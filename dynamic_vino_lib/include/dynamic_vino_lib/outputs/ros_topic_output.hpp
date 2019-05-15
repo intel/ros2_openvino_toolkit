@@ -37,6 +37,10 @@
 #include <people_msgs/msg/person_attribute_stamped.hpp>
 #include <people_msgs/msg/landmark.hpp>
 #include <people_msgs/msg/landmark_stamped.hpp>
+#include <people_msgs/msg/vehicle_attribs.hpp>
+#include <people_msgs/msg/vehicle_attribs_stamped.hpp>
+#include <people_msgs/msg/license_plate.hpp>
+#include <people_msgs/msg/license_plate_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -70,8 +74,20 @@ public:
   void handleOutput() override;
   /**
    * @brief Generate ros topic infomation according to
-   * the face attributes detection result.
-   * @param[in] results a bundle of face attributes detection results.
+   * the license plate detection result.
+   * @param[in] results a bundle of license plate detection results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::LicensePlateDetectionResult> &) override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the vehicle attributes detection result.
+   * @param[in] results a bundle of vehicle attributes detection results.
+   */
+  void accept(const std::vector<dynamic_vino_lib::VehicleAttribsDetectionResult> &) override;
+  /**
+   * @brief Generate ros topic infomation according to
+   * the face reidentification result.
+   * @param[in] results a bundle of face reidentification results.
    */
   void accept(const std::vector<dynamic_vino_lib::FaceReidentificationResult> &) override;
   /**
@@ -134,6 +150,10 @@ protected:
   const std::string topic_name_;
   std::string pipeline_name_;
   std::shared_ptr<rclcpp::Node> node_;
+  rclcpp::Publisher<people_msgs::msg::LicensePlateStamped>::SharedPtr pub_license_plate_;
+  std::shared_ptr<people_msgs::msg::LicensePlateStamped> license_plate_topic_;
+  rclcpp::Publisher<people_msgs::msg::VehicleAttribsStamped>::SharedPtr pub_vehicle_attribs_;
+  std::shared_ptr<people_msgs::msg::VehicleAttribsStamped> vehicle_attribs_topic_;
   rclcpp::Publisher<people_msgs::msg::LandmarkStamped>::SharedPtr pub_landmarks_;
   std::shared_ptr<people_msgs::msg::LandmarkStamped> landmarks_topic_;
   rclcpp::Publisher<people_msgs::msg::ReidentificationStamped>::SharedPtr pub_face_reid_;

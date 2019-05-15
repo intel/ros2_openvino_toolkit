@@ -33,6 +33,10 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string pipeline_name):
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   node_ = rclcpp::Node::make_shared("topic_publisher");
+  pub_license_plate_ = node_->create_publisher<people_msgs::msg::LicensePlateStamped>(
+    "/openvino_toolkit/detected_license_plates", 16);
+  pub_vehicle_attribs_ = node_->create_publisher<people_msgs::msg::VehicleAttribsStamped>(
+    "/openvino_toolkit/detected_vehicles_attribs", 16);
   pub_landmarks_ = node_->create_publisher<people_msgs::msg::LandmarkStamped>(
     "/openvino_toolkit/" + pipeline_name_ + "/detected_landmarks", 16);
   pub_face_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
@@ -66,11 +70,48 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string pipeline_name):
   person_attribs_topic_ = nullptr;
   face_reid_topic_ = nullptr;
   landmarks_topic_ = nullptr;
+  vehicle_attribs_topic_ = nullptr;
+  license_plate_topic_ = nullptr;
 }
 
 void Outputs::RosTopicOutput::feedFrame(const cv::Mat & frame)
 {
   frame_ = frame.clone();
+}
+
+void Outputs::RosTopicOutput::accept(
+  const std::vector<dynamic_vino_lib::VehicleAttribsDetectionResult> & results)
+{
+  vehicle_attribs_topic_ = std::make_shared<people_msgs::msg::VehicleAttribsStamped>();
+  people_msgs::msg::VehicleAttribs attribs;
+  for (auto & r : results) {
+    // slog::info << ">";
+    auto loc = r.getLocation();
+    attribs.roi.x_offset = loc.x;
+    attribs.roi.y_offset = loc.y;
+    attribs.roi.width = loc.width;
+    attribs.roi.height = loc.height;
+    attribs.type = r.getType();
+    attribs.color = r.getColor();
+    vehicle_attribs_topic_->vehicles.push_back(attribs);
+  }
+}
+
+void Outputs::RosTopicOutput::accept(
+  const std::vector<dynamic_vino_lib::LicensePlateDetectionResult> & results)
+{
+  license_plate_topic_ = std::make_shared<people_msgs::msg::LicensePlateStamped>();
+  people_msgs::msg::LicensePlate plate;
+  for (auto & r : results) {
+    // slog::info << ">";
+    auto loc = r.getLocation();
+    plate.roi.x_offset = loc.x;
+    plate.roi.y_offset = loc.y;
+    plate.roi.width = loc.width;
+    plate.roi.height = loc.height;
+    plate.license = r.getLicense();
+    license_plate_topic_->licenses.push_back(plate);
+  }
 }
 
 void Outputs::RosTopicOutput::accept(
@@ -272,6 +313,18 @@ void Outputs::RosTopicOutput::accept(const std::vector<dynamic_vino_lib::HeadPos
 void Outputs::RosTopicOutput::handleOutput()
 {
   auto header = getHeader();
+  if (vehicle_attribs_topic_ != nullptr) {
+    // slog::info << "publishing landmarks detection outputs." << slog::endl;
+    vehicle_attribs_topic_->header = header;
+    pub_vehicle_attribs_->publish(vehicle_attribs_topic_);
+    vehicle_attribs_topic_ = nullptr;
+  }
+  if (license_plate_topic_ != nullptr) {
+    // slog::info << "publishing face reidentification outputs." << slog::endl;
+    license_plate_topic_->header = header;
+    pub_license_plate_->publish(license_plate_topic_);
+    license_plate_topic_ = nullptr;
+  }
   if (landmarks_topic_ != nullptr) {
     // slog::info << "publishing landmarks detection outputs." << slog::endl;
     landmarks_topic_->header = header;
