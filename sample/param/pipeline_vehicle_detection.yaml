@@ -27,8 +27,8 @@ Pipelines:
     - left: ObjectDetection
       right: [ImageWindow] 
     - left: VehicleAttribsDetection
-      right: [ImageWindow]
+      right: [ImageWindow, RosTopic]
     - left: LicensePlateDetection
-      right: [ImageWindow]
+      right: [ImageWindow, RosTopic]
 
 OpenvinoCommon:
