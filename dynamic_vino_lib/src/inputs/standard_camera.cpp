@@ -32,8 +32,8 @@ bool Input::StandardCamera::initialize()
 bool Input::StandardCamera::initialize(int camera_num)
 {
   setInitStatus(cap.open(camera_num));
-  setWidth((size_t)cap.get(CV_CAP_PROP_FRAME_WIDTH));
-  setHeight((size_t)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
+  setWidth((size_t)cap.get(cv::CAP_PROP_FRAME_WIDTH));
+  setHeight((size_t)cap.get(cv::CAP_PROP_FRAME_HEIGHT));
   return isInit();
 }
 
@@ -44,8 +44,8 @@ bool Input::StandardCamera::initialize(size_t width, size_t height)
   setHeight(height);
   setInitStatus(cap.open(camera_count_));
   if (isInit()) {
-    cap.set(CV_CAP_PROP_FRAME_WIDTH, width);
-    cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
   }
   camera_count_++;
   return isInit();
