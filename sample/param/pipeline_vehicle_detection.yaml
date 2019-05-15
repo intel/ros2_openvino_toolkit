@@ -23,7 +23,7 @@ Pipelines:
     - left: StandardCamera
       right: [ObjectDetection]
     - left: ObjectDetection
-      right: [{VehicleAttribsDetection: label == vehicle}, {LicensePlateDetection: label == license}]
+      right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
     - left: ObjectDetection
       right: [ImageWindow] 
     - left: VehicleAttribsDetection

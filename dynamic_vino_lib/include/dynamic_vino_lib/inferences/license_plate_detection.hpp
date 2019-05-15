@@ -71,6 +71,10 @@ public:
    */
   bool enqueue(const cv::Mat &, const cv::Rect &) override;
   /**
+   * @brief Set the sequence input blob
+   */
+  void fillSeqBlob();
+  /**
    * @brief Start inference for all buffered frames.
    * @return Whether this operation is successful.
    */

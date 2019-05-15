@@ -38,6 +38,7 @@ void Models::LicensePlateDetectionModel::setLayerProperty(
     net_reader->getNetwork().getOutputsInfo());
   // set input and output layer name
   input_ = input_info_map.begin()->first;
+  seq_input_ = (++input_info_map.begin())->first;
   output_ = output_info_map.begin()->first;
 }
 
@@ -47,7 +48,7 @@ void Models::LicensePlateDetectionModel::checkLayerProperty(
   InferenceEngine::InputsDataMap input_info_map(
     net_reader->getNetwork().getInputsInfo());
   if (input_info_map.size() != 2) {
-    throw std::logic_error("Vehicle Attribs topology should have only one input");
+    throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
   auto sequence_input = (++input_info_map.begin());
   if (sequence_input->second->getTensorDesc().getDims()[0] != getMaxSequenceSize()) {
@@ -56,7 +57,7 @@ void Models::LicensePlateDetectionModel::checkLayerProperty(
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
-    throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
+    throw std::logic_error("Vehicle Attribs Network expects networks having one output");
   }
 }
 

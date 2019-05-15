@@ -31,6 +31,7 @@ class LicensePlateDetectionModel : public BaseModel
 public:
   LicensePlateDetectionModel(const std::string &, int, int, int);
   inline const std::string getInputName() {return input_;}
+  inline const std::string getSeqInputName() {return seq_input_;}
   inline const std::string getOutputName() {return output_;}
   inline const int getMaxSequenceSize() {return max_sequence_size_;}
   /**
@@ -45,6 +46,7 @@ protected:
   // up to 88 items per license plate, ended with "-1"
   const int max_sequence_size_ = 88;
   std::string input_;
+  std::string seq_input_;
   std::string output_;
 };
 }  // namespace Models
