@@ -132,6 +132,8 @@ public:
   {
     return results_;
   }
+  const std::vector<cv::Rect> getFilteredROIs(
+    const std::string filter_conditions) const override;
 
 private:
   std::shared_ptr<Models::HeadPoseDetectionModel> valid_model_;

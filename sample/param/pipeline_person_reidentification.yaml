@@ -14,7 +14,7 @@ Pipelines:
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
-      confidence_threshold: 0.9
+      confidence_threshold: 0.7
   outputs: [ImageWindow, RViz, RosTopic]
   connects:
     - left: StandardCamera
