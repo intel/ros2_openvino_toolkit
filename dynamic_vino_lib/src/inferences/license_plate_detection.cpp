@@ -84,12 +84,12 @@ bool dynamic_vino_lib::LicensePlateDetection::fetchResults()
   const float * output_values = request->GetBlob(output)->buffer().as<float *>();
   for (int i = 0; i < getResultsLength(); i++) {
     std::string license = "";
-    for (int j = 0; j < valid_model_->getMaxSequenceSize(); j++) {
-      if (output_values[j] == -1) {
-        output_values += (j+1);
+    int max_size = valid_model_->getMaxSequenceSize();
+    for (int j = 0; j < max_size; j++) {
+      if (output_values[i * max_size + j] == -1) {
         break;
       }
-      license += licenses_[output_values[j]];
+      license += licenses_[output_values[i * max_size + j]];
     }
     results_[i].license_ = license;
     found_result = true;
