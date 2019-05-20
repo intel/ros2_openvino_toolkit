@@ -25,10 +25,10 @@ Pipelines:
     - left: ObjectDetection
       right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
     - left: ObjectDetection
-      right: [ImageWindow] 
+      right: [ImageWindow, RosTopic, RViz] 
     - left: VehicleAttribsDetection
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow, RosTopic, RViz]
     - left: LicensePlateDetection
-      right: [ImageWindow, RosTopic]
+      right: [ImageWindow, RosTopic, RViz]
 
 OpenvinoCommon:
