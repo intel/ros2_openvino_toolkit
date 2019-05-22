@@ -62,7 +62,7 @@ namespace Outputs
 class BaseOutput
 {
 public:
-  BaseOutput() = default;
+  BaseOutput(std::string output_name):output_name_(output_name){};
   /**
    * @brief Generate output content according to the face reidentification result.
    */
@@ -152,10 +152,11 @@ public:
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
   virtual void clearData() {}
-
+  
 protected:
   cv::Mat frame_;
   Pipeline * pipeline_;
+  std::string output_name_;
 };
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__BASE_OUTPUT_HPP_

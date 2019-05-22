@@ -33,9 +33,9 @@ find_package(geometry_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
-  "msg/Pipeline.msg"
+  "msg/Connection.msg"
   "msg/PipelineRequest.msg"
-  "msg/Pipelines.msg" 
+  "msg/Pipeline.msg" 
   "srv/PipelineSrv.srv"
   DEPENDENCIES builtin_interfaces std_msgs sensor_msgs object_msgs geometry_msgs
 )

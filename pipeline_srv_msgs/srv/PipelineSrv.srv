@@ -14,4 +14,4 @@
 
 PipelineRequest pipeline_request          # request content of pipeline service
 ---
-Pipelines[] pipelines    # return all pipeline status
+Pipeline[] pipelines    # return all pipeline status
