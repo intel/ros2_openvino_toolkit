@@ -60,8 +60,7 @@ namespace Outputs
 class RosTopicOutput : public BaseOutput
 {
 public:
-  RosTopicOutput(){};
-  RosTopicOutput(std::string pipeline_name);
+  RosTopicOutput(std::string output_name_);
   /**
    * @brief Calculate the camera matrix of a frame.
    * @param[in] A frame.
@@ -148,7 +147,6 @@ public:
 protected:
   std_msgs::msg::Header getHeader();
   const std::string topic_name_;
-  std::string pipeline_name_;
   std::shared_ptr<rclcpp::Node> node_;
   rclcpp::Publisher<people_msgs::msg::LicensePlateStamped>::SharedPtr pub_license_plate_;
   std::shared_ptr<people_msgs::msg::LicensePlateStamped> license_plate_topic_;

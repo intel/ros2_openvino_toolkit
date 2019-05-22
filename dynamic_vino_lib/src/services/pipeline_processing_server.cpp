@@ -52,14 +52,14 @@ void PipelineProcessingServer<T>::setResponse(
   std::shared_ptr<typename T::Response> response)
 {
    for (auto it = pipelines_->begin(); it != pipelines_->end(); ++it) {
-        pipeline_srv_msgs::msg::Pipelines pipeline_msg;
+        pipeline_srv_msgs::msg::Pipeline pipeline_msg;
         pipeline_msg.name = it->first;
         pipeline_msg.running_status = std::to_string(it->second.state);
         
         auto connection_map = it->second.pipeline->getPipelineDetail();
         for (auto& current_pipe : connection_map)
         {
-          pipeline_srv_msgs::msg::Pipeline connection;
+          pipeline_srv_msgs::msg::Connection connection;
           connection.input  = current_pipe.first.c_str();
           connection.output = current_pipe.second.c_str();
           pipeline_msg.connections.push_back(connection);
@@ -91,18 +91,15 @@ void PipelineProcessingServer<T>::cbService(
      " val:"<< req_val<< slog::endl ;
   //Todo set initial state by current state
   PipelineManager::PipelineState state = PipelineManager::PipelineState_ThreadRunning;
-  if( req_cmd !=  "GET_PIPELINE")//not only get pipeline but also set pipeline by request
+  if( req_cmd !=  "GET_PIPELINE")
   {
     if(req_cmd == "STOP_PIPELINE") state = PipelineManager::PipelineState_ThreadStopped;
     else if(req_cmd == "RUN_PIPELINE") state = PipelineManager::PipelineState_ThreadRunning;
     else if(req_cmd == "PAUSE_PIPELINE") state =  PipelineManager::PipelineState_ThreadPasued;
     setPipelineByRequest(req_val,state);
   }
-  else  //fill in pipeline status into service response
-  {
-    setResponse(response);
-  }
-
+  setResponse(response);
+  
 }
 template class PipelineProcessingServer<pipeline_srv_msgs::srv::PipelineSrv>;
 }  // namespace vino_service

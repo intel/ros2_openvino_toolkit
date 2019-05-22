@@ -14,9 +14,9 @@
 #ifndef DYNAMIC_VINO_LIB__SERVICES__PIPELINE_PROCESSING_SERVER_HPP_
 #define DYNAMIC_VINO_LIB__SERVICES__PIPELINE_PROCESSING_SERVER_HPP_
 
-#include <pipeline_srv_msgs/msg/pipeline.hpp>
+#include <pipeline_srv_msgs/msg/connection.hpp>
 #include <pipeline_srv_msgs/msg/pipeline_request.hpp>
-#include <pipeline_srv_msgs/msg/pipelines.hpp>
+#include <pipeline_srv_msgs/msg/pipeline.hpp>
 #include <pipeline_srv_msgs/srv/pipeline_srv.hpp>
 #include <dynamic_vino_lib/pipeline_manager.hpp>
 #include <rclcpp/rclcpp.hpp>

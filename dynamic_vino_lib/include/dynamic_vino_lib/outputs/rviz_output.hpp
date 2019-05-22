@@ -38,7 +38,7 @@ namespace Outputs
 class RvizOutput : public BaseOutput
 {
 public:
-  RvizOutput(std::string pipeline_name);
+  RvizOutput(std::string output_name);
   /**
    * @brief Construct frame for rviz
    * @param[in] A frame.
@@ -116,7 +116,6 @@ private:
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_image_;
   std::shared_ptr<sensor_msgs::msg::Image> image_topic_;
   std::shared_ptr<Outputs::ImageWindowOutput> image_window_output_;
-  std::string pipeline_name_;
 };
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__RVIZ_OUTPUT_HPP_

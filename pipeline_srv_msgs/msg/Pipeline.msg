@@ -12,5 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
                       
-string input                        # From
-string output                       # To
+std_msgs/Header header             # Header
+string name                        # Name of pipeline
+Connection[] connections             # connection map of a pipeline
+string running_status              # Pipeline running state

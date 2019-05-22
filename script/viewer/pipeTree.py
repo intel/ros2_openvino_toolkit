@@ -73,9 +73,9 @@ class TreeNode(object):
                 break
             cur = obj
         return obj
-    def find_node(self,name):
+    def find_node(self,findname):
         for name,obj in self.items():
-            if name == name:
+            if name == findname:
                 return obj
             return obj.find_node(name)
     def items(self):
