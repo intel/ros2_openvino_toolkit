@@ -34,7 +34,7 @@ bool Input::RealSenseCameraTopic::initialize()
   slog::info << "before cameraTOpic init" << slog::endl;
   std::shared_ptr<rclcpp::Node> node(this);
   setHandler(node);
-  auto qos = rclcpp::QoS(rclcpp::KeepLast(100)).best_effort();
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   sub_ = this->create_subscription<sensor_msgs::msg::Image>(
     "/openvino_toolkit/image_raw", qos,
     std::bind(&RealSenseCameraTopic::cb, this, std::placeholders::_1));

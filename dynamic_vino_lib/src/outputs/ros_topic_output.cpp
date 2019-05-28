@@ -328,60 +328,60 @@ void Outputs::RosTopicOutput::handleOutput()
   if (landmarks_topic_ != nullptr) {
     // slog::info << "publishing landmarks detection outputs." << slog::endl;
     landmarks_topic_->header = header;
-    pub_landmarks_->publish(landmarks_topic_);
+    pub_landmarks_->publish(*landmarks_topic_);
     landmarks_topic_ = nullptr;
   }
   if (face_reid_topic_ != nullptr) {
     // slog::info << "publishing face reidentification outputs." << slog::endl;
     face_reid_topic_->header = header;
-    pub_face_reid_->publish(face_reid_topic_);
+    pub_face_reid_->publish(*face_reid_topic_);
     face_reid_topic_ = nullptr;
   }
   if (person_attribs_topic_ != nullptr) {
     // slog::info << "publishing person attributes outputs." << slog::endl;
     person_attribs_topic_->header = header;
-    pub_person_attribs_->publish(person_attribs_topic_);
+    pub_person_attribs_->publish(*person_attribs_topic_);
     person_attribs_topic_ = nullptr;
   }
   if (person_reid_topic_ != nullptr) {
     // slog::info << "publishing preson reidentification outputs." << slog::endl;
     person_reid_topic_->header = header;
-    pub_person_reid_->publish(person_reid_topic_);
+    pub_person_reid_->publish(*person_reid_topic_);
     person_reid_topic_ = nullptr;
   }
   if (segmented_objects_topic_ != nullptr) {
     // slog::info << "publishing segmented objects outputs." << slog::endl;
     segmented_objects_topic_->header = header;
-    pub_segmented_object_->publish(segmented_objects_topic_);
+    pub_segmented_object_->publish(*segmented_objects_topic_);
     segmented_objects_topic_ = nullptr;
   }
   if (detected_objects_topic_ != nullptr) {
     // slog::info << "publishing detected objects outputs." << slog::endl;
     detected_objects_topic_->header = header;
-    pub_detected_object_->publish(detected_objects_topic_);
+    pub_detected_object_->publish(*detected_objects_topic_);
     detected_objects_topic_ = nullptr;
   }
   if (faces_topic_ != nullptr) {
     // slog::info << "publishing faces outputs." << slog::endl;
     faces_topic_->header = header;
-    pub_face_->publish(faces_topic_);
+    pub_face_->publish(*faces_topic_);
     faces_topic_ = nullptr;
   }
   if (emotions_topic_ != nullptr) {
     // slog::info << "publishing emotions outputs." << slog::endl;
     emotions_topic_->header = header;
-    pub_emotion_->publish(emotions_topic_);
+    pub_emotion_->publish(*emotions_topic_);
     emotions_topic_ = nullptr;
   }
   if (age_gender_topic_ != nullptr) {
     // slog::info << "publishing age gender outputs." << slog::endl;
     age_gender_topic_->header = header;
-    pub_age_gender_->publish(age_gender_topic_);
+    pub_age_gender_->publish(*age_gender_topic_);
     age_gender_topic_ = nullptr;
   }
   if (headpose_topic_ != nullptr) {
     headpose_topic_->header = header;
-    pub_headpose_->publish(headpose_topic_);
+    pub_headpose_->publish(*headpose_topic_);
     headpose_topic_ = nullptr;
   }
 }
