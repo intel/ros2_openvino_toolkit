@@ -103,7 +103,7 @@ void Outputs::RvizOutput::handleOutput()
   std::shared_ptr<cv_bridge::CvImage> cv_ptr =
     std::make_shared<cv_bridge::CvImage>(header, "bgr8", frame);
   image_topic_ = cv_ptr->toImageMsg();
-  pub_image_->publish(image_topic_);
+  pub_image_->publish(*image_topic_);
 }
 
 std_msgs::msg::Header Outputs::RvizOutput::getHeader()
