@@ -55,6 +55,8 @@ const char kInferTpye_PersonReidentification[] = "PersonReidentification";
 const char kInferTpye_PersonAttribsDetection[] = "PersonAttribsDetection";
 const char kInferTpye_LandmarksDetection[] = "LandmarksDetection";
 const char kInferTpye_FaceReidentification[] = "FaceReidentification";
+const char kInferTpye_VehicleAttribsDetection[] = "VehicleAttribsDetection";
+const char kInferTpye_LicensePlateDetection[] = "LicensePlateDetection";
 
 /**
  * @class PipelineParams
