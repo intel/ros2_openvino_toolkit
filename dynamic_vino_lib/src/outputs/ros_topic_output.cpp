@@ -312,13 +312,13 @@ void Outputs::RosTopicOutput::handleOutput()
   if (vehicle_attribs_topic_ != nullptr) {
     // slog::info << "publishing landmarks detection outputs." << slog::endl;
     vehicle_attribs_topic_->header = header;
-    pub_vehicle_attribs_->publish(vehicle_attribs_topic_);
+    pub_vehicle_attribs_->publish(*vehicle_attribs_topic_);
     vehicle_attribs_topic_ = nullptr;
   }
   if (license_plate_topic_ != nullptr) {
     // slog::info << "publishing face reidentification outputs." << slog::endl;
     license_plate_topic_->header = header;
-    pub_license_plate_->publish(license_plate_topic_);
+    pub_license_plate_->publish(*license_plate_topic_);
     license_plate_topic_ = nullptr;
   }
   if (landmarks_topic_ != nullptr) {
