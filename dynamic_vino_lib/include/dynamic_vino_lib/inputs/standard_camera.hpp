@@ -58,6 +58,7 @@ public:
 
 private:
   cv::VideoCapture cap;
+  static int camera_count_;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__STANDARD_CAMERA_HPP_
