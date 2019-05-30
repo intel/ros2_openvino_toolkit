@@ -25,37 +25,41 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput()
+Outputs::RosTopicOutput::RosTopicOutput(std::string output_name):
+  BaseOutput(output_name)
 {
   // rmw_qos_profile_t qos = rmw_qos_profile_default;
   // qos.depth = 10;
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
-  node_ = rclcpp::Node::make_shared("topic_publisher");
+  node_ = rclcpp::Node::make_shared(output_name + "_topic_publisher");
   pub_license_plate_ = node_->create_publisher<people_msgs::msg::LicensePlateStamped>(
     "/openvino_toolkit/detected_license_plates", 16);
   pub_vehicle_attribs_ = node_->create_publisher<people_msgs::msg::VehicleAttribsStamped>(
     "/openvino_toolkit/detected_vehicles_attribs", 16);
   pub_landmarks_ = node_->create_publisher<people_msgs::msg::LandmarkStamped>(
-    "/openvino_toolkit/detected_landmarks", 16);
+    "/openvino_toolkit/" + output_name_ + "/detected_landmarks", 16);
   pub_face_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/reidentified_faces", 16);
+    "/openvino_toolkit/" + output_name_ + "/reidentified_faces", 16);
   pub_person_attribs_ = node_->create_publisher<people_msgs::msg::PersonAttributeStamped>(
-    "/openvino_toolkit/person_attributes", 16);
+    "/openvino_toolkit/" + output_name_ + "/person_attributes", 16);
   pub_person_reid_ = node_->create_publisher<people_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/reidentified_persons", 16);
+    "/openvino_toolkit/" + output_name_ + "/reidentified_persons", 16);
   pub_segmented_object_ = node_->create_publisher<people_msgs::msg::ObjectsInMasks>(
-    "/openvino_toolkit/segmented_obejcts", 16);
+    "/openvino_toolkit/" + output_name_ + "/segmented_obejcts", 16);
   pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-    "/openvino_toolkit/detected_objects", 16);
+    "/openvino_toolkit/" + output_name_ + "/detected_objects", 16);
   pub_face_ =
-    node_->create_publisher<object_msgs::msg::ObjectsInBoxes>("/openvino_toolkit/faces", 16);
+    node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
+      "/openvino_toolkit/" + output_name_ + "/faces", 16);
   pub_emotion_ =
-    node_->create_publisher<people_msgs::msg::EmotionsStamped>("/openvino_toolkit/emotions", 16);
+    node_->create_publisher<people_msgs::msg::EmotionsStamped>(
+      "/openvino_toolkit/" + output_name_ + "/emotions", 16);
   pub_age_gender_ = node_->create_publisher<people_msgs::msg::AgeGenderStamped>(
-    "/openvino_toolkit/age_genders", 16);
+    "/openvino_toolkit/" + output_name_ + "/age_genders", 16);
   pub_headpose_ =
-    node_->create_publisher<people_msgs::msg::HeadPoseStamped>("/openvino_toolkit/headposes", 16);
+    node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
+      "/openvino_toolkit/" + output_name_ + "/headposes", 16);
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;
@@ -312,13 +316,13 @@ void Outputs::RosTopicOutput::handleOutput()
   if (vehicle_attribs_topic_ != nullptr) {
     // slog::info << "publishing landmarks detection outputs." << slog::endl;
     vehicle_attribs_topic_->header = header;
-    pub_vehicle_attribs_->publish(vehicle_attribs_topic_);
+    pub_vehicle_attribs_->publish(*vehicle_attribs_topic_);
     vehicle_attribs_topic_ = nullptr;
   }
   if (license_plate_topic_ != nullptr) {
     // slog::info << "publishing face reidentification outputs." << slog::endl;
     license_plate_topic_->header = header;
-    pub_license_plate_->publish(license_plate_topic_);
+    pub_license_plate_->publish(*license_plate_topic_);
     license_plate_topic_ = nullptr;
   }
   if (landmarks_topic_ != nullptr) {

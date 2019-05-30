@@ -55,6 +55,7 @@ find_package(InferenceEngine REQUIRED)
 find_package(dynamic_vino_lib REQUIRED)
 find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
+find_package(pipeline_srv_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(realsense2 REQUIRED)
@@ -149,6 +150,7 @@ ament_target_dependencies(pipeline_with_params
   "dynamic_vino_lib"
   "InferenceEngine"
   "people_msgs"
+  "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
   "rviz_yaml_cpp_vendor"
@@ -172,6 +174,7 @@ ament_target_dependencies(image_object_server
   "dynamic_vino_lib"
   "InferenceEngine"
   "people_msgs"
+  "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
 )
@@ -193,6 +196,7 @@ ament_target_dependencies(image_people_server
   "dynamic_vino_lib"
   "InferenceEngine"
   "people_msgs"
+  "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
 )
@@ -214,6 +218,7 @@ ament_target_dependencies(image_object_client
   "dynamic_vino_lib"
   "InferenceEngine"
   "people_msgs"
+  "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
 )
@@ -235,6 +240,7 @@ ament_target_dependencies(image_people_client
   "dynamic_vino_lib"
   "InferenceEngine"
   "people_msgs"
+  "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
 )
@@ -283,6 +289,7 @@ if(BUILD_TESTING)
   find_package(OpenCV REQUIRED)
   find_package(object_msgs REQUIRED)
   find_package(people_msgs REQUIRED)
+  find_package(pipeline_srv_msgs REQUIRED)
   find_package(ament_index_cpp REQUIRED)
   find_package(yaml_cpp_vendor REQUIRED)
   find_package(class_loader REQUIRED)
@@ -306,6 +313,7 @@ if(BUILD_TESTING)
         "OpenCV"
         "object_msgs"
         "people_msgs"
+        "pipeline_srv_msgs"
         "ament_index_cpp"
         "yaml_cpp_vendor"
         "class_loader"

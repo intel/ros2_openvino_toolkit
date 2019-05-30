@@ -33,7 +33,11 @@ namespace Outputs
 class ImageWindowOutput : public BaseOutput
 {
 public:
-  explicit ImageWindowOutput(const std::string & window_name, int focal_length = 950);
+  explicit ImageWindowOutput(const std::string & output_name, int focal_length = 950);
+  // ~ImageWindowOutput()
+  // {
+  //   cv::destroyWindow(output_name_);
+  // }
   /**
    * @brief Calculate the camera matrix of a frame for image
    * window output.
@@ -159,7 +163,6 @@ private:
   };
 
   std::vector<OutputData> outputs_;
-  const std::string window_name_;
   float focal_length_;
   cv::Mat camera_matrix_;
   std::vector<std::vector<int>> colors_ = {

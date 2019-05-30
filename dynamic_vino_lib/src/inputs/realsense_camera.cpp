@@ -23,29 +23,22 @@
 // RealSenseCamera
 bool Input::RealSenseCamera::initialize()
 {
-  cfg_.enable_stream(RS2_STREAM_COLOR, 640, 480, RS2_FORMAT_BGR8, 30);
-  setInitStatus(pipe_.start(cfg_));
-  setWidth(640);
-  setHeight(480);
-  if (!isInit()) {
-    return false;
-  }
-  if (first_read_) {
-    rs2::frameset frames;
-    for (int i = 0; i < 30; i++) {
-      // Wait for all configured streams to produce a frame
-      try {
-        frames = pipe_.wait_for_frames();
-      } catch (...) {
-        return false;
-      }
-    }
-    first_read_ = false;
-  }
-  return true;
+  return initialize(640,480);
 }
 bool Input::RealSenseCamera::initialize(size_t width, size_t height)
 {
+  static int rscamera_count = 0;
+  // Get all devices connected
+  rs2::context cxt;
+  auto device = cxt.query_devices();
+  size_t device_count = device.size();
+  slog::info << "Find RealSense num:"<< device_count << slog::endl;
+  auto hardware = device[rscamera_count];
+  auto devSerialNumber = hardware.get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
+	//std::cout << "Camera " << rscamera_count << ": " << hardware.get_info(RS2_CAMERA_INFO_NAME) << std::endl;
+	slog::info << "RealSense Serial number : " << devSerialNumber << slog::endl;
+  cfg_.enable_device(devSerialNumber);
+  
   if (3 * width != 4 * height) {
     slog::err << "The aspect ratio must be 4:3 when using RealSense camera" << slog::endl;
     return false;
@@ -70,6 +63,7 @@ bool Input::RealSenseCamera::initialize(size_t width, size_t height)
     }
     first_read_ = false;
   }
+  rscamera_count++;
   return true;
 }
 bool Input::RealSenseCamera::read(cv::Mat * frame)
