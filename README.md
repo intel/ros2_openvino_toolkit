@@ -80,6 +80,10 @@ Currently, the inference feature list is supported:
 ```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ObjectsInMasks.msg))
 - Person Reidentification:
 ```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ReidentificationStamped.msg))
+- Vehicle Detection:
+```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::VehicleAttribsStamped]https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/VehicleAttribsStamped.msg)
+- Vehicle License Detection:
+```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped]https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/LicensePlateStamped.msg)
 - Rviz Output:
 ```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::msg::Image](https://github.com/ros2/common_interfaces/blob/master/sensor_msgs/msg/Image.msg))
 
@@ -121,56 +125,25 @@ See below pictures for the demo result snapshots.
 # Installation & Launching
 **NOTE:** Intel releases 2 different series of OpenVINO Toolkit, we call them as [OpenSource Version](https://github.com/opencv/dldt/) and [Tarball Version](https://software.intel.com/en-us/openvino-toolkit). This guidelie uses OpenSource Version as the installation and launching example. **If you want to use Tarball version, please follow [the guide for Tarball Version](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/BINARY_VERSION_README.md).**
 
-## Enable Intel® Neural Compute Stick 2 (Intel® NCS 2) under the OpenVINO Open Source version (Optional) </br>
-1. Intel Distribution of OpenVINO toolkit </br>
-	* Download OpenVINO toolkit by following the [guide](https://software.intel.com/en-us/openvino-toolkit/choose-download)</br>
-	```bash
-	cd ~/Downloads
-	wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15078/l_openvino_toolkit_p_2018.5.455.tgz
-	```
-	* Install OpenVINO toolkit by following the [guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux) </br>
-	```bash
-	cd ~/Downloads
-	tar -xvf l_openvino_toolkit_p_2018.5.455.tgz
-	cd l_openvino_toolkit_p_2018.5.455
-	# root is required instead of sudo
-	sudo -E ./install_cv_sdk_dependencies.sh
-	sudo ./install_GUI.sh
-	# build sample code under OpenVINO toolkit
-	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
- 	cd /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/
- 	mkdir build
-	cd build
- 	cmake ..
- 	make
-	```
-	* Configure the Neural Compute Stick USB Driver
-	```bash
-	cd ~/Downloads
-	cat <<EOF > 97-usbboot.rules
-	SUBSYSTEM=="usb", ATTRS{idProduct}=="2150", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
-	SUBSYSTEM=="usb", ATTRS{idProduct}=="2485", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
-	SUBSYSTEM=="usb", ATTRS{idProduct}=="f63b", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
-	EOF
-	sudo cp 97-usbboot.rules /etc/udev/rules.d/
-	sudo udevadm control --reload-rules
-	sudo udevadm trigger
-	sudo ldconfig
-	rm 97-usbboot.rules
-	```
-	
-2. Configure the environment (you can write the configuration to your ~/.basrch file)</br>
-	**Note**: If you used root privileges to install the OpenVINO binary package, it installs the Intel Distribution of OpenVINO toolkit in this directory: */opt/intel/openvino_<version>/*
-	```bash
-	export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/intel/computer_vision_sdk/deployment_tools/inference_engine/samples/build/intel64/Release/lib
-	source /opt/intel/computer_vision_sdk/bin/setupvars.sh
-	```
-	
 ## Dependencies Installation
 One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/OPEN_SOURCE_CODE_README.md) for details.
 
 ## Launching
 * Preparation
+	* Configure the Neural Compute Stick USB Driver
+		```bash
+		cd ~/Downloads
+		cat <<EOF > 97-usbboot.rules
+		SUBSYSTEM=="usb", ATTRS{idProduct}=="2150", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+		SUBSYSTEM=="usb", ATTRS{idProduct}=="2485", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+		SUBSYSTEM=="usb", ATTRS{idProduct}=="f63b", ATTRS{idVendor}=="03e7", GROUP="users", MODE="0666", ENV{ID_MM_DEVICE_IGNORE}="1"
+		EOF
+		sudo cp 97-usbboot.rules /etc/udev/rules.d/
+		sudo udevadm control --reload-rules
+		sudo udevadm trigger
+		sudo ldconfig
+		rm 97-usbboot.rules
+		```
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
 		```bash
 		#object segmentation model
@@ -200,6 +173,9 @@ One-step installation scripts are provided for the dependencies' installation. P
 		python3 downloader.py --name head-pose-estimation-adas-0001
 		python3 downloader.py --name person-detection-retail-0013
 		python3 downloader.py --name person-reidentification-retail-0076
+		python3 downloader.py --name vehicle-license-plate-detection-barrier-0106
+		python3 downloader.py --name vehicle-attributes-recognition-barrier-0039
+		python3 downloader.py --name license-plate-recognition-barrier-0001
 		```
 	* copy label files (excute _once_)<br>
 		```bash
@@ -208,6 +184,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt
 		```
 	* set ENV LD_LIBRARY_PATH<br>
 		```bash
@@ -241,6 +218,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_reidentification_oss.launch.py
 	```
+* run vehicle detection sample code input from StandardCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_vehicle_detection_oss.launch.py
+	```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
@@ -269,3 +250,4 @@ One-step installation scripts are provided for the dependencies' installation. P
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
+
