@@ -32,9 +32,9 @@ def generate_launch_description():
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/segmented_obejcts',
+                ('/openvino_toolkit/segmentation/segmented_obejcts',
                  '/ros2_openvino_toolkit/segmented_obejcts'),
-                ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz

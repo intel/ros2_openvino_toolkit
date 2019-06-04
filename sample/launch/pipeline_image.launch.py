@@ -32,12 +32,12 @@ def generate_launch_description():
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/faces', '/ros2_openvino_toolkit/face_detection'),
-                ('/openvino_toolkit/emotions', '/ros2_openvino_toolkit/emotions_recognition'),
-                ('/openvino_toolkit/headposes', '/ros2_openvino_toolkit/headposes_estimation'),
-                ('/openvino_toolkit/age_genders',
-                 '/ros2_openvino_toolkit/age_genders_Recognition'),
-                ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/people/faces', '/ros2_openvino_toolkit/face_detection'),
+                ('/openvino_toolkit/people/emotions', '/ros2_openvino_toolkit/emotions_recognition'),
+                ('/openvino_toolkit/people/headposes', '/ros2_openvino_toolkit/headposes_estimation'),
+                ('/openvino_toolkit/people/age_genders',
+                 '/ros2_openvino_toolkit/people/age_genders_Recognition'),
+                ('/openvino_toolkit/people/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
