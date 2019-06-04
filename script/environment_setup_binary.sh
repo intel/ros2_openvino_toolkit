@@ -110,9 +110,9 @@ if [ "$OPENVINO" == "1" ]; then
   echo "===================Installing OpenVINO Toolkit...======================="
 
   cd ~/Downloads
-  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15078/l_openvino_toolkit_p_2018.5.455.tgz
-  tar -xvf l_openvino_toolkit_p_2018.5.455.tgz
-  cd l_openvino_toolkit_p_2018.5.455
+  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15512/l_openvino_toolkit_p_2019.1.144.tgz
+  tar -xvf l_openvino_toolkit_p_2019.1.144.tgz
+  cd l_openvino_toolkit_p_2019.1.144
   echo $ROOT_PASSWD | sudo -S ./install_cv_sdk_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg
@@ -124,8 +124,8 @@ fi
 if [ "$OPENCL" == "1" ]; then
    echo "===================Installing OpenCL Driver for GPU...======================="
    
-   cd /opt/intel/computer_vision_sdk/install_dependencies
-   echo $ROOT_PASSWD | sudo -S ./install_NEO_OCL_driver.sh
+   cd /opt/intel/openvino/install_dependencies
+   echo $ROOT_PASSWD | sudo -S ./install_openvino_dependencies.sh
 
    echo "==== END install OpenCL ===="
 fi
