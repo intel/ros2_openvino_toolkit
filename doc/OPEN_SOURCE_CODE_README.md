@@ -44,7 +44,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 **Note**:You can also choose to follow the steps below to build the environment step by step.
 * Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install OpenVINO™ Toolkit Open Source<br>
-	* Install [OpenCV 3.3 or later](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
+	* Install [OpenCV 3.4.2](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
 		```bash
 		[compiler] sudo apt-get install build-essential
 		[required] sudo apt-get install cmake git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev
@@ -85,7 +85,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		mkdir ~/code && cd ~/code
 		git clone https://github.com/opencv/dldt.git
 		cd dldt/inference-engine/
-		git checkout 2018_R5
+		git checkout 2019_R1.1
 		git submodule init
 		git submodule update --recursive
 		./install_dependencies.sh
@@ -100,7 +100,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		cd ~/code
 		git clone https://github.com/opencv/open_model_zoo.git
 		cd open_model_zoo/demos/
-		git checkout 2018_R5
+		git checkout 2019
 		mkdir build && cd build
 		cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
 		make -j8
@@ -179,7 +179,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	colcon build --symlink-install
 	source ./install/local_setup.bash
 	sudo mkdir -p /opt/openvino_toolkit
-	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/ros2_openvino_toolkit
+	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/
 	```
+
 
 
