@@ -23,26 +23,21 @@ import launch_ros.actions
 
 def generate_launch_description():
     default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
-                                'pipeline_object_oss_topic.yaml')
-    default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
-                                'rviz/default.rviz')
+                                'multi_pipleine_service_object_oss.yaml')
+    # default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
+    #                             'rviz/default.rviz')
     return LaunchDescription([
-        # Realsense
-        launch_ros.actions.Node(
-            package='realsense_ros2_camera', node_executable='realsense_ros2_camera',
-            output='screen'),
-        # Openvino Detection
+        # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
-            remappings=[
-                ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
-                ('/openvino_toolkit/object/detected_objects', '/ros2_openvino_toolkit/detected_objects'),
-                ('/openvino_toolkit/object/images', '/ros2_openvino_toolkit/image_rviz')],
+            # remappings=[
+            #     ('/openvino_toolkit/detected_objects', '/ros2_openvino_toolkit/detected_objects'),
+            #     ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
-        launch_ros.actions.Node(
-            package='rviz2', node_executable='rviz2', output='screen',
-            arguments=['--display-config', default_rviz]),
+    #     launch_ros.actions.Node(
+    #         package='rviz2', node_executable='rviz2', output='screen',
+    #         arguments=['--display-config', default_rviz]),
     ])

@@ -38,9 +38,9 @@ def generate_launch_description():
             arguments=['-config', default_yaml],
             remappings=[
                 ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
-                ('/openvino_toolkit/segmented_obejcts',
+                ('/openvino_toolkit/segmentation/segmented_obejcts',
                  '/ros2_openvino_toolkit/segmented_obejcts'),
-                ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
