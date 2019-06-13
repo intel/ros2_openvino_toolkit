@@ -71,8 +71,7 @@ void wait_for_future(
 TEST(UnitTestFaceDetection, testFaceDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_face_test");
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -87,7 +86,7 @@ TEST(UnitTestFaceDetection, testFaceDetection)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-      "/openvino_toolkit/detected_objects", openvino_faceDetection_callback, custom_qos_profile);
+      "/ros2_openvino_toolkit/face_detection", qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -100,8 +99,7 @@ TEST(UnitTestFaceDetection, testFaceDetection)
 TEST(UnitTestFaceDetection, testEmotionDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_emotion_test");
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -116,8 +114,7 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
 
   {
     auto sub2 = node->create_subscription<people_msgs::msg::EmotionsStamped>(
-      "/ros2_openvino_toolkit/emotions_recognition", openvino_emotionRecognition_callback,
-      custom_qos_profile);
+      "/ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -130,8 +127,7 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
 TEST(UnitTestFaceDetection, testageGenderDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_ageGender_test");
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -146,8 +142,7 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
 
   {
     auto sub3 = node->create_subscription<people_msgs::msg::AgeGenderStamped>(
-      "/ros2_openvino_toolkit/age_genders_Recognition", openvino_ageGender_callback,
-      custom_qos_profile);
+      "/ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -160,8 +155,7 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
 TEST(UnitTestFaceDetection, testheadPoseDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_headPose_test");
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -176,8 +170,7 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
 
   {
     auto sub4 = node->create_subscription<people_msgs::msg::HeadPoseStamped>(
-      "/ros2_openvino_toolkit/headposes_estimation", openvino_headPose_callback,
-      custom_qos_profile);
+      "/ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
