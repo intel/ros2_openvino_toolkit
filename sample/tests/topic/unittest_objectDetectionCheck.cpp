@@ -63,8 +63,7 @@ void wait_for_future(
 TEST(UnitTestObjectDetection, testObjectDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_objectDetection_test");
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
+  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -79,8 +78,7 @@ TEST(UnitTestObjectDetection, testObjectDetection)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-      "/ros2_openvino_toolkit/detected_objects", openvino_faceDetection_callback,
-      custom_qos_profile);
+      "/ros2_openvino_toolkit/detected_objects", qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
