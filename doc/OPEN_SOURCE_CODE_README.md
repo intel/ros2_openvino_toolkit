@@ -19,7 +19,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* 6th-8th Generation Intel® Core™
 	* Intel® Xeon® v5 family
 	* Intel®  Xeon® v6 family
-- ROS2 [Crystal](https://github.com/ros2/ros2/wiki)
+- ROS2 [Dashing](https://github.com/ros2/ros2/wiki)
 
 - OpenVINO™ Toolkit Open Source<br>
   	* The [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt) that helps to enable fast, heterogeneous deep learning inferencing for Intel® processors (CPU and GPU/Intel® Processor Graphics), and supports more than 100 public and custom models.<br>
@@ -42,7 +42,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ./environment_setup.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
-* Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
+* Install ROS2 [Dashing](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install OpenVINO™ Toolkit Open Source<br>
 	* Install [OpenCV 3.4.2](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
 		```bash
@@ -66,19 +66,15 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 			sudo apt update
 			sudo apt install libjasper1 libjasper-dev
 			```
-	* Install OpenCL Driver for GPU([guide](http://registrationcenter-download.intel.com/akdlm/irc_nas/11396/intel-opencl-4.1-installation.pdf))<br>
+	* Install OpenCL Driver for GPU<br>
 		```bash
 		cd ~/Downloads
-		wget http://registrationcenter-download.intel.com/akdlm/irc_nas/11396/SRB5.0_linux64.zip
-		unzip SRB5.0_linux64.zip -d SRB5.0_linux64
-		cd SRB5.0_linux64
-		sudo apt-get install xz-utils
-		mkdir intel-opencl
-		tar -C intel-opencl -Jxf intel-opencl-r5.0-63503.x86_64.tar.xz
-		tar -C intel-opencl -Jxf intel-opencl-devel-r5.0-63503.x86_64.tar.xz
-		tar -C intel-opencl -Jxf intel-opencl-cpu-r5.0-63503.x86_64.tar.xz
-		sudo cp -R intel-opencl/* /
-		sudo ldconfig
+		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-gmmlib_18.4.1_amd64.deb
+		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-core_18.50.1270_amd64.deb
+		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-opencl_18.50.1270_amd64.deb
+		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-opencl_19.04.12237_amd64.deb
+		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-ocloc_19.04.12237_amd64.deb
+		sudo dpkg -i *.deb
 		```
 	* Install [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt)([guide](https://github.com/opencv/dldt/tree/2018/inference-engine))<br>
 		```bash
@@ -169,7 +165,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
 	git clone https://github.com/ros-perception/image_common.git -b ros2
-	git clone https://github.com/intel/ros2_intel_realsense.git
+	git clone https://github.com/intel/ros2_intel_realsense.git -b devel
 	```
 
 * Build package
