@@ -38,7 +38,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ./environment_setup_binary.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
-* Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
+* Install ROS2 [Dashing](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))<br>
     	**Note**: Please use  *root privileges* to run the installer when installing the core components.
 * Install OpenCL Driver for GPU
