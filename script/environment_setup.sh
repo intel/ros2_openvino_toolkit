@@ -147,7 +147,7 @@ fi
 if [ "$OPENCL" == "1" ]; then
   echo "===================Installing OpenCL Driver for GPU...======================="
   
-  mkdir -p ~/code && cd ~/code
+  cd ~/Downloads
   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-gmmlib_18.4.1_amd64.deb
   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-core_18.50.1270_amd64.deb
   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-opencl_18.50.1270_amd64.deb
