@@ -28,10 +28,10 @@
 #include <people_msgs/msg/age_gender_stamped.hpp>
 #include <people_msgs/msg/head_pose.hpp>
 #include <people_msgs/msg/head_pose_stamped.hpp>
-#include <people_msgs/srv/age_gender.hpp>
-#include <people_msgs/srv/emotion.hpp>
+#include <people_msgs/srv/age_gender_srv.hpp>
+#include <people_msgs/srv/emotion_srv.hpp>
 #include <people_msgs/srv/people.hpp>
-#include <people_msgs/srv/head_pose.hpp>
+#include <people_msgs/srv/head_pose_srv.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 #include <string>
 #include <vector>
@@ -156,11 +156,11 @@ public:
   virtual void setServiceResponseForFace(
     std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<people_msgs::srv::AgeGender::Response> response) {}
+    std::shared_ptr<people_msgs::srv::AgeGenderSrv::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<people_msgs::srv::Emotion::Response> response) {}
+    std::shared_ptr<people_msgs::srv::EmotionSrv::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<people_msgs::srv::HeadPose::Response> response) {}
+    std::shared_ptr<people_msgs::srv::HeadPoseSrv::Response> response) {}
   virtual void setServiceResponse(
     std::shared_ptr<people_msgs::srv::People::Response> response) {}
   Pipeline * getPipeline() const;

@@ -59,9 +59,9 @@ public:
 
   void setServiceResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
   void setResponseForFace(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
-  void setServiceResponse(std::shared_ptr<people_msgs::srv::AgeGender::Response> response);
-  void setServiceResponse(std::shared_ptr<people_msgs::srv::Emotion::Response> response);
-  void setServiceResponse(std::shared_ptr<people_msgs::srv::HeadPose::Response> response);
+  void setServiceResponse(std::shared_ptr<people_msgs::srv::AgeGenderSrv::Response> response);
+  void setServiceResponse(std::shared_ptr<people_msgs::srv::EmotionSrv::Response> response);
+  void setServiceResponse(std::shared_ptr<people_msgs::srv::HeadPoseSrv::Response> response);
   void setServiceResponse(std::shared_ptr<people_msgs::srv::People::Response> response);
 
 private:

@@ -24,9 +24,9 @@
 #include <people_msgs/msg/head_pose.hpp>
 #include <people_msgs/msg/head_pose_stamped.hpp>
 
-#include <people_msgs/srv/age_gender.hpp>
-#include <people_msgs/srv/emotion.hpp>
-#include <people_msgs/srv/head_pose.hpp>
+#include <people_msgs/srv/age_gender_srv.hpp>
+#include <people_msgs/srv/emotion_srv.hpp>
+#include <people_msgs/srv/head_pose_srv.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 
 #include <rclcpp/rclcpp.hpp>

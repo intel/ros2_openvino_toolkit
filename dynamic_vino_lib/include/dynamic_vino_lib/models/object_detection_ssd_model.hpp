@@ -15,8 +15,8 @@
  * @brief A header file with declaration for ObjectDetectionModel Class
  * @file face_detection_model.h
  */
-#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_MODEL_HPP_
-#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_MODEL_HPP_
+#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_
+#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_
 #include <string>
 #include "dynamic_vino_lib/models/base_model.hpp"
 namespace Models
@@ -25,18 +25,27 @@ namespace Models
  * @class ObjectDetectionModel
  * @brief This class generates the face detection model.
  */
-class ObjectDetectionModel : public BaseModel
+class ObjectDetectionSSDModel : public ObjectDetectionModel
 {
+  using Result = dynamic_vino_lib::ObjectDetectionResult;
 public:
-  ObjectDetectionModel(const std::string &, int, int, int);
-  inline const int getMaxProposalCount()
-  {
-    return max_proposal_count_;
-  }
-  inline const int getObjectSize()
-  {
-    return object_size_;
-  }
+  ObjectDetectionSSDModel(const std::string &, int, int, int);
+
+  bool fetchResults(
+    const std::shared_ptr<Engines::Engine>& engine,
+    std::vector<dynamic_vino_lib::ObjectDetectionResult>& results,
+    const float& confidence_thresh = 0.3,
+    const bool& enable_roi_constraint = false) override;
+
+  bool enqueue(
+    const std::shared_ptr<Engines::Engine>& engine,
+    const cv::Mat & frame,
+    const cv::Rect & input_frame_loc) override;
+
+  bool matToBlob(
+    const cv::Mat& orig_image, const cv::Rect&, float scale_factor, 
+    int batch_index, const std::shared_ptr<Engines::Engine>& engine) override;
+
   inline const std::string getInputName()
   {
     return input_;
@@ -55,10 +64,8 @@ protected:
   void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
   void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
-  int max_proposal_count_;
-  int object_size_;
   std::string input_;
   std::string output_;
 };
 }  // namespace Models
-#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_MODEL_HPP_
+#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_
