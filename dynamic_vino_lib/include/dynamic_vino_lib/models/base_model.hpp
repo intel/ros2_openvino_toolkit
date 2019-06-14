@@ -23,12 +23,18 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <opencv2/opencv.hpp>
 
 #include "inference_engine.hpp"
 
 namespace Engines
 {
 class Engine;
+}
+
+namespace dynamic_vino_lib
+{
+  class ObjectDetectionResult;
 }
 
 namespace Models
@@ -69,6 +75,15 @@ public:
   {
     return max_batch_size_;
   }
+  inline void setMaxBatchSize(int max_batch_size)
+  {
+    max_batch_size_ = max_batch_size;
+  }
+
+  virtual bool enqueue(
+    const std::shared_ptr<Engines::Engine>& engine,
+    const cv::Mat & frame,
+    const cv::Rect & input_frame_loc) {return true;};
   /**
    * @brief Initialize the model. During the process the class will check
    * the network input, output size, check layer property and
@@ -80,6 +95,10 @@ public:
    * @return The name of the model.
    */
   virtual const std::string getModelName() const = 0;
+
+  virtual inline const int getMaxProposalCount() { return max_proposal_count_; }
+  inline const int getObjectSize() { return object_size_; }
+  inline void setObjectSize(int os) { object_size_ = os; }
 
 protected:
   /**
@@ -94,17 +113,43 @@ protected:
    */
   virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
   virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
+  InferenceEngine::CNNNetReader::Ptr net_reader_;
+  void setFrameSize(const int& w, const int& h)
+  {
+    frame_size_.width = w; 
+    frame_size_.height = h;
+  }
+  cv::Size getFrameSize()
+  {return frame_size_;}
 
+protected:
+  int max_proposal_count_;
+  int object_size_;
 private:
   friend class Engines::Engine;
 
-  InferenceEngine::CNNNetReader::Ptr net_reader_;
   std::vector<std::string> labels_;
   int input_num_;
   int output_num_;
   int max_batch_size_;
   std::string model_loc_;
+  cv::Size frame_size_;
 };
+
+class ObjectDetectionModel : public BaseModel
+{
+ public:
+  ObjectDetectionModel(const std::string& a, int b, int c, int d);
+  virtual bool fetchResults(
+    const std::shared_ptr<Engines::Engine>& engine,
+    std::vector<dynamic_vino_lib::ObjectDetectionResult>& result,
+    const float& confidence_thresh = 0.3,
+    const bool& enable_roi_constraint = false) = 0;
+  virtual bool matToBlob(
+    const cv::Mat& orig_image, const cv::Rect&, float scale_factor, 
+    int batch_index, const std::shared_ptr<Engines::Engine>& engine) = 0;
+};
+
 }  // namespace Models
 
 #endif  // DYNAMIC_VINO_LIB__MODELS__BASE_MODEL_HPP_

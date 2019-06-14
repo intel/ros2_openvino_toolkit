@@ -114,8 +114,23 @@ public:
    */
   inline const int getEnqueuedNum() const
   {
-    return enqueued_frames;
+    return enqueued_frames_;
   }
+
+  /**
+   * @brief Get the size of the maximum of inference batch.
+   * @return The max batch size.
+   */
+  inline const int getMaxBatchSize() const
+  {
+    return max_batch_size_;
+  }
+
+  inline void  setMaxBatchSize(int max)
+  {
+    max_batch_size_ = max;
+  }
+
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.
@@ -156,13 +171,7 @@ public:
    * @return The name of the Inference instance.
    */
   virtual const std::string getName() const = 0;
-  /**
-   * @brief Get the max batch size of one inference.
-   */
-  inline int getMaxBatchSize()
-  {
-    return max_batch_size_;
-  }
+
   virtual const std::vector<cv::Rect> getFilteredROIs(
     const std::string filter_conditions) const = 0;
 
@@ -177,30 +186,23 @@ protected:
     const cv::Mat & frame, const cv::Rect &, float scale_factor, int batch_index,
     const std::string & input_name)
   {
-    if (enqueued_frames == max_batch_size_) {
+    if (enqueued_frames_ == max_batch_size_) {
       slog::warn << "Number of " << getName() << "input more than maximum(" << max_batch_size_ <<
         ") processed by inference" << slog::endl;
       return false;
     }
     InferenceEngine::Blob::Ptr input_blob = engine_->getRequest()->GetBlob(input_name);
     matU8ToBlob<T>(frame, input_blob, scale_factor, batch_index);
-    enqueued_frames += 1;
+    enqueued_frames_ += 1;
     return true;
-  }
-  /**
-   * @brief Set the max batch size for one inference.
-   */
-  inline void setMaxBatchSize(int max_batch_size)
-  {
-    max_batch_size_ = max_batch_size;
   }
 
   std::vector<Result> results_;
 
-private:
-  std::shared_ptr<Engines::Engine> engine_;
+protected:
+  std::shared_ptr<Engines::Engine> engine_ = nullptr;
   int max_batch_size_ = 1;
-  int enqueued_frames = 0;
+  int enqueued_frames_ = 0;
   bool results_fetched_ = false;
 };
 }  // namespace dynamic_vino_lib

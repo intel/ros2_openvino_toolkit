@@ -21,7 +21,7 @@
 #define DYNAMIC_VINO_LIB__MODELS__FACE_DETECTION_MODEL_HPP_
 
 #include <string>
-#include "dynamic_vino_lib/models/object_detection_model.hpp"
+#include "dynamic_vino_lib/models/base_model.hpp"
 
 namespace Models
 {

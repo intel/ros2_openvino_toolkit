@@ -93,11 +93,15 @@ void operator>>(const YAML::Node & node, ParamManager::InferenceRawData & infer)
 {
   YAML_PARSE(node, "name", infer.name)
   YAML_PARSE(node, "model", infer.model)
+  YAML_PARSE(node, "model_type", infer.model_type)
   YAML_PARSE(node, "engine", infer.engine)
   YAML_PARSE(node, "label", infer.label)
   YAML_PARSE(node, "batch", infer.batch)
   YAML_PARSE(node, "confidence_threshold", infer.confidence_threshold)
   YAML_PARSE(node, "enable_roi_constraint", infer.enable_roi_constraint)
+  if(infer.model_type.size() == 0){
+    infer.model_type = "SSD";
+  }
   slog::info << "Inference Params:name=" << infer.name << slog::endl;
 }
 

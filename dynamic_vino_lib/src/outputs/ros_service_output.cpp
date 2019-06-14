@@ -45,7 +45,7 @@ void Outputs::RosServiceOutput::setResponseForFace(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<people_msgs::srv::AgeGender::Response> response)
+  std::shared_ptr<people_msgs::srv::AgeGenderSrv::Response> response)
 {
   if (age_gender_topic_ != nullptr) {
     response->age_gender.objects = age_gender_topic_->objects;
@@ -53,7 +53,7 @@ void Outputs::RosServiceOutput::setServiceResponse(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<people_msgs::srv::Emotion::Response> response)
+  std::shared_ptr<people_msgs::srv::EmotionSrv::Response> response)
 {
   if (emotions_topic_ != nullptr) {
     response->emotion.emotions = emotions_topic_->emotions;
@@ -61,7 +61,7 @@ void Outputs::RosServiceOutput::setServiceResponse(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<people_msgs::srv::HeadPose::Response> response)
+  std::shared_ptr<people_msgs::srv::HeadPoseSrv::Response> response)
 {
   if (headpose_topic_ != nullptr) {
     response->headpose.headposes = headpose_topic_->headposes;

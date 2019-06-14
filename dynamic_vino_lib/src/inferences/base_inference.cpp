@@ -42,10 +42,10 @@ bool dynamic_vino_lib::BaseInference::submitRequest()
   if (engine_->getRequest() == nullptr) {
     return false;
   }
-  if (!enqueued_frames) {
+  if (!enqueued_frames_) {
     return false;
   }
-  enqueued_frames = 0;
+  enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->StartAsync();
   return true;
@@ -56,10 +56,10 @@ bool dynamic_vino_lib::BaseInference::SynchronousRequest()
   if (engine_->getRequest() == nullptr) {
     return false;
   }
-  if (!enqueued_frames) {
+  if (!enqueued_frames_) {
     return false;
   }
-  enqueued_frames = 0;
+  enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->Infer();
   return true;

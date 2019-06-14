@@ -27,7 +27,7 @@
 #include <vector>
 #include <string>
 #include <map>
-#include "dynamic_vino_lib/models/object_detection_model.hpp"
+#include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
 #include "dynamic_vino_lib/inferences/base_filter.hpp"
@@ -49,6 +49,11 @@ public:
   {
     return label_;
   }
+
+  void setLabel(const std::string& label)
+  {
+    label_ = label;
+  }
   /**
    * @brief Get the confidence that the detected area is a face.
    * @return The confidence value.
@@ -56,6 +61,16 @@ public:
   float getConfidence() const
   {
     return confidence_;
+  }
+
+  void setConfidence(const float& con)
+  {
+    confidence_ = con;
+  }
+
+  bool operator<(const ObjectDetectionResult &s2) const
+  {
+    return this->confidence_ > s2.confidence_;
   }
 
 private:
@@ -143,11 +158,7 @@ public:
    * @return Whether this operation is successful.
    */
   bool enqueue(const cv::Mat &, const cv::Rect &) override;
-  /**
-   * @brief Start inference for all buffered frames.
-   * @return Whether this operation is successful.
-   */
-  bool submitRequest() override;
+
   /**
    * @brief This function will fetch the results of the previous inference and
    * stores the results in a result buffer array. All buffered frames will be
@@ -179,6 +190,11 @@ public:
 
   const std::vector<cv::Rect> getFilteredROIs(
     const std::string filter_conditions) const override;
+  /**
+   * @brief Calculate the IoU ratio for the given rectangles.
+   * @return IoU Ratio of the given rectangles.
+   */
+  static double IntersectionOverUnion(const cv::Rect &box_1, const cv::Rect &box_2);
 
 private:
   std::shared_ptr<Models::ObjectDetectionModel> valid_model_;
