@@ -4,7 +4,7 @@ Pipelines:
   infers:
     - name: ObjectDetection
       model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml 
-      engine: GPU
+      engine: MYRIAD
       model_type: SSD
       label: to/be/set/xxx.labels
       batch: 1
