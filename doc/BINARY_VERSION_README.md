@@ -19,7 +19,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	* 6th-8th Generation Intel® Core™
 	* Intel® Xeon® v5 family
 	* Intel®  Xeon® v6 family
-- ROS2 [Crystal](https://github.com/ros2/ros2/wiki)
+- ROS2 [Dashing](https://github.com/ros2/ros2/wiki)
 - [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit)
 - RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
 - Graphics are required only if you use a GPU. The official system requirements for GPU are:
@@ -38,13 +38,18 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 ./environment_setup_binary.sh
 ```
 **Note**:You can also choose to follow the steps below to build the environment step by step.
-* Install ROS2 [Crystal](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
+* Install ROS2 [Dashing](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Linux-Development-Setup/))<br>
 * Install [OpenVINO™ Toolkit](https://software.intel.com/en-us/openvino-toolkit) ([guide](https://software.intel.com/en-us/articles/OpenVINO-Install-Linux))<br>
     	**Note**: Please use  *root privileges* to run the installer when installing the core components.
 * Install OpenCL Driver for GPU
 	```bash
-	cd /opt/intel/openvino/install_dependencies
-	sudo ./install_NEO_OCL_driver.sh
+	mkdir -p ~/code && cd ~/code
+	wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-gmmlib_18.4.1_amd64.deb
+	wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-core_18.50.1270_amd64.deb
+	wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-opencl_18.50.1270_amd64.deb
+	wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-opencl_19.04.12237_amd64.deb
+	wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-ocloc_19.04.12237_amd64.deb
+	sudo dpkg -i *.deb
 	```
 * Install [OpenCV 3.4 or later](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
 	```bash
@@ -127,7 +132,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
 	git clone https://github.com/ros-perception/image_common.git -b ros2
-	git clone https://github.com/intel/ros2_intel_realsense.git
+	git clone https://github.com/intel/ros2_intel_realsense.git -b devel
 	```
 
 * Build package

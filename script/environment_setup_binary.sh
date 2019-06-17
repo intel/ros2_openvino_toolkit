@@ -76,12 +76,14 @@ if [ "$ROS2_SRC" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y curl
   curl http://repo.ros2.org/repos.key | sudo apt-key add -
   echo $ROOT_PASSWD | sudo -S sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
+  echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy="$http_proxy" --recv-key F42ED6FBAB17C654
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y build-essential cmake git python3-colcon-common-extensions python3-pip python-rosdep python3-vcstool wget
 
 # install some pip packages needed for testing
   echo $ROOT_PASSWD | sudo -S -H python3 -m pip install -U argcomplete flake8 flake8-blind-except flake8-builtins flake8-class-newline flake8-comprehensions flake8-deprecated flake8-docstrings flake8-import-order flake8-quotes pytest-repeat pytest-rerunfailures
 
   python3 -m pip install -U pytest pytest-cov pytest-runner setuptools
+  python3 -m pip uninstall pytest -y
   echo $ROOT_PASSWD | sudo -S apt-get install --no-install-recommends -y libasio-dev libtinyxml2-dev
 
   mkdir -p ~/ros2_ws/src
@@ -113,7 +115,7 @@ if [ "$OPENVINO" == "1" ]; then
   wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15512/l_openvino_toolkit_p_2019.1.144.tgz
   tar -xvf l_openvino_toolkit_p_2019.1.144.tgz
   cd l_openvino_toolkit_p_2019.1.144
-  echo $ROOT_PASSWD | sudo -S ./install_cv_sdk_dependencies.sh
+  echo $ROOT_PASSWD | sudo -S ./install_openvino_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg
 
@@ -124,8 +126,13 @@ fi
 if [ "$OPENCL" == "1" ]; then
    echo "===================Installing OpenCL Driver for GPU...======================="
    
-   cd /opt/intel/openvino/install_dependencies
-   echo $ROOT_PASSWD | sudo -S ./install_openvino_dependencies.sh
+   cd ~/Downloads
+   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-gmmlib_18.4.1_amd64.deb
+   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-core_18.50.1270_amd64.deb
+   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-opencl_18.50.1270_amd64.deb
+   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-opencl_19.04.12237_amd64.deb
+   wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-ocloc_19.04.12237_amd64.deb
+   echo $ROOT_PASSWD | sudo -S -E dpkg -i *.deb
 
    echo "==== END install OpenCL ===="
 fi

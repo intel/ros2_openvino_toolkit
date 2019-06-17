@@ -147,18 +147,14 @@ fi
 if [ "$OPENCL" == "1" ]; then
   echo "===================Installing OpenCL Driver for GPU...======================="
   
-  mkdir -p ~/code && cd ~/code
-  wget http://registrationcenter-download.intel.com/akdlm/irc_nas/11396/SRB5.0_linux64.zip
-  unzip SRB5.0_linux64.zip -d SRB5.0_linux64
-  cd SRB5.0_linux64
-  echo $ROOT_PASSWD | sudo -S apt-get install xz-utils
-  mkdir intel-opencl
-  tar -C intel-opencl -Jxf intel-opencl-r5.0-63503.x86_64.tar.xz
-  tar -C intel-opencl -Jxf intel-opencl-devel-r5.0-63503.x86_64.tar.xz
-  tar -C intel-opencl -Jxf intel-opencl-cpu-r5.0-63503.x86_64.tar.xz
-  echo $ROOT_PASSWD | sudo -S cp -R intel-opencl/* /
-  echo $ROOT_PASSWD | sudo -S ldconfig
-  
+  cd ~/Downloads
+  wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-gmmlib_18.4.1_amd64.deb
+  wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-core_18.50.1270_amd64.deb
+  wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-igc-opencl_18.50.1270_amd64.deb
+  wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-opencl_19.04.12237_amd64.deb
+  wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-ocloc_19.04.12237_amd64.deb
+  echo $ROOT_PASSWD | sudo -S -E dpkg -i *.deb
+
   echo "==== END install OpenCL ===="
 fi
 
