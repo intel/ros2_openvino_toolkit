@@ -191,12 +191,15 @@ void Pipeline::runOnce()
     slog::warn << "Failed to get frame from input_device." << slog::endl;
     return;
   }
+  
   countFPS();
   width_ = frame_.cols;
   height_ = frame_.rows;
+
   for (auto & pair : name_to_output_map_) {
     pair.second->feedFrame(frame_);
   }
+
   auto t0 = std::chrono::high_resolution_clock::now();
   for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
     std::string detection_name = pos.first->second;
@@ -205,8 +208,10 @@ void Pipeline::runOnce()
     increaseInferenceCounter();
     detection_ptr->submitRequest();
   }
+
   std::unique_lock<std::mutex> lock(counter_mutex_);
   cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
+
   auto t1 = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
 

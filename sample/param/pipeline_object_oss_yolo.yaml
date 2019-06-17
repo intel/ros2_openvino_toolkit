@@ -3,9 +3,9 @@ Pipelines:
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml 
-      engine: MYRIAD
-      model_type: SSD
+      model: /home/lewis/Downloads/models/yolo_models/yolov2-voc/yolov2-voc.xml
+      model_type: yolov2
+      engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5

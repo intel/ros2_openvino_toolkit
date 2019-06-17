@@ -52,9 +52,9 @@ rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/VehicleAttribsStamped.msg"
   "msg/LicensePlate.msg"
   "msg/LicensePlateStamped.msg"
-  "srv/AgeGender.srv"
-  "srv/Emotion.srv"
-  "srv/HeadPose.srv"
+  "srv/AgeGenderSrv.srv"
+  "srv/EmotionSrv.srv"
+  "srv/HeadPoseSrv.srv"
   "srv/People.srv"
   DEPENDENCIES builtin_interfaces std_msgs sensor_msgs object_msgs geometry_msgs
 )

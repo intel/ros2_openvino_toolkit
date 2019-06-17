@@ -52,6 +52,8 @@
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
@@ -283,13 +285,27 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
-  auto object_detection_model =
-    std::make_shared<Models::ObjectDetectionModel>(infer.model, 1, 1, infer.batch);
+  std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
+  std::shared_ptr<dynamic_vino_lib::ObjectDetection> object_inference_ptr;
+
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD)
+  {
+    object_detection_model = 
+      std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, 1, 1, infer.batch);
+  }
+
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2)
+  {
+    object_detection_model = 
+      std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, 1, 1, infer.batch);
+  }
+
+  object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
+    infer.enable_roi_constraint, infer.confidence_threshold); // To-do theshold configuration
+
   object_detection_model->modelInit();
   auto object_detection_engine = std::make_shared<Engines::Engine>(
     plugins_for_devices_[infer.engine], object_detection_model);
-  auto object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
-    infer.enable_roi_constraint, infer.confidence_threshold);
   object_inference_ptr->loadNetwork(object_detection_model);
   object_inference_ptr->loadEngine(object_detection_engine);
 
@@ -422,7 +438,7 @@ void PipelineManager::threadPipeline(const char * name)
     for (auto & node : p.spin_nodes) {
       rclcpp::spin_some(node);
     }
-    if(p.state != PipelineState_ThreadPasued)
+    if(p.state == PipelineState_ThreadRunning)
     {
       p.pipeline->runOnce();
     }
