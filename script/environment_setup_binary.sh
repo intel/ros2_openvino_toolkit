@@ -140,23 +140,17 @@ fi
 # Setup LIBREALSENSE
 if [ "$LIBREALSENSE" == "1" ]; then
   echo "===================Setting Up LibRealSense...======================="
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
-  echo $ROOT_PASSWD | sudo -S apt-get install -y libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-  mkdir -p ~/code && cd ~/code
-  git clone https://github.com/IntelRealSense/librealsense
-  cd ~/code/librealsense
-  git checkout v2.17.1
-  mkdir build && cd build
-  cmake ../ -DBUILD_EXAMPLES=true
-  echo $ROOT_PASSWD | sudo -S make uninstall
-  make clean
-  make
-  echo $ROOT_PASSWD | sudo -S make install
 
-  cd ..
-  echo $ROOT_PASSWD | sudo -S cp config/99-realsense-libusb.rules /etc/udev/rules.d/
-  echo $ROOT_PASSWD | sudo -S udevadm control --reload-rules
-  udevadm trigger
+  echo "Install server public key for librealsense"
+  CURRENT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
+  sudo apt-key add ${CURRENT_DIR}/C8B3A55A6F3EFCDE
+
+  if ! test "$(grep "http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo" /etc/apt/sources.list)"
+  then
+    sudo add-apt-repository "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main" -u
+  fi
+
+  sudo apt-get install -y librealsense2-dkms librealsense2-utils librealsense2-dev
   echo "==== END install librealsense ===="
 fi
 
