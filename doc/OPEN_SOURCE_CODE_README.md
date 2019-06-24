@@ -104,27 +104,8 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		sudo ln -sf ~/code/open_model_zoo /opt/openvino_toolkit/open_model_zoo
 		```
 	
-- Install Intel® RealSense™ SDK 2.0 [(tag v2.17.1)](https://github.com/IntelRealSense/librealsense/tree/v2.17.1)<br>
-	* [Install from source code](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/installation.md)(Recommended)<br>
-		```bash
-		 sudo apt-get install git libssl-dev libusb-1.0-0-dev pkg-config libgtk-3-dev
-		 sudo apt-get install libglfw3-dev libgl1-mesa-dev libglu1-mesa-dev
-		 mkdir -p ~/code && cd ~/code
-		 git clone https://github.com/IntelRealSense/librealsense
-		 cd ~/code/librealsense
-		 git checkout v2.17.1
-		 mkdir build && cd build
-		 cmake ../ -DBUILD_EXAMPLES=true
-		 sudo make uninstall 
-		 make clean
-		 make
-		 sudo make install
-		 cd ..
-		 sudo cp config/99-realsense-libusb.rules /etc/udev/rules.d/
-		 sudo udevadm control --reload-rules
-		 udevadm trigger
-		```
-	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.17.1/doc/distribution_linux.md)<br>
+- Install Intel® RealSense™ SDK 2.0 [(tag v2.23.0)](https://github.com/IntelRealSense/librealsense/tree/v2.23.0)<br>
+	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.23.0/doc/distribution_linux.md)<br>
 
 - Other Dependencies
 	```bash
@@ -177,6 +158,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	sudo mkdir -p /opt/openvino_toolkit
 	sudo ln -sf ~/ros2_overlay_ws/src/ros2_openvino_toolkit /opt/openvino_toolkit/
 	```
+
 
 
 
