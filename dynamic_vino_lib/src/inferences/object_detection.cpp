@@ -118,6 +118,13 @@ const void dynamic_vino_lib::ObjectDetection::observeOutput(
 const std::vector<cv::Rect> dynamic_vino_lib::ObjectDetection::getFilteredROIs(
   const std::string filter_conditions) const
 {
+  if(!result_filter_->isValidFilterConditions(filter_conditions)){
+    std::vector<cv::Rect> filtered_rois;
+    for (auto result : results_) {
+      filtered_rois.push_back(result.getLocation());
+    }
+    return filtered_rois;
+  }
   result_filter_->acceptResults(results_);
   result_filter_->acceptFilterConditions(filter_conditions);
   return result_filter_->getFilteredLocations();

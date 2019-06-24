@@ -25,6 +25,7 @@
 #include <opencv2/videoio/videoio_c.h>
 #include <vector>
 #include <string>
+#include <mutex>
 #include "dynamic_vino_lib/inputs/ros2_handler.hpp"
 
 /**
@@ -37,6 +38,37 @@ namespace Input
 struct Config
 {
   std::string path;
+};
+
+class MutexCounter
+{
+public:
+  MutexCounter(int init_counter=0)
+  {
+    std::lock_guard<std::mutex> lk(counter_mutex_);
+    counter_ = init_counter;
+  }
+
+  void increaseCounter()
+  {
+    std::lock_guard<std::mutex> lk(counter_mutex_);
+    ++counter_;
+  }
+
+  void decreaseCounter()
+  {
+    std::lock_guard<std::mutex> lk(counter_mutex_);
+    --counter_;
+  }
+
+  int get()
+  {
+    return counter_;
+  }
+private:
+  std::atomic<int> counter_;
+  std::mutex counter_mutex_;
+  std::condition_variable cv_;
 };
 
 class BaseInputDevice : public Ros2Handler

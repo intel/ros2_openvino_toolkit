@@ -52,7 +52,7 @@ public:
 private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
   cv::Mat image_;
-  int image_count_;
+  MutexCounter image_count_;
 
   void cb(const sensor_msgs::msg::Image::SharedPtr image_msg);
 };

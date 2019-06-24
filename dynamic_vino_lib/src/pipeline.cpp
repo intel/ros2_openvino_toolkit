@@ -188,7 +188,7 @@ void Pipeline::runOnce()
 
   if (!input_device_->read(&frame_)) {
     // throw std::logic_error("Failed to get frame from cv::VideoCapture");
-    slog::warn << "Failed to get frame from input_device." << slog::endl;
+    //slog::warn << "Failed to get frame from input_device." << slog::endl;
     return;
   }
   
