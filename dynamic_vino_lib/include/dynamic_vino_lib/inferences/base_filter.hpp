@@ -48,6 +48,13 @@ public:
   virtual std::vector<cv::Rect> getFilteredLocations() = 0;
 
   /**
+   * @brief Check if the filter conditions is valid for filtering.
+   * @param[in] Filter conditions.
+   * @return true if some of the conditions are valid, otherwise false.
+   */
+  bool isValidFilterConditions(const std::string &);
+
+  /**
    * @brief Accept the filter conditions for filtering.
    * @param[in] Filter conditions.
    */

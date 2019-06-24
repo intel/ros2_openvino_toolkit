@@ -74,6 +74,14 @@ public:
     std::shared_ptr<Pipeline> pipeline;
     std::vector<std::shared_ptr<rclcpp::Node>> spin_nodes;
     std::shared_ptr<std::thread> thread;
+    std::shared_ptr<std::thread> thread_spin_nodes;
+    PipelineState state;
+  };
+
+  struct ServiceData
+  {
+    std::shared_ptr<std::thread> thread;
+    //std::shared_ptr<rclcpp::Node> node;
     PipelineState state;
   };
 
@@ -94,6 +102,7 @@ private:
   PipelineManager(PipelineManager const &);
   void operator=(PipelineManager const &);
   void threadPipeline(const char * name);
+  void threadSpinNodes(const char * name);
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
   parseInputDevice(const Params::ParamManager::PipelineRawData & params);
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
@@ -125,6 +134,7 @@ private:
   std::shared_ptr<dynamic_vino_lib::BaseInference>
   createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
   std::map<std::string, PipelineData> pipelines_;
+  ServiceData service_;
   std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
 };
 
