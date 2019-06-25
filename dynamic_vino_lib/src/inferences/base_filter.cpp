@@ -24,6 +24,12 @@
 
 dynamic_vino_lib::BaseFilter::BaseFilter() {}
 
+bool dynamic_vino_lib::BaseFilter::isValidFilterConditions(
+  const std::string & filter_conditions)
+{
+  return strip(filter_conditions) != "";
+}
+
 void dynamic_vino_lib::BaseFilter::acceptFilterConditions(
   const std::string & filter_conditions)
 {

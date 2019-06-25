@@ -39,25 +39,27 @@ bool Input::RealSenseCameraTopic::initialize()
     "/openvino_toolkit/image_raw", qos,
     std::bind(&RealSenseCameraTopic::cb, this, std::placeholders::_1));
 
-  image_count_ = 0;
   return true;
 }
 
 void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 {
-  slog::info << "Receiving a new image from Camera topic." << slog::endl;
+  //slog::info << "Receiving a new image from Camera topic." << slog::endl;
   setHeader(image_msg->header);
+
   image_ = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
-  ++image_count_;
+
+  image_count_.increaseCounter();
 }
 
 bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
 {
-  if (image_.empty() || image_count_ <= 0) {
-    slog::warn << "No data received in CameraTopic instance" << slog::endl;
+  if(image_count_.get() < 0 || image_.empty()){
+    //slog::warn << "No data received in CameraTopic instance" << slog::endl;
     return false;
   }
+
   *frame = image_;
-  --image_count_;
+  image_count_.decreaseCounter();
   return true;
 }
