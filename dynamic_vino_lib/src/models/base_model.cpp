@@ -87,8 +87,8 @@ void Models::BaseModel::checkNetworkSize(
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
 }
 
-Models::ObjectDetectionModel::ObjectDetectionModel(const std::string& model_loc,
-                                               int input_num, int output_num,
-                                               int max_batch_size)
-    : BaseModel(model_loc, input_num, output_num, max_batch_size){}
-
+Models::ObjectDetectionModel::ObjectDetectionModel(
+  const std::string & model_loc,
+  int input_num, int output_num,
+  int max_batch_size)
+: BaseModel(model_loc, input_num, output_num, max_batch_size) {}

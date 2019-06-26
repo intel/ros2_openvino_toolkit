@@ -78,7 +78,7 @@ Factory::makePluginByName(
   }
   if (performance_message) {
     plugin.SetConfig({{InferenceEngine::PluginConfigParams::KEY_PERF_COUNT,
-          InferenceEngine::PluginConfigParams::YES}});
+        InferenceEngine::PluginConfigParams::YES}});
   }
   return std::make_unique<InferenceEngine::InferencePlugin>(
     InferenceEngine::InferenceEnginePluginPtr(plugin));

@@ -56,27 +56,26 @@ bool dynamic_vino_lib::ObjectDetection::enqueue(
   const cv::Mat & frame,
   const cv::Rect & input_frame_loc)
 {
-    if(valid_model_ == nullptr || getEngine() == nullptr){
-      return false;
-    }
-
-    if (enqueued_frames_ >= valid_model_->getMaxBatchSize())
-  {
-    slog::warn << "Number of " << getName() << "input more than maximum("
-               << max_batch_size_ << ") processed by inference" << slog::endl;
+  if (valid_model_ == nullptr || getEngine() == nullptr) {
     return false;
   }
 
-    if(!valid_model_->enqueue(getEngine(), frame, input_frame_loc)){
-      return false;
-    }
+  if (enqueued_frames_ >= valid_model_->getMaxBatchSize()) {
+    slog::warn << "Number of " << getName() << "input more than maximum(" <<
+      max_batch_size_ << ") processed by inference" << slog::endl;
+    return false;
+  }
 
-    //nonsense!!
-    //Result r(input_frame_loc);
-    //results_.clear();
-    //results_.emplace_back(r);
-    enqueued_frames_ += 1;
-    return true;
+  if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc)) {
+    return false;
+  }
+
+  // nonsense!!
+  // Result r(input_frame_loc);
+  // results_.clear();
+  // results_.emplace_back(r);
+  enqueued_frames_ += 1;
+  return true;
 }
 
 bool dynamic_vino_lib::ObjectDetection::fetchResults()
@@ -88,7 +87,8 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults()
 
   results_.clear();
 
-  return (valid_model_ != nullptr) && valid_model_->fetchResults(getEngine(), results_, show_output_thresh_, enable_roi_constraint_);
+  return (valid_model_ != nullptr) && valid_model_->fetchResults(
+    getEngine(), results_, show_output_thresh_, enable_roi_constraint_);
 }
 
 const int dynamic_vino_lib::ObjectDetection::getResultsLength() const
@@ -118,7 +118,7 @@ const void dynamic_vino_lib::ObjectDetection::observeOutput(
 const std::vector<cv::Rect> dynamic_vino_lib::ObjectDetection::getFilteredROIs(
   const std::string filter_conditions) const
 {
-  if(!result_filter_->isValidFilterConditions(filter_conditions)){
+  if (!result_filter_->isValidFilterConditions(filter_conditions)) {
     std::vector<cv::Rect> filtered_rois;
     for (auto result : results_) {
       filtered_rois.push_back(result.getLocation());
@@ -176,7 +176,9 @@ bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidResult(
   ISVALIDRESULT(key_to_function_, result);
 }
 
-double dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(const cv::Rect &box_1, const cv::Rect &box_2)
+double dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(
+  const cv::Rect & box_1,
+  const cv::Rect & box_2)
 {
   int xmax_1 = box_1.x + box_1.width;
   int xmin_1 = box_1.x;
@@ -188,17 +190,18 @@ double dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(const cv::Rect &
   int ymax_2 = box_2.y + box_2.height;
   int ymin_2 = box_2.y;
 
-  double width_of_overlap_area = fmin(xmax_1 , xmax_2) - fmax(xmin_1, xmin_2);
+  double width_of_overlap_area = fmin(xmax_1, xmax_2) - fmax(xmin_1, xmin_2);
   double height_of_overlap_area = fmin(ymax_1, ymax_2) - fmax(ymin_1, ymin_2);
   double area_of_overlap;
-  if (width_of_overlap_area < 0 || height_of_overlap_area < 0)
+  if (width_of_overlap_area < 0 || height_of_overlap_area < 0) {
     area_of_overlap = 0;
-  else
+  } else {
     area_of_overlap = width_of_overlap_area * height_of_overlap_area;
+  }
 
- double box_1_area = (ymax_1 - ymin_1)  * (xmax_1 - xmin_1);
- double box_2_area = (ymax_2 - ymin_2)  * (xmax_2 - xmin_2);
- double area_of_union = box_1_area + box_2_area - area_of_overlap;
+  double box_1_area = (ymax_1 - ymin_1) * (xmax_1 - xmin_1);
+  double box_2_area = (ymax_2 - ymin_2) * (xmax_2 - xmin_2);
+  double area_of_union = box_1_area + box_2_area - area_of_overlap;
 
- return area_of_overlap / area_of_union;
+  return area_of_overlap / area_of_union;
 }

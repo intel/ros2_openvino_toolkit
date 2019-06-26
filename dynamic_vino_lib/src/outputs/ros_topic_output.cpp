@@ -25,8 +25,8 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput(std::string output_name):
-  BaseOutput(output_name)
+Outputs::RosTopicOutput::RosTopicOutput(std::string output_name)
+: BaseOutput(output_name)
 {
   // rmw_qos_profile_t qos = rmw_qos_profile_default;
   // qos.depth = 10;
@@ -51,15 +51,15 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name):
     "/openvino_toolkit/" + output_name_ + "/detected_objects", 16);
   pub_face_ =
     node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-      "/openvino_toolkit/" + output_name_ + "/faces", 16);
+    "/openvino_toolkit/" + output_name_ + "/faces", 16);
   pub_emotion_ =
     node_->create_publisher<people_msgs::msg::EmotionsStamped>(
-      "/openvino_toolkit/" + output_name_ + "/emotions", 16);
+    "/openvino_toolkit/" + output_name_ + "/emotions", 16);
   pub_age_gender_ = node_->create_publisher<people_msgs::msg::AgeGenderStamped>(
     "/openvino_toolkit/" + output_name_ + "/age_genders", 16);
   pub_headpose_ =
     node_->create_publisher<people_msgs::msg::HeadPoseStamped>(
-      "/openvino_toolkit/" + output_name_ + "/headposes", 16);
+    "/openvino_toolkit/" + output_name_ + "/headposes", 16);
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;

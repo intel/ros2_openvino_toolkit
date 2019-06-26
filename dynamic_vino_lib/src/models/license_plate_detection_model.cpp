@@ -52,7 +52,7 @@ void Models::LicensePlateDetectionModel::checkLayerProperty(
   }
   auto sequence_input = (++input_info_map.begin());
   if (sequence_input->second->getTensorDesc().getDims()[0] != getMaxSequenceSize()) {
-  	throw std::logic_error("License plate detection max sequence size dismatch");
+    throw std::logic_error("License plate detection max sequence size dismatch");
   }
   InferenceEngine::OutputsDataMap output_info_map(
     net_reader->getNetwork().getOutputsInfo());
