@@ -60,7 +60,7 @@ class VehicleAttribsDetection : public BaseInference
 {
 public:
   using Result = dynamic_vino_lib::VehicleAttribsDetectionResult;
-  explicit VehicleAttribsDetection();
+  VehicleAttribsDetection();
   ~VehicleAttribsDetection() override;
   /**
    * @brief Load the vehicle attributes detection model.

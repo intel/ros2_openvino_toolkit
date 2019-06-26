@@ -64,7 +64,8 @@ namespace Outputs
 class BaseOutput
 {
 public:
-  BaseOutput(std::string output_name):output_name_(output_name){};
+  explicit BaseOutput(std::string output_name)
+  : output_name_(output_name) {}
   /**
    * @brief Generate output content according to the license plate detection result.
    */
@@ -166,7 +167,7 @@ public:
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
   virtual void clearData() {}
-  
+
 protected:
   cv::Mat frame_;
   Pipeline * pipeline_;

@@ -23,6 +23,7 @@
 #include <memory>
 #include <iostream>
 #include <string>
+#include <map>
 
 namespace vino_service
 {
@@ -31,27 +32,26 @@ class PipelineProcessingServer : public rclcpp::Node
 {
 public:
   explicit PipelineProcessingServer(
-    const std::string & service_name); 
+    const std::string & service_name);
 
 private:
+  void initPipelineService();
 
-  void initPipelineService(); 
-
-  //bool cbService(ros::ServiceEvent<typename T::Request,typename T::Response>& event);
+  // bool cbService(ros::ServiceEvent<typename T::Request,typename T::Response>& event);
   void cbService(
     const std::shared_ptr<typename T::Request> request,
     std::shared_ptr<typename T::Response> response);
 
   void setResponse(
     std::shared_ptr<typename T::Response> response);
-  
+
   void setPipelineByRequest(std::string pipeline_name, PipelineManager::PipelineState state);
 
   std::shared_ptr<rclcpp::Service<T>> service_;
 
-  std::map<std::string, PipelineManager::PipelineData> *  pipelines_;
+  std::map<std::string, PipelineManager::PipelineData> * pipelines_;
 
   std::string service_name_;
 };
 }  // namespace vino_service
-#endif // DYNAMIC_VINO_LIB__SERVICES__FRAME_PROCESSING_SERVER_HPP_
+#endif  // DYNAMIC_VINO_LIB__SERVICES__PIPELINE_PROCESSING_SERVER_HPP_

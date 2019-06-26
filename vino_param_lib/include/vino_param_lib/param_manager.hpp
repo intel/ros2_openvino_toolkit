@@ -68,9 +68,10 @@ public:
     int batch;
     float confidence_threshold = 0.5;
     bool enable_roi_constraint = false;
-  };  
+  };
 
-  struct FilterRawData {
+  struct FilterRawData
+  {
     std::string input;
     std::string output;
     std::string filter_conditions;
@@ -86,7 +87,7 @@ public:
     std::string input_meta;
     std::vector<FilterRawData> filters;
   };
-  
+
   struct CommonRawData
   {
     std::string custom_cpu_library;

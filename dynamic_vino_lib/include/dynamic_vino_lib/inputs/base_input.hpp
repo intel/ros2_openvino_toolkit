@@ -43,7 +43,7 @@ struct Config
 class MutexCounter
 {
 public:
-  MutexCounter(int init_counter=0)
+  explicit MutexCounter(int init_counter = 0)
   {
     std::lock_guard<std::mutex> lk(counter_mutex_);
     counter_ = init_counter;
@@ -65,6 +65,7 @@ public:
   {
     return counter_;
   }
+
 private:
   std::atomic<int> counter_;
   std::mutex counter_mutex_;
