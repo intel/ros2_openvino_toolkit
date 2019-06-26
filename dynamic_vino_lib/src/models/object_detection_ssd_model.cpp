@@ -17,6 +17,8 @@
  * @file object_detection_model.cpp
  */
 #include <string>
+#include <memory>
+#include <vector>
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
@@ -30,7 +32,8 @@ Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
 {
 }
 
-void Models::ObjectDetectionSSDModel::setLayerProperty(InferenceEngine::CNNNetReader::Ptr net_reader)
+void Models::ObjectDetectionSSDModel::setLayerProperty(
+  InferenceEngine::CNNNetReader::Ptr net_reader)
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
@@ -106,12 +109,11 @@ const std::string Models::ObjectDetectionSSDModel::getModelName() const
 }
 
 bool Models::ObjectDetectionSSDModel::enqueue(
-  const std::shared_ptr<Engines::Engine>& engine,
+  const std::shared_ptr<Engines::Engine> & engine,
   const cv::Mat & frame,
   const cv::Rect & input_frame_loc)
 {
-  if (!this->matToBlob(frame, input_frame_loc, 1, 0, engine))
-  {
+  if (!this->matToBlob(frame, input_frame_loc, 1, 0, engine)) {
     return false;
   }
 
@@ -120,54 +122,49 @@ bool Models::ObjectDetectionSSDModel::enqueue(
 }
 
 bool Models::ObjectDetectionSSDModel::matToBlob(
-    const cv::Mat& orig_image, const cv::Rect&, float scale_factor, 
-    int batch_index, const std::shared_ptr<Engines::Engine>& engine)
+  const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
+  int batch_index, const std::shared_ptr<Engines::Engine> & engine)
 {
-  if(engine == nullptr){
+  if (engine == nullptr) {
     slog::err << "A frame is trying to be enqueued in a NULL Engine." << slog::endl;
     return false;
   }
 
   std::string input_name = getInputName();
   InferenceEngine::Blob::Ptr input_blob =
-      engine->getRequest()->GetBlob(input_name);
+    engine->getRequest()->GetBlob(input_name);
 
   InferenceEngine::SizeVector blob_size = input_blob->getTensorDesc().getDims();
   const int width = blob_size[3];
   const int height = blob_size[2];
   const int channels = blob_size[1];
-  u_int8_t * blob_data = input_blob->buffer().as<u_int8_t*>();
+  u_int8_t * blob_data = input_blob->buffer().as<u_int8_t *>();
 
   cv::Mat resized_image(orig_image);
-  if (width != orig_image.size().width || height != orig_image.size().height)
-  { 
+  if (width != orig_image.size().width || height != orig_image.size().height) {
     cv::resize(orig_image, resized_image, cv::Size(width, height));
   }
   int batchOffset = batch_index * width * height * channels;
 
-  for (int c = 0; c < channels; c++)
-  { 
-    for (int h = 0; h < height; h++)
-    {
-      for (int w = 0; w < width; w++)
-      { 
+  for (int c = 0; c < channels; c++) {
+    for (int h = 0; h < height; h++) {
+      for (int w = 0; w < width; w++) {
         blob_data[batchOffset + c * width * height + h * width + w] =
-            resized_image.at<cv::Vec3b>(h, w)[c] * scale_factor;
+          resized_image.at<cv::Vec3b>(h, w)[c] * scale_factor;
       }
     }
   }
-  
+
   return true;
 }
 
 bool Models::ObjectDetectionSSDModel::fetchResults(
-  const std::shared_ptr<Engines::Engine>& engine,
-  std::vector<dynamic_vino_lib::ObjectDetectionResult>& results,
-  const float& confidence_thresh,
-  const bool& enable_roi_constraint)
+  const std::shared_ptr<Engines::Engine> & engine,
+  std::vector<dynamic_vino_lib::ObjectDetectionResult> & results,
+  const float & confidence_thresh,
+  const bool & enable_roi_constraint)
 {
-
-  if(engine == nullptr){
+  if (engine == nullptr) {
     slog::err << "Trying to fetch results from <null> Engines." << slog::endl;
     return false;
   }
@@ -181,7 +178,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {
-      //slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
+      // slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
       break;
     }
 
@@ -195,13 +192,13 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
     r.height = static_cast<int>(detections[i * object_size + 6] * frame_size.height - r.y);
 
     if (enable_roi_constraint) {r &= cv::Rect(0, 0, frame_size.width, frame_size.height);}
-    
+
     dynamic_vino_lib::ObjectDetectionResult result(r);
     std::string label = label_num < labels.size() ? labels[label_num] :
       std::string("label #") + std::to_string(label_num);
     result.setLabel(label);
     float confidence = detections[i * object_size + 2];
-    if (confidence <= confidence_thresh /*|| r.x == 0*/) { //why r.x needs to be checked?
+    if (confidence <= confidence_thresh /* || r.x == 0 */) {   // why r.x needs to be checked?
       continue;
     }
     result.setConfidence(confidence);

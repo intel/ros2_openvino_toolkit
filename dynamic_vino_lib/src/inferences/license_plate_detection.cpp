@@ -41,13 +41,14 @@ void dynamic_vino_lib::LicensePlateDetection::loadNetwork(
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-void dynamic_vino_lib::LicensePlateDetection::fillSeqBlob() {
+void dynamic_vino_lib::LicensePlateDetection::fillSeqBlob()
+{
   InferenceEngine::Blob::Ptr seq_blob = getEngine()->getRequest()->GetBlob(
     valid_model_->getSeqInputName());
   int max_sequence_size = seq_blob->getTensorDesc().getDims()[0];
   // second input is sequence, which is some relic from the training
   // it should have the leading 0.0f and rest 1.0f
-  float* blob_data = seq_blob->buffer().as<float*>();
+  float * blob_data = seq_blob->buffer().as<float *>();
   blob_data[0] = 0.0f;
   std::fill(blob_data + 1, blob_data + max_sequence_size, 1.0f);
 }

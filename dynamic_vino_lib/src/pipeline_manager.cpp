@@ -288,20 +288,18 @@ PipelineManager::createObjectDetection(
   std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
   std::shared_ptr<dynamic_vino_lib::ObjectDetection> object_inference_ptr;
 
-  if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD)
-  {
-    object_detection_model = 
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD) {
+    object_detection_model =
       std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, 1, 1, infer.batch);
   }
 
-  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2)
-  {
-    object_detection_model = 
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2) {
+    object_detection_model =
       std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, 1, 1, infer.batch);
   }
 
   object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
-    infer.enable_roi_constraint, infer.confidence_threshold); // To-do theshold configuration
+    infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
 
   object_detection_model->modelInit();
   auto object_detection_engine = std::make_shared<Engines::Engine>(
@@ -434,8 +432,7 @@ void PipelineManager::threadPipeline(const char * name)
 {
   PipelineData & p = pipelines_[name];
   while (p.state != PipelineState_ThreadStopped && p.pipeline != nullptr) {
-    if(p.state == PipelineState_ThreadRunning)
-    {
+    if (p.state == PipelineState_ThreadRunning) {
       p.pipeline->runOnce();
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -458,28 +455,29 @@ void PipelineManager::runAll()
     if (it->second.state != PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadRunning;
     }
-    if(service_.state != PipelineState_ThreadRunning){
+    if (service_.state != PipelineState_ThreadRunning) {
       service_.state = PipelineState_ThreadRunning;
     }
-    if(service_.thread == nullptr){
-      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService,this);
+    if (service_.thread == nullptr) {
+      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
     }
     if (it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
           it->second.params.name.c_str());
     }
-    if (it->second.spin_nodes.size()>0 && it->second.thread_spin_nodes == nullptr) {
-      it->second.thread_spin_nodes = std::make_shared<std::thread>(&PipelineManager::threadSpinNodes, this,
-          it->second.params.name.c_str());
+    if (it->second.spin_nodes.size() > 0 && it->second.thread_spin_nodes == nullptr) {
+      it->second.thread_spin_nodes = std::make_shared<std::thread>(
+        &PipelineManager::threadSpinNodes, this,
+        it->second.params.name.c_str());
     }
   }
 }
 
-void PipelineManager::runService() 
+void PipelineManager::runService()
 {
   auto node = std::make_shared<vino_service::PipelineProcessingServer
-             <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
-  while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr){
+      <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
+  while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
     rclcpp::spin_some(node);
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
@@ -492,22 +490,24 @@ void PipelineManager::stopAll()
       it->second.state = PipelineState_ThreadStopped;
     }
   }
-  if(service_.state == PipelineState_ThreadRunning){
+  if (service_.state == PipelineState_ThreadRunning) {
     service_.state = PipelineState_ThreadStopped;
   }
 }
 
 void PipelineManager::joinAll()
 {
-  if(service_.thread != nullptr && service_.state == PipelineState_ThreadRunning){
-    service_.thread->join();// pipeline service
+  if (service_.thread != nullptr && service_.state == PipelineState_ThreadRunning) {
+    service_.thread->join();  // pipeline service
   }
 
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if (it->second.thread != nullptr && it->second.state == PipelineState_ThreadRunning) {
       it->second.thread->join();
     }
-    if (it->second.thread_spin_nodes != nullptr && it->second.state == PipelineState_ThreadRunning) {
+    if (it->second.thread_spin_nodes != nullptr &&
+      it->second.state == PipelineState_ThreadRunning)
+    {
       it->second.thread_spin_nodes->join();
     }
   }

@@ -25,8 +25,8 @@
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
 
-Outputs::ImageWindowOutput::ImageWindowOutput(const std::string & output_name, int focal_length): 
-  BaseOutput(output_name), focal_length_(focal_length)
+Outputs::ImageWindowOutput::ImageWindowOutput(const std::string & output_name, int focal_length)
+: BaseOutput(output_name), focal_length_(focal_length)
 {
   cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
 }
@@ -80,8 +80,8 @@ void Outputs::ImageWindowOutput::accept(
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
     outputs_[target_index].rect = result_rect;
-    outputs_[target_index].desc += 
-     ("[" + results[i].getColor() + "," + results[i].getType() + "]");
+    outputs_[target_index].desc +=
+      ("[" + results[i].getColor() + "," + results[i].getType() + "]");
   }
 }
 

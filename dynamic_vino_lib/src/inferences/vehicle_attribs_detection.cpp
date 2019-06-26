@@ -74,7 +74,7 @@ bool dynamic_vino_lib::VehicleAttribsDetection::fetchResults()
   const float * type_values = request->GetBlob(type_name)->buffer().as<float *>();
   for (int i = 0; i < getResultsLength(); i++) {
     auto color_id = std::max_element(color_values, color_values + 7) - color_values;
-    auto type_id =  std::max_element(type_values,  type_values  + 4) - type_values;
+    auto type_id = std::max_element(type_values, type_values + 4) - type_values;
     color_values += 7;
     type_values += 4;
     results_[i].color_ = colors_[color_id];

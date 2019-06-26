@@ -57,7 +57,7 @@ TEST(UnitTestObject, testObject)
   EXPECT_TRUE(srv->objects.objects_vector.size());
 
   for (unsigned int i = 0; i < srv->objects.objects_vector.size(); i++) {
-    EXPECT_EQ(srv->objects.objects_vector[i].object.object_name, "Car");
+    EXPECT_EQ(srv->objects.objects_vector[i].object.object_name, "car");
   }
 
   EXPECT_TRUE(srv->objects.objects_vector[0].roi.x_offset > 1100 &&

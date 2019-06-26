@@ -44,7 +44,7 @@ bool Input::RealSenseCameraTopic::initialize()
 
 void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 {
-  //slog::info << "Receiving a new image from Camera topic." << slog::endl;
+  // slog::info << "Receiving a new image from Camera topic." << slog::endl;
   setHeader(image_msg->header);
 
   image_ = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
@@ -54,8 +54,8 @@ void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr im
 
 bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
 {
-  if(image_count_.get() < 0 || image_.empty()){
-    //slog::warn << "No data received in CameraTopic instance" << slog::endl;
+  if (image_count_.get() < 0 || image_.empty()) {
+    // slog::warn << "No data received in CameraTopic instance" << slog::endl;
     return false;
   }
 

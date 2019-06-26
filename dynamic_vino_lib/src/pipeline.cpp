@@ -188,10 +188,10 @@ void Pipeline::runOnce()
 
   if (!input_device_->read(&frame_)) {
     // throw std::logic_error("Failed to get frame from cv::VideoCapture");
-    //slog::warn << "Failed to get frame from input_device." << slog::endl;
+    // slog::warn << "Failed to get frame from input_device." << slog::endl;
     return;
   }
-  
+
   countFPS();
   width_ = frame_.cols;
   height_ = frame_.rows;
@@ -262,8 +262,7 @@ void Pipeline::callback(const std::string & detection_name)
     std::string next_name = pos.first->second;
 
     std::string filter_conditions = findFilterConditions(detection_name, next_name);
-    // std::cout << "Next name: " << next_name << " filter conditions: " << filter_conditions << std::endl;
-    // if next is output, then print
+
     if (output_names_.find(next_name) != output_names_.end()) {
       detection_ptr->observeOutput(name_to_output_map_[next_name]);
     } else {
