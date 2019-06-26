@@ -18,6 +18,8 @@
 #ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_
 #define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_
 #include <string>
+#include <memory>
+#include <vector>
 #include "dynamic_vino_lib/models/base_model.hpp"
 namespace Models
 {
@@ -28,23 +30,24 @@ namespace Models
 class ObjectDetectionSSDModel : public ObjectDetectionModel
 {
   using Result = dynamic_vino_lib::ObjectDetectionResult;
+
 public:
   ObjectDetectionSSDModel(const std::string &, int, int, int);
 
   bool fetchResults(
-    const std::shared_ptr<Engines::Engine>& engine,
-    std::vector<dynamic_vino_lib::ObjectDetectionResult>& results,
-    const float& confidence_thresh = 0.3,
-    const bool& enable_roi_constraint = false) override;
+    const std::shared_ptr<Engines::Engine> & engine,
+    std::vector<dynamic_vino_lib::ObjectDetectionResult> & results,
+    const float & confidence_thresh = 0.3,
+    const bool & enable_roi_constraint = false) override;
 
   bool enqueue(
-    const std::shared_ptr<Engines::Engine>& engine,
+    const std::shared_ptr<Engines::Engine> & engine,
     const cv::Mat & frame,
     const cv::Rect & input_frame_loc) override;
 
   bool matToBlob(
-    const cv::Mat& orig_image, const cv::Rect&, float scale_factor, 
-    int batch_index, const std::shared_ptr<Engines::Engine>& engine) override;
+    const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
+    int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
 
   inline const std::string getInputName()
   {

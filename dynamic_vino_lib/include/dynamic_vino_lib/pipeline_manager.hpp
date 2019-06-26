@@ -58,7 +58,7 @@ public:
   void runAll();
   void stopAll();
   void joinAll();
-  void runService(); 
+  void runService();
 
   enum PipelineState
   {
@@ -81,7 +81,7 @@ public:
   struct ServiceData
   {
     std::shared_ptr<std::thread> thread;
-    //std::shared_ptr<rclcpp::Node> node;
+    // std::shared_ptr<rclcpp::Node> node;
     PipelineState state;
   };
 

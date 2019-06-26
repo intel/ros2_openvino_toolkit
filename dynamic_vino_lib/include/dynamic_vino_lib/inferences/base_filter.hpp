@@ -128,7 +128,7 @@ public:
    * @return The converted float number, 0 if string is invalid.
    */
   static float stringToFloat(const std::string &);
-  
+
   /**
    * @brief A macro to decide whether a given result satisfies the filter condition.
    * @param[in] A key to function mapping, a given result.
@@ -141,8 +141,7 @@ public:
     for (auto elem : suffix_conditons) { \
       if (!isRelationOperator(elem) && !isLogicOperator(elem)) { \
         result_stack.push(elem); \
-      } \
-      else { \
+      } else { \
         try { \
           std::string str1 = result_stack.top(); \
           result_stack.pop(); \
@@ -150,8 +149,7 @@ public:
           result_stack.pop(); \
           if (key_to_function.count(str2)) { \
             result_stack.push(boolToStr(key_to_function[str2](result, elem, str1))); \
-          } \
-          else { \
+          } else { \
             result_stack.push(boolToStr(logicOperation(str1, elem, str2))); \
           } \
         } \
