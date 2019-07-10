@@ -144,6 +144,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo ldconfig
 		rm 97-usbboot.rules
 		```
+	* download [Object Detection model](https://github.com/intel/ros2_openvino_toolkit/tree/devel/doc/OBJECT_DETECTION.md)
 	* download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
 		```bash
 		#object segmentation model
@@ -157,13 +158,7 @@ One-step installation scripts are provided for the dependencies' installation. P
 		python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
 		sudo mkdir -p /opt/models
 		sudo ln -s ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
-		#object detection model
-		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
-		python3 ./downloader.py --name mobilenet-ssd
-		#FP32 precision model
-		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
-		#FP16 precision model
-		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+		```
 	* download the optimized Intermediate Representation (IR) of model (excute _once_)<br>
 		```bash
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
@@ -182,8 +177,6 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt
 		```
 	* set ENV LD_LIBRARY_PATH<br>
@@ -197,14 +190,6 @@ One-step installation scripts are provided for the dependencies' installation. P
 * run face detection sample code input from Image.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_image_oss.launch.py
-	```
-* run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
-	```bash
-	ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
-	```
-* run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
-	```bash
-	ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
 	```
 * run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
@@ -250,4 +235,5 @@ One-step installation scripts are provided for the dependencies' installation. P
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
+
 
