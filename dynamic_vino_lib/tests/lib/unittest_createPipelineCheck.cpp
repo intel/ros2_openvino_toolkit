@@ -40,14 +40,13 @@
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
-#include "utility.hpp"
 
 std::string getConfigPath()
 {
   std::string content;
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/testParam/pipeline_face_test.yaml";
+  return prefix_path + "/share/dynamic_vino_sample/param/pipeline_face_test.yaml";
 }
 
 TEST(UnitTestCheckPipeline, testPipeline)

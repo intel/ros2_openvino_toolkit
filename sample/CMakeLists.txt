@@ -321,9 +321,6 @@ if(BUILD_TESTING)
     endif()
   endmacro()
 
-  custom_gtest(unittest_createPipelineCheck
-    "tests/lib/unittest_createPipelineCheck.cpp"
-    TIMEOUT 100)
   custom_gtest(unittest_faceDetection
     "tests/topic/unittest_faceDetectionCheck.cpp"
     TIMEOUT 100)
@@ -335,6 +332,15 @@ if(BUILD_TESTING)
     TIMEOUT 100)
   custom_gtest(unittest_segmentation
     "tests/topic/unittest_segmentationCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_reidentification
+    "tests/topic/unittest_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_face_reidentification
+    "tests/topic/unittest_face_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_vehicleDetectionCheck
+    "tests/topic/unittest_vehicleDetectionCheck.cpp"
     TIMEOUT 100)
   custom_gtest(unittest_objectService
     "tests/service/unittest_objectService.cpp"

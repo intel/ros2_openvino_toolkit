@@ -39,6 +39,7 @@ limitations under the License.
   <build_depend>pipeline_srv_msgs</build_depend>
   <build_depend>vino_param_lib</build_depend>
   <build_depend>realsense2</build_depend>
+  <build_depend>openvino_common</build_depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>builtin_interfaces</exec_depend>
@@ -58,6 +59,7 @@ limitations under the License.
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>
