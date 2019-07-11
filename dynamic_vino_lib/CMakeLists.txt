@@ -174,7 +174,7 @@ if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES realsense2 ${OpenCV_LIBS} cpu_extension)
+set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} cpu_extension)
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
