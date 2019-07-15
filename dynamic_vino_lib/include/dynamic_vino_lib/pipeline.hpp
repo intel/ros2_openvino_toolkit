@@ -168,6 +168,8 @@ private:
   std::mutex counter_mutex_;
   std::condition_variable cv_;
   int fps_ = 0;
+  int frame_cnt_ = 0;
+  std::chrono::time_point<std::chrono::high_resolution_clock> t_start_;
 };
 
 #endif  // DYNAMIC_VINO_LIB__PIPELINE_HPP_
