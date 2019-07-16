@@ -18,15 +18,26 @@
  */
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 
-// StandardCamera
 bool Input::StandardCamera::initialize()
 {
-  static int camera_count_ = 0;
-  setInitStatus(cap.open(camera_count_));
-  setWidth((size_t)cap.get(CV_CAP_PROP_FRAME_WIDTH));
-  setHeight((size_t)cap.get(CV_CAP_PROP_FRAME_HEIGHT));
-  camera_count_++;
-  return isInit();
+  static int camera_count_ = -1;
+  int fd; // A file descriptor to the video device
+  struct v4l2_capability cap;
+  char file[20];
+  //if it is a realsense camera then skip it until we meet a standard camera
+  do
+  {
+    camera_count_ ++;
+    sprintf(file,"/dev/video%d",camera_count_);//format filename
+    fd = open(file,O_RDWR);
+    ioctl(fd, VIDIOC_QUERYCAP, &cap);
+    close(fd);
+    
+    std::cout << "!!camera: "<< cap.card << std::endl;
+  }
+  while(!strcmp((char*)cap.card,"Intel(R) RealSense(TM) Depth Ca"));
+  
+  return initialize(camera_count_);
 }
 
 bool Input::StandardCamera::initialize(int camera_num)
