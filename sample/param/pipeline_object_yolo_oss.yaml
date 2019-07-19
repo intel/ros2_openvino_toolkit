@@ -3,9 +3,9 @@ Pipelines:
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /home/lewis/Downloads/models/yolo_models/yolov2-voc/yolov2-voc.xml
-      mdel_type: yolov2
-      engine: CPU
+      model: /opt/openvino_toolkit/darkflow/output/fp16/yolov2-voc.xml 
+      model_type: yolov2
+      model_type: SSD
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
