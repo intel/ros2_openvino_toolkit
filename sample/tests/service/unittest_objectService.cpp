@@ -60,8 +60,8 @@ TEST(UnitTestObject, testObject)
     EXPECT_EQ(srv->objects.objects_vector[i].object.object_name, "car");
   }
 
-  EXPECT_TRUE(srv->objects.objects_vector[0].roi.x_offset > 1100 &&
-    srv->objects.objects_vector[0].roi.x_offset < 1795 &&
+  EXPECT_TRUE(srv->objects.objects_vector[0].roi.x_offset > 1080 &&
+    srv->objects.objects_vector[0].roi.x_offset < 1720 &&
     srv->objects.objects_vector[0].roi.y_offset > 215 &&
     srv->objects.objects_vector[0].roi.y_offset < 480);
   EXPECT_TRUE(srv->objects.objects_vector[1].roi.x_offset > 310 &&

@@ -246,6 +246,35 @@ ament_target_dependencies(${PROJECT_NAME}
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
+
+  macro(custom_gtest target)
+    ament_add_gtest(${target} ${ARGN})
+    if(TARGET ${target})
+      target_include_directories(${target} PUBLIC
+        ${${PROJECT_NAME}_INCLUDE_DIRS}
+      )
+      target_link_libraries(${target}
+        dl
+        cpu_extension
+        gflags
+        ${PROJECT_NAME})
+      ament_target_dependencies(${target}
+        "rclcpp"
+        "InferenceEngine"
+        "vino_param_lib"
+        "OpenCV"
+        "object_msgs"
+        "people_msgs"
+        "pipeline_srv_msgs"
+        "ament_index_cpp"
+        "yaml_cpp_vendor"
+        "class_loader")
+    endif()
+  endmacro()
+
+  custom_gtest(unittest_createPipelineCheck
+    "tests/lib/unittest_createPipelineCheck.cpp"
+    TIMEOUT 100)
 endif()
 
 ament_export_include_directories(include)
