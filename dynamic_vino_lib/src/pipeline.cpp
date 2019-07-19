@@ -313,22 +313,14 @@ void Pipeline::decreaseInferenceCounter()
 }
 
 void Pipeline::countFPS()
-{
-  static int fps = 0;
-
-  static auto t_start = std::chrono::high_resolution_clock::now();
-  static int frame_cnt = 0;
-
-  frame_cnt++;
-
+{  
+  frame_cnt_++;
   auto t_end = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
-  ms secondDetection = std::chrono::duration_cast<ms>(t_end - t_start);
-
-  if (secondDetection.count() > 1000) {
-    fps = frame_cnt;
-    setFPS(fps);
-    frame_cnt = 0;
-    t_start = t_end;
+  ms secondDetection = std::chrono::duration_cast<ms>(t_end - t_start_);
+  if (secondDetection.count() > 1000) {  
+    setFPS(frame_cnt_);
+    frame_cnt_ = 0;
+    t_start_ = t_end;
   }
 }
