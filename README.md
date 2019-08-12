@@ -32,7 +32,9 @@ The contents in **.yaml config file** should be well structured and follow the s
 
 **Pipeline** fulfills the whole data handling process: initiliazing Input Component for image data gathering and formating; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
 
-**Pipeline manager** manages all the created pipelines according to the inference requests or external demands (say, system exception, resource limitation, or end user's operation). Because of co-working with resource management and being aware of the whole framework, it covers the ability of performance optimization by sharing system resource between pipelines and reducing the burden of data copy.
+**Multiple Pipelines** This is a way to run more than one pipeline in the same process.Having multiple pipelines in a single instance allows each pipeline to have custom configuration and different performance.
+
+**pipeline manager** manages all the created pipelines according to the inference requests or external demands (say, system exception, resource limitation, or end user's operation). because of co-working with resource management and being aware of the whole framework, it covers the ability of performance optimization by sharing system resource between pipelines and reducing the burden of data copy.
 
 # Supported Features
 ## Diversal Input Components
@@ -177,6 +179,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output
+* run multiple pipeline of object detection sample code input from StandardCamera and RealSenseCamera.
+        ```bash
+        ros2 launch dynamic_vino_sample multi_pipeline_service.launch.py
+        ```
 		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt
 		```
 	* set ENV LD_LIBRARY_PATH<br>
@@ -207,6 +213,10 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_vehicle_detection_oss.launch.py
 	```
+* run multiple pipeline of object detection sample code input from StandardCamera and RealSenseCamera.
+        ```bash
+        ros2 launch dynamic_vino_sample multi_pipeline_service_oss.launch.py
+        ```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash

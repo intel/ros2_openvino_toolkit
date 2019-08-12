@@ -213,6 +213,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
 	```
+* run multiple pipeline of object detection sample code input from StandardCamera and RealSenseCamera.
+	```bash
+	ros2 launch dynamic_vino_sample multi_pipeline_service.launch.py
+	```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash

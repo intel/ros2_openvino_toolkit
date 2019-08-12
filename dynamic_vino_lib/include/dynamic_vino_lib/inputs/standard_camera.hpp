@@ -21,7 +21,15 @@
 #define DYNAMIC_VINO_LIB__INPUTS__STANDARD_CAMERA_HPP_
 
 #include <opencv2/opencv.hpp>
+
+
 #include "dynamic_vino_lib/inputs/base_input.hpp"
+#include <stdio.h>
+#include <linux/videodev2.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/ioctl.h>
+
 
 namespace Input
 {
@@ -59,6 +67,7 @@ public:
 private:
   cv::VideoCapture cap;
   static int camera_count_;
+  const int max_open_trial = 15;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__STANDARD_CAMERA_HPP_
