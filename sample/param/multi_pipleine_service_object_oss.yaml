@@ -1,5 +1,5 @@
 Pipelines:
-- name: pipe1
+- name: object1
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
@@ -20,7 +20,7 @@ Pipelines:
     - left: ObjectDetection
       right: [RViz]
 
-- name: pipe2
+- name: object2
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
