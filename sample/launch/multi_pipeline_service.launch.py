@@ -23,7 +23,7 @@ import launch_ros.actions
 
 def generate_launch_description():
     default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
-                                'multi_pipleine_service_object.yaml')
+                                'multi_pipleine_service.yaml')
     default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
                                 'rviz/default2.rviz')
     return LaunchDescription([
