@@ -156,33 +156,31 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
 	tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
 	cd mask_rcnn_inception_v2_coco_2018_01_28
-	python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
-	sudo mkdir -p /opt/models
-	sudo ln -sf ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
+	sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir /opt/openvino_toolkit/models/segmentation/output/FP32
 	```
 	* download the optimized Intermediate Representation (IR) of model (excute once)
 	```bash
-	sudo python3 downloader.py --name face-detection-adas-0001
-	sudo python3 downloader.py --name face-detection-adas-0001-fp16
-	sudo python3 downloader.py --name age-gender-recognition-retail-0013
-	sudo python3 downloader.py --name emotions-recognition-retail-0003
-	sudo python3 downloader.py --name head-pose-estimation-adas-0001
-	sudo python3 downloader.py --name person-detection-retail-0013
-	sudo python3 downloader.py --name person-reidentification-retail-0076
-	sudo python3 downloader.py --name landmarks-regression-retail-0009
-	sudo python3 downloader.py --name face-reidentification-retail-0095
-	sudo python3 downloader.py --name vehicle-license-plate-detection-barrier-0106
-	sudo python3 downloader.py --name vehicle-attributes-recognition-barrier-0039
-	sudo python3 downloader.py --name license-plate-recognition-barrier-0001
-	```
-		
+	cd /opt/intel/openvino/deployment_tools/tools/model_downloader
+	sudo python3 downloader.py --name face-detection-adas-0001 --output_dir /opt/openvino_toolkit/models/face_detection/output/FP32
+	sudo python3 downloader.py --name face-detection-adas-0001-fp16 --output_dir /opt/openvino_toolkit/models/face_detection/output/FP16
+	sudo python3 downloader.py --name age-gender-recognition-retail-0013 --output_dir /opt/openvino_toolkit/models/age-gender-recognition/output/FP32
+	sudo python3 downloader.py --name emotions-recognition-retail-0003 --output_dir /opt/openvino_toolkit/models/emotions-recognition/output/FP32
+	sudo python3 downloader.py --name head-pose-estimation-adas-0001 --output_dir /opt/openvino_toolkit/models/head-pose-estimation/output/FP32
+	sudo python3 downloader.py --name person-detection-retail-0013 --output_dir /opt/openvino_toolkit/models/person-detection/output/FP32
+	sudo python3 downloader.py --name person-reidentification-retail-0076 --output_dir /opt/openvino_toolkit/models/person-reidentification/output/FP32
+	sudo python3 downloader.py --name vehicle-license-plate-detection-barrier-0106 --output_dir /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/FP32
+	sudo python3 downloader.py --name vehicle-attributes-recognition-barrier-0039 --output_dir /opt/openvino_toolkit/models/vehicle-attributes-recongnition/output/FP32
+	sudo python3 downloader.py --name license-plate-recognition-barrier-0001 --output_dir /opt/openvino_toolkit/models/license-plate-recognition/output/FP32
+	sudo python3 downloader.py --name landmarks-regression-retail-0009 --output_dir /opt/openvino_toolkit/models/landmarks-regression/output/FP32
+	sudo python3 downloader.py --name face-reidentification-retail-0095 --output_dir /opt/openvino_toolkit/models/face-reidentification/output/FP32
+	```	
 	* copy label files (excute _once_)<br>
 	```bash
-	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
-	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
-	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001-fp16.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
-	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/Security/object_detection/barrier/0106/dldt
+	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/emotions-recognition/output/FP32/Retail/object_attributes/emotions_recognition/0003/dldt/
+	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/FP32/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/
+	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001-fp16.labels /opt/openvino_toolkit/models/face_detection/output/FP16/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/
+	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/segmentation/output/FP32
+	sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/FP32/Security/object_detection/barrier/0106/dldt/
 	```
 	* set ENV LD_LIBRARY_PATH and environment
 	```bash
@@ -191,7 +189,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```
 * run face detection sample code input from StandardCamera.(connect Intel® Neural Compute Stick 2)
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_people_myriad.launch.py
+	ros2 launch dynamic_vino_sample pipeline_people.launch.py
 	```
 * run face detection sample code input from Image.
 	```bash
@@ -209,6 +207,10 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
 	```
+* run face reidentification sample code input from RealSenseCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_face_reidentification.launch.py
+	```
 * run vehicle detection sample code input from StandardCamera.
 	```bash
 	ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
@@ -224,7 +226,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
-	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
+	ros2 run dynamic_vino_sample image_object_client ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/car.png
 	```
 * run people detection service sample code input from Image  
   Run image processing service:
@@ -233,7 +235,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
-	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
+	ros2 run dynamic_vino_sample image_people_client ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/team.jpg
 	```
 
 
@@ -246,6 +248,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 		E: [ncAPI] [         0] ncDeviceCreate:324      global mutex initialization failed
 		```
 	> solution - Please refer to the [guide](https://software.intel.com/en-us/neural-compute-stick/get-started) to set up the environment.
+
 
 
 

@@ -157,33 +157,30 @@ One-step installation scripts are provided for the dependencies' installation. P
 		wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
 		tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
 		cd mask_rcnn_inception_v2_coco_2018_01_28
-		python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir ./output/
-		sudo mkdir -p /opt/models
-		sudo ln -s ~/Downloads/models/mask_rcnn_inception_v2_coco_2018_01_28 /opt/models/
+		sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --output_dir /opt/openvino_toolkit/models/segmentation/output/FP32
 		```
 	* download the optimized Intermediate Representation (IR) of model (excute _once_)<br>
 		```bash
 		cd /opt/openvino_toolkit/open_model_zoo/model_downloader
-		python3 downloader.py --name face-detection-adas-0001
-		python3 downloader.py --name age-gender-recognition-retail-0013
-		python3 downloader.py --name emotions-recognition-retail-0003
-		python3 downloader.py --name head-pose-estimation-adas-0001
-		python3 downloader.py --name person-detection-retail-0013
-		python3 downloader.py --name person-reidentification-retail-0076
-		python3 downloader.py --name vehicle-license-plate-detection-barrier-0106
-		python3 downloader.py --name vehicle-attributes-recognition-barrier-0039
-		python3 downloader.py --name license-plate-recognition-barrier-0001
+		sudo python3 downloader.py --name face-detection-adas-0001 --output_dir /opt/openvino_toolkit/models/face_detection/output/FP32
+		sudo python3 downloader.py --name face-detection-adas-0001-fp16 --output_dir /opt/openvino_toolkit/models/face_detection/output/FP16
+		sudo python3 downloader.py --name age-gender-recognition-retail-0013 --output_dir /opt/openvino_toolkit/models/age-gender-recognition/output/FP32
+		sudo python3 downloader.py --name emotions-recognition-retail-0003 --output_dir /opt/openvino_toolkit/models/emotions-recognition/output/FP32
+		sudo python3 downloader.py --name head-pose-estimation-adas-0001 --output_dir /opt/openvino_toolkit/models/head-pose-estimation/output/FP32
+		sudo python3 downloader.py --name person-detection-retail-0013 --output_dir /opt/openvino_toolkit/models/person-detection/output/FP32
+		sudo python3 downloader.py --name person-reidentification-retail-0076 --output_dir /opt/openvino_toolkit/models/person-reidentification/output/FP32
+		sudo python3 downloader.py --name vehicle-license-plate-detection-barrier-0106 --output_dir /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/FP32
+		sudo python3 downloader.py --name vehicle-attributes-recognition-barrier-0039 --output_dir /opt/openvino_toolkit/models/vehicle-attributes-recongnition/output/FP32
+		sudo python3 downloader.py --name license-plate-recognition-barrier-0001 --output_dir /opt/openvino_toolkit/models/license-plate-recognition/output/FP32
+		sudo python3 downloader.py --name landmarks-regression-retail-0009 --output_dir /opt/openvino_toolkit/models/landmarks-regression/output/FP32
+		sudo python3 downloader.py --name face-reidentification-retail-0095 --output_dir /opt/openvino_toolkit/models/face-reidentification/output/FP32
 		```
 	* copy label files (excute _once_)<br>
 		```bash
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Retail/object_attributes/emotions_recognition/0003/dldt
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output
-* run multiple pipeline of object detection sample code input from StandardCamera and RealSenseCamera.
-        ```bash
-        ros2 launch dynamic_vino_sample multi_pipeline_service.launch.py
-        ```
-		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/emotions-recognition/output/FP32/Retail/object_attributes/emotions_recognition/0003/dldt/
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/FP32/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/segmentation/output/FP32
+		sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/FP32/Security/object_detection/barrier/0106/dldt/
 		```
 	* set ENV LD_LIBRARY_PATH<br>
 		```bash
@@ -191,11 +188,11 @@ One-step installation scripts are provided for the dependencies' installation. P
 		```
 * run face detection sample code input from StandardCamera.
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_people_oss.launch.py
+	ros2 launch dynamic_vino_sample pipeline_people.launch.py
 	```
 * run face detection sample code input from Image.
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_image_oss.launch.py
+	ros2 launch dynamic_vino_sample pipeline_image.launch.py
 	```
 * run object segmentation sample code input from RealSenseCameraTopic.
 	```bash
@@ -207,33 +204,37 @@ One-step installation scripts are provided for the dependencies' installation. P
 	```
 * run person reidentification sample code input from StandardCamera.
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_reidentification_oss.launch.py
+	ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
+	```
+* run face reidentification sample code input from RealSenseCamera.
+	```bash
+	ros2 launch dynamic_vino_sample pipeline_face_reidentification.launch.py
 	```
 * run vehicle detection sample code input from StandardCamera.
 	```bash
-	ros2 launch dynamic_vino_sample pipeline_vehicle_detection_oss.launch.py
+	ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
 	```
 * run multiple pipeline of object detection sample code input from StandardCamera and RealSenseCamera.
-        ```bash
-        ros2 launch dynamic_vino_sample multi_pipeline_service_oss.launch.py
-        ```
+	```bash
+	ros2 launch dynamic_vino_sample multi_pipeline_service.launch.py
+	```
 * run object detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 launch dynamic_vino_sample image_object_server_oss.launch.py
+	ros2 launch dynamic_vino_sample image_object_server.launch.py
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
-	ros2 run dynamic_vino_sample image_object_client ~/Pictures/car.png
+	ros2 run dynamic_vino_sample image_object_client ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/car.png
 	```
 * run face detection service sample code input from Image  
   Run image processing service:
 	```bash
-	ros2 launch dynamic_vino_sample image_people_server_oss.launch.py
+	ros2 launch dynamic_vino_sample image_people_server.launch.py
 	```
   Run example application with an absolute path of an image on another console:
 	```bash
-	ros2 run dynamic_vino_sample image_people_client ~/Pictures/face.png
+	ros2 run dynamic_vino_sample image_people_client ~/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/team.jpg
 	```
 
 # TODO Features
@@ -245,5 +246,6 @@ One-step installation scripts are provided for the dependencies' installation. P
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
+
 
 

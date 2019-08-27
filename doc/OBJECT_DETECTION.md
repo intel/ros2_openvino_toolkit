@@ -7,22 +7,22 @@
   cd /opt/openvino_toolkit/open_model_zoo/model_downloader
   python3 ./downloader.py --name mobilenet-ssd
   #FP32 precision model
-  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   #FP16 precision model
-  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   ```
 * copy label files (excute _once_)<br>
   ```bash
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16
   ```
 * run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
   ```bash
-  ros2 launch dynamic_vino_sample pipeline_object_oss.launch.py
+  ros2 launch dynamic_vino_sample pipeline_object.launch.py
   ```
 * run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
   ```bash
-  ros2 launch dynamic_vino_sample pipeline_object_oss_topic.launch.py
+  ros2 launch dynamic_vino_sample pipeline_object_topic.launch.py
   ```
 #### YOLOv2-voc
 * Darkflow to protobuf(.pb)
@@ -65,32 +65,32 @@
   ```bash
   cd ~/code/darkflow
   # FP32 precision model
-  /opt/openvino_toolkit/dldt/model-optimizer/model_optimizer/mo_tf.py \
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
   --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v1_v2.json \
   --data_type FP32 \
-  --output_dir ./output/fp32
+  --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32
   # FP16 precision model
-  /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py \
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
   --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v1_v2.json \
   --data_type FP16 \
-  --output_dir ./output/fp16
+  --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
 * copy label files (excute _once_)<br>
   ```bash
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/darkflow/output/fp32
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/darkflow/output/fp16
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32  
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
 * run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
   ```bash
-  ros2 launch dynamic_vino_sample pipeline_object_yolov_oss.launch.py
+  ros2 launch dynamic_vino_sample pipeline_object_yolo.launch.py
   ```
 * run object detection sample code input from RealSenseCameraTopic.(connect Intel® Neural Compute Stick 2)
   ```bash
-  ros2 launch dynamic_vino_sample pipeline_object_yolov_topic_oss.launch.py
+  ros2 launch dynamic_vino_sample pipeline_object_yolo_topic.launch.py
   ```
 ### Binary Version
 #### mobilenet-ssd
@@ -99,14 +99,14 @@
   cd /opt/intel/openvino/deployment_tools/tools/model_downloader
   sudo python3 ./downloader.py --name mobilenet-ssd
   #FP32 precision model
-  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   #FP16 precision model
-  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo.py --input_model /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   ```
 * copy label files (excute _once_)<br>
   ```bash
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP16
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/mobilenet-ssd.labels /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16
   ```
 * run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
   ```bash
@@ -157,24 +157,24 @@
   ```bash
   cd ~/code/darkflow
   # FP32 precision model
-  /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
+  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
-  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front     /tf/yolo_v1_v2.json \
+  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v1_v2.json \
   --data_type FP32 \
-  --output_dir ./output/fp32
+  --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32
   # FP16 precision model
-  /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
+  sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
   --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v1_v2.json \
   --data_type FP16 \
-  --output_dir ./output/fp16
+  --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
 * copy label files (excute _once_)<br>
   ```bash
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/darkflow/output/fp32
-  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit  /darkflow/output/fp16
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32
+  sudo cp /opt/openvino_toolkit/ros2_openvino_toolkit/data/labels/object_detection/yolov2-voc.labels /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
 * run object detection sample code input from RealSenseCamera.(connect Intel® Neural Compute Stick 2)
   ```bash
@@ -184,4 +184,5 @@
   ```bash
   ros2 launch dynamic_vino_sample pipeline_object_yolo_topic.launch.py
   ```
+
 
