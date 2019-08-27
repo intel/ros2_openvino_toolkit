@@ -256,7 +256,6 @@ if(BUILD_TESTING)
       target_link_libraries(${target}
         dl
         cpu_extension
-        gflags
         ${PROJECT_NAME})
       ament_target_dependencies(${target}
         "rclcpp"

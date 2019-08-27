@@ -24,7 +24,6 @@
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "extension/ext_list.hpp"
 

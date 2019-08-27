@@ -139,7 +139,7 @@ add_executable(pipeline_with_params
 target_link_libraries(pipeline_with_params
   dl
   cpu_extension
-  gflags)
+  gflags) 
 ament_target_dependencies(pipeline_with_params
   "rclcpp"
   "rmw_implementation"
@@ -206,8 +206,7 @@ add_executable(image_object_client
 )
 target_link_libraries(image_object_client
   dl
-  cpu_extension
-  gflags)
+  cpu_extension)
 ament_target_dependencies(image_object_client
   "rclcpp"
   "rmw_implementation"
@@ -228,8 +227,7 @@ add_executable(image_people_client
 )
 target_link_libraries(image_people_client
   dl
-  cpu_extension
-  gflags)
+  cpu_extension)
 ament_target_dependencies(image_people_client
   "rclcpp"
   "rmw_implementation"
@@ -304,8 +302,7 @@ if(BUILD_TESTING)
       )
       target_link_libraries(${target}
         dl
-        cpu_extension
-        gflags)
+        cpu_extension)
       ament_target_dependencies(${target}
         "rclcpp"
         "InferenceEngine"
