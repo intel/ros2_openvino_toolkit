@@ -40,6 +40,7 @@
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
+#include "dynamic_vino_lib/inputs/ip_camera.hpp"
 #include "dynamic_vino_lib/inputs/video_input.hpp"
 #include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
@@ -126,6 +127,10 @@ PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & 
       device = std::make_shared<Input::RealSenseCamera>();
     } else if (name == kInputType_StandardCamera) {
       device = std::make_shared<Input::StandardCamera>();
+    } else if (name == kInputType_IpCamera) {
+      if (params.input_meta != "") {
+        device = std::make_shared<Input::IpCamera>(params.input_meta);
+      }
     } else if (name == kInputType_CameraTopic) {
       device = std::make_shared<Input::RealSenseCameraTopic>();
     } else if (name == kInputType_Video) {
