@@ -83,12 +83,6 @@ add_library(cpu_extension SHARED IMPORTED)
 set_target_properties(cpu_extension PROPERTIES
   IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
-set(Gflags_lib $ENV{GFLAGS_LIB})
-
-add_library(gflags STATIC IMPORTED)
-set_target_properties(gflags PROPERTIES
-  IMPORTED_LOCATION $ENV{GFLAGS_LIB})
-
 file(GLOB MAIN_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
@@ -120,26 +114,12 @@ include_directories(${realsense2_INCLUDE_DIRS})
 # Create library file from sources.
 #add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
 
-add_executable(vino_param_sample
-  src/parameters.cpp
-)
-target_link_libraries(vino_param_sample
-  dl
-  gflags)
-
-ament_target_dependencies(vino_param_sample
-  "vino_param_lib"
-  "dynamic_vino_lib"
-  "rviz_yaml_cpp_vendor"
-)
-
 add_executable(pipeline_with_params
   src/pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
   dl
-  cpu_extension
-  gflags) 
+  cpu_extension) 
 ament_target_dependencies(pipeline_with_params
   "rclcpp"
   "rmw_implementation"
@@ -153,7 +133,7 @@ ament_target_dependencies(pipeline_with_params
   "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
-  "rviz_yaml_cpp_vendor"
+  "yaml_cpp_vendor"
   "realsense2"
 )
 
@@ -162,8 +142,7 @@ add_executable(image_object_server
 )
 target_link_libraries(image_object_server
   dl
-  cpu_extension
-  gflags)
+  cpu_extension)
 ament_target_dependencies(image_object_server
   "rclcpp"
   "rmw_implementation"
@@ -184,8 +163,7 @@ add_executable(image_people_server
 )
 target_link_libraries(image_people_server
   dl
-  cpu_extension
-  gflags)
+  cpu_extension)
 ament_target_dependencies(image_people_server
   "rclcpp"
   "rmw_implementation"
@@ -242,9 +220,6 @@ ament_target_dependencies(image_people_client
   "vino_param_lib"
   "OpenCV"
 )
-
-install(TARGETS vino_param_sample
-  DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})

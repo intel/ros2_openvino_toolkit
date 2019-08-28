@@ -15,6 +15,7 @@
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <gflags/gflags.h>
 #include <memory>
 #include <string>
 
@@ -24,40 +25,22 @@
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "extension/ext_list.hpp"
-#include "utility.hpp"
-
-bool parseAndCheckCommandLine(int argc, char ** argv)
-{
-  // -----Parsing and validation of input args---------------------------
-  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
-  if (FLAGS_h) {
-    showUsageForParam();
-    return false;
-  }
-
-  return true;
-}
 
 std::string getConfigPath(int argc, char * argv[])
 {
-  if (parseAndCheckCommandLine(argc, argv)) {
-    if (!FLAGS_config.empty()) {
-      return FLAGS_config;
-    }
-  }
-
-  std::string content;
-  std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  // slog::info << "prefix_path=" << prefix_path << slog::endl;
-  return prefix_path + "/share/dynamic_vino_sample/param/image_object_server_oss.yaml";
+  std::string FLAGS_config = argv[2];
+  return FLAGS_config;
 }
 
 int main(int argc, char ** argv)
 {
+  if (argc < 3)
+  {
+    std::cerr << "Usage: " << argv[0] << "CONFIG FILE" << std::endl;
+    return 1;
+  }
   rclcpp::init(argc, argv);
 
   std::string config_path = getConfigPath(argc, argv);
