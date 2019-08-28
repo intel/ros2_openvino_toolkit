@@ -130,7 +130,7 @@ target_link_libraries(vino_param_sample
 ament_target_dependencies(vino_param_sample
   "vino_param_lib"
   "dynamic_vino_lib"
-  "rviz_yaml_cpp_vendor"
+  "yaml_cpp_vendor"
 )
 
 add_executable(pipeline_with_params
@@ -153,7 +153,7 @@ ament_target_dependencies(pipeline_with_params
   "pipeline_srv_msgs"
   "vino_param_lib"
   "OpenCV"
-  "rviz_yaml_cpp_vendor"
+  "yaml_cpp_vendor"
   "realsense2"
 )
 
