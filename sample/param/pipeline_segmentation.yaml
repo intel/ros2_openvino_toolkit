@@ -3,7 +3,7 @@ Pipelines:
   inputs: [RealSenseCameraTopic]
   infers:
     - name: ObjectSegmentation
-      model: /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output/frozen_inference_graph.xml
+      model: /opt/openvino_toolkit/models/segmentation/output/FP32/frozen_inference_graph.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1

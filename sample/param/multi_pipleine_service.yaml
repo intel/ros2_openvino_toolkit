@@ -3,7 +3,7 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml 
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
@@ -24,7 +24,7 @@ Pipelines:
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml 
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
