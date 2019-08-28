@@ -131,7 +131,7 @@ if(WIN32)
         endif()
     endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mavx2 -mfma -Werror -Werror=return-type ")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Werror=return-type ")
     if(APPLE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument")
     elseif(UNIX)
@@ -256,7 +256,6 @@ if(BUILD_TESTING)
       target_link_libraries(${target}
         dl
         cpu_extension
-        gflags
         ${PROJECT_NAME})
       ament_target_dependencies(${target}
         "rclcpp"
