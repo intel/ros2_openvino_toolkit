@@ -202,6 +202,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inputs/realsense_camera.cpp
         src/inputs/realsense_camera_topic.cpp
         src/inputs/standard_camera.cpp
+        src/inputs/ip_camera.cpp
         src/inputs/video_input.cpp
         src/inputs/image_input.cpp
         src/models/base_model.cpp

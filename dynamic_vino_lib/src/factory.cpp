@@ -23,6 +23,7 @@
 #include "dynamic_vino_lib/factory.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
+#include "dynamic_vino_lib/inputs/ip_camera.hpp"
 #include "dynamic_vino_lib/inputs/video_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
@@ -36,6 +37,8 @@ std::shared_ptr<Input::BaseInputDevice> Factory::makeInputDeviceByName(
     return std::make_unique<Input::RealSenseCamera>();
   } else if (input_device_name == "StandardCamera") {
     return std::make_unique<Input::StandardCamera>();
+  } else if (input_device_name == "Video") {
+    return std::make_unique<Input::IpCamera>(input_file_path);
   } else if (input_device_name == "RealSenseCameraTopic") {
     std::cout << "tring to create instance for " << input_device_name << std::endl;
     return std::make_unique<Input::RealSenseCameraTopic>();
