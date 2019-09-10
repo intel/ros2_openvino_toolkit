@@ -129,7 +129,7 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   return true;
 }
 
-const int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
+int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
@@ -145,7 +145,7 @@ const std::string dynamic_vino_lib::ObjectSegmentation::getName() const
   return valid_model_->getModelName();
 }
 
-const void dynamic_vino_lib::ObjectSegmentation::observeOutput(
+void dynamic_vino_lib::ObjectSegmentation::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {

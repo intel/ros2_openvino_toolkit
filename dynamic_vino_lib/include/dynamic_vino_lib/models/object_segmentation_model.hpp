@@ -29,11 +29,11 @@ class ObjectSegmentationModel : public BaseModel
 {
 public:
   ObjectSegmentationModel(const std::string &, int, int, int);
-  inline const int getMaxProposalCount()
+  inline int getMaxProposalCount() const
   {
     return max_proposal_count_;
   }
-  inline const int getObjectSize()
+  inline int getObjectSize() const
   {
     return object_size_;
   }

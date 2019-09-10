@@ -91,7 +91,7 @@ bool dynamic_vino_lib::ObjectDetection::fetchResults()
     getEngine(), results_, show_output_thresh_, enable_roi_constraint_);
 }
 
-const int dynamic_vino_lib::ObjectDetection::getResultsLength() const
+int dynamic_vino_lib::ObjectDetection::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
@@ -107,7 +107,7 @@ const std::string dynamic_vino_lib::ObjectDetection::getName() const
   return valid_model_->getModelName();
 }
 
-const void dynamic_vino_lib::ObjectDetection::observeOutput(
+void dynamic_vino_lib::ObjectDetection::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {

@@ -83,7 +83,7 @@ bool dynamic_vino_lib::AgeGenderDetection::fetchResults()
   return true;
 }
 
-const int dynamic_vino_lib::AgeGenderDetection::getResultsLength() const
+int dynamic_vino_lib::AgeGenderDetection::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
@@ -99,7 +99,7 @@ const std::string dynamic_vino_lib::AgeGenderDetection::getName() const
   return valid_model_->getModelName();
 }
 
-const void dynamic_vino_lib::AgeGenderDetection::observeOutput(
+void dynamic_vino_lib::AgeGenderDetection::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {

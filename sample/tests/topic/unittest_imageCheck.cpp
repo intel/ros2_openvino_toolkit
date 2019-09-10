@@ -98,8 +98,6 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_emotion_test");
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
@@ -128,8 +126,6 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
 {
   auto node = rclcpp::Node::make_shared("openvino_ageGender_test");
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-  rmw_qos_profile_t custom_qos_profile = rmw_qos_profile_default;
-  custom_qos_profile.depth = 16;
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
