@@ -41,11 +41,9 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
-#include "utility.hpp"
 static bool face_test_pass = false;
 static bool emotion_test_pass = false;
 static bool ageGender_test_pass = false;
