@@ -72,7 +72,7 @@ public:
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
    */
-  inline const int getMaxBatchSize() const
+  inline int getMaxBatchSize() const
   {
     return max_batch_size_;
   }
@@ -97,8 +97,8 @@ public:
    */
   virtual const std::string getModelName() const = 0;
 
-  virtual inline const int getMaxProposalCount() {return max_proposal_count_;}
-  inline const int getObjectSize() {return object_size_;}
+  virtual inline int getMaxProposalCount() const {return max_proposal_count_;}
+  inline int getObjectSize() const {return object_size_;}
   inline void setObjectSize(int os) {object_size_ = os;}
 
 protected:

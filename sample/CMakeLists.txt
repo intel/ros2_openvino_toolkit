@@ -31,20 +31,6 @@ endif()
 
 set(CMAKE_CXX_FLAGS "-fPIE -fPIC -D_FORTIFY_SOURCE=2 -fstack-protector -Wformat -Wformat-security -Wall ${CMAKE_CXX_FLAGS}")
 
-# Compiler Defense Flags
-if(UNIX OR APPLE)
-  # Linker flags.
-  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
-    # GCC specific flags. ICC is compatible with them.
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z noexecstack -z relro -z now")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z noexecstack -z relro -z now")
-  elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
-    # In Clang, -z flags are not compatible, they need to be passed to linker via -Wl.
-    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
-    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
-  endif()
-endif()
-
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -59,6 +45,23 @@ find_package(pipeline_srv_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(realsense2 REQUIRED)
+
+# Compiler Defense Flags
+if(UNIX OR APPLE)
+  # Linker flags.
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
+    # GCC specific flags. ICC is compatible with them.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z noexecstack -z relro -z now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z noexecstack -z relro -z now")
+  elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    # In Clang, -z flags are not compatible, they need to be passed to linker via -Wl.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+  endif()
+endif()
+
+#remove some build warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
 
 if(OpenCV_FOUND)
     message(STATUS "OPENCV is enabled")

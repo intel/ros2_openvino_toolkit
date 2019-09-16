@@ -86,7 +86,7 @@ bool dynamic_vino_lib::HeadPoseDetection::fetchResults()
   return true;
 }
 
-const int dynamic_vino_lib::HeadPoseDetection::getResultsLength() const
+int dynamic_vino_lib::HeadPoseDetection::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
@@ -102,7 +102,7 @@ const std::string dynamic_vino_lib::HeadPoseDetection::getName() const
   return valid_model_->getModelName();
 }
 
-const void dynamic_vino_lib::HeadPoseDetection::observeOutput(
+void dynamic_vino_lib::HeadPoseDetection::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {
