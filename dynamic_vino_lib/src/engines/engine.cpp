@@ -17,6 +17,7 @@
  * @file engine.cpp
  */
 #include "dynamic_vino_lib/engines/engine.hpp"
+#include "dynamic_vino_lib/slog.hpp"
 
 Engines::Engine::Engine(
   InferenceEngine::InferencePlugin plg,

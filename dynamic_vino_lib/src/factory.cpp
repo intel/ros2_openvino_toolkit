@@ -21,6 +21,7 @@
 #include <string>
 
 #include "dynamic_vino_lib/factory.hpp"
+#include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/inputs/ip_camera.hpp"
@@ -57,7 +58,9 @@ Factory::makePluginByName(
   const std::string & custom_cpu_library_message,                         // FLAGS_l
   const std::string & custom_cldnn_message,                               // FLAGS_c
   bool performance_message)
-{  // FLAGS_pc
+{
+  slog::info << "Add plugin for " << device_name << slog::endl;
+  // FLAGS_pc
   InferenceEngine::InferencePlugin plugin =
     InferenceEngine::PluginDispatcher({"../../../lib/intel64", ""})
     .getPluginByDevice(device_name);

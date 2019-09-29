@@ -87,6 +87,10 @@ public:
    * @return Whether this operation is successful.
    */
   bool enqueue(const cv::Mat &, const cv::Rect &) override;
+
+  //Deprecated!!
+  bool enqueue_for_one_input(const cv::Mat &, const cv::Rect &);
+
   /**
    * @brief Start inference for all buffered frames.
    * @return Whether this operation is successful.

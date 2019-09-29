@@ -59,7 +59,7 @@ public:
   }
 
 private:
-  InferenceEngine::InferRequest::Ptr request_;
+  InferenceEngine::InferRequest::Ptr request_ = nullptr;
 };
 }  // namespace Engines
 
