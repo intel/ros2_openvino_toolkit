@@ -131,7 +131,6 @@ if(WIN32)
         endif()
     endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Werror=return-type ")
     if(APPLE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument")
     elseif(UNIX)
@@ -154,7 +153,7 @@ if(UNIX OR APPLE)
 endif()
 
 #remove some build warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-declarations")
 
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
