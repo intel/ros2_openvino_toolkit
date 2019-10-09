@@ -1,0 +1,8 @@
+object_detection:
+  ros__parameters:
+    engine: MYRIAD
+    model: /home/intel/workspace/robot_sdk_ws/src/robot_sdk/data/FP16/mobilenet-ssd.xml
+    weights: /home/intel/workspace/robot_sdk_ws/src/robot_sdk/data/FP16/mobilenet-ssd.bin
+    label: /home/intel/workspace/robot_sdk_ws/src/robot_sdk/data/FP16/mobilenet-ssd.labels
+    input_topic: /camera/color/image_raw
+    output_topic: /robot_sdk/perception/detected_objects

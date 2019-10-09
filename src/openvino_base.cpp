@@ -1,0 +1,67 @@
+#include <iostream>
+#include <fstream>
+#include <iomanip>
+#include <opencv2/opencv.hpp>
+#include "rdk_interfaces/msg/object_in_box.hpp"
+#include "rdk_interfaces/msg/object.hpp"
+#include "openvino/openvino_base.hpp"
+
+using namespace InferenceEngine;
+
+namespace openvino
+{
+OpenVINOBase::OpenVINOBase(rclcpp::Node & node)
+: node_(node)
+{
+}
+
+void OpenVINOBase::init()
+{
+  std::string engine_name = node_.declare_parameter("engine").get<rclcpp::PARAMETER_STRING>();
+  loadEngine(engine_name);
+
+  std::string model_path = node_.declare_parameter("model").get<rclcpp::PARAMETER_STRING>();
+  std::string weights_path = node_.declare_parameter("weights").get<rclcpp::PARAMETER_STRING>();
+  readNetwork(model_path, weights_path);
+
+  std::string label_path = node_.declare_parameter("label").get<rclcpp::PARAMETER_STRING>();
+  readLabels(label_path);
+
+  prepareInputBlobs();
+  prepareOutputBlobs();
+
+  loadNetwork();
+  initPublisher();
+  initSubscriber();
+}
+
+void OpenVINOBase::loadEngine(const std::string & engine_name)
+{
+  plugin_ = PluginDispatcher({PLUGIN_DIRS}).getPluginByDevice(engine_name);
+}
+
+void OpenVINOBase::readNetwork(const std::string & model_path,
+  const std::string & weights_path)
+{
+  CNNNetReader network_reader;
+  network_reader.ReadNetwork(model_path);
+  network_reader.ReadWeights(weights_path);
+  //debug info should be removed later
+  RCLCPP_DEBUG(node_.get_logger(), "model path: %s", model_path.c_str());
+  RCLCPP_DEBUG(node_.get_logger(), "weights path: %s", weights_path.c_str());
+  network_ = network_reader.getNetwork();
+}
+
+void OpenVINOBase::readLabels(const std::string & label_path)
+{
+  std::fstream label_file(label_path);
+  std::copy(std::istream_iterator<std::string>(label_file),
+  std::istream_iterator<std::string>(),
+  std::back_inserter(labels_));
+}
+
+void OpenVINOBase::loadNetwork()
+{
+  exec_network_ = plugin_.LoadNetwork(network_, {});
+}
+}  // namespace openvino
