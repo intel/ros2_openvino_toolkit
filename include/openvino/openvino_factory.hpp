@@ -23,12 +23,13 @@ const std::map<std::string, Model> MODEL_MAP
 class OpenVINOFactory : public rclcpp::Node
 {
 public:
-  OpenVINOFactory(const std::string & node_name, bool is_intra_process);
+  OpenVINOFactory(const rclcpp::NodeOptions & node_options=rclcpp::NodeOptions());
+  OpenVINOFactory(const std::string & node_name, const std::string & ns, const rclcpp::NodeOptions & node_options=rclcpp::NodeOptions());
   virtual ~OpenVINOFactory() = default;
   void printSupportedModelType();
 private:
+  void init();
   std::shared_ptr<OpenVINOBase> ov_node_;
-  rclcpp::Logger logger_;
 };
 }  // namespace openvino
 #endif  // OPENVINO__OPENVINO_FACTORY_HPP_
