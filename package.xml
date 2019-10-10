@@ -18,7 +18,6 @@
   <depend>message_filters</depend>
   <depend>rmw_implementation</depend>
   <depend>rclcpp_components</depend>
-  <depend>class_loader</depend>
   <depend>rdk_interfaces</depend>
 
   <export>
