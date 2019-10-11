@@ -87,7 +87,6 @@ void ObjectDetectionSSD::process(const sensor_msgs::msg::Image::UniquePtr msg)
 {
   //debug
   //RCLCPP_INFO(node_.get_logger(), "timestamp: %d.%d, address: %p", msg->header.stamp.sec, msg->header.stamp.nanosec, reinterpret_cast<std::uintptr_t>(msg.get()));
-  //
 
   cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
     msg->step);
