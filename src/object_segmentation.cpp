@@ -205,7 +205,10 @@ void ObjectSegmentation::process(cv::Mat & cv_image, rdk_interfaces::msg::Object
       cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
       cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
       cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
-      obj.object_name = labels_[class_id];
+      if (!labels_.empty())
+      {
+        obj.object_name = labels_[class_id];
+      }
       obj.probability = prob;
       obj.roi.x_offset = roi.x;
       obj.roi.y_offset = roi.y;
