@@ -1,24 +1,9 @@
-# Branch for Robot DevKit
-
-# How to convert model
+# Prepare models
 ## MobileNetSSD
 * copy from robot_devkit
 ```
-mkdir -p ~/workspace/robot_sdk/data
-cp -r /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/* ~/workspace/robot_sdk/data
-```
-
-* convert from open model zoo
-```
-mkdir -p ~/workspace/robot_sdk/data
-cd ~/workspace/robot_sdk/data
-git clone https://github.com/opencv/open_model_zoo.git
-cd open_model_zoo/demos/
-git checkout 2019
-mkdir build && cd build
-cmake -DCMAKE_BUILD_TYPE=Release /opt/intel/openvino/deployment_tools/inference_engine
-make -j8
-
+mkdir -p ~/workspace/rdk_ws/data
+cp -r /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/* ~/workspace/rdk_ws/data
 ```
 
 ## Yolov2
@@ -78,20 +63,14 @@ make -j8
 
 ## MaskRCNN
 ```
-cd /opt/intel/openvino/deployment_tools/model_optimizer/install_prerequisites
-sudo ./install_prerequisites.sh
-mkdir -p ~/Downloads/models
-cd ~/Downloads/models
-wget http://download.tensorflow.org/models/object_detection/mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
-tar -zxvf mask_rcnn_inception_v2_coco_2018_01_28.tar.gz
-cd mask_rcnn_inception_v2_coco_2018_01_28
-python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py --input_model frozen_inference_graph.pb --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/mask_rcnn_support.json --tensorflow_object_detection_api_pipeline_config pipeline.config --reverse_input_channels --data_type=FP16 --output_dir ~/workspace/robot_sdk/data/FP16/
+mkdir -p ~/workspace/rdk_ws/data
+cp -r /opt/openvino_toolkit/models/segmentation/output/* ~/workspace/rdk_ws/data
 ```
 
 ## Face-reid and Person-reid
 ```
-python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name person-detection-retail-0013-fp16 --output_dir /home/intel/workspace/robot_sdk/data/FP16
-python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name person-reidentification-retail-0076-fp16 --output_dir /home/intel/workspace/robot_sdk/data/FP16
-python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name face-detection-adas-0001-fp16 --output_dir /home/intel/workspace/robot_sdk/data/FP16
-python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name face-reidentification-retail-0095-fp16 --output_dir /home/intel/workspace/robot_sdk/data/FP16
+python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name person-detection-retail-0013-fp16 --output_dir /home/intel/workspace/rdk_ws/data/FP16
+python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name person-reidentification-retail-0076-fp16 --output_dir /home/intel/workspace/rdk_ws/data/FP16
+python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name face-detection-adas-0001-fp16 --output_dir /home/intel/workspace/rdk_ws/data/FP16
+python3 /opt/intel/openvino/deployment_tools/tools/model_downloader/downloader.py --name face-reidentification-retail-0095-fp16 --output_dir /home/intel/workspace/rdk_ws/data/FP16
 ```
