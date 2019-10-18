@@ -46,9 +46,8 @@ namespace Models
  */
 class BaseModel
 {
-  using Ptr = std::shared_ptr<BaseModel>;
-
 public:
+  using Ptr = std::shared_ptr<BaseModel>;
   /**
    * @brief Initialize the class with given .xml, .bin and .labels file. It will
    * also check whether the number of input and output are fit.
@@ -100,6 +99,10 @@ public:
   virtual inline int getMaxProposalCount() const {return max_proposal_count_;}
   inline int getObjectSize() const {return object_size_;}
   inline void setObjectSize(int os) {object_size_ = os;}
+  inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
+  {
+    return net_reader_;
+  }
 
 protected:
   /**
@@ -128,8 +131,6 @@ protected:
   int object_size_;
 
 private:
-  friend class Engines::Engine;
-
   std::vector<std::string> labels_;
   int input_num_;
   int output_num_;
