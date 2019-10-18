@@ -29,6 +29,7 @@
 #include <string>
 #include <vector>
 #include "dynamic_vino_lib/pipeline.hpp"
+#include "dynamic_vino_lib/engines/engine_manager.hpp"
 
 /**
  * @class PipelineManager
@@ -135,7 +136,7 @@ private:
   createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
-  std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
+  Engines::EngineManager engine_manager_;
 };
 
 #endif  // DYNAMIC_VINO_LIB__PIPELINE_MANAGER_HPP_

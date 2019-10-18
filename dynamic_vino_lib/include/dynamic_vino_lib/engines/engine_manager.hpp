@@ -1,0 +1,54 @@
+// Copyright (c) 2018-2019 Intel Corporation
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+/**
+ * @brief A header file with declaration for NetworkEngine class
+ * @file engine.h
+ */
+#ifndef DYNAMIC_VINO_LIB__ENGINES__ENGINE_MANAGER_HPP_
+#define DYNAMIC_VINO_LIB__ENGINES__ENGINE_MANAGER_HPP_
+
+#pragma once
+
+#include "dynamic_vino_lib/models/base_model.hpp"
+#include "dynamic_vino_lib/engines/engine.hpp"
+#include "inference_engine.hpp"
+
+namespace Engines
+{
+/**
+ * @class EngineManager
+ * @brief This class is used to create and manage Inference engines.
+ */
+class EngineManager
+{
+public:
+  /**
+   * @brief Create InferenceEngine instance by given Engine Name and Network.
+   * @return The shared pointer of created Engine instance.
+   */
+  std::shared_ptr<Engine> createEngine(
+    const std::string &, const std::shared_ptr<Models::BaseModel> &);
+
+private:
+  std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
+
+  std::shared_ptr<Engine> createEngine_beforeV2019R2(
+    const std::string &, const std::shared_ptr<Models::BaseModel> &);
+  std::shared_ptr<Engine> createEngine_V2019R2_plus(
+    const std::string &, const std::shared_ptr<Models::BaseModel> &);
+};
+}  // namespace Engines
+
+#endif  // DYNAMIC_VINO_LIB__ENGINES__ENGINE_MANAGER_HPP_
