@@ -2,6 +2,5 @@ engine: MYRIAD
 type: SSD
 model: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.xml
 weights: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.bin
-label: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.labels
 input_topic: /camera/color/image_raw
 output_topic: /openvino/detected_objects

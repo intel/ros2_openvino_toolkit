@@ -24,7 +24,9 @@ void OpenVINOBase::init()
   std::string weights_path = node_.declare_parameter("weights").get<rclcpp::PARAMETER_STRING>();
   readNetwork(model_path, weights_path);
 
-  std::string label_path = node_.declare_parameter("label").get<rclcpp::PARAMETER_STRING>();
+  size_t last_index = model_path.find_last_of(".");
+  std::string raw_name = model_path.substr(0, last_index);
+  std::string label_path = raw_name + ".labels";
   readLabels(label_path);
 
   prepareInputBlobs();
