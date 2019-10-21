@@ -4,7 +4,7 @@ Pipelines:
   infers:
     - name: ObjectSegmentation
       model: /opt/openvino_toolkit/models/segmentation/output/FP32/frozen_inference_graph.xml
-      engine: CPU
+      engine: "HETERO:CPU,GPU"
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
