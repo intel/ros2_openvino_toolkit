@@ -27,7 +27,6 @@
 
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "extension/ext_list.hpp"
-#include "dynamic_vino_lib/common.hpp"
 
 /**
 * @class Factory

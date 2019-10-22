@@ -29,6 +29,7 @@
 #include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "inference_engine.hpp"
+#include "dynamic_vino_lib/utils/version_info.hpp"
 
 std::shared_ptr<Input::BaseInputDevice> Factory::makeInputDeviceByName(
   const std::string & input_device_name, const std::string & input_file_path)
