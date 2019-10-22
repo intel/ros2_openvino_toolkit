@@ -23,7 +23,6 @@
 #include <utility>
 #include <map>
 
-#include "dynamic_vino_lib/factory.hpp"
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
