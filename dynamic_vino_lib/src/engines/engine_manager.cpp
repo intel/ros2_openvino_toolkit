@@ -44,6 +44,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
         pcommon.custom_cldnn_library, pcommon.enable_performance_count);
       slog::info << "Created plugin for " << device << slog::endl;
   }
+
   auto executeable_network = 
   plugins_for_devices_[device].LoadNetwork(model->getNetReader()->getNetwork(), {});
   auto request = executeable_network.CreateInferRequestPtr();
@@ -68,7 +69,7 @@ Engines::EngineManager::makePluginByName(
   const std::string & device_name, const std::string & custom_cpu_library_message,
   const std::string & custom_cldnn_message, bool performance_message)
 {
-    slog::info << "Creating plugin for " << device_name << slog::endl;
+  slog::info << "Creating plugin for " << device_name << slog::endl;
 
   InferenceEngine::InferencePlugin plugin =
     InferenceEngine::PluginDispatcher({"../../../lib/intel64", ""})
