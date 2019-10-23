@@ -15,13 +15,13 @@ def generate_launch_description():
                     package='realsense_ros',
                     node_plugin='realsense::RealSenseNodeFactory',
                     node_name='realsense',
-                    parameters=[get_package_share_directory('openvino_ros')+'/config/temp.yaml'],
+                    parameters=[get_package_share_directory('realsense_examples')+'/config/d435i.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}]),
                 ComposableNode(
                     package='openvino_ros',
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='detect',
-                    parameters=[get_package_share_directory('openvino_ros')+'/config/object_detection.yaml'],
+                    parameters=[get_package_share_directory('openvino_node')+'/config/object_detection.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}])
             ],
             output='screen',
