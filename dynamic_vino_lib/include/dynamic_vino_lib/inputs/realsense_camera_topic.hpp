@@ -23,9 +23,8 @@
 #include <rclcpp/rclcpp.hpp>
 #include <opencv2/opencv.hpp>
 #include <sensor_msgs/msg/image.hpp>
-
 #include <memory>
-
+#include "dynamic_vino_lib/utils/mutex_counter.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 
 namespace Input

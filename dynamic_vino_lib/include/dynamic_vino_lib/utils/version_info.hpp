@@ -13,8 +13,8 @@
 // limitations under the License.
 
 //
-// @brief a header file with common samples functionality
-// @file common.hpp
+// @brief a header file with version information about Inference Engine.
+// @file version_info.hpp
 //
 
 #ifndef DYNAMIC_VINO_LIB__UTILS__VERSION_INFO_HPP_
@@ -32,8 +32,6 @@
 #include <fstream>
 #include <iomanip>
 #include <utility>
-
-
 
 #ifdef WIN32
 #define UNUSED
