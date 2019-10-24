@@ -51,12 +51,6 @@ public:
    */
   virtual bool initialize() = 0;
   /**
-   * @brief (Only work for standard camera)
-   * Initialize camera by its index when multiple standard camera is connected.
-   * @return Whether the input device is successfully turned on.
-   */
-  virtual bool initialize(int) = 0;
-  /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.
    */

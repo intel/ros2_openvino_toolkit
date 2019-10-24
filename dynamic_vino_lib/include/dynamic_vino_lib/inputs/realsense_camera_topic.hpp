@@ -38,10 +38,6 @@ class RealSenseCameraTopic : public BaseInputDevice, public rclcpp::Node
 public:
   RealSenseCameraTopic();
   bool initialize() override;
-  bool initialize(int t) override
-  {
-    return true;
-  }
   bool initialize(size_t width, size_t height) override
   {
     return true;

@@ -42,15 +42,6 @@ public:
    */
   bool initialize() override;
   /**
-   * @brief
-   * Initialize camera by uri of IP camera.
-   * @return Whether the input device is successfully turned on.
-   */
-  bool initialize(int t) override
-  {
-    return initialize();
-  }
-  /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.
    */

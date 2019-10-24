@@ -48,12 +48,6 @@ public:
    */
   bool initialize() override;
   /**
-   * @brief (Only work for standard camera)
-   * Initialize camera by its index when multiple standard camera is connected.
-   * @return Whether the input device is successfully turned on.
-   */
-  bool initialize(int t) override;
-  /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.
    */
@@ -65,9 +59,9 @@ public:
   bool read(cv::Mat * frame) override;
 
 private:
+  int getCameraId();
   cv::VideoCapture cap;
-  static int camera_count_;
-  const int max_open_trial = 15;
+  int camera_id_ = -1;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__STANDARD_CAMERA_HPP_

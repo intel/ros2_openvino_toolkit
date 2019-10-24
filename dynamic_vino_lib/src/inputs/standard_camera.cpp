@@ -20,29 +20,9 @@
 
 bool Input::StandardCamera::initialize()
 {
-  static int camera_count_ = -1;
-  int fd; // A file descriptor to the video device
-  struct v4l2_capability cap;
-  char file[20];
-  //if it is a realsense camera then skip it until we meet a standard camera
-  do
-  {
-    camera_count_ ++;
-    sprintf(file,"/dev/video%d",camera_count_);//format filename
-    fd = open(file,O_RDWR);
-    ioctl(fd, VIDIOC_QUERYCAP, &cap);
-    close(fd);
-    
-    std::cout << "!!camera: "<< cap.card << std::endl;
-  }
-  while(!strcmp((char*)cap.card,"Intel(R) RealSense(TM) Depth Ca"));
-  
-  return initialize(camera_count_);
-}
 
-bool Input::StandardCamera::initialize(int camera_num)
-{
-  setInitStatus(cap.open(camera_num));
+  auto id = getCameraId();
+  setInitStatus(cap.open(id));
   setWidth((size_t)cap.get(cv::CAP_PROP_FRAME_WIDTH));
   setHeight((size_t)cap.get(cv::CAP_PROP_FRAME_HEIGHT));
   return isInit();
@@ -50,15 +30,13 @@ bool Input::StandardCamera::initialize(int camera_num)
 
 bool Input::StandardCamera::initialize(size_t width, size_t height)
 {
-  static int camera_count_ = 0;
-  setWidth(width);
-  setHeight(height);
-  setInitStatus(cap.open(camera_count_));
-  if (isInit()) {
+  if (initialize()) {
     cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
     cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+    setWidth(width);
+    setHeight(height);
   }
-  camera_count_++;
+
   return isInit();
 }
 
@@ -70,4 +48,30 @@ bool Input::StandardCamera::read(cv::Mat * frame)
   cap.grab();
   setHeader("standard_camera_frame");
   return cap.retrieve(*frame);
+}
+
+int Input::StandardCamera::getCameraId()
+{
+  // In case this function is invoked more than once.
+  if (camera_id_ >= 0){
+    return camera_id_;
+  }
+
+  static int STANDARD_CAMERA_COUNT = -1;
+  int fd; // A file descriptor to the video device
+  struct v4l2_capability cap;
+  char file[20];
+  //if it is a realsense camera then skip it until we meet a standard camera
+  do
+  {
+    STANDARD_CAMERA_COUNT ++;
+    sprintf(file,"/dev/video%d",STANDARD_CAMERA_COUNT);//format filename
+    fd = open(file,O_RDWR);
+    ioctl(fd, VIDIOC_QUERYCAP, &cap);
+    close(fd);
+    std::cout << "!!camera: "<< cap.card << std::endl;
+  }while(!strcmp((char*)cap.card,"Intel(R) RealSense(TM) Depth Ca"));
+
+  camera_id_ = STANDARD_CAMERA_COUNT;
+  return STANDARD_CAMERA_COUNT;
 }

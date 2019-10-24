@@ -40,15 +40,6 @@ public:
    */
   bool initialize() override;
   /**
-   * @brief (Only work for standard camera)
-   * No implementation for Video class.
-   * @return Whether the input device is successfully turned on.
-   */
-  bool initialize(int t) override
-  {
-    return initialize();
-  }
-  /**
    * @brief Initialize the input device with given width and height.
    * No implementation for Video class.
    * @return Whether the input device is successfully turned on.
