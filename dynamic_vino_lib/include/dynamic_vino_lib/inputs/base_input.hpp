@@ -36,6 +36,7 @@ namespace Input
 {
 struct Config
 {
+  /** a file path related to Input Device. */
   std::string path;
 };
 
@@ -121,8 +122,8 @@ public:
   }
 
 private:
-  size_t width_ = 0;
-  size_t height_ = 0;
+  size_t width_ = 0;  // 0 means using the original size
+  size_t height_ = 0; // 0 means using the original size
   bool is_init_ = false;
 };
 }  // namespace Input
