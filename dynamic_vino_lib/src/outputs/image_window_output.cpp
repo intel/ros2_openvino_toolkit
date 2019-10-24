@@ -21,6 +21,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <iomanip>
 
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/pipeline.hpp"
