@@ -4,12 +4,12 @@
 #### mobilenet-ssd
 * download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
   ```bash
-  cd /opt/openvino_toolkit/open_model_zoo/model_downloader
+  cd /opt/openvino_toolkit/open_model_zoo/tools/downloader
   python3 ./downloader.py --name mobilenet-ssd
   #FP32 precision model
-  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/tools/downloader/public/mobilenet-ssd/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP32 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   #FP16 precision model
-  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/model_downloader/object_detection/common/mobilenet-ssd/caffe/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
+  sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo.py --input_model /opt/openvino_toolkit/open_model_zoo/tools/downloader/public/mobilenet-ssd/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16 --data_type=FP16 --mean_values [127.5,127.5,127.5] --scale_values [127.5]
   ```
 * copy label files (excute _once_)<br>
   ```bash
@@ -68,14 +68,14 @@
   sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
-  --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v1_v2.json \
+  --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v2_voc.json \
   --data_type FP32 \
   --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32
   # FP16 precision model
   sudo python3 /opt/openvino_toolkit/dldt/model-optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
-  --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v1_v2.json \
+  --tensorflow_use_custom_operations_config /opt/openvino_toolkit/dldt/model-optimizer/extensions/front/tf/yolo_v2_voc.json \
   --data_type FP16 \
   --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
@@ -160,14 +160,14 @@
   sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
-  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v1_v2.json \
+  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v2_voc.json \
   --data_type FP32 \
   --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP32
   # FP16 precision model
   sudo python3 /opt/intel/openvino/deployment_tools/model_optimizer/mo_tf.py \
   --input_model built_graph/yolov2-voc.pb \
   --batch 1 \
-  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v1_v2.json \
+  --tensorflow_use_custom_operations_config /opt/intel/openvino/deployment_tools/model_optimizer/extensions/front/tf/yolo_v2_voc.json \
   --data_type FP16 \
   --output_dir /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16
   ```
@@ -184,5 +184,6 @@
   ```bash
   ros2 launch dynamic_vino_sample pipeline_object_yolo_topic.launch.py
   ```
+
 
 
