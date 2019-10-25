@@ -112,9 +112,9 @@ if [ "$OPENVINO" == "1" ]; then
   echo "===================Installing OpenVINO Toolkit...======================="
 
   cd ~/Downloads
-  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15512/l_openvino_toolkit_p_2019.1.144.tgz
-  tar -xvf l_openvino_toolkit_p_2019.1.144.tgz
-  cd l_openvino_toolkit_p_2019.1.144
+  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15944/l_openvino_toolkit_p_2019.3.334.tgz
+  tar -xvf l_openvino_toolkit_p_2019.3.334.tgz
+  cd l_openvino_toolkit_p_2019.3.334
   echo $ROOT_PASSWD | sudo -S ./install_openvino_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg

@@ -38,11 +38,9 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
-#include "utility.hpp"
 
 #define MAX_SIZE 300
 static bool test_pass = false;

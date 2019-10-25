@@ -35,10 +35,13 @@ class Engine
 {
 public:
   /**
+   * DEPRECATED! instead of using Engine(InferenceEngine::InferRequest::Ptr &)
    * @brief Create an NetworkEngine instance
    * from a inference plugin and an inference network.
    */
   Engine(InferenceEngine::InferencePlugin, Models::BaseModel::Ptr);
+
+  Engine(InferenceEngine::InferRequest::Ptr &);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
@@ -59,7 +62,7 @@ public:
   }
 
 private:
-  InferenceEngine::InferRequest::Ptr request_;
+  InferenceEngine::InferRequest::Ptr request_ = nullptr;
 };
 }  // namespace Engines
 

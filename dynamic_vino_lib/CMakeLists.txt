@@ -25,6 +25,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
+####################################
+## to use new InferenceEngine API (InferenceEngine::Core),
+## then, decomment below line
+#add_definitions(-DUSE_IE_CORE)
+####################################
+
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
 #set(InferenceEngine_DIR /opt/intel/computer_vision_sdk_2018.2.299/deployment_tools/inference_engine/share)
 #set(OpenCV_DIR /opt/intel/computer_vision_sdk_2018.2.299/opencv/share/OpenCV)
@@ -131,7 +137,6 @@ if(WIN32)
         endif()
     endif()
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Werror=return-type ")
     if(APPLE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=unused-command-line-argument")
     elseif(UNIX)
@@ -152,6 +157,9 @@ if(UNIX OR APPLE)
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
   endif()
 endif()
+
+#remove some build warnings
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-declarations")
 
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
@@ -184,6 +192,7 @@ add_library(${PROJECT_NAME} SHARED
         src/pipeline_params.cpp
         src/pipeline_manager.cpp
         src/engines/engine.cpp
+        src/engines/engine_manager.cpp
         src/inferences/base_filter.cpp
         src/inferences/base_inference.cpp
         src/inferences/base_reidentification.cpp

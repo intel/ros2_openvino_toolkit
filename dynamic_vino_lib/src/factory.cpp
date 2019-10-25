@@ -21,6 +21,7 @@
 #include <string>
 
 #include "dynamic_vino_lib/factory.hpp"
+#include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/inputs/ip_camera.hpp"
@@ -57,7 +58,9 @@ Factory::makePluginByName(
   const std::string & custom_cpu_library_message,                         // FLAGS_l
   const std::string & custom_cldnn_message,                               // FLAGS_c
   bool performance_message)
-{  // FLAGS_pc
+{
+  slog::info << "Add plugin for " << device_name << slog::endl;
+  // FLAGS_pc
   InferenceEngine::InferencePlugin plugin =
     InferenceEngine::PluginDispatcher({"../../../lib/intel64", ""})
     .getPluginByDevice(device_name);
@@ -67,6 +70,8 @@ Factory::makePluginByName(
   if ((device_name.find("CPU") != std::string::npos)) {
     plugin.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>());
     if (!custom_cpu_library_message.empty()) {
+      slog::info << "custom cpu library is not empty, tyring to use this extension:"
+        << custom_cpu_library_message << slog::endl;
       // CPU(MKLDNN) extensions are loaded as a shared library and passed as a
       // pointer to base
       // extension
@@ -75,6 +80,8 @@ Factory::makePluginByName(
       plugin.AddExtension(extension_ptr);
     }
   } else if (!custom_cldnn_message.empty()) {
+    slog::info << "custom cldnn library is not empty, tyring to use this extension:"
+        << custom_cldnn_message << slog::endl;
     // Load Extensions for other plugins not CPU
     plugin.SetConfig(
       {{InferenceEngine::PluginConfigParams::KEY_CONFIG_FILE, custom_cldnn_message}});

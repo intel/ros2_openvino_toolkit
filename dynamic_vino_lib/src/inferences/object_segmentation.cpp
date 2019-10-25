@@ -43,11 +43,16 @@ dynamic_vino_lib::ObjectSegmentation::~ObjectSegmentation() = default;
 void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
   const std::shared_ptr<Models::ObjectSegmentationModel> network)
 {
+  slog::info << "Loading Network: " << network->getModelName() << slog::endl;
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-bool dynamic_vino_lib::ObjectSegmentation::enqueue(
+/**
+ * Deprecated!
+ * This function only support OpenVINO version <=2018R5
+ */
+bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
   const cv::Mat & frame,
   const cv::Rect & input_frame_loc)
 {
@@ -63,6 +68,34 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue(
   Result r(input_frame_loc);
   results_.clear();
   results_.emplace_back(r);
+  return true;
+}
+
+bool dynamic_vino_lib::ObjectSegmentation::enqueue(
+  const cv::Mat & frame,
+  const cv::Rect & input_frame_loc)
+{
+  if (width_ == 0 && height_ == 0) {
+    width_ = frame.cols;
+    height_ = frame.rows;
+  }
+
+  if (valid_model_ == nullptr || getEngine() == nullptr) {
+    throw std::logic_error("Model or Engine is not set correctly!");
+    return false;
+  }
+
+  if (enqueued_frames_ >= valid_model_->getMaxBatchSize()) {
+    slog::warn << "Number of " << getName() << "input more than maximum(" <<
+      max_batch_size_ << ") processed by inference" << slog::endl;
+    return false;
+  }
+
+  if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc)) {
+    return false;
+  }
+
+  enqueued_frames_ += 1;
   return true;
 }
 
@@ -129,7 +162,7 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   return true;
 }
 
-const int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
+int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
@@ -145,7 +178,7 @@ const std::string dynamic_vino_lib::ObjectSegmentation::getName() const
   return valid_model_->getModelName();
 }
 
-const void dynamic_vino_lib::ObjectSegmentation::observeOutput(
+void dynamic_vino_lib::ObjectSegmentation::observeOutput(
   const std::shared_ptr<Outputs::BaseOutput> & output)
 {
   if (output != nullptr) {
