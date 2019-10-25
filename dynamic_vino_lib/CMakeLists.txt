@@ -25,6 +25,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
+####################################
+## to use new InferenceEngine API (InferenceEngine::Core),
+## then, decomment below line
+#add_definitions(-DUSE_IE_CORE)
+####################################
+
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
 #set(InferenceEngine_DIR /opt/intel/computer_vision_sdk_2018.2.299/deployment_tools/inference_engine/share)
 #set(OpenCV_DIR /opt/intel/computer_vision_sdk_2018.2.299/opencv/share/OpenCV)

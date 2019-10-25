@@ -25,7 +25,11 @@
 std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
+#if(defined(USE_IE_CORE))
+  return createEngine_V2019R2_plus(device, model);
+#else
   return createEngine_beforeV2019R2(device, model);
+#endif
 }
 
 std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV2019R2(
@@ -44,6 +48,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
   return std::make_shared<Engines::Engine>(request);
 }
 
+#if(defined(USE_IE_CORE))
 std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_plus(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
@@ -53,3 +58,4 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_pl
 
   return std::make_shared<Engines::Engine>(request);
 }
+#endif
