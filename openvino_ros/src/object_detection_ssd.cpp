@@ -80,7 +80,7 @@ void ObjectDetectionSSD::initSubscriber()
 void ObjectDetectionSSD::initPublisher()
 {
   std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInBoxes>(output_topic, 16);
+  pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInBoxes>(output_topic, rclcpp::QoS(1));
 }
 
 void ObjectDetectionSSD::process(const sensor_msgs::msg::Image::UniquePtr msg)
