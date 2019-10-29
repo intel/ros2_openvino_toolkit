@@ -27,8 +27,14 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 
 ####################################
 ## to use new InferenceEngine API (InferenceEngine::Core),
-## then, decomment below line
+## then, uncomment below line
 #add_definitions(-DUSE_IE_CORE)
+####################################
+
+####################################
+## to get verbose log,
+## then, uncomment below line
+#add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
