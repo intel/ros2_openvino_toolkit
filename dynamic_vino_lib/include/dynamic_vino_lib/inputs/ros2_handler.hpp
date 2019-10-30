@@ -58,6 +58,11 @@ public:
     header_ = header;
   }
 
+  inline void lockHeader()
+  {
+    locked_header_ = header_;
+  }
+
   /**
    * @brief Get the frame_id of input device.
    * @return Frame_id of input device.
@@ -66,9 +71,15 @@ public:
   {
     return header_;
   }
+
+  inline std_msgs::msg::Header getLockedHeader()
+  {
+    return locked_header_;
+  }
 private:
   std::shared_ptr<rclcpp::Node> node_;
   std_msgs::msg::Header header_;
+  std_msgs::msg::Header locked_header_;
 };
 
 }  // namespace Input

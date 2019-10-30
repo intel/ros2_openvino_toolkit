@@ -145,7 +145,6 @@ public:
   void accept(const std::vector<dynamic_vino_lib::HeadPoseResult> &) override;
 
 protected:
-  std_msgs::msg::Header getHeader();
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;
   rclcpp::Publisher<people_msgs::msg::LicensePlateStamped>::SharedPtr pub_license_plate_;

@@ -60,6 +60,7 @@ bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
   }
 
   *frame = image_;
+  lockHeader(); //lock the header for the frame to be read out.
   image_count_.decreaseCounter();
   return true;
 }

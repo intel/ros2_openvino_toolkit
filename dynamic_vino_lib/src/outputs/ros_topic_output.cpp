@@ -312,7 +312,7 @@ void Outputs::RosTopicOutput::accept(const std::vector<dynamic_vino_lib::HeadPos
 
 void Outputs::RosTopicOutput::handleOutput()
 {
-  auto header = getHeader();
+  auto header = getPipeline()->getInputDevice()->getLockedHeader();
   if (vehicle_attribs_topic_ != nullptr) {
     // slog::info << "publishing landmarks detection outputs." << slog::endl;
     vehicle_attribs_topic_->header = header;
@@ -386,10 +386,3 @@ void Outputs::RosTopicOutput::handleOutput()
   }
 }
 
-/**
- * TODO: implement the value gain
- */
-std_msgs::msg::Header Outputs::RosTopicOutput::getHeader()
-{
-  return getPipeline()->getInputDevice()->getHeader();
-}
