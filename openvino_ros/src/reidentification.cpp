@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "cv_bridge/cv_bridge.h"
 #include "rdk_interfaces/msg/object_in_box.hpp"
 #include "rdk_interfaces/msg/object.hpp"
 #include "openvino/reidentification.hpp"
@@ -70,8 +69,8 @@ void Reidentification::initPublisher()
 
 void Reidentification::process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes)
 {
-  cv::Mat cv_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;
-
+  cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
+    msg->step);
   for(unsigned int i = 0; i < bboxes->objects_vector.size(); i++)
   {
     cv::Rect roi(bboxes->objects_vector[i].roi.x_offset, bboxes->objects_vector[i].roi.y_offset, bboxes->objects_vector[i].roi.width, bboxes->objects_vector[i].roi.height);

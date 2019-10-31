@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "cv_bridge/cv_bridge.h"
 #include "rdk_interfaces/msg/object_in_box.hpp"
 #include "rdk_interfaces/msg/object_in_mask.hpp"
 #include "rdk_interfaces/msg/object.hpp"
@@ -54,13 +53,13 @@ void ObjectSegmentation::initSubscriber()
   if (!node_.get_node_options().use_intra_process_comms()) {
     auto callback = [this](sensor_msgs::msg::Image::ConstSharedPtr msg)
     {
-      process(msg);
+      process<sensor_msgs::msg::Image::ConstSharedPtr>(msg);
     };
     sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
   } else {
     auto callback = [this](sensor_msgs::msg::Image::UniquePtr msg)
     {
-      process(std::move(msg));
+      process<sensor_msgs::msg::Image::UniquePtr>(std::move(msg));
     };
     sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
   }
@@ -72,26 +71,14 @@ void ObjectSegmentation::initPublisher()
   pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInMasks>(output_topic, 16);
 }
 
-void ObjectSegmentation::process(const sensor_msgs::msg::Image::UniquePtr msg)
+template <typename T>
+void ObjectSegmentation::process(const T msg)
 {
   //debug
   //RCLCPP_INFO(node_.get_logger(), "timestamp: %d.%d, address: %p", msg->header.stamp.sec, msg->header.stamp.nanosec, reinterpret_cast<std::uintptr_t>(msg.get()));
   
   cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
     msg->step);
-
-  rdk_interfaces::msg::ObjectsInMasks objs;
-  objs.header = msg->header;
-  process(cv_image, objs);
-  pub_->publish(objs);
-}
-
-void ObjectSegmentation::process(const sensor_msgs::msg::Image::ConstSharedPtr msg)
-{
-  //debug
-  //RCLCPP_INFO(node_.get_logger(), "timestamp: %d.%d, address: %p", msg->header.stamp.sec, msg->header.stamp.nanosec, reinterpret_cast<std::uintptr_t>(msg.get()));
-  
-  cv::Mat cv_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;
 
   rdk_interfaces::msg::ObjectsInMasks objs;
   objs.header = msg->header;

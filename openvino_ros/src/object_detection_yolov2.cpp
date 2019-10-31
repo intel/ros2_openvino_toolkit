@@ -2,7 +2,6 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "cv_bridge/cv_bridge.h"
 
 #include "openvino/object_detection_yolov2.hpp"
 
@@ -24,7 +23,6 @@ void ObjectDetectionYOLOV2::prepareInputBlobs()
     RCLCPP_ERROR(node_.get_logger(), "Input info of Yolov2 model should not be nullptr");
     rclcpp::shutdown();
   }
-
   input_name_ = input_info.begin()->first;
   input->setPrecision(Precision::FP32);
   input->getInputData()->setLayout(Layout::NCHW);
@@ -48,13 +46,13 @@ void ObjectDetectionYOLOV2::initSubscriber()
   if (!node_.get_node_options().use_intra_process_comms()) {
     auto callback = [this](sensor_msgs::msg::Image::ConstSharedPtr msg)
     {
-      process(msg);
+      process<sensor_msgs::msg::Image::ConstSharedPtr>(msg);
     };
     sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
   } else {
     auto callback = [this](sensor_msgs::msg::Image::UniquePtr msg)
     {
-      process(std::move(msg));
+      process<sensor_msgs::msg::Image::UniquePtr>(std::move(msg));
     };
     sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
   }
@@ -67,20 +65,11 @@ void ObjectDetectionYOLOV2::initPublisher()
   pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInBoxes>(output_topic, 16);
 }
 
-void ObjectDetectionYOLOV2::process(const sensor_msgs::msg::Image::UniquePtr msg)
+template <typename T>
+void ObjectDetectionYOLOV2::process(const T msg)
 {
   cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
     msg->step);
-
-  rdk_interfaces::msg::ObjectsInBoxes objs;
-  objs.header = msg->header;
-  process(cv_image, objs);
-  pub_->publish(objs);
-}
-
-void ObjectDetectionYOLOV2::process(const sensor_msgs::msg::Image::ConstSharedPtr msg)
-{
-  cv::Mat cv_image = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8)->image;
 
   rdk_interfaces::msg::ObjectsInBoxes objs;
   objs.header = msg->header;

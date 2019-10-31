@@ -3,9 +3,9 @@
 
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
-#include "cv_bridge/cv_bridge.h"
 #include "inference_engine.hpp"
 #include "rdk_interfaces/msg/objects_in_boxes.hpp"
+#include "opencv2/opencv.hpp"
 
 using namespace InferenceEngine;
 
@@ -44,9 +44,6 @@ public:
   virtual void initPublisher() = 0;
   virtual void prepareInputBlobs() = 0;
   virtual void prepareOutputBlobs() = 0;
-  virtual void process(const sensor_msgs::msg::Image::ConstSharedPtr msg) = 0;
-  virtual void process(const sensor_msgs::msg::Image::UniquePtr msg) = 0;
-  virtual void process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes) = 0;
 
 protected:
   rclcpp::Node & node_;

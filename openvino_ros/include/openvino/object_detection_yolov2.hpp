@@ -18,10 +18,8 @@ public:
   void initPublisher() override;
   void prepareInputBlobs() override;
   void prepareOutputBlobs() override;
-  void process(const sensor_msgs::msg::Image::ConstSharedPtr msg) override;
-  void process(const sensor_msgs::msg::Image::UniquePtr msg) override;
-  void process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes) override {};
-
+  template <typename T>
+  void process(const T msg);
   void process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInBoxes & objs);
 
 private:
