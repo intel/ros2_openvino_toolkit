@@ -27,8 +27,14 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 
 ####################################
 ## to use new InferenceEngine API (InferenceEngine::Core),
-## then, decomment below line
+## then, uncomment below line
 #add_definitions(-DUSE_IE_CORE)
+####################################
+
+####################################
+## to get verbose log,
+## then, uncomment below line
+#add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
@@ -187,7 +193,6 @@ set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} cpu_extension)
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
         src/services/frame_processing_server.cpp
-        src/factory.cpp
         src/pipeline.cpp
         src/pipeline_params.cpp
         src/pipeline_manager.cpp
@@ -210,6 +215,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/license_plate_detection.cpp
         src/inputs/realsense_camera.cpp
         src/inputs/realsense_camera_topic.cpp
+        src/inputs/image_topic.cpp
         src/inputs/standard_camera.cpp
         src/inputs/ip_camera.cpp
         src/inputs/video_input.cpp

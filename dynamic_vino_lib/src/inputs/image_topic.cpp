@@ -13,38 +13,43 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of RealSenseCamera class
- * @file realsense_camera_topic.cpp
+ * @brief a header file with declaration of ImageTopic class
+ * @file image_topic.cpp
  */
 
 #include <cv_bridge/cv_bridge.h>
 #include <memory>
-#include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
+#include "dynamic_vino_lib/inputs/image_topic.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
 #define INPUT_TOPIC "/openvino_toolkit/image_raw"
 
-Input::RealSenseCameraTopic::RealSenseCameraTopic()
-: Node("realsense_topic")
+Input::ImageTopic::ImageTopic()
+: Node("image_topic")
 {
 }
 
-bool Input::RealSenseCameraTopic::initialize()
+Input::ImageTopic::ImageTopic(std::string & name)
+: Node(name)
 {
-  slog::info << "before cameraTOpic init" << slog::endl;
+}
+
+bool Input::ImageTopic::initialize()
+{
+  slog::debug << "before Image Topic init" << slog::endl;
   std::shared_ptr<rclcpp::Node> node(this);
   setHandler(node);
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   sub_ = this->create_subscription<sensor_msgs::msg::Image>(
-    "/openvino_toolkit/image_raw", qos,
-    std::bind(&RealSenseCameraTopic::cb, this, std::placeholders::_1));
+    INPUT_TOPIC, qos,
+    std::bind(&ImageTopic::cb, this, std::placeholders::_1));
 
   return true;
 }
 
-void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
+void Input::ImageTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 {
-  // slog::info << "Receiving a new image from Camera topic." << slog::endl;
+  slog::debug << "Receiving a new image from Camera topic." << slog::endl;
   setHeader(image_msg->header);
 
   image_ = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
@@ -52,15 +57,15 @@ void Input::RealSenseCameraTopic::cb(const sensor_msgs::msg::Image::SharedPtr im
   image_count_.increaseCounter();
 }
 
-bool Input::RealSenseCameraTopic::read(cv::Mat * frame)
+bool Input::ImageTopic::read(cv::Mat * frame)
 {
   if (image_count_.get() < 0 || image_.empty()) {
-    // slog::warn << "No data received in CameraTopic instance" << slog::endl;
+    slog::debug << "No data received in CameraTopic instance" << slog::endl;
     return false;
   }
 
   *frame = image_;
-  lockHeader(); //lock the header for the frame to be read out.
+  lockHeader();
   image_count_.decreaseCounter();
   return true;
 }

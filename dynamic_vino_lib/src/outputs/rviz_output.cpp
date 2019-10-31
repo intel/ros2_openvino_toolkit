@@ -101,14 +101,10 @@ void Outputs::RvizOutput::handleOutput()
   image_window_output_->setPipeline(getPipeline());
   image_window_output_->decorateFrame();
   cv::Mat frame = image_window_output_->getFrame();
-  std_msgs::msg::Header header = getHeader();
+  std_msgs::msg::Header header =
+    getPipeline()->getInputDevice()->getLockedHeader();
   std::shared_ptr<cv_bridge::CvImage> cv_ptr =
     std::make_shared<cv_bridge::CvImage>(header, "bgr8", frame);
   image_topic_ = cv_ptr->toImageMsg();
   pub_image_->publish(*image_topic_);
-}
-
-std_msgs::msg::Header Outputs::RvizOutput::getHeader()
-{
-  return getPipeline()->getInputDevice()->getHeader();
 }

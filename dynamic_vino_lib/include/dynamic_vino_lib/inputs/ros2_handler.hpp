@@ -36,9 +36,50 @@ public:
   {
     return node_;
   }
+  /**
+   * @brief Set the frame_id of input device for ROSTopic outputs.
+   * @param[in] frame_id The frame_id of input device.
+   */
+  inline void setHeader(std::string frame_id)
+  {
+    header_.frame_id = frame_id;
+  #if true //directly use RCLCPP api for time stamp generation.
+    header_.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
+  #else
+    std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
+    int64 ns = tp.time_since_epoch().count();
+    header_.stamp.sec = ns / 1000000000;
+    header_.stamp.nanosec = ns % 1000000000;
+  #endif
+  }
 
+  inline void setHeader(std_msgs::msg::Header header)
+  {
+    header_ = header;
+  }
+
+  inline void lockHeader()
+  {
+    locked_header_ = header_;
+  }
+
+  /**
+   * @brief Get the frame_id of input device.
+   * @return Frame_id of input device.
+   */
+  inline std_msgs::msg::Header getHeader()
+  {
+    return header_;
+  }
+
+  inline std_msgs::msg::Header getLockedHeader()
+  {
+    return locked_header_;
+  }
 private:
   std::shared_ptr<rclcpp::Node> node_;
+  std_msgs::msg::Header header_;
+  std_msgs::msg::Header locked_header_;
 };
 
 }  // namespace Input

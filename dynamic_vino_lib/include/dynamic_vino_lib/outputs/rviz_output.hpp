@@ -111,7 +111,6 @@ public:
   void accept(const std::vector<dynamic_vino_lib::AgeGenderResult> &) override;
 
 private:
-  std_msgs::msg::Header getHeader();
   std::shared_ptr<rclcpp::Node> node_;
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_image_;
   std::shared_ptr<sensor_msgs::msg::Image> image_topic_;

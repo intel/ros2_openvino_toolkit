@@ -25,7 +25,6 @@
 #include <opencv2/videoio/videoio_c.h>
 #include <vector>
 #include <string>
-#include <mutex>
 #include "dynamic_vino_lib/inputs/ros2_handler.hpp"
 
 /**
@@ -37,39 +36,8 @@ namespace Input
 {
 struct Config
 {
+  /** a file path related to Input Device. */
   std::string path;
-};
-
-class MutexCounter
-{
-public:
-  explicit MutexCounter(int init_counter = 0)
-  {
-    std::lock_guard<std::mutex> lk(counter_mutex_);
-    counter_ = init_counter;
-  }
-
-  void increaseCounter()
-  {
-    std::lock_guard<std::mutex> lk(counter_mutex_);
-    ++counter_;
-  }
-
-  void decreaseCounter()
-  {
-    std::lock_guard<std::mutex> lk(counter_mutex_);
-    --counter_;
-  }
-
-  int get()
-  {
-    return counter_;
-  }
-
-private:
-  std::atomic<int> counter_;
-  std::mutex counter_mutex_;
-  std::condition_variable cv_;
 };
 
 class BaseInputDevice : public Ros2Handler
@@ -82,12 +50,6 @@ public:
    * @return Whether the input device is successfully turned on.
    */
   virtual bool initialize() = 0;
-  /**
-   * @brief (Only work for standard camera)
-   * Initialize camera by its index when multiple standard camera is connected.
-   * @return Whether the input device is successfully turned on.
-   */
-  virtual bool initialize(int) = 0;
   /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.
@@ -152,38 +114,11 @@ public:
   {
     is_init_ = is_init;
   }
-  /**
-   * @brief Set the frame_id of input device for ROSTopic outputs.
-   * @param[in] frame_id The frame_id of input device.
-   */
-  inline void setHeader(std::string frame_id)
-  {
-    header_.frame_id = frame_id;
-    std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-    int64 ns = tp.time_since_epoch().count();
-    header_.stamp.sec = ns / 1000000000;
-    header_.stamp.nanosec = ns % 1000000000;
-  }
-
-  inline void setHeader(std_msgs::msg::Header header)
-  {
-    header_ = header;
-  }
-
-  /**
-   * @brief Get the frame_id of input device.
-   * @return Frame_id of input device.
-   */
-  inline std_msgs::msg::Header getHeader()
-  {
-    return header_;
-  }
 
 private:
-  size_t width_ = 0;
-  size_t height_ = 0;
+  size_t width_ = 0;  // 0 means using the original size
+  size_t height_ = 0; // 0 means using the original size
   bool is_init_ = false;
-  std_msgs::msg::Header header_;
 };
 }  // namespace Input
 #endif  // DYNAMIC_VINO_LIB__INPUTS__BASE_INPUT_HPP_

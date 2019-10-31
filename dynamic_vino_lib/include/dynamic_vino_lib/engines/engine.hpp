@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for NetworkEngine class
- * @file engine.h
+ * @brief A header file with declaration for Inference Engine class
+ * @file engine.hpp
  */
 #ifndef DYNAMIC_VINO_LIB__ENGINES__ENGINE_HPP_
 #define DYNAMIC_VINO_LIB__ENGINES__ENGINE_HPP_
@@ -24,13 +24,15 @@
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "inference_engine.hpp"
 
-/**
- * @class NetworkEngine
- * @brief This class is used to get the infer request
- * from a inference plugin and an inference network
- */
+
 namespace Engines
 {
+/**
+ * @class Engine
+ * @brief This class manages the instance created for computing Engine hardware
+ * (CPU|GPU|MARIAD|HETERO|more). Currently it mainly manages the inference request(s)
+ * and callback function for the Engine instance.
+ */
 class Engine
 {
 public:
@@ -41,6 +43,9 @@ public:
    */
   Engine(InferenceEngine::InferencePlugin, Models::BaseModel::Ptr);
 
+  /**
+   * @brief Using an Inference Request to initialize the inference Engine.
+   */
   Engine(InferenceEngine::InferRequest::Ptr &);
   /**
    * @brief Get the inference request this instance holds.

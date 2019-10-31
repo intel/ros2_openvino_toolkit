@@ -21,11 +21,8 @@
 
 bool Input::IpCamera::initialize()
 {
-  setInitStatus(cap.open(ip_uri_));
   // Initialize width and height to reasonable dimensions
-  setWidth(640);
-  setHeight(480);
-  return isInit();
+  return initialize(640, 480);
 }
 
 bool Input::IpCamera::initialize(size_t width, size_t height)

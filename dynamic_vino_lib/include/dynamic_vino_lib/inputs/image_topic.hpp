@@ -13,12 +13,12 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for RealSenseCamera class
- * @file realsense_camera.h
+ * @brief A header file with declaration for ImageTopic class
+ * @file image_topic.h
  */
 
-#ifndef DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_
-#define DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_
+#ifndef DYNAMIC_VINO_LIB__INPUTS__IMAGE_TOPIC_HPP_
+#define DYNAMIC_VINO_LIB__INPUTS__IMAGE_TOPIC_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <opencv2/opencv.hpp>
@@ -30,13 +30,14 @@
 namespace Input
 {
 /**
- * @class RealSenseCameraTopic
+ * @class ImageTopic
  * @brief Class for recieving a realsense camera topic as input.
  */
-class RealSenseCameraTopic : public BaseInputDevice, public rclcpp::Node
+class ImageTopic : public BaseInputDevice, public rclcpp::Node
 {
 public:
-  RealSenseCameraTopic();
+  ImageTopic();
+  ImageTopic(std::string &);
   bool initialize() override;
   bool initialize(size_t width, size_t height) override
   {
@@ -53,4 +54,4 @@ private:
 };
 }  // namespace Input
 
-#endif  // DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_
+#endif  // DYNAMIC_VINO_LIB__INPUTS__IMAGE_TOPIC_HPP_

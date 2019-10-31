@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with logging facility for common samples
- * @file log.hpp
+ * @file slog.hpp
  */
 #ifndef DYNAMIC_VINO_LIB__SLOG_HPP_
 #define DYNAMIC_VINO_LIB__SLOG_HPP_
@@ -26,6 +26,36 @@
 
 namespace slog
 {
+#if 1
+  enum COLOR {
+    RESET = 0,
+    BLUE = 1,
+    GREEN = 2,
+    YELLOW = 3,
+    RED = 4,
+  };
+
+#else
+//the following are UBUNTU/LINUX ONLY terminal color codes.
+#define RESET   "\033[0m"
+#define BLACK   "\033[30m"      /* Black */
+#define RED     "\033[31m"      /* Red */
+#define GREEN   "\033[32m"      /* Green */
+#define YELLOW  "\033[33m"      /* Yellow */
+#define BLUE    "\033[34m"      /* Blue */
+#define MAGENTA "\033[35m"      /* Magenta */
+#define CYAN    "\033[36m"      /* Cyan */
+#define WHITE   "\033[37m"      /* White */
+#define BOLDBLACK   "\033[1m\033[30m"      /* Bold Black */
+#define BOLDRED     "\033[1m\033[31m"      /* Bold Red */
+#define BOLDGREEN   "\033[1m\033[32m"      /* Bold Green */
+#define BOLDYELLOW  "\033[1m\033[33m"      /* Bold Yellow */
+#define BOLDBLUE    "\033[1m\033[34m"      /* Bold Blue */
+#define BOLDMAGENTA "\033[1m\033[35m"      /* Bold Magenta */
+#define BOLDCYAN    "\033[1m\033[36m"      /* Bold Cyan */
+#define BOLDWHITE   "\033[1m\033[37m"      /* Bold White */
+#endif
+
 /**
  * @class LogStreamEndLine
  * @brief The LogStreamEndLine class implements an end line marker for a log
@@ -46,14 +76,16 @@ class LogStream
   std::string _prefix;
   std::ostream * _log_stream;
   bool _new_line;
+  int _color_id;
 
 public:
   /**
    * @brief A constructor. Creates an LogStream object
    * @param prefix The prefix to print
    */
-  LogStream(const std::string & prefix, std::ostream & log_stream)
-  : _prefix(prefix), _new_line(true)
+  LogStream(const std::string & prefix, std::ostream & log_stream,
+    const int color_id = -1)
+  : _prefix(prefix), _new_line(true), _color_id(color_id)
   {
     _log_stream = &log_stream;
   }
@@ -66,7 +98,8 @@ public:
   LogStream & operator<<(const T & arg)
   {
     if (_new_line) {
-      (*_log_stream) << "[ " << _prefix << " ] ";
+      setLineColor();
+      (*_log_stream)  << "[ " << _prefix << " ] ";
       _new_line = false;
     }
 
@@ -78,15 +111,65 @@ public:
   LogStream & operator<<(const LogStreamEndLine & arg)
   {
     _new_line = true;
-
+    resetLineColor();
     (*_log_stream) << std::endl;
+    return *this;
+  }
+
+  void setLineColor()
+  {
+    switch(_color_id){
+        case BLUE:
+          (*_log_stream) << "\033[34m";
+          break;
+        case GREEN:
+          (*_log_stream) << "\033[32m";
+          break;
+        case YELLOW:
+          (*_log_stream) << "\033[33m";
+          break;
+        case RED:
+          (*_log_stream) << "\033[31m";
+          break;
+        default:
+          break;
+      }
+  }
+
+  void resetLineColor()
+  {
+    if(_color_id > 0){
+      (*_log_stream) << "\033[0m"; //RESET
+    }
+  }
+};
+
+class NullStream
+{
+public:
+  NullStream(){}
+
+  NullStream(const std::string & prefix, std::ostream & log_stream)
+  {
+    (void)prefix;
+    (void)log_stream;
+  }
+
+  template<class T>
+  NullStream & operator<<(const T & arg)
+  {
     return *this;
   }
 };
 
-static LogStream info("INFO", std::cout);
-static LogStream warn("WARNING", std::cout);
-static LogStream err("ERROR", std::cerr);
+#ifdef LOG_LEVEL_DEBUG
+  static LogStream debug("DEBUG", std::cout);
+#else
+  static NullStream debug;
+#endif
+static LogStream info("INFO", std::cout, BLUE);
+static LogStream warn("WARNING", std::cout, YELLOW);
+static LogStream err("ERROR", std::cerr, RED);
 
 }  // namespace slog
 #endif  // DYNAMIC_VINO_LIB__SLOG_HPP_
