@@ -44,6 +44,7 @@ public:
   virtual void initPublisher() = 0;
   virtual void prepareInputBlobs() = 0;
   virtual void prepareOutputBlobs() = 0;
+  virtual void registerInferCompletionCallback() = 0;
 
 protected:
   rclcpp::Node & node_;
@@ -51,6 +52,13 @@ protected:
   InferencePlugin plugin_;
   CNNNetwork network_;
   ExecutableNetwork exec_network_;
+  InferRequest::Ptr async_infer_request_;
+  bool is_first_frame_;
+  size_t num_channels_;
+  size_t blob_width_;
+  size_t blob_height_;
+  size_t cv_width_;
+  size_t cv_height_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
 };
 }  // namespace openvino

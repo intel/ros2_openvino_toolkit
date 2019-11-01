@@ -58,10 +58,10 @@ add_library(${PROJECT_NAME} SHARED
   src/openvino_factory.cpp
   src/openvino_base.cpp
   src/object_detection_ssd.cpp
-  src/object_detection_yolov2.cpp
-  src/reidentification.cpp
-  src/object_segmentation.cpp
-  src/tracker.cpp
+  #src/object_detection_yolov2.cpp
+  #src/reidentification.cpp
+  #src/object_segmentation.cpp
+  #src/tracker.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
