@@ -1,8 +1,8 @@
 #include "openvino/openvino_factory.hpp"
 #include "openvino/object_detection_ssd.hpp"
-#include "openvino/object_detection_yolov2.hpp"
-#include "openvino/object_segmentation.hpp"
-#include "openvino/reidentification.hpp"
+// #include "openvino/object_detection_yolov2.hpp"
+// #include "openvino/object_segmentation.hpp"
+// #include "openvino/reidentification.hpp"
 
 namespace openvino
 {
@@ -33,18 +33,18 @@ void OpenVINOFactory::init()
         RCLCPP_INFO(get_logger(), "SSD");
         ov_node_ = std::make_shared<ObjectDetectionSSD>(*this);
         break;
-      case YOLOV2:
-        RCLCPP_INFO(get_logger(), "YOLOV2");
-        ov_node_ = std::make_shared<ObjectDetectionYOLOV2>(*this);
-        break;
-      case ReID:
-        RCLCPP_INFO(get_logger(), "ReID");
-        ov_node_ = std::make_shared<Reidentification>(*this);
-        break;
-      case Segment:
-        RCLCPP_INFO(get_logger(), "Segmentation");
-        ov_node_ = std::make_shared<ObjectSegmentation>(*this);
-        break;
+      // case YOLOV2:
+      //   RCLCPP_INFO(get_logger(), "YOLOV2");
+      //   ov_node_ = std::make_shared<ObjectDetectionYOLOV2>(*this);
+      //   break;
+      // case ReID:
+      //   RCLCPP_INFO(get_logger(), "ReID");
+      //   ov_node_ = std::make_shared<Reidentification>(*this);
+      //   break;
+      // case Segment:
+      //   RCLCPP_INFO(get_logger(), "Segmentation");
+      //   ov_node_ = std::make_shared<ObjectSegmentation>(*this);
+      //   break;
     }
   }  
 }

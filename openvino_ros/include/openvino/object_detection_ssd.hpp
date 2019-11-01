@@ -16,17 +16,17 @@ public:
   void initPublisher() override;
   void prepareInputBlobs() override;
   void prepareOutputBlobs() override;
-  void process(const sensor_msgs::msg::Image::ConstSharedPtr msg) override;
-  void process(const sensor_msgs::msg::Image::UniquePtr msg) override;
-  void process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes) override {};
+  void registerInferCompletionCallback() override;
 
-  void process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInBoxes & objs);
+  template <typename T>
+  void process(const T msg);
 
 private:
   std::string input_name_;
   std::string output_name_;
   int max_proposal_count_;
   int object_size_;
+  rdk_interfaces::msg::ObjectsInBoxes objs_;
   rclcpp::Publisher<rdk_interfaces::msg::ObjectsInBoxes>::SharedPtr pub_;
 };
 }  // namespace openvino

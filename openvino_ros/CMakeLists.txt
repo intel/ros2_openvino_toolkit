@@ -5,10 +5,28 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+# Compiler Defense Flags
+if(UNIX OR APPLE)
+  # Linker flags.
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
+    # GCC specific flags. ICC is compatible with them.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z noexecstack -z relro -z now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z noexecstack -z relro -z now")
+  elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    # In Clang, -z flags are not compatible, they need to be passed to linker via -Wl.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+  endif()
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
-find_package(cv_bridge REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(tf2_ros REQUIRED)
@@ -18,8 +36,13 @@ find_package(rclcpp_components REQUIRED)
 find_package(message_filters REQUIRED)
 find_package(rdk_interfaces REQUIRED)
 
+find_package(OpenCV 4 REQUIRED)
+if(NOT OpenCV_FOUND)
+    message(FATAL_ERROR "\n\n OpenCV4 is not found\n\n")
+endif()
+
 set(InferenceEngine_DIR /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/share)
-find_package(InferenceEngine 1.1)
+find_package(InferenceEngine)
 if(NOT InferenceEngine_FOUND)
     message(FATAL_ERROR "\n\n Intel OpenVINO toolkit is missing, please install it from https://software.intel.com/en-us/openvino-toolkit\n\n")
 endif()
@@ -35,17 +58,16 @@ add_library(${PROJECT_NAME} SHARED
   src/openvino_factory.cpp
   src/openvino_base.cpp
   src/object_detection_ssd.cpp
-  src/object_detection_yolov2.cpp
-  src/reidentification.cpp
-  src/object_segmentation.cpp
-  src/tracker.cpp
+  #src/object_detection_yolov2.cpp
+  #src/reidentification.cpp
+  #src/object_segmentation.cpp
+  #src/tracker.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
   rclcpp
   rclcpp_components
   rmw_implementation
-  cv_bridge
   sensor_msgs
   std_msgs
   tf2_ros
@@ -53,6 +75,7 @@ ament_target_dependencies(${PROJECT_NAME}
   message_filters
   rdk_interfaces
   message_filters
+  OpenCV
 )
 
 target_link_libraries(${PROJECT_NAME}

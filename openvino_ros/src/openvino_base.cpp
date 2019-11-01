@@ -11,7 +11,13 @@ using namespace InferenceEngine;
 namespace openvino
 {
 OpenVINOBase::OpenVINOBase(rclcpp::Node & node)
-: node_(node)
+: node_(node),
+  is_first_frame_(true),
+  num_channels_(0),
+  blob_width_(0),
+  blob_height_(0),
+  cv_width_(0),
+  cv_height_(0)
 {
 }
 
@@ -35,6 +41,7 @@ void OpenVINOBase::init()
   loadNetwork();
   initPublisher();
   initSubscriber();
+  registerInferCompletionCallback();
 }
 
 void OpenVINOBase::loadEngine(const std::string & engine_name)
