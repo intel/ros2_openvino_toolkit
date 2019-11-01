@@ -41,7 +41,7 @@ if(NOT OpenCV_FOUND)
     message(FATAL_ERROR "\n\n OpenCV4 is not found\n\n")
 endif()
 
-set(InferenceEngine_DIR /opt/intel/computer_vision_sdk/deployment_tools/inference_engine/share)
+set(InferenceEngine_DIRS /opt/intel/openvino/deployment_tools/inference_engine)
 find_package(InferenceEngine)
 if(NOT InferenceEngine_FOUND)
     message(FATAL_ERROR "\n\n Intel OpenVINO toolkit is missing, please install it from https://software.intel.com/en-us/openvino-toolkit\n\n")
@@ -49,10 +49,15 @@ endif()
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${InferenceEngine_DIRS}/src
   ${InferenceEngine_INCLUDE_DIRS}
   ${rdk_interfaces_INCLUDE_DIRS}
   ${message_filters_INCLUDE_DIRS}
 )
+
+add_library(cpu_extension SHARED IMPORTED)
+set_target_properties(cpu_extension PROPERTIES
+  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
 add_library(${PROJECT_NAME} SHARED
   src/openvino_factory.cpp
@@ -79,6 +84,7 @@ ament_target_dependencies(${PROJECT_NAME}
 )
 
 target_link_libraries(${PROJECT_NAME}
+  cpu_extension
   ${InferenceEngine_LIBRARIES}
 )
 
@@ -106,4 +112,3 @@ ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 
 ament_package()
-
