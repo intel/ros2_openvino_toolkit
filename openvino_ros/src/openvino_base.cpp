@@ -5,6 +5,8 @@
 #include "rdk_interfaces/msg/object_in_box.hpp"
 #include "rdk_interfaces/msg/object.hpp"
 #include "openvino/openvino_base.hpp"
+#include "inference_engine.hpp"
+#include "extension/ext_list.hpp"
 
 using namespace InferenceEngine;
 
@@ -46,7 +48,12 @@ void OpenVINOBase::init()
 
 void OpenVINOBase::loadEngine(const std::string & engine_name)
 {
-  plugin_ = PluginDispatcher({PLUGIN_DIRS}).getPluginByDevice(engine_name);
+  plugin_ = PluginDispatcher({PLUGIN_DIRS,""}).getPluginByDevice(engine_name);
+
+  if (engine_name == "CPU")
+  {
+    plugin_.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>());
+  }
 }
 
 void OpenVINOBase::readNetwork(const std::string & model_path,
