@@ -103,23 +103,23 @@ void ObjectDetectionSSD::process(cv::Mat & cv_image, rdk_interfaces::msg::Object
   InferRequest::Ptr async_infer_request = exec_network_.CreateInferRequestPtr();
 
   Blob::Ptr image_input = async_infer_request->GetBlob(input_name_);
-  //auto t0 = node_.now();
+
   size_t num_channels = image_input->getTensorDesc().getDims()[1];
   size_t blob_width = image_input->getTensorDesc().getDims()[3];
   size_t blob_height = image_input->getTensorDesc().getDims()[2];
-  //auto t1 = node_.now();
-  //std::cout << "get width and height: " << (t1-t0).nanoseconds()*1e-6 <<std::endl;
+
+  auto t1 = node_.now();
   unsigned char* blob_data = static_cast<unsigned char*>(image_input->buffer());
   int cv_width = cv_image.cols;
   int cv_height = cv_image.rows;
 
-  cv::Mat resized_image(cv_image);
+  cv::Mat resized_image;
   if (blob_width != cv_width || blob_height != cv_height) {
     cv::resize(cv_image, resized_image, cv::Size(blob_width, blob_height));
   }
 
-  //auto t2 = node_.now();
-  //std::cout << "resize image: " << (t2-t1).nanoseconds()*1e-6 <<std::endl;
+  auto t2 = node_.now();
+  std::cout << "resize image: " << (t2-t1).nanoseconds()*1e-6 <<std::endl;
   for (size_t c = 0; c < num_channels; c++) {
     for (size_t h = 0; h < blob_height; h++) {
       for (size_t w = 0; w < blob_width; w++) {
@@ -128,8 +128,8 @@ void ObjectDetectionSSD::process(cv::Mat & cv_image, rdk_interfaces::msg::Object
       }
     }
   }
-  //auto t3 = node_.now();
-  //std::cout << "fill the blob: " << (t3-t2).nanoseconds()*1e-6 <<std::endl;
+  auto t3 = node_.now();
+  std::cout << "fill the blob: " << (t3-t2).nanoseconds()*1e-6 <<std::endl;
 
   rdk_interfaces::msg::ObjectInBox obj;
 

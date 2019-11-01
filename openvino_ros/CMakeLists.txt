@@ -5,6 +5,25 @@ if(NOT CMAKE_CXX_STANDARD)
   set(CMAKE_CXX_STANDARD 14)
 endif()
 
+if("${CMAKE_BUILD_TYPE}" STREQUAL "")
+    message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
+    set(CMAKE_BUILD_TYPE "Release")
+endif()
+
+# Compiler Defense Flags
+if(UNIX OR APPLE)
+  # Linker flags.
+  if(${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Intel")
+    # GCC specific flags. ICC is compatible with them.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -z noexecstack -z relro -z now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -z noexecstack -z relro -z now")
+  elseif(${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
+    # In Clang, -z flags are not compatible, they need to be passed to linker via -Wl.
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-z,noexecstack -Wl,-z,relro -Wl,-z,now")
+  endif()
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rmw REQUIRED)
