@@ -20,37 +20,18 @@
 #ifndef DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_
 #define DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_
 
-#include <rclcpp/rclcpp.hpp>
-#include <opencv2/opencv.hpp>
-#include <sensor_msgs/msg/image.hpp>
-#include <memory>
-#include "dynamic_vino_lib/utils/mutex_counter.hpp"
-#include "dynamic_vino_lib/inputs/base_input.hpp"
+#include "dynamic_vino_lib/inputs/image_topic.hpp"
 
 namespace Input
 {
 /**
+ * DEPRECATED!
+ * Using the new class ImageTopic to handle all image topics.
  * @class RealSenseCameraTopic
  * @brief Class for recieving a realsense camera topic as input.
  */
-class RealSenseCameraTopic : public BaseInputDevice, public rclcpp::Node
-{
-public:
-  RealSenseCameraTopic();
-  bool initialize() override;
-  bool initialize(size_t width, size_t height) override
-  {
-    return true;
-  }
-  bool read(cv::Mat * frame) override;
+typedef ImageTopic RealSenseCameraTopic;
 
-private:
-  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;
-  cv::Mat image_;
-  MutexCounter image_count_;
-
-  void cb(const sensor_msgs::msg::Image::SharedPtr image_msg);
-};
 }  // namespace Input
 
 #endif  // DYNAMIC_VINO_LIB__INPUTS__REALSENSE_CAMERA_TOPIC_HPP_

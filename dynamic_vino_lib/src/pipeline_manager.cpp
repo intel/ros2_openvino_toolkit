@@ -131,7 +131,7 @@ PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & 
       if (params.input_meta != "") {
         device = std::make_shared<Input::IpCamera>(params.input_meta);
       }
-    } else if (name == kInputType_CameraTopic) {
+    } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
       device = std::make_shared<Input::RealSenseCameraTopic>();
     } else if (name == kInputType_Video) {
       if (params.input_meta != "") {
