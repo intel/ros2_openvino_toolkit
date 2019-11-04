@@ -25,8 +25,8 @@ OpenVINOBase::OpenVINOBase(rclcpp::Node & node)
 
 void OpenVINOBase::init()
 {
-  std::string engine_name = node_.declare_parameter("engine").get<rclcpp::PARAMETER_STRING>();
-  loadEngine(engine_name);
+  device_name_ = node_.declare_parameter("device").get<rclcpp::PARAMETER_STRING>();
+  loadEngine();
 
   std::string model_path = node_.declare_parameter("model").get<rclcpp::PARAMETER_STRING>();
   std::string weights_path = node_.declare_parameter("weights").get<rclcpp::PARAMETER_STRING>();
@@ -46,13 +46,11 @@ void OpenVINOBase::init()
   registerInferCompletionCallback();
 }
 
-void OpenVINOBase::loadEngine(const std::string & engine_name)
+void OpenVINOBase::loadEngine()
 {
-  plugin_ = PluginDispatcher({PLUGIN_DIRS,""}).getPluginByDevice(engine_name);
-
-  if (engine_name == "CPU")
+  if (device_name_ == "CPU")
   {
-    plugin_.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>());
+    ie_core_.AddExtension(std::make_shared<Extensions::Cpu::CpuExtensions>(), device_name_);
   }
 }
 
@@ -62,9 +60,6 @@ void OpenVINOBase::readNetwork(const std::string & model_path,
   CNNNetReader network_reader;
   network_reader.ReadNetwork(model_path);
   network_reader.ReadWeights(weights_path);
-  //debug info should be removed later
-  RCLCPP_DEBUG(node_.get_logger(), "model path: %s", model_path.c_str());
-  RCLCPP_DEBUG(node_.get_logger(), "weights path: %s", weights_path.c_str());
   network_ = network_reader.getNetwork();
 }
 
@@ -78,6 +73,6 @@ void OpenVINOBase::readLabels(const std::string & label_path)
 
 void OpenVINOBase::loadNetwork()
 {
-  exec_network_ = plugin_.LoadNetwork(network_, {});
+  exec_network_ = ie_core_.LoadNetwork(network_, device_name_, {});
 }
 }  // namespace openvino

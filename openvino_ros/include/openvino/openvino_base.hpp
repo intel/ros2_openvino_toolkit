@@ -9,8 +9,6 @@
 
 using namespace InferenceEngine;
 
-const std::string PLUGIN_DIRS = "/opt/intel/openvino/deployment_tools/inference_engine/lib/intel64";
-
 namespace openvino
 {
 class OpenVINOBase
@@ -19,7 +17,7 @@ public:
   OpenVINOBase(rclcpp::Node & node);
   virtual ~OpenVINOBase() = default;
   void init();
-  void loadEngine(const std::string & engine_name);
+  void loadEngine();
   void readNetwork(const std::string & model_path,
   const std::string & weights_path);
   void readLabels(const std::string & label_path);
@@ -49,7 +47,8 @@ public:
 protected:
   rclcpp::Node & node_;
   std::vector<std::string> labels_;
-  InferencePlugin plugin_;
+  Core ie_core_;
+  std::string device_name_;
   CNNNetwork network_;
   ExecutableNetwork exec_network_;
   InferRequest::Ptr async_infer_request_;
