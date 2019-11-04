@@ -1,4 +1,4 @@
-engine: MYRIAD
+device: MYRIAD
 type: SSD
 model: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.xml
 weights: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.bin
