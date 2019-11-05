@@ -20,7 +20,7 @@ public:
   void prepareOutputBlobs() override;
   template <typename T>
   void process(const T msg);
-  void process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInBoxes & objs);
+  void registerInferCompletionCallback() override;
 
 private:
   std::string input_name_;
@@ -30,6 +30,7 @@ private:
   rclcpp::Publisher<rdk_interfaces::msg::ObjectsInBoxes>::SharedPtr pub_;
   static double intersectionOverUnion(const cv::Rect & box_1, const cv::Rect & box_2);
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
+  rdk_interfaces::msg::ObjectsInBoxes objs_;
 
   static bool sortByProbility(rdk_interfaces::msg::ObjectInBox begin,
     rdk_interfaces::msg::ObjectInBox end)
@@ -37,6 +38,10 @@ private:
     return begin.object.probability < end.object.probability;
   }
 
+  int imw_;
+  int imh_;
+  int srcw_;
+  int srch_;
 };
 }  // namespace openvino
 
