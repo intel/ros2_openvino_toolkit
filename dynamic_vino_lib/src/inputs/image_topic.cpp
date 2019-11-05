@@ -22,7 +22,7 @@
 #include "dynamic_vino_lib/inputs/image_topic.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
-#define INPUT_TOPIC "/openvino_toolkit/image_raw"
+#define INPUT_TOPIC "/camera/color/image_raw"
 
 Input::ImageTopic::ImageTopic()
 : Node("image_topic")
