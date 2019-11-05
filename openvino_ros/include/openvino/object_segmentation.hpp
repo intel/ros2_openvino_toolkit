@@ -19,7 +19,7 @@ public:
   void prepareOutputBlobs() override;
   template <typename T>
   void process(const T msg);
-  void process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInMasks & objs);
+  void registerInferCompletionCallback() override;
 
 private:
   std::string input_info_name_;
@@ -28,6 +28,8 @@ private:
   std::string mask_output_name_;
   int object_size_;
   rclcpp::Publisher<rdk_interfaces::msg::ObjectsInMasks>::SharedPtr pub_;
+  rdk_interfaces::msg::ObjectsInMasks objs_;
+
 };
 }  // namespace openvino
 

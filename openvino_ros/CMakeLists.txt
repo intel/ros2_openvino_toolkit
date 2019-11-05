@@ -65,7 +65,7 @@ add_library(${PROJECT_NAME} SHARED
   src/object_detection_ssd.cpp
   src/object_detection_yolov2.cpp
   #src/reidentification.cpp
-  #src/object_segmentation.cpp
+  src/object_segmentation.cpp
   #src/tracker.cpp
 )
 

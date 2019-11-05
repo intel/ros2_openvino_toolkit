@@ -74,76 +74,77 @@ void ObjectSegmentation::initPublisher()
 template <typename T>
 void ObjectSegmentation::process(const T msg)
 {
-  //debug
-  //RCLCPP_INFO(node_.get_logger(), "timestamp: %d.%d, address: %p", msg->header.stamp.sec, msg->header.stamp.nanosec, reinterpret_cast<std::uintptr_t>(msg.get()));
-  
+  objs_.header = msg->header;
   cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
-    msg->step);
+  msg->step);
 
-  rdk_interfaces::msg::ObjectsInMasks objs;
-  objs.header = msg->header;
-  process(cv_image, objs);
-  pub_->publish(objs);
-}
-
-void ObjectSegmentation::process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInMasks & objs)
-{
-  InferRequest::Ptr async_infer_request = exec_network_.CreateInferRequestPtr();
-  
-  Blob::Ptr image_tensor_input = async_infer_request->GetBlob(input_tensor_name_);
-  auto blob_data = image_tensor_input->buffer().as<PrecisionTrait<Precision::U8>::value_type *>();
-  size_t batch_size = image_tensor_input->getTensorDesc().getDims()[0];
-  size_t num_channels = image_tensor_input->getTensorDesc().getDims()[1];
-  size_t blob_height = image_tensor_input->getTensorDesc().getDims()[2];
-  size_t blob_width = image_tensor_input->getTensorDesc().getDims()[3];
-
-  int cv_width = cv_image.cols;
-  int cv_height = cv_image.rows;
-
+  cv_width_ = msg->width;
+  cv_height_ = msg->height;
+   
   cv::Mat resized_image(cv_image);
-  if (blob_width != cv_width || blob_height != cv_height) {
-    cv::resize(cv_image, resized_image, cv::Size(blob_width, blob_height));
+  if (blob_width_ != cv_width_ || blob_height_ != cv_height_) {
+    cv::resize(cv_image, resized_image, cv::Size(blob_width_, blob_height_));
   }
 
-  for (size_t c = 0; c < num_channels; c++) {
-    for (size_t h = 0; h < blob_height; h++) {
-      for (size_t w = 0; w < blob_width; w++) {
-        blob_data[c * blob_width * blob_height + h * blob_width + w] =
+  if (is_first_frame_ == true) {
+    is_first_frame_ = false;
+  } else {
+    async_infer_request_->Wait(IInferRequest::WaitMode::RESULT_READY);
+  }
+
+  Blob::Ptr image_tensor_input = async_infer_request_->GetBlob(input_tensor_name_);
+  auto blob_data = image_tensor_input->buffer().as<PrecisionTrait<Precision::U8>::value_type *>();
+   
+  for (size_t c = 0; c < num_channels_; c++) {
+    for (size_t h = 0; h < blob_height_; h++) {
+      for (size_t w = 0; w < blob_width_; w++) {
+        blob_data[c * blob_width_ * blob_height_ + h * blob_width_ + w] =
           resized_image.at<cv::Vec3b>(h, w)[c];
       }
     }
   }
 
-  Blob::Ptr image_info_input = async_infer_request->GetBlob(input_info_name_);
+  Blob::Ptr image_info_input = async_infer_request_->GetBlob(input_info_name_);
   auto blob_info = image_info_input->buffer().as<PrecisionTrait<Precision::FP32>::value_type *>();
-  blob_info[0] = static_cast<float>(blob_height);  // height
-  blob_info[1] = static_cast<float>(blob_width);  // width
+  blob_info[0] = static_cast<float>(blob_height_);  // height
+  blob_info[1] = static_cast<float>(blob_width_);  // width
   blob_info[2] = 1;
 
-  rdk_interfaces::msg::ObjectInMask obj;
+  async_infer_request_->StartAsync();
+}
 
-  async_infer_request->StartAsync();
-  async_infer_request->Wait(IInferRequest::WaitMode::RESULT_READY);
-  
-  const auto do_blob = async_infer_request->GetBlob(detection_output_name_);
-  const auto do_data = do_blob->buffer().as<float*>();
+void ObjectSegmentation::registerInferCompletionCallback()
+{
+  async_infer_request_ = exec_network_.CreateInferRequestPtr();
 
-  const auto masks_blob = async_infer_request->GetBlob(mask_output_name_);
-  const auto masks_data = masks_blob->buffer().as<float*>();
+  Blob::Ptr image_tensor_input = async_infer_request_->GetBlob(input_tensor_name_);
+  num_channels_ = image_tensor_input->getTensorDesc().getDims()[1];
+  blob_height_ = image_tensor_input->getTensorDesc().getDims()[2];
+  blob_width_ = image_tensor_input->getTensorDesc().getDims()[3];
 
-  const float probability_threshold = 0.2f;
+  auto callback = [&] {
+    objs_.objects_vector.clear();
+    rdk_interfaces::msg::ObjectInMask obj;
 
-  size_t box_description_size = do_blob->dims().at(0);
-  size_t boxes = masks_blob->dims().at(3);
+    const auto do_blob = async_infer_request_->GetBlob(detection_output_name_);
+    const auto do_data = do_blob->buffer().as<float*>();
 
-  size_t C = masks_blob->dims().at(2);
-  size_t H = masks_blob->dims().at(1);
-  size_t W = masks_blob->dims().at(0);
+    const auto masks_blob = async_infer_request_->GetBlob(mask_output_name_);
+    const auto masks_data = masks_blob->buffer().as<float*>();
 
-  size_t box_stride = W * H * C;
+    const float probability_threshold = 0.2f;
 
-  // some colours
-  std::vector<std::vector<short>> colors = {
+    size_t box_description_size = do_blob->dims().at(0);
+    size_t boxes = masks_blob->dims().at(3);
+
+    size_t C = masks_blob->dims().at(2);
+    size_t H = masks_blob->dims().at(1);
+    size_t W = masks_blob->dims().at(0);
+
+    size_t box_stride = W * H * C;
+
+    // some colours
+    std::vector<std::vector<short>> colors = {
       {128, 64,  128},
       {232, 35,  244},
       {70,  70,  70},
@@ -165,51 +166,62 @@ void ObjectSegmentation::process(cv::Mat & cv_image, rdk_interfaces::msg::Object
       {32,  11,  119},
       {0,   74,  111},
       {81,  0,   81}
-  };
-  std::map<size_t, size_t> class_color;
+    };
+    std::map<size_t, size_t> class_color;
 
-  /** Iterating over all boxes **/
-  for (size_t box = 0; box < boxes; ++box) {
-    float* box_info = do_data + box * box_description_size;
-    float prob = box_info[2];
+    /** Iterating over all boxes **/
+    for (size_t box = 0; box < boxes; ++box) {
+      float* box_info = do_data + box * box_description_size;
+      float prob = box_info[2];
 
-    float x1 = std::min(std::max(0.0f, box_info[3] * cv_image.size().width), static_cast<float>(cv_image.size().width));
-    float y1 = std::min(std::max(0.0f, box_info[4] * cv_image.size().height), static_cast<float>(cv_image.size().height));
-    float x2 = std::min(std::max(0.0f, box_info[5] * cv_image.size().width), static_cast<float>(cv_image.size().width));
-    float y2 = std::min(std::max(0.0f, box_info[6] * cv_image.size().height), static_cast<float>(cv_image.size().height));
-    int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), cv_image.size().width);
-    int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), cv_image.size().height);
-    auto class_id = static_cast<size_t>(box_info[1] + 1e-6f);
+      /*
+      float x1 = std::min(std::max(0.0f, box_info[3] * cv_image.size().width), static_cast<float>(cv_image.size().width));
+      float y1 = std::min(std::max(0.0f, box_info[4] * cv_image.size().height), static_cast<float>(cv_image.size().height));
+      float x2 = std::min(std::max(0.0f, box_info[5] * cv_image.size().width), static_cast<float>(cv_image.size().width));
+      float y2 = std::min(std::max(0.0f, box_info[6] * cv_image.size().height), static_cast<float>(cv_image.size().height));
+      int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), cv_image.size().width);
+      int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), cv_image.size().height);
+      */
+      float x1 = std::min(std::max(0.0f, box_info[3] * cv_width_), static_cast<float>(cv_width_));
+      float y1 = std::min(std::max(0.0f, box_info[4] * cv_height_), static_cast<float>(cv_height_));
+      float x2 = std::min(std::max(0.0f, box_info[5] * cv_width_), static_cast<float>(cv_width_));
+      float y2 = std::min(std::max(0.0f, box_info[6] * cv_height_), static_cast<float>(cv_height_));
+      int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), static_cast<int>(cv_width_));
+      int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), static_cast<int>(cv_height_));
 
-    if (prob > probability_threshold) {
+      auto class_id = static_cast<size_t>(box_info[1] + 1e-6f);
 
-      if (class_color.find(class_id) == class_color.end())
-        class_color[class_id] = class_color.size();
+      if (prob > probability_threshold) {
 
-      auto& color = colors[class_color[class_id]];
-      float* mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
-      cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
-      cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
-      cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
-      cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
-      if (!labels_.empty())
-      {
-        obj.object_name = labels_[class_id];
-      }
-      obj.probability = prob;
-      obj.roi.x_offset = roi.x;
-      obj.roi.y_offset = roi.y;
-      obj.roi.width = roi.width;
-      obj.roi.height = roi.height;
+        if (class_color.find(class_id) == class_color.end())
+          class_color[class_id] = class_color.size();
 
-      for (int h = 0; h < resized_mask_mat.size().height; ++h) {
-        for (int w = 0; w < resized_mask_mat.size().width; ++w) {
-          obj.mask_array.push_back(resized_mask_mat.at<float>(h, w));
+        auto& color = colors[class_color[class_id]];
+        float* mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
+        cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
+        cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
+        cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
+        cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
+        if (!labels_.empty())
+        {
+          obj.object_name = labels_[class_id];
         }
-      }
+        obj.probability = prob;
+        obj.roi.x_offset = roi.x;
+        obj.roi.y_offset = roi.y;
+        obj.roi.width = roi.width;
+        obj.roi.height = roi.height;
 
-      objs.objects_vector.push_back(obj);
+        for (int h = 0; h < resized_mask_mat.size().height; ++h) {
+          for (int w = 0; w < resized_mask_mat.size().width; ++w) {
+            obj.mask_array.push_back(resized_mask_mat.at<float>(h, w));
+          }
+        }
+        objs_.objects_vector.push_back(obj);
+      }
     }
-  }
+    pub_->publish(objs_);
+  };
+  async_infer_request_->SetCompletionCallback(callback);
 }
 }  // namespace openvino
