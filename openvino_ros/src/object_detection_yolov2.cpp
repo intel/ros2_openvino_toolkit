@@ -39,9 +39,7 @@ void ObjectDetectionYOLOV2::prepareOutputBlobs()
 
 void ObjectDetectionYOLOV2::initSubscriber()
 {
-  std::cout << "ObjectDetectionyolov2: start" << std::endl;
   std::string input_topic = node_.declare_parameter("input_topic").get<rclcpp::PARAMETER_STRING>();
-  std::cout << "ObjectDetectionyolov2: input_topic = " << input_topic << std::endl;
 
   if (!node_.get_node_options().use_intra_process_comms()) {
     auto callback = [this](sensor_msgs::msg::Image::ConstSharedPtr msg)
@@ -56,7 +54,6 @@ void ObjectDetectionYOLOV2::initSubscriber()
     };
     sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
   }
-  std::cout << "ObjectDetectionyolov2: initSubscriber end" << std::endl;
 }
 
 void ObjectDetectionYOLOV2::initPublisher()
@@ -68,20 +65,19 @@ void ObjectDetectionYOLOV2::initPublisher()
 template <typename T>
 void ObjectDetectionYOLOV2::process(const T msg)
 {
-  cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
+  objs_.header = msg->header;
+
+  cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]), 
     msg->step);
 
-  rdk_interfaces::msg::ObjectsInBoxes objs;
-  objs.header = msg->header;
-  process(cv_image, objs);
-  pub_->publish(objs);
-}
+  if (is_first_frame_ == true) {
+    is_first_frame_ = false;
+  } else {
+    async_infer_request_->Wait(IInferRequest::WaitMode::RESULT_READY);
+  }
 
-void ObjectDetectionYOLOV2::process(cv::Mat & cv_image, rdk_interfaces::msg::ObjectsInBoxes & objs)
-{
-  InferRequest::Ptr async_infer_request = exec_network_.CreateInferRequestPtr();
+  Blob::Ptr image_input = async_infer_request_->GetBlob(input_name_);
 
-  Blob::Ptr image_input = async_infer_request->GetBlob(input_name_);
   size_t num_channels = image_input->getTensorDesc().getDims()[1];
   size_t blob_width = image_input->getTensorDesc().getDims()[3];
   size_t blob_height = image_input->getTensorDesc().getDims()[2];
@@ -90,8 +86,6 @@ void ObjectDetectionYOLOV2::process(cv::Mat & cv_image, rdk_interfaces::msg::Obj
 
   int dx = 0;
   int dy = 0;
-  int srcw = 0;
-  int srch = 0;
 
   int IH = blob_height;
   int IW = blob_width;
@@ -99,34 +93,34 @@ void ObjectDetectionYOLOV2::process(cv::Mat & cv_image, rdk_interfaces::msg::Obj
   cv::Mat image = cv_image.clone();
   cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
   image.convertTo(image, CV_32F, 1.0 / 255.0, 0);
-  srcw = image.size().width;
-  srch = image.size().height;
+  srcw_ = image.size().width;
+  srch_ = image.size().height;
 
   cv::Mat resizedImg(IH, IW, CV_32FC3);
   resizedImg = cv::Scalar(0.5, 0.5, 0.5);
-  int imw = image.size().width;
-  int imh = image.size().height;
+  imw_ = image.size().width;
+  imh_ = image.size().height;
 
-  float resize_ratio = static_cast<float>(IH) / static_cast<float>(std::max(imw, imh));
-  cv::resize(image, image, cv::Size(imw * resize_ratio, imh * resize_ratio));
+  float resize_ratio = static_cast<float>(IH) / static_cast<float>(std::max(imw_, imh_));
+  cv::resize(image, image, cv::Size(imw_ * resize_ratio, imh_ * resize_ratio));
 
-  int new_w = imw;
-  int new_h = imh;
-  if ((static_cast<float>(IW) / imw) < (static_cast<float>(IH) / imh)) {
+  int new_w = imw_;
+  int new_h = imh_;
+  if ((static_cast<float>(IW) / imw_) < (static_cast<float>(IH) / imh_)) {
     new_w = IW;
-    new_h = (imh * IW) / imw;
+    new_h = (imh_ * IW) / imw_;
   } else {
     new_h = IH;
-    new_w = (imw * IW) / imh;
+    new_w = (imw_ * IW) / imh_;
   }
   dx = (IW - new_w) / 2;
   dy = (IH - new_h) / 2;
 
-  imh = image.size().height;
-  imw = image.size().width;
+  imh_ = image.size().height;
+  imw_ = image.size().width;
 
-  for (int row = 0; row < imh; row++) {
-    for (int col = 0; col < imw; col++) {
+  for (int row = 0; row < imh_; row++) {
+    for (int col = 0; col < imw_; col++) {
       for (int ch = 0; ch < 3; ch++) {
         resizedImg.at<cv::Vec3f>(dy + row, dx + col)[ch] = image.at<cv::Vec3f>(row, col)[ch];
       }
@@ -141,124 +135,137 @@ void ObjectDetectionYOLOV2::process(cv::Mat & cv_image, rdk_interfaces::msg::Obj
     }
   }
 
-  async_infer_request->StartAsync();
-  async_infer_request->Wait(IInferRequest::WaitMode::RESULT_READY);
+  async_infer_request_->StartAsync();
+}
 
-  const float * detections =
-    async_infer_request->GetBlob(output_name_)->buffer().as<InferenceEngine::PrecisionTrait
-    <InferenceEngine::Precision::FP32>::value_type *>();
+void ObjectDetectionYOLOV2::registerInferCompletionCallback()
+{
+  async_infer_request_ = exec_network_.CreateInferRequestPtr();
+  Blob::Ptr image_input = async_infer_request_->GetBlob(input_name_);
+  size_t num_channels = image_input->getTensorDesc().getDims()[1];
+  size_t blob_width = image_input->getTensorDesc().getDims()[3];
+  size_t blob_height = image_input->getTensorDesc().getDims()[2];
 
-  const int num = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("num");
-  const int coords = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("coords");
-  const int classes = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("classes");
+  auto callback = [&] {
+  
+    objs_.objects_vector.clear();
+    const float * detections = async_infer_request_->GetBlob(output_name_)->buffer().as<PrecisionTrait<Precision::FP32>::value_type *>();
 
-  const int out_blob_h = network_.getLayerByName(output_name_.c_str())->input()->dims[0]; 
+    const int num = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("num");
+    const int coords = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("coords");
+    const int classes = network_.getLayerByName(output_name_.c_str())->GetParamAsInt("classes");
 
-  std::vector<float> anchors = {
+    const int out_blob_h = network_.getLayerByName(output_name_.c_str())->input()->dims[0]; 
+
+    std::vector<float> anchors = {
       0.572730, 0.677385,
       1.874460, 2.062530,
       3.338430, 5.474340,
       7.882820, 3.527780,
       9.770520, 9.168280
-  };
-  auto side = out_blob_h;
+    };
+    auto side = out_blob_h;
 
-  auto side_square = side * side;
+    auto side_square = side * side;
 
-  // --------------------------- Parsing YOLO Region output -------------------------------------
-  for (int i = 0; i < side_square; ++i) {
-    int row = i / side;
-    int col = i % side;
+    // --------------------------- Parsing YOLO Region output -------------------------------------
+    for (int i = 0; i < side_square; ++i) {
+      int row = i / side;
+      int col = i % side;
 
-    for (int n = 0; n < num; ++n) {
-      int obj_index = getEntryIndex(side, coords, classes, n * side * side + i, coords);
-      int box_index = getEntryIndex(side, coords, classes, n * side * side + i, 0);
+      for (int n = 0; n < num; ++n) {
+        int obj_index = getEntryIndex(side, coords, classes, n * side * side + i, coords);
+        int box_index = getEntryIndex(side, coords, classes, n * side * side + i, 0);
 
-      float scale = detections[obj_index];
+        float scale = detections[obj_index];
 
-      if (scale < 0.7) {
-        continue;
-      }
-
-      float x = (col + detections[box_index + 0 * side_square]) / side * blob_width;
-      float y = (row + detections[box_index + 1 * side_square]) / side * blob_height;
-      float height = std::exp(detections[box_index + 3 * side_square]) * anchors[2 * n + 1] /
-        side * blob_height;
-      float width = std::exp(detections[box_index + 2 * side_square]) * anchors[2 * n] / side *
-        blob_width;
-
-      for (int j = 0; j < classes; ++j) {
-        int class_index =
-          getEntryIndex(side, coords, classes, n * side_square + i, coords + 1 + j);
-
-        float prob = scale * detections[class_index];
-        if (prob < 0.7) {
+        if (scale < 0.7) {
           continue;
         }
 
-        float x_min = x - width / 2;
-        float x_max = x + width / 2;
-        float y_min = y - height / 2;
-        float y_max = y + height / 2;
+        float x = (col + detections[box_index + 0 * side_square]) / side * blob_width;
+        float y = (row + detections[box_index + 1 * side_square]) / side * blob_height;
+        float height = std::exp(detections[box_index + 3 * side_square]) * anchors[2 * n + 1] /
+          side * blob_height;
+        float width = std::exp(detections[box_index + 2 * side_square]) * anchors[2 * n] / side *
+          blob_width;
 
-        float x_min_resized = x_min / imw * srcw;
-        float y_min_resized = y_min / imh * srch;
-        float x_max_resized = x_max / imw * srcw;
-        float y_max_resized = y_max / imh * srch;
+        for (int j = 0; j < classes; ++j) {
+          int class_index =
+            getEntryIndex(side, coords, classes, n * side_square + i, coords + 1 + j);
 
-        rdk_interfaces::msg::ObjectInBox obj;
-        std::string label = j <
-          labels_.size() ? labels_[j] : std::string("label #") + std::to_string(j);
+          float prob = scale * detections[class_index];
+          if (prob < 0.7) {
+            continue;
+          }
 
-	std::ostringstream conf;
-        conf << ":" << std::fixed << std::setprecision(3) << prob;
+          float x_min = x - width / 2;
+          float x_max = x + width / 2;
+          float y_min = y - height / 2;
+          float y_max = y + height / 2;
 
-        cv::putText(cv_image, label + conf.str(),
-          cv::Point2f(x_min_resized, y_min_resized - 5), cv::FONT_HERSHEY_COMPLEX_SMALL, 1,
-          cv::Scalar(0, 0, 255));
+          float x_min_resized = x_min / imw_ * srcw_;
+          float y_min_resized = y_min / imh_ * srch_;
+          float x_max_resized = x_max / imw_ * srcw_;
+          float y_max_resized = y_max / imh_ * srch_;
 
-        cv::rectangle(cv_image, cv::Point2f(x_min_resized, y_min_resized), cv::Point2f(x_max_resized, y_max_resized),
-          cv::Scalar(0, 0, 255));
-        cv::imshow("Detection results", cv_image);
-        cv::waitKey(1);
+          rdk_interfaces::msg::ObjectInBox obj;
+          std::string label = j <
+            labels_.size() ? labels_[j] : std::string("label #") + std::to_string(j);
 
-        obj.object.object_name = label;
-        obj.object.probability = prob;
-        obj.roi.x_offset = x_min;
-        obj.roi.y_offset = y_min;
-        obj.roi.height = y_max - y_min;
-        obj.roi.width = x_max- x_min;
+	  // image window display
+	  /*
+	  std::ostringstream conf;
+          conf << ":" << std::fixed << std::setprecision(3) << prob;
 
-        objs.objects_vector.push_back(obj);
+          cv::putText(cv_image, label + conf.str(),
+            cv::Point2f(x_min_resized, y_min_resized - 5), cv::FONT_HERSHEY_COMPLEX_SMALL, 1,
+            cv::Scalar(0, 0, 255));
+
+          cv::rectangle(cv_image, cv::Point2f(x_min_resized, y_min_resized), cv::Point2f(x_max_resized, y_max_resized), cv::Scalar(0, 0, 255));
+          cv::imshow("Detection results", cv_image);
+          cv::waitKey(1);
+	  */
+
+          obj.object.object_name = label;
+          obj.object.probability = prob;
+          obj.roi.x_offset = x_min;
+          obj.roi.y_offset = y_min;
+          obj.roi.height = y_max - y_min;
+          obj.roi.width = x_max- x_min;
+
+          objs_.objects_vector.push_back(obj);
+        }
       }
     }
-  }
 
-  std::sort(objs.objects_vector.begin(), objs.objects_vector.end(), sortByProbility);
-  for (unsigned int i = 0; i < objs.objects_vector.size(); ++i) {
-    if (objs.objects_vector[i].object.probability == 0) {
-      continue;
-    }
-    for (unsigned int j = i + 1; j < objs.objects_vector.size(); ++j) {
-      cv::Rect location_i(objs.objects_vector[i].roi.x_offset,
-        objs.objects_vector[i].roi.y_offset, objs.objects_vector[i].roi.width,
-	objs.objects_vector[i].roi.height);
+    std::sort(objs_.objects_vector.begin(), objs_.objects_vector.end(), sortByProbility);
+    for (unsigned int i = 0; i < objs_.objects_vector.size(); ++i) {
+      if (objs_.objects_vector[i].object.probability == 0) {
+        continue;
+      }
+      for (unsigned int j = i + 1; j < objs_.objects_vector.size(); ++j) {
+        cv::Rect location_i(objs_.objects_vector[i].roi.x_offset,
+          objs_.objects_vector[i].roi.y_offset, objs_.objects_vector[i].roi.width,
+	  objs_.objects_vector[i].roi.height);
 
-      cv::Rect location_j(objs.objects_vector[j].roi.x_offset,
-        objs.objects_vector[j].roi.y_offset, objs.objects_vector[j].roi.width,
-	objs.objects_vector[j].roi.height);
+        cv::Rect location_j(objs_.objects_vector[j].roi.x_offset,
+          objs_.objects_vector[j].roi.y_offset, objs_.objects_vector[j].roi.width,
+	  objs_.objects_vector[j].roi.height);
 
-      auto iou = ObjectDetectionYOLOV2::intersectionOverUnion(
-        location_i, location_j);
-      if (iou >= 0.45) {
-        objs.objects_vector[j].object.probability = 0;
+        auto iou = ObjectDetectionYOLOV2::intersectionOverUnion(
+          location_i, location_j);
+        if (iou >= 0.45) {
+          objs_.objects_vector[j].object.probability = 0;
+        }
       }
     }
-  }
+    pub_->publish(objs_);
+  };
+  async_infer_request_->SetCompletionCallback(callback);
 }
 
-double ObjectDetectionYOLOV2::intersectionOverUnion(
-  const cv::Rect & box_1,
+double ObjectDetectionYOLOV2::intersectionOverUnion(const cv::Rect & box_1,
   const cv::Rect & box_2)
 {
   int xmax_1 = box_1.x + box_1.width;
@@ -287,9 +294,8 @@ double ObjectDetectionYOLOV2::intersectionOverUnion(
   return area_of_overlap / area_of_union;
 }
 
-int ObjectDetectionYOLOV2::getEntryIndex(
-  int side, int lcoords, int lclasses,
-  int location, int entry)
+int ObjectDetectionYOLOV2::getEntryIndex(int side, int lcoords, int lclasses, int location,
+  int entry)
 {
   int n = location / (side * side);
   int loc = location % (side * side);
