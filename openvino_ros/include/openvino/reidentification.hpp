@@ -23,8 +23,8 @@ public:
   void initPublisher() override;
   void prepareInputBlobs() override;
   void prepareOutputBlobs() override;
-  void process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes);
-  void process(cv::Mat & cv_image, rdk_interfaces::msg::Reidentification & reid);
+  void process(cv::Mat & cv_image);
+  void registerInferCompletionCallback() override;
 
 private:
   std::string input_name_;
@@ -44,6 +44,8 @@ private:
   std::unique_ptr<Sync> sync_sub_;
 
   void callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes);
+
+  rdk_interfaces::msg::Reidentification reid_;
 
 };
 }  // namespace openvino

@@ -58,7 +58,16 @@ void Reidentification::initSubscriber()
 
 void Reidentification::callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes)
 {
-  process(msg, bboxes);
+  cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
+    msg->step);
+  for(unsigned int i = 0; i < bboxes->objects_vector.size(); i++)
+  {
+    cv::Rect roi(bboxes->objects_vector[i].roi.x_offset, bboxes->objects_vector[i].roi.y_offset, bboxes->objects_vector[i].roi.width, bboxes->objects_vector[i].roi.height);
+    cv::Mat cropped_image = cv_image(roi);
+
+    reid_.header = msg->header;
+    process(cropped_image);
+  }
 }
 
 void Reidentification::initPublisher()
@@ -67,58 +76,54 @@ void Reidentification::initPublisher()
   pub_ = node_.create_publisher<rdk_interfaces::msg::Reidentification>(output_topic, 16);
 }
 
-void Reidentification::process(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes)
+void Reidentification::process(cv::Mat & cv_image)
 {
-  cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
-    msg->step);
-  for(unsigned int i = 0; i < bboxes->objects_vector.size(); i++)
-  {
-    cv::Rect roi(bboxes->objects_vector[i].roi.x_offset, bboxes->objects_vector[i].roi.y_offset, bboxes->objects_vector[i].roi.width, bboxes->objects_vector[i].roi.height);
-    cv::Mat cropped_image = cv_image(roi);
-
-    rdk_interfaces::msg::Reidentification reid;
-    reid.header = msg->header;
-    process(cropped_image, reid);
-    pub_->publish(reid);
+  if (is_first_frame_ == true) {
+    is_first_frame_ = false;
+  } else {
+    async_infer_request_->Wait(IInferRequest::WaitMode::RESULT_READY);
   }
-}
 
-void Reidentification::process(cv::Mat & cv_image, rdk_interfaces::msg::Reidentification & reid)
-{
-  InferRequest::Ptr async_infer_request = exec_network_.CreateInferRequestPtr();
-  Blob::Ptr image_input = async_infer_request->GetBlob(input_name_);
+  Blob::Ptr image_input = async_infer_request_->GetBlob(input_name_);
 
-  size_t num_channels = image_input->getTensorDesc().getDims()[1];
-  size_t blob_width = image_input->getTensorDesc().getDims()[3];
-  size_t blob_height = image_input->getTensorDesc().getDims()[2];
+  num_channels_ = image_input->getTensorDesc().getDims()[1];
+  blob_width_ = image_input->getTensorDesc().getDims()[3];
+  blob_height_ = image_input->getTensorDesc().getDims()[2];
 
   unsigned char* blob_data = static_cast<unsigned char*>(image_input->buffer());
   int cv_width = cv_image.cols;
   int cv_height = cv_image.rows;
 
   cv::Mat resized_image(cv_image);
-  if (blob_width != cv_width || blob_height != cv_height) {
-    cv::resize(cv_image, resized_image, cv::Size(blob_width, blob_height));
+  if (blob_width_ != cv_width || blob_height_ != cv_height) {
+    cv::resize(cv_image, resized_image, cv::Size(blob_width_, blob_height_));
   }
 
-  for (size_t c = 0; c < num_channels; c++) {
-    for (size_t h = 0; h < blob_height; h++) {
-      for (size_t w = 0; w < blob_width; w++) {
-        blob_data[c * blob_width * blob_height + h * blob_width + w] =
+  for (size_t c = 0; c < num_channels_; c++) {
+    for (size_t h = 0; h < blob_height_; h++) {
+      for (size_t w = 0; w < blob_width_; w++) {
+        blob_data[c * blob_width_ * blob_height_ + h * blob_width_ + w] =
           resized_image.at<cv::Vec3b>(h, w)[c];
       }
     }
   }
 
-  async_infer_request->StartAsync();
-  async_infer_request->Wait(IInferRequest::WaitMode::RESULT_READY);
-
-  const float * output_values = async_infer_request->GetBlob(output_name_)->buffer().as<float *>();
-
-  std::vector<float> new_item = std::vector<float>(
-    output_values, output_values + 256);
-  std::string item_id = "No." + std::to_string(
-    tracker_->processNewTracker(new_item));
-  reid.identity = item_id;
+  async_infer_request_->StartAsync();
 }
+
+void Reidentification::registerInferCompletionCallback()
+{
+  async_infer_request_ = exec_network_.CreateInferRequestPtr();
+
+  auto callback = [&] {
+    const float * output_values = async_infer_request_->GetBlob(output_name_)->buffer().as<float *>();
+    std::vector<float> new_item = std::vector<float>(output_values, output_values + 256);
+    std::string item_id = "No." + std::to_string(tracker_->processNewTracker(new_item));
+    reid_.identity = item_id;
+    pub_->publish(reid_);
+  };
+
+  async_infer_request_->SetCompletionCallback(callback);
+}
+
 }  // namespace openvino
