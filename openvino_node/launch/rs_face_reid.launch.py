@@ -29,7 +29,7 @@ def generate_launch_description():
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='face_reid',
                     parameters=[get_package_share_directory('openvino_node')+'/config/face_reidentification.yaml'],
-                    extra_arguments=[{'use_intra_process_comms':'false'}])
+                    extra_arguments=[{'use_intra_process_comms':'true'}])
 
             ],
             output='screen',
