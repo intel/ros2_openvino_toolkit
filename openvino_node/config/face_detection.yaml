@@ -1,0 +1,6 @@
+device: CPU
+type: SSD
+model: /home/intel/workspace/rdk_ws/data/FP32/face-detection-adas-0001.xml
+weights: /home/intel/workspace/rdk_ws/data/FP32/face-detection-adas-0001.bin
+input_topic: /camera/color/image_raw
+output_topic: /openvino/detected_faces

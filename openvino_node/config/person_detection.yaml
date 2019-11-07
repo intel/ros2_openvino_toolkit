@@ -1,0 +1,6 @@
+device: CPU
+type: SSD
+model: /home/intel/workspace/rdk_ws/data/FP32/person-detection-retail-0013.xml
+weights: /home/intel/workspace/rdk_ws/data/FP32/person-detection-retail-0013.bin
+input_topic: /camera/color/image_raw
+output_topic: /openvino/detected_persons

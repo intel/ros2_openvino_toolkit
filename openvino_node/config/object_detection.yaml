@@ -1,6 +1,6 @@
-device: MYRIAD
+device: CPU
 type: SSD
-model: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.xml
-weights: /home/intel/workspace/rdk_ws/data/FP16/mobilenet-ssd.bin
+model: /home/intel/workspace/rdk_ws/data/FP32/mobilenet-ssd.xml
+weights: /home/intel/workspace/rdk_ws/data/FP32/mobilenet-ssd.bin
 input_topic: /camera/color/image_raw
 output_topic: /openvino/detected_objects
