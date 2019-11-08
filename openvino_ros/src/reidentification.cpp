@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "rdk_interfaces/msg/object_in_box.hpp"
-#include "rdk_interfaces/msg/object.hpp"
+#include "object_msgs/msg/object_in_box.hpp"
+#include "object_msgs/msg/object.hpp"
 #include "openvino/reidentification.hpp"
 
 using namespace InferenceEngine;
@@ -56,7 +56,7 @@ void Reidentification::initSubscriber()
   sync_sub_->registerCallback(std::bind(&Reidentification::callback, this, std::placeholders::_1, std::placeholders::_2));
 }
 
-void Reidentification::callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes)
+void Reidentification::callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const object_msgs::msg::ObjectsInBoxes::ConstSharedPtr bboxes)
 {
   cv::Mat cv_image(msg->height, msg->width, CV_8UC3, const_cast<uchar *>(&msg->data[0]),
     msg->step);
@@ -73,7 +73,7 @@ void Reidentification::callback(const sensor_msgs::msg::Image::ConstSharedPtr ms
 void Reidentification::initPublisher()
 {
   std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<rdk_interfaces::msg::Reidentification>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ReidentificationStamped>(output_topic, 16);
 }
 
 void Reidentification::process(cv::Mat & cv_image)
@@ -119,7 +119,7 @@ void Reidentification::registerInferCompletionCallback()
     const float * output_values = async_infer_request_->GetBlob(output_name_)->buffer().as<float *>();
     std::vector<float> new_item = std::vector<float>(output_values, output_values + 256);
     std::string item_id = "No." + std::to_string(tracker_->processNewTracker(new_item));
-    reid_.identity = item_id;
+    reid_.reidentified_vector[0].identity = item_id;
     pub_->publish(reid_);
   };
 

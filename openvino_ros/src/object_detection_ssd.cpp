@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "rdk_interfaces/msg/object_in_box.hpp"
-#include "rdk_interfaces/msg/object.hpp"
+#include "object_msgs/msg/object_in_box.hpp"
+#include "object_msgs/msg/object.hpp"
 #include "openvino/object_detection_ssd.hpp"
 
 
@@ -80,7 +80,7 @@ void ObjectDetectionSSD::initSubscriber()
 void ObjectDetectionSSD::initPublisher()
 {
   std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInBoxes>(output_topic, rclcpp::QoS(1));
+  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInBoxes>(output_topic, rclcpp::QoS(1));
 }
 
 template <typename T>
@@ -149,7 +149,7 @@ void ObjectDetectionSSD::registerInferCompletionCallback()
       ymax = (ymax > cv_height_)? cv_height_ : ymax;
 
       if (confidence > 0.5) {
-        rdk_interfaces::msg::ObjectInBox obj;
+        object_msgs::msg::ObjectInBox obj;
         if (!labels_.empty())
         {
           obj.object.object_name = labels_[label];

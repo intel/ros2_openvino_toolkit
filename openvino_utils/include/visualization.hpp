@@ -10,7 +10,7 @@ class Visualization : public rclcpp::Node
 public:
   Visualization(const rclcpp::NodeOptions & node_options=rclcpp::NodeOptions());
   ~Visualization();
-  void compose(const sensor_msgs::msg::Image::ConstSharedPtr image_msg, const rdk_interfaces::msg::ObjectInBoxes::ConstSharedPtr objs_msg);
+  void compose(const sensor_msgs::msg::Image::ConstSharedPtr image_msg, const object_msgs::msg::ObjectInBoxes::ConstSharedPtr objs_msg);
 private:
   rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
 };

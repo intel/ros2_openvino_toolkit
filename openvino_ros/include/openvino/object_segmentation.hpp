@@ -1,8 +1,8 @@
 #ifndef OPENVINO__OBJECT_SEGMENTATION_HPP_
 #define OPENVINO__OBJECT_SEGMENTATION_HPP_
 
-#include "rdk_interfaces/msg/objects_in_boxes.hpp"
-#include "rdk_interfaces/msg/objects_in_masks.hpp"
+#include "object_msgs/msg/objects_in_boxes.hpp"
+#include "object_msgs/msg/objects_in_masks.hpp"
 #include "inference_engine.hpp"
 #include "openvino_base.hpp"
 
@@ -27,9 +27,8 @@ private:
   std::string detection_output_name_;
   std::string mask_output_name_;
   int object_size_;
-  rclcpp::Publisher<rdk_interfaces::msg::ObjectsInMasks>::SharedPtr pub_;
-  rdk_interfaces::msg::ObjectsInMasks objs_;
-
+  rclcpp::Publisher<object_msgs::msg::ObjectsInMasks>::SharedPtr pub_;
+  object_msgs::msg::ObjectsInMasks objs_;
 };
 }  // namespace openvino
 

@@ -4,7 +4,7 @@
 #include "rclcpp/rclcpp.hpp"
 #include "sensor_msgs/msg/image.hpp"
 #include "inference_engine.hpp"
-#include "rdk_interfaces/msg/objects_in_boxes.hpp"
+#include "object_msgs/msg/objects_in_boxes.hpp"
 #include "opencv2/opencv.hpp"
 
 using namespace InferenceEngine;

@@ -1,7 +1,7 @@
 #ifndef OPENVINO__OBJECT_DETECTION_SSD_HPP_
 #define OPENVINO__OBJECT_DETECTION_SSD_HPP_
 
-#include "rdk_interfaces/msg/objects_in_boxes.hpp"
+#include "object_msgs/msg/objects_in_boxes.hpp"
 #include "inference_engine.hpp"
 #include "openvino_base.hpp"
 
@@ -26,8 +26,8 @@ private:
   std::string output_name_;
   int max_proposal_count_;
   int object_size_;
-  rdk_interfaces::msg::ObjectsInBoxes objs_;
-  rclcpp::Publisher<rdk_interfaces::msg::ObjectsInBoxes>::SharedPtr pub_;
+  object_msgs::msg::ObjectsInBoxes objs_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_;
 };
 }  // namespace openvino
 

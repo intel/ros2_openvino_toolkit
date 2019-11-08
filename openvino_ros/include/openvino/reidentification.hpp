@@ -4,8 +4,9 @@
 #include <message_filters/subscriber.h>
 #include <message_filters/time_synchronizer.h>
 
-#include "rdk_interfaces/msg/objects_in_boxes.hpp"
-#include "rdk_interfaces/msg/reidentification.hpp"
+#include "object_msgs/msg/objects_in_boxes.hpp"
+#include "object_msgs/msg/reidentification.hpp"
+#include "object_msgs/msg/reidentification_stamped.hpp"
 #include "inference_engine.hpp"
 #include "openvino_base.hpp"
 #include "tracker.hpp"
@@ -31,21 +32,21 @@ private:
   std::string output_name_;
   int max_proposal_count_;
   int object_size_;
-  rclcpp::Publisher<rdk_interfaces::msg::Reidentification>::SharedPtr pub_;
+  rclcpp::Publisher<object_msgs::msg::ReidentificationStamped>::SharedPtr pub_;
   std::shared_ptr<Tracker> tracker_;
 
   using CamSub = message_filters::Subscriber<sensor_msgs::msg::Image>;
-  using ObjSub = message_filters::Subscriber<rdk_interfaces::msg::ObjectsInBoxes>;
+  using ObjSub = message_filters::Subscriber<object_msgs::msg::ObjectsInBoxes>;
   using Sync =
-    message_filters::TimeSynchronizer<sensor_msgs::msg::Image, rdk_interfaces::msg::ObjectsInBoxes>;
+    message_filters::TimeSynchronizer<sensor_msgs::msg::Image, object_msgs::msg::ObjectsInBoxes>;
   
   std::unique_ptr<CamSub> cam_sub_;
   std::unique_ptr<ObjSub> obj_sub_;
   std::unique_ptr<Sync> sync_sub_;
 
-  void callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const rdk_interfaces::msg::ObjectsInBoxes::ConstSharedPtr bboxes);
+  void callback(const sensor_msgs::msg::Image::ConstSharedPtr msg, const object_msgs::msg::ObjectsInBoxes::ConstSharedPtr bboxes);
 
-  rdk_interfaces::msg::Reidentification reid_;
+  object_msgs::msg::ReidentificationStamped reid_;
 
 };
 }  // namespace openvino
