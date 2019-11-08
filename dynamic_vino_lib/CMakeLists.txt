@@ -191,7 +191,6 @@ endif()
 set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} cpu_extension)
 
 add_library(${PROJECT_NAME} SHARED
-        src/services/pipeline_processing_server.cpp
         src/services/frame_processing_server.cpp
         src/pipeline.cpp
         src/pipeline_params.cpp
@@ -289,6 +288,33 @@ if(BUILD_TESTING)
 
   custom_gtest(unittest_createPipelineCheck
     "tests/lib/unittest_createPipelineCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_faceDetection
+    "tests/topic/unittest_faceDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_objectDetection
+    "tests/topic/unittest_objectDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_imageDetection
+    "tests/topic/unittest_imageCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_segmentation
+    "tests/topic/unittest_segmentationCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_reidentification
+    "tests/topic/unittest_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_face_reidentification
+    "tests/topic/unittest_face_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_vehicleDetectionCheck
+    "tests/topic/unittest_vehicleDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_objectService
+    "tests/service/unittest_objectService.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_peopleService
+    "tests/service/unittest_peopleService.cpp"
     TIMEOUT 100)
 endif()
 

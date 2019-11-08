@@ -14,8 +14,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
-#include <people_msgs/msg/landmark.hpp>
-#include <people_msgs/msg/landmark_stamped.hpp>
+#include <people_msgs/msg/objects_in_masks.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 
@@ -38,11 +37,10 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
+#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
-
-#define MAX_SIZE 300
 static bool test_pass = false;
 
 template<typename DurationT>
@@ -62,15 +60,15 @@ void wait_for_future(
     " milliseconds\n";
 }
 
-TEST(UnitTestPersonReidentification, testReidentification)
+TEST(UnitTestObjectDetection, testObjectDetection)
 {
-  auto node = rclcpp::Node::make_shared("openvino_reidentification_test");
+  auto node = rclcpp::Node::make_shared("openvino_segmentation_test");
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_face_reidentification_callback =
-    [&sub_called](const people_msgs::msg::LandmarkStamped::SharedPtr msg) -> void {
+  auto openvino_faceDetection_callback =
+    [&sub_called](const people_msgs::msg::ObjectsInMasks::SharedPtr msg) -> void {
       test_pass = true;
       sub_called.set_value(true);
     };
@@ -79,12 +77,12 @@ TEST(UnitTestPersonReidentification, testReidentification)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<people_msgs::msg::LandmarkStamped>(
-      "/ros2_openvino_toolkit/detected_landmarks", qos, openvino_face_reidentification_callback);
+    auto sub1 = node->create_subscription<people_msgs::msg::ObjectsInMasks>(
+      "/ros2_openvino_toolkit/segmented_obejcts", qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
-    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
+    wait_for_future(executor, sub_called_future, std::chrono::seconds(20));
 
     EXPECT_TRUE(test_pass);
   }
@@ -94,8 +92,8 @@ int main(int argc, char * argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
-  auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_sample pipeline_face_reidentification_test.launch.py &");
+  auto offset = std::chrono::seconds(60);
+  system("ros2 launch dynamic_vino_sample pipeline_segmentation_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");

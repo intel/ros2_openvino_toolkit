@@ -41,19 +41,42 @@
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 
-std::string getConfigPath()
+std::string getConfigPath(std::string config_file)
 {
   std::string content;
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/param/pipeline_face_test.yaml";
+  return prefix_path + "/share/dynamic_vino_sample/param/testParam/param/" + config_file;
 }
 
-TEST(UnitTestCheckPipeline, testPipeline)
+TEST(UnitTestCheckPipeline, testCreatePipeline)
 {
-  std::string config_file = getConfigPath();
+  std::vector<std::string> config_files = {"image_object_service_test.yaml", "pipeline_face_reid_video.yaml",
+	                                   "pipeline_image_test.yaml", "pipeline_reidentification_test.yaml",
+					   "pipeline_vehicle_detection_test.yaml", "image_people_service_test.yaml",
+					   "pipeline_face_test.yaml", "pipeline_segmentation_test.yaml",
+                                           "pipeline_object_yolo_test.yaml"};
+  for (unsigned int i = 0; i < config_files.size(); i++)
+  {
+    std::string config_file = getConfigPath(config_files[i]);
+    EXPECT_TRUE(std::ifstream(config_file).is_open());
+    ASSERT_NO_THROW({
+      Params::ParamManager::getInstance().parse(config_file);
+      auto pipelines = Params::ParamManager::getInstance().getPipelines();
+      EXPECT_GT(pipelines.size(), 0);
+
+      for (auto & p : pipelines) {
+        PipelineManager::getInstance().createPipeline(p);
+      }
+    });
+  }
+}
+
+TEST(UnitTestCheckPipeline, testPipelineIncorrectConfig)
+{
+  std::string config_file = getConfigPath("pipeline_ianormal.yaml");
   EXPECT_TRUE(std::ifstream(config_file).is_open());
-  ASSERT_NO_THROW({
+  try{
     Params::ParamManager::getInstance().parse(config_file);
     auto pipelines = Params::ParamManager::getInstance().getPipelines();
     EXPECT_GT(pipelines.size(), 0);
@@ -61,12 +84,17 @@ TEST(UnitTestCheckPipeline, testPipeline)
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p);
     }
-  });
+  }
+  catch (...) {
+    SUCCEED();
+  }
 }
 
 int main(int argc, char * argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
-  return RUN_ALL_TESTS();
+  int ret = RUN_ALL_TESTS();
+  rclcpp::shutdown();
+  return ret;
 }

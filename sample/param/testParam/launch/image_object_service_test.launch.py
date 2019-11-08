@@ -22,7 +22,7 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'testParam',
+    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param/testParam/param',
                                 'image_object_service_test.yaml')
     return LaunchDescription([
         # Openvino detection
