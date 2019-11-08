@@ -59,7 +59,7 @@ void ObjectDetectionYOLOV2::initSubscriber()
 void ObjectDetectionYOLOV2::initPublisher()
 {
   std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInBoxes>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInBoxes>(output_topic, 16);
 }
 
 template <typename T>
@@ -209,7 +209,7 @@ void ObjectDetectionYOLOV2::registerInferCompletionCallback()
           float x_max_resized = x_max / imw_ * srcw_;
           float y_max_resized = y_max / imh_ * srch_;
 
-          rdk_interfaces::msg::ObjectInBox obj;
+          object_msgs::msg::ObjectInBox obj;
           std::string label = j <
             labels_.size() ? labels_[j] : std::string("label #") + std::to_string(j);
 

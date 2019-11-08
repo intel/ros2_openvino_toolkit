@@ -34,7 +34,7 @@ find_package(tf2 REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(message_filters REQUIRED)
-find_package(rdk_interfaces REQUIRED)
+find_package(object_msgs REQUIRED)
 
 find_package(OpenCV 4 REQUIRED)
 if(NOT OpenCV_FOUND)
@@ -51,7 +51,7 @@ include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
   ${InferenceEngine_DIRS}/src
   ${InferenceEngine_INCLUDE_DIRS}
-  ${rdk_interfaces_INCLUDE_DIRS}
+  ${object_msgs_INCLUDE_DIRS}
   ${message_filters_INCLUDE_DIRS}
 )
 
@@ -78,7 +78,7 @@ ament_target_dependencies(${PROJECT_NAME}
   tf2_ros
   tf2
   message_filters
-  rdk_interfaces
+  object_msgs
   message_filters
   OpenCV
 )

@@ -1,9 +1,9 @@
 #ifndef OPENVINO__OBJECT_DETECTION_YOLOV2_HPP_
 #define OPENVINO__OBJECT_DETECTION_YOLOV2_HPP_
 
-#include "rdk_interfaces/msg/object.hpp"
-#include "rdk_interfaces/msg/object_in_box.hpp"
-#include "rdk_interfaces/msg/objects_in_boxes.hpp"
+#include "object_msgs/msg/object.hpp"
+#include "object_msgs/msg/object_in_box.hpp"
+#include "object_msgs/msg/objects_in_boxes.hpp"
 #include "inference_engine.hpp"
 #include "openvino_base.hpp"
 
@@ -27,13 +27,13 @@ private:
   std::string output_name_;
   int max_proposal_count_;
   int object_size_;
-  rclcpp::Publisher<rdk_interfaces::msg::ObjectsInBoxes>::SharedPtr pub_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_;
   static double intersectionOverUnion(const cv::Rect & box_1, const cv::Rect & box_2);
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
-  rdk_interfaces::msg::ObjectsInBoxes objs_;
+  object_msgs::msg::ObjectsInBoxes objs_;
 
-  static bool sortByProbility(rdk_interfaces::msg::ObjectInBox begin,
-    rdk_interfaces::msg::ObjectInBox end)
+  static bool sortByProbility(object_msgs::msg::ObjectInBox begin,
+    object_msgs::msg::ObjectInBox end)
   {
     return begin.object.probability < end.object.probability;
   }

@@ -17,7 +17,7 @@
   <depend>message_filters</depend>
   <depend>rmw_implementation</depend>
   <depend>rclcpp_components</depend>
-  <depend>rdk_interfaces</depend>
+  <depend>object_msgs</depend>
 
   <export>
     <build_type>ament_cmake</build_type>

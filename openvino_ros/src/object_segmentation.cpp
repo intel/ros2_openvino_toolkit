@@ -2,9 +2,9 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "rdk_interfaces/msg/object_in_box.hpp"
-#include "rdk_interfaces/msg/object_in_mask.hpp"
-#include "rdk_interfaces/msg/object.hpp"
+#include "object_msgs/msg/object_in_box.hpp"
+#include "object_msgs/msg/object_in_mask.hpp"
+#include "object_msgs/msg/object.hpp"
 #include "openvino/object_segmentation.hpp"
 
 using namespace InferenceEngine;
@@ -68,7 +68,7 @@ void ObjectSegmentation::initSubscriber()
 void ObjectSegmentation::initPublisher()
 {
   std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<rdk_interfaces::msg::ObjectsInMasks>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInMasks>(output_topic, 16);
 }
 
 template <typename T>
@@ -124,7 +124,7 @@ void ObjectSegmentation::registerInferCompletionCallback()
 
   auto callback = [&] {
     objs_.objects_vector.clear();
-    rdk_interfaces::msg::ObjectInMask obj;
+    object_msgs::msg::ObjectInMask obj;
 
     const auto do_blob = async_infer_request_->GetBlob(detection_output_name_);
     const auto do_data = do_blob->buffer().as<float*>();

@@ -2,8 +2,8 @@
 #include <fstream>
 #include <iomanip>
 #include <opencv2/opencv.hpp>
-#include "rdk_interfaces/msg/object_in_box.hpp"
-#include "rdk_interfaces/msg/object.hpp"
+#include "object_msgs/msg/object_in_box.hpp"
+#include "object_msgs/msg/object.hpp"
 #include "openvino/openvino_base.hpp"
 #include "inference_engine.hpp"
 #include "extension/ext_list.hpp"
