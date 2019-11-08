@@ -59,7 +59,7 @@ public:
   void runAll();
   void stopAll();
   void joinAll();
-  void runService();
+  //void runService();
 
   enum PipelineState
   {

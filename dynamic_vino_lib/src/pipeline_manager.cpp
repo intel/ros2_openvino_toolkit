@@ -61,7 +61,7 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
-#include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
+//#include "dynamic_vino_lib/services/frame_processing_server.hpp"
 #include "dynamic_vino_lib/engines/engine_manager.hpp"
 std::shared_ptr<Pipeline>
 PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & params)
@@ -452,12 +452,12 @@ void PipelineManager::runAll()
     if (it->second.state != PipelineState_ThreadRunning) {
       it->second.state = PipelineState_ThreadRunning;
     }
-    if (service_.state != PipelineState_ThreadRunning) {
-      service_.state = PipelineState_ThreadRunning;
-    }
-    if (service_.thread == nullptr) {
-      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
-    }
+    //if (service_.state != PipelineState_ThreadRunning) {
+    //  service_.state = PipelineState_ThreadRunning;
+    //}
+    //if (service_.thread == nullptr) {
+    //  service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
+    //}
     if (it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
           it->second.params.name.c_str());
@@ -470,15 +470,15 @@ void PipelineManager::runAll()
   }
 }
 
-void PipelineManager::runService()
-{
-  auto node = std::make_shared<vino_service::PipelineProcessingServer
-      <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
-  while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
-    rclcpp::spin_some(node);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
-  }
-}
+//void PipelineManager::runService()
+//{
+//  auto node = std::make_shared<vino_service::FrameProcessingServer
+//      <pipelines_srv_msgs::srv::PipelineSrv>>("pipeline_service");
+//  while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
+//    rclcpp::spin_some(node);
+//    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+//  }
+//}
 
 void PipelineManager::stopAll()
 {
@@ -487,16 +487,16 @@ void PipelineManager::stopAll()
       it->second.state = PipelineState_ThreadStopped;
     }
   }
-  if (service_.state == PipelineState_ThreadRunning) {
-    service_.state = PipelineState_ThreadStopped;
-  }
+  //if (service_.state == PipelineState_ThreadRunning) {
+  //  service_.state = PipelineState_ThreadStopped;
+  //}
 }
 
 void PipelineManager::joinAll()
 {
-  if (service_.thread != nullptr && service_.state == PipelineState_ThreadRunning) {
-    service_.thread->join();  // pipeline service
-  }
+  //if (service_.thread != nullptr && service_.state == PipelineState_ThreadRunning) {
+  //  service_.thread->join();  // pipeline service
+  //}
 
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
     if (it->second.thread != nullptr && it->second.state == PipelineState_ThreadRunning) {
