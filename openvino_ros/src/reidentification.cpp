@@ -116,10 +116,13 @@ void Reidentification::registerInferCompletionCallback()
   async_infer_request_ = exec_network_.CreateInferRequestPtr();
 
   auto callback = [&] {
+    reid_.reidentified_vector.clear();
     const float * output_values = async_infer_request_->GetBlob(output_name_)->buffer().as<float *>();
     std::vector<float> new_item = std::vector<float>(output_values, output_values + 256);
     std::string item_id = "No." + std::to_string(tracker_->processNewTracker(new_item));
-    reid_.reidentified_vector[0].identity = item_id;
+    object_msgs::msg::Reidentification reid;
+    reid.identity = item_id;
+    reid_.reidentified_vector.push_back(reid);
     pub_->publish(reid_);
   };
 
