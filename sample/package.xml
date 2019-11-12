@@ -26,6 +26,7 @@ limitations under the License.
   <buildtool_depend>rosidl_default_generators</buildtool_depend>
   <build_depend>builtin_interfaces</build_depend>
   <build_depend>rclcpp</build_depend>
+  <depend>rclcpp_components</depend>
   <build_depend>rmw_implementation</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>gflags</build_depend>

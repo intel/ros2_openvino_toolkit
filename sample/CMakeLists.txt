@@ -45,6 +45,7 @@ find_package(pipeline_srv_msgs REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(realsense2 REQUIRED)
+find_package(rclcpp_components)
 
 # Compiler Defense Flags
 if(UNIX OR APPLE)
@@ -160,6 +161,35 @@ ament_target_dependencies(pipeline_with_params
   "realsense2"
 )
 
+# Add Pipeline Composition version
+add_library(composable_pipeline SHARED
+  src/pipeline_composite.cpp)
+target_link_libraries(composable_pipeline
+  dl
+  cpu_extension
+  gflags)
+ament_target_dependencies(composable_pipeline
+  "rclcpp"
+  "rmw_implementation"
+  "rclcpp_components"
+  "std_msgs"
+  "object_msgs"
+  "ament_index_cpp"
+  "class_loader"
+  "dynamic_vino_lib"
+  "InferenceEngine"
+  "people_msgs"
+  "pipeline_srv_msgs"
+  "vino_param_lib"
+  "OpenCV"
+  "yaml_cpp_vendor"
+  "realsense2"
+)
+rclcpp_components_register_nodes(composable_pipeline "ComposablePipeline")
+#set(node_plugins "")
+#set(node_plugins "${node_plugins}ComposablePipeline;$<TARGET_FILE:composable_pipeline>\n")
+
+
 add_executable(image_object_server
   src/image_object_server.cpp
 )
@@ -266,6 +296,12 @@ install(TARGETS image_object_client
 install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
+install(TARGETS composable_pipeline
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+
 # Install param files.
 install(DIRECTORY
   param
@@ -354,4 +390,7 @@ if(BUILD_TESTING)
 
 endif()
 
+ament_export_include_directories(include)
+ament_export_libraries(${PROJECT_NAME})
+ament_export_libraries(composable_pipeline)
 ament_package()

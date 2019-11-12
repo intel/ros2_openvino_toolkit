@@ -20,22 +20,17 @@
 
 bool Input::StandardCamera::initialize()
 {
-
-  auto id = getCameraId();
-  setInitStatus(cap.open(id));
-  setWidth((size_t)cap.get(cv::CAP_PROP_FRAME_WIDTH));
-  setHeight((size_t)cap.get(cv::CAP_PROP_FRAME_HEIGHT));
-  return isInit();
+  return initialize(640, 480);
 }
 
 bool Input::StandardCamera::initialize(size_t width, size_t height)
 {
-  if (initialize()) {
-    cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
-    cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-    setWidth(width);
-    setHeight(height);
-  }
+  auto id = getCameraId();
+  setInitStatus(cap.open(id));
+  cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
+  cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+  setWidth(width);
+  setHeight(height);
 
   return isInit();
 }

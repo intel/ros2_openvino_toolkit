@@ -39,7 +39,6 @@ def generate_launch_description():
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
                 ('/openvino_toolkit/object/detected_objects',
                  '/ros2_openvino_toolkit/detected_objects'),
                 ('/openvino_toolkit/object/images', '/ros2_openvino_toolkit/image_rviz')],

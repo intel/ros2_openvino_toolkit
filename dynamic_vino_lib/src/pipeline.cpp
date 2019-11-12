@@ -186,34 +186,37 @@ void Pipeline::runOnce()
 {
   initInferenceCounter();
 
+  // auto t0 = std::chrono::high_resolution_clock::now();
+  if(width_ != 0 || height_ != 0){
+    for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
+      std::string detection_name = pos.first->second;
+      auto detection_ptr = name_to_detection_map_[detection_name];
+      detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
+      increaseInferenceCounter();
+      detection_ptr->submitRequest();
+    }
+
+    for (auto & pair : name_to_output_map_) {
+      pair.second->feedFrame(frame_);
+    }
+    countFPS();
+  }
+
   if (!input_device_->read(&frame_)) {
     // throw std::logic_error("Failed to get frame from cv::VideoCapture");
     // slog::warn << "Failed to get frame from input_device." << slog::endl;
-    return;
-  }
-
-  countFPS();
-  width_ = frame_.cols;
-  height_ = frame_.rows;
-
-  for (auto & pair : name_to_output_map_) {
-    pair.second->feedFrame(frame_);
-  }
-
-  auto t0 = std::chrono::high_resolution_clock::now();
-  for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
-    std::string detection_name = pos.first->second;
-    auto detection_ptr = name_to_detection_map_[detection_name];
-    detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
-    increaseInferenceCounter();
-    detection_ptr->submitRequest();
+    width_ = 0;
+    height_ = 0;
+  } else {
+    width_ = frame_.cols;
+    height_ = frame_.rows;
   }
 
   std::unique_lock<std::mutex> lock(counter_mutex_);
   cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
 
-  auto t1 = std::chrono::high_resolution_clock::now();
-  typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
+  //auto t1 = std::chrono::high_resolution_clock::now();
+  //typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
 
   for (auto & pair : name_to_output_map_) {
     // slog::info << "Handling Output ..." << pair.first << slog::endl;
@@ -230,16 +233,6 @@ void Pipeline::printPipeline()
 
 void Pipeline::setCallback()
 {
-#if 0
-  if (!input_device_->read(&frame_)) {
-    throw std::logic_error("Failed to get frame from cv::VideoCapture");
-  }
-  width_ = frame_.cols;
-  height_ = frame_.rows;
-  for (auto & pair : name_to_output_map_) {
-    pair.second->feedFrame(frame_);
-  }
-#endif
   for (auto & pair : name_to_detection_map_) {
     std::string detection_name = pair.first;
     std::function<void(void)> callb;

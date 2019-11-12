@@ -338,6 +338,9 @@ void Outputs::ImageWindowOutput::decorateFrame()
 
 void Outputs::ImageWindowOutput::handleOutput()
 {
+  if(frame_.cols == 0 || frame_.rows == 0){
+    return;
+  }
   decorateFrame();
   cv::imshow(output_name_, frame_);
   cv::waitKey(1);

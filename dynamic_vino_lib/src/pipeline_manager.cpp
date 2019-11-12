@@ -131,7 +131,7 @@ PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & 
       if (params.input_meta != "") {
         device = std::make_shared<Input::IpCamera>(params.input_meta);
       }
-    } else if (name == kInputType_CameraTopic) {
+    } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
       device = std::make_shared<Input::RealSenseCameraTopic>();
     } else if (name == kInputType_Video) {
       if (params.input_meta != "") {
@@ -432,7 +432,7 @@ void PipelineManager::threadPipeline(const char * name)
     if (p.state == PipelineState_ThreadRunning) {
       p.pipeline->runOnce();
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::microseconds(1));
   }
 }
 void PipelineManager::threadSpinNodes(const char * name)
@@ -442,7 +442,7 @@ void PipelineManager::threadSpinNodes(const char * name)
     for (auto & node : p.spin_nodes) {
       rclcpp::spin_some(node);
     }
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::microseconds(1));
   }
 }
 
@@ -476,7 +476,7 @@ void PipelineManager::runService()
       <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
     rclcpp::spin_some(node);
-    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+    std::this_thread::sleep_for(std::chrono::microseconds(1));
   }
 }
 
