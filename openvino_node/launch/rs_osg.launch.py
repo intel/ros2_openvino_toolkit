@@ -21,6 +21,7 @@ def generate_launch_description():
                     package='openvino_ros',
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='object_segmentation',
+                    remappings=[('/rdk/openvino/segmented_objects', '/openvino/segmented_objects'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
                     parameters=[get_package_share_directory('openvino_node')+'/config/object_segmentation.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}])
             ],

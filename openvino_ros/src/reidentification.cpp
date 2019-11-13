@@ -46,12 +46,8 @@ void Reidentification::prepareOutputBlobs()
 
 void Reidentification::initSubscriber()
 {
-
-  std::string input_topic1 = node_.declare_parameter("input_topic1").get<rclcpp::PARAMETER_STRING>();
-  std::string input_topic2 = node_.declare_parameter("input_topic2").get<rclcpp::PARAMETER_STRING>();
-
-  cam_sub_ = std::make_unique<CamSub>(&node_, input_topic1);
-  obj_sub_ = std::make_unique<ObjSub>(&node_, input_topic2);
+  cam_sub_ = std::make_unique<CamSub>(&node_, "/rdk/openvino/image_raw");
+  obj_sub_ = std::make_unique<ObjSub>(&node_, "/rdk/openvino/detected_objects");
   sync_sub_ = std::make_unique<Sync>(*cam_sub_, *obj_sub_, 10);
   sync_sub_->registerCallback(std::bind(&Reidentification::callback, this, std::placeholders::_1, std::placeholders::_2));
 }
@@ -72,8 +68,7 @@ void Reidentification::callback(const sensor_msgs::msg::Image::ConstSharedPtr ms
 
 void Reidentification::initPublisher()
 {
-  std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<object_msgs::msg::ReidentificationStamped>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ReidentificationStamped>("/rdk/openvino/object_id", 16);
 }
 
 void Reidentification::process(cv::Mat & cv_image)

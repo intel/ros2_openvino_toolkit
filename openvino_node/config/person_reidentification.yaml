@@ -2,7 +2,4 @@ device: CPU
 type: ReID
 model: /home/intel/workspace/rdk_ws/data/FP32/person-reidentification-retail-0076.xml
 weights: /home/intel/workspace/rdk_ws/data/FP32/person-reidentification-retail-0076.bin
-input_topic1: /camera/color/image_raw
-input_topic2: /openvino/detected_persons
-output_topic: /openvino/person_id
 confidence_threshold: 0.7

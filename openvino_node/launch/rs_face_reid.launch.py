@@ -22,12 +22,14 @@ def generate_launch_description():
                     package='openvino_ros',
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='face_detection',
+                    remappings=[('/rdk/openvino/detected_objects', '/openvino/detected_faces'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
                     parameters=[get_package_share_directory('openvino_node')+'/config/face_detection.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}]),
                 ComposableNode(
                     package='openvino_ros',
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='face_reid',
+                    remappings=[('/rdk/openvino/object_id', '/openvino/face_id'), ('/rdk/openvino/detected_objects', '/openvino/detected_faces'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
                     parameters=[get_package_share_directory('openvino_node')+'/config/face_reidentification.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}])
 

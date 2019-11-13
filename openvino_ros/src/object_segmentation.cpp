@@ -48,27 +48,24 @@ void ObjectSegmentation::prepareOutputBlobs()
 
 void ObjectSegmentation::initSubscriber()
 {
-  std::string input_topic = node_.declare_parameter("input_topic").get<rclcpp::PARAMETER_STRING>();
-
   if (!node_.get_node_options().use_intra_process_comms()) {
     auto callback = [this](sensor_msgs::msg::Image::ConstSharedPtr msg)
     {
       process<sensor_msgs::msg::Image::ConstSharedPtr>(msg);
     };
-    sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
+    sub_ = node_.create_subscription<sensor_msgs::msg::Image>("/rdk/openvino/image_raw", rclcpp::QoS(1), callback);
   } else {
     auto callback = [this](sensor_msgs::msg::Image::UniquePtr msg)
     {
       process<sensor_msgs::msg::Image::UniquePtr>(std::move(msg));
     };
-    sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
+    sub_ = node_.create_subscription<sensor_msgs::msg::Image>("/rdk/openvino/image_raw", rclcpp::QoS(1), callback);
   }
 } 
 
 void ObjectSegmentation::initPublisher()
 {
-  std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInMasks>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInMasks>("/rdk/openvino/segmented_objects", 16);
 }
 
 template <typename T>
@@ -106,8 +103,8 @@ void ObjectSegmentation::process(const T msg)
 
   Blob::Ptr image_info_input = async_infer_request_->GetBlob(input_info_name_);
   auto blob_info = image_info_input->buffer().as<PrecisionTrait<Precision::FP32>::value_type *>();
-  blob_info[0] = static_cast<float>(blob_height_);  // height
-  blob_info[1] = static_cast<float>(blob_width_);  // width
+  blob_info[0] = static_cast<float>(blob_height_);
+  blob_info[1] = static_cast<float>(blob_width_);
   blob_info[2] = 1;
 
   async_infer_request_->StartAsync();
