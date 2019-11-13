@@ -39,27 +39,24 @@ void ObjectDetectionYOLOV2::prepareOutputBlobs()
 
 void ObjectDetectionYOLOV2::initSubscriber()
 {
-  std::string input_topic = node_.declare_parameter("input_topic").get<rclcpp::PARAMETER_STRING>();
-
   if (!node_.get_node_options().use_intra_process_comms()) {
     auto callback = [this](sensor_msgs::msg::Image::ConstSharedPtr msg)
     {
       process<sensor_msgs::msg::Image::ConstSharedPtr>(msg);
     };
-    sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
+    sub_ = node_.create_subscription<sensor_msgs::msg::Image>("rdk/openvino/image_raw", rclcpp::QoS(1), callback);
   } else {
     auto callback = [this](sensor_msgs::msg::Image::UniquePtr msg)
     {
       process<sensor_msgs::msg::Image::UniquePtr>(std::move(msg));
     };
-    sub_ = node_.create_subscription<sensor_msgs::msg::Image>(input_topic, rclcpp::QoS(1), callback);
+    sub_ = node_.create_subscription<sensor_msgs::msg::Image>("rdk/openvino/image_raw", rclcpp::QoS(1), callback);
   }
 }
 
 void ObjectDetectionYOLOV2::initPublisher()
 {
-  std::string output_topic = node_.declare_parameter("output_topic").get<rclcpp::PARAMETER_STRING>();
-  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInBoxes>(output_topic, 16);
+  pub_ = node_.create_publisher<object_msgs::msg::ObjectsInBoxes>("/rdk/openvino/detected_objects", 16);
 }
 
 template <typename T>

@@ -21,6 +21,7 @@ def generate_launch_description():
                     package='openvino_ros',
                     node_plugin='openvino::OpenVINOFactory',
                     node_name='object_detection',
+                    remappings=[('/rdk/openvino/detected_objects', '/openvino/detected_objects'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
                     parameters=[get_package_share_directory('openvino_node')+'/config/object_detection.yaml'],
                     extra_arguments=[{'use_intra_process_comms':'true'}])
             ],
