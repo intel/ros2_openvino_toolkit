@@ -50,7 +50,7 @@ private:
   cv::Mat image_;
   MutexCounter image_count_;
 
-  void cb(sensor_msgs::msg::Image::UniquePtr image_msg);
+  void cb(const sensor_msgs::msg::Image::SharedPtr image_msg);
 };
 }  // namespace Input
 
