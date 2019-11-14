@@ -1,21 +1,21 @@
 Pipelines:
 - name: object
   inputs: [Video]
-  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/sample/tests/testParam/data/vehicle_detection.mp4
+  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/testParam/data/vehicle_detection.mp4
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt/vehicle-license-plate-detection-barrier-0106.xml
+      model: /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
       engine: CPU
-      label: /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_detection/barrier/0106/dldt/vehicle-license-plate-detection-barrier-0106.labels
+      label: to/be/set/xxx.labels
       batch: 1
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: VehicleAttribsDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/object_attributes/vehicle/resnet10_update_1/dldt/vehicle-attributes-recognition-barrier-0039.xml
+      model: /opt/openvino_toolkit/models/vehicle-attributes-recongnition/output/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
     - name: LicensePlateDetection
-      model: /opt/openvino_toolkit/open_model_zoo/model_downloader/Security/optical_character_recognition/license_plate/dldt/license-plate-recognition-barrier-0001.xml
+      model: /opt/openvino_toolkit/models/license-plate-recognition/output/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1

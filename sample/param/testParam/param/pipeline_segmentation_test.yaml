@@ -1,17 +1,18 @@
 Pipelines:
 - name: segmentation
-  inputs: [StandardCamera]
+  inputs: [Video]
+  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/testParam/data/segmentation.mp4
   infers:
     - name: ObjectSegmentation
-      model: /opt/models/mask_rcnn_inception_v2_coco_2018_01_28/output/frozen_inference_graph.xml
-      engine: CPU
+      model: /opt/openvino_toolkit/models/segmentation/output/FP16/frozen_inference_graph.xml
+      engine: GPU
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
   outputs: [RosTopic]
   connects:
-    - left: StandardCamera
+    - left: Video
       right: [ObjectSegmentation]
     - left: ObjectSegmentation
       right: [RosTopic]

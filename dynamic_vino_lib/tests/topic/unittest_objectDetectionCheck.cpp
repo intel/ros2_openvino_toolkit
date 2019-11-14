@@ -14,7 +14,6 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
-#include <people_msgs/msg/objects_in_masks.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 
@@ -37,7 +36,6 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
@@ -62,13 +60,13 @@ void wait_for_future(
 
 TEST(UnitTestObjectDetection, testObjectDetection)
 {
-  auto node = rclcpp::Node::make_shared("openvino_segmentation_test");
+  auto node = rclcpp::Node::make_shared("openvino_objectDetection_test");
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_faceDetection_callback =
-    [&sub_called](const people_msgs::msg::ObjectsInMasks::SharedPtr msg) -> void {
+    [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
       test_pass = true;
       sub_called.set_value(true);
     };
@@ -77,12 +75,12 @@ TEST(UnitTestObjectDetection, testObjectDetection)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<people_msgs::msg::ObjectsInMasks>(
-      "/ros2_openvino_toolkit/segmented_obejcts", qos, openvino_faceDetection_callback);
+    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
+      "/ros2_openvino_toolkit/detected_objects", qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
-    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
+    wait_for_future(executor, sub_called_future, std::chrono::seconds(20));
 
     EXPECT_TRUE(test_pass);
   }
@@ -92,8 +90,8 @@ int main(int argc, char * argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
-  auto offset = std::chrono::seconds(10);
-  system("ros2 launch dynamic_vino_sample pipeline_segmentation_test.launch.py &");
+  auto offset = std::chrono::seconds(60);
+  system("ros2 launch dynamic_vino_sample pipeline_object_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");

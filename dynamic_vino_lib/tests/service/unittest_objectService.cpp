@@ -27,7 +27,7 @@
 std::string generate_file_path(std::string path)
 {
   std::string base_path = __FILE__;
-  const std::string filename = "sample/tests/service/unittest_objectService.cpp";
+  const std::string filename = "dynamic_vino_lib/tests/service/unittest_objectService.cpp";
   base_path = base_path.substr(0, base_path.length() - filename.length() - 1);
   return base_path + "/" + path;
 }
@@ -37,20 +37,20 @@ TEST(UnitTestObject, testObject)
   auto node = rclcpp::Node::make_shared("openvino_object_service_test");
 
   auto client = node->create_client<object_msgs::srv::DetectObject>("/openvino_toolkit/service");
+
+  ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
+  
   auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
 
   std::string buffer = generate_file_path("data/images/car_vihecle.png");
   std::cout << buffer << std::endl;
   request->image_path = buffer;
 
-  if (!client->wait_for_service(std::chrono::seconds(20))) {
-    ASSERT_TRUE(false) << "service not available after waiting";
-  }
-
   auto result = client->async_send_request(request);
 
-  auto ret = rclcpp::spin_until_future_complete(node, result, std::chrono::seconds(5));
-  EXPECT_EQ(ret, rclcpp::executor::FutureReturnCode::SUCCESS);
+  ASSERT_EQ(
+    rclcpp::executor::FutureReturnCode::SUCCESS,
+    rclcpp::spin_until_future_complete(node, result));
 
   auto srv = result.get();
 
@@ -78,7 +78,9 @@ int main(int argc, char ** argv)
 {
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);
+  auto offset = std::chrono::seconds(20);
   system("ros2 launch dynamic_vino_sample image_object_service_test.launch.py &");
+  rclcpp::sleep_for(offset);
   int ret = RUN_ALL_TESTS();
   system("killall -s SIGINT image_object_server &");
   rclcpp::shutdown();

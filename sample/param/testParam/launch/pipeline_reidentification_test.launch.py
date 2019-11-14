@@ -22,22 +22,18 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'testParam',
-                                'pipeline_face_test.yaml')
+    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param/testParam/param',
+                                'pipeline_reidentification_test.yaml')
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/people/detected_objects',
-                 '/ros2_openvino_toolkit/face_detection'),
-                ('/openvino_toolkit/people/emotions',
-                 '/ros2_openvino_toolkit/emotions_recognition'),
-                ('/openvino_toolkit/people/headposes',
-                 '/ros2_openvino_toolkit/headposes_estimation'),
-                ('/openvino_toolkit/people/age_genders',
-                 '/ros2_openvino_toolkit/age_genders_Recognition'),
-                ('/openvino_toolkit/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/object/detected_objects',
+                 '/ros2_openvino_toolkit/detected_objects'),
+                ('/openvino_toolkit/object/reidentified_persons',
+                 '/ros2_openvino_toolkit/reidentified_persons')],
             output='screen'),
+
     ])

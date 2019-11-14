@@ -1,20 +1,20 @@
 Pipelines:
 - name: object
-  inputs: [Image]
+  inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/intel/openvino/deployment_tools/tools/model_downloader/object_detection/common/mobilenet-ssd/caffe/output/FP32/mobilenet-ssd.xml
-      engine: CPU
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      engine: GPU
       label: to/be/set/xxx.labels
       batch: 16
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
-  outputs: [RosService]
+  outputs: [RosTopic]
   connects:
-    - left: Image
+    - left: RealSenseCamera
       right: [ObjectDetection]
     - left: ObjectDetection
-      right: [RosService]
-  input_path: "/home/intel/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/car_vihecle.png"
+      right: [RosTopic]
 
-Common:
+OpenvinoCommon:
+
