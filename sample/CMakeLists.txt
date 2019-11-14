@@ -285,9 +285,11 @@ install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_server
+  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_people_server
+  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_client
@@ -308,12 +310,6 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
-# Install param files.
-install(DIRECTORY
-  tests/testParam
-  DESTINATION share/${PROJECT_NAME}/
-)
-
 # Install launch files.
 install(DIRECTORY
   launch
@@ -322,72 +318,7 @@ install(DIRECTORY
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
-  find_package(InferenceEngine REQUIRED)
-  find_package(rclcpp REQUIRED)
-  find_package(vino_param_lib REQUIRED)
-  find_package(OpenCV REQUIRED)
-  find_package(object_msgs REQUIRED)
-  find_package(people_msgs REQUIRED)
-  find_package(pipeline_srv_msgs REQUIRED)
-  find_package(ament_index_cpp REQUIRED)
-  find_package(yaml_cpp_vendor REQUIRED)
-  find_package(class_loader REQUIRED)
-  find_package(dynamic_vino_lib REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  macro(custom_gtest target)
-    ament_add_gtest(${target} ${ARGN})
-    if(TARGET ${target})
-      target_include_directories(${target} PUBLIC
-        ${${PROJECT_NAME}_INCLUDE_DIRS}
-      )
-      target_link_libraries(${target}
-        dl
-        cpu_extension
-        gflags)
-      ament_target_dependencies(${target}
-        "rclcpp"
-        "InferenceEngine"
-        "vino_param_lib"
-        "OpenCV"
-        "object_msgs"
-        "people_msgs"
-        "pipeline_srv_msgs"
-        "ament_index_cpp"
-        "yaml_cpp_vendor"
-        "class_loader"
-        "dynamic_vino_lib")
-    endif()
-  endmacro()
-
-  custom_gtest(unittest_faceDetection
-    "tests/topic/unittest_faceDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_objectDetection
-    "tests/topic/unittest_objectDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_imageDetection
-    "tests/topic/unittest_imageCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_segmentation
-    "tests/topic/unittest_segmentationCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_reidentification
-    "tests/topic/unittest_reidentification.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_face_reidentification
-    "tests/topic/unittest_face_reidentification.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_vehicleDetectionCheck
-    "tests/topic/unittest_vehicleDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_objectService
-    "tests/service/unittest_objectService.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_peopleService
-    "tests/service/unittest_peopleService.cpp"
-    TIMEOUT 100)
-
 endif()
 
 ament_export_include_directories(include)

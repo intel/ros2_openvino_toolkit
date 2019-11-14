@@ -165,7 +165,7 @@ if(UNIX OR APPLE)
 endif()
 
 #remove some build warnings
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-declarations")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-declarations -Wno-unused-result ")
 
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
@@ -288,6 +288,33 @@ if(BUILD_TESTING)
 
   custom_gtest(unittest_createPipelineCheck
     "tests/lib/unittest_createPipelineCheck.cpp"
+    TIMEOUT 300)
+  custom_gtest(unittest_faceDetection
+    "tests/topic/unittest_faceDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_objectDetection
+    "tests/topic/unittest_objectDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_imageDetection
+    "tests/topic/unittest_imageCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_segmentation
+    "tests/topic/unittest_segmentationCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_reidentification
+    "tests/topic/unittest_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_face_reidentification
+    "tests/topic/unittest_face_reidentification.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_vehicleDetectionCheck
+    "tests/topic/unittest_vehicleDetectionCheck.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_objectService
+    "tests/service/unittest_objectService.cpp"
+    TIMEOUT 100)
+  custom_gtest(unittest_peopleService
+    "tests/service/unittest_peopleService.cpp"
     TIMEOUT 100)
 endif()
 
