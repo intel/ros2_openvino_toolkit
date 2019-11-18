@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2018-2019 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 /**
 * \brief A sample for this library. This sample performs face detection,
  * emotions detection, age gender detection and head pose estimation.
-* \file sample/main.cpp
+* \file sample/pipeline_manager.cpp
 */
 
 #include <rclcpp/rclcpp.hpp>
@@ -87,9 +87,11 @@ std::string getConfigPath(int argc, char * argv[])
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
+  //rclcpp::executors::SingleThreadedExecutor exec;
+  rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline_manager");
 
   // register signal SIGINT and signal handler
-  signal(SIGINT, signalHandler);
+  //signal(SIGINT, signalHandler);
 
   try {
     std::cout << "InferenceEngine: " << InferenceEngine::GetInferenceEngineVersion() << std::endl;
@@ -108,11 +110,16 @@ int main(int argc, char * argv[])
     }
     // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
-      PipelineManager::getInstance().createPipeline(p);
+      PipelineManager::getInstance().createPipeline(p, main_node);
     }
 
     PipelineManager::getInstance().runAll();
+    //PipelineManager::getInstance().joinAll();
+
+    rclcpp::spin(main_node);
     PipelineManager::getInstance().joinAll();
+    rclcpp::shutdown();
+
   } catch (const std::exception & error) {
     slog::err << error.what() << slog::endl;
     return 1;
