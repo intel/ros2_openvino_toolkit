@@ -39,6 +39,7 @@
 
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
+#include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
 #include "gflags/gflags.h"
@@ -87,9 +88,10 @@ std::string getConfigPath(int argc, char * argv[])
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
-  //rclcpp::executors::SingleThreadedExecutor exec;
+  rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline_manager");
-
+  rclcpp::Node::SharedPtr service_node = std::make_shared<vino_service::PipelineProcessingServer
+      <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   // register signal SIGINT and signal handler
   //signal(SIGINT, signalHandler);
 
@@ -116,8 +118,11 @@ int main(int argc, char * argv[])
     PipelineManager::getInstance().runAll();
     //PipelineManager::getInstance().joinAll();
 
-    rclcpp::spin(main_node);
-    PipelineManager::getInstance().joinAll();
+    //rclcpp::spin(main_node);
+    exec.add_node(main_node);
+    exec.add_node(service_node);
+    exec.spin();
+    //PipelineManager::getInstance().joinAll();
     rclcpp::shutdown();
 
   } catch (const std::exception & error) {

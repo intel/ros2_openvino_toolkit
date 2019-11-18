@@ -460,14 +460,17 @@ void PipelineManager::runAll()
     if (service_.state != PipelineState_ThreadRunning) {
       service_.state = PipelineState_ThreadRunning;
     }
-    if (service_.thread == nullptr) {
-      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
-    }
     if (it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
           it->second.params.name.c_str());
     }
     #if 0 //DEBUGING
+    // Consider of saving CPU loads, the spin thread is moved out from pipeline manager,
+    // which is supposed to be handled by the upper-level applications.
+    // (see @file pipeline_with_params.cpp for the calling sample.)
+    if (service_.thread == nullptr) {
+      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
+    }
     if (it->second.spin_nodes.size() > 0 && it->second.thread_spin_nodes == nullptr) {
       it->second.thread_spin_nodes = std::make_shared<std::thread>(
         &PipelineManager::threadSpinNodes, this,
@@ -483,7 +486,7 @@ void PipelineManager::runService()
       <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
     rclcpp::spin_some(node);
-    std::this_thread::sleep_for(std::chrono::microseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
 
