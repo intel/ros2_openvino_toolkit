@@ -93,7 +93,7 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
     }
   }
 
-  auto outputs = parseOutput(params);
+  auto outputs = parseOutput(data);
   for (auto it = outputs.begin(); it != outputs.end(); ++it) {
     pipeline->add(it->first, it->second);
   }
@@ -161,20 +161,20 @@ PipelineManager::parseInputDevice(const PipelineData & pdata)
 
 
 std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-PipelineManager::parseOutput(const Params::ParamManager::PipelineRawData & params)
+PipelineManager::parseOutput(const PipelineData & pdata)
 {
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> outputs;
-  for (auto & name : params.outputs) {
+  for (auto & name : pdata.params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
     if (name == kOutputTpye_RosTopic) {
-      object = std::make_shared<Outputs::RosTopicOutput>(params.name);
+      object = std::make_shared<Outputs::RosTopicOutput>(pdata.params.name, pdata.parent_node);
     } else if (name == kOutputTpye_ImageWindow) {
-      object = std::make_shared<Outputs::ImageWindowOutput>(params.name);
+      object = std::make_shared<Outputs::ImageWindowOutput>(pdata.params.name);
     } else if (name == kOutputTpye_RViz) {
-      object = std::make_shared<Outputs::RvizOutput>(params.name);
+      object = std::make_shared<Outputs::RvizOutput>(pdata.params.name, pdata.parent_node);
     } else if (name == kOutputTpye_RosService) {
-      object = std::make_shared<Outputs::RosServiceOutput>(params.name);
+      object = std::make_shared<Outputs::RosServiceOutput>(pdata.params.name);
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
     }

@@ -25,10 +25,14 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
 
-Outputs::RvizOutput::RvizOutput(std::string output_name)
+Outputs::RvizOutput::RvizOutput(std::string output_name, const rclcpp::Node::SharedPtr node)
 : BaseOutput(output_name)
 {
-  node_ = rclcpp::Node::make_shared(output_name + "_image_publisher");
+  if(node != nullptr){
+    node_ = node;
+  } else {
+    node_ = rclcpp::Node::make_shared(output_name + "_image_publisher");
+  }
   image_topic_ = nullptr;
   pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>(
     "/openvino_toolkit/" + output_name_ + "/images", 16);

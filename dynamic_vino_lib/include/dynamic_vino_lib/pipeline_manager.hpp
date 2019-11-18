@@ -110,7 +110,7 @@ private:
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
   parseInputDevice(const PipelineData & params);
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-  parseOutput(const Params::ParamManager::PipelineRawData & params);
+  parseOutput(const PipelineData & pdata);
   std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
   parseInference(const Params::ParamManager::PipelineRawData & params);
   std::shared_ptr<dynamic_vino_lib::BaseInference>
