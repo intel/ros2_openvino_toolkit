@@ -39,8 +39,6 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
@@ -98,7 +96,7 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_sample pipeline_vehicle_detection_test.launch.py &");
+  system("ros2 launch dynamic_vino_test pipeline_vehicle_detection_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   system("killall -s SIGINT pipeline_with_params &");
   rclcpp::shutdown();

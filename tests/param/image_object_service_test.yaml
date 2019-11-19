@@ -1,0 +1,20 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  input_path: "/opt/openvino_toolkit/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/car_vihecle.png"
+  infers:
+    - name: ObjectDetection
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [RosService]
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosService]
+
+Common:

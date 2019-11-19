@@ -1,0 +1,41 @@
+Pipelines:
+- name: people
+  inputs: [Image]
+  infers:
+    - name: FaceDetection
+      model: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+    - name: AgeGenderRecognition
+      model: /opt/openvino_toolkit/models/age-gender-recognition/output/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+    - name: EmotionRecognition
+      model: /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+    - name: HeadPoseEstimation
+      model: /opt/openvino_toolkit/models/head-pose-estimation/output/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 16
+  outputs: [RosService]
+  connects:
+    - left: Image
+      right: [FaceDetection]
+    - left: FaceDetection
+      right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, RosService]
+    - left: AgeGenderRecognition
+      right: [RosService]
+    - left: EmotionRecognition
+      right: [RosService]
+    - left: HeadPoseEstimation
+      right: [RosService]
+  input_path: "/home/intel/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/team.png"
+
+Common:

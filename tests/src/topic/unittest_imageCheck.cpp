@@ -40,10 +40,10 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "extension/ext_list.hpp"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
+
 static bool face_test_pass = false;
 static bool emotion_test_pass = false;
 static bool ageGender_test_pass = false;
@@ -183,7 +183,7 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_sample pipeline_face_test.launch.py &");
+  system("ros2 launch dynamic_vino_test pipeline_image_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");

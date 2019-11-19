@@ -1,0 +1,40 @@
+Pipelines:
+- name:
+  inputs: [StandardCamera, Image, video]
+  infers:
+    - name: Objectdetection
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      engine: GPU
+      label: to/be/set/xxx.labels
+      batch: 16
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [RosTopic, imageWindow]
+  connects:
+    - left: StandardCamera
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosTopic]
+    - left: ObjectDetection
+      right: [imageWindow]
+- name: test
+  inputs: [StandardCamera, Image, video]
+  infers:
+    - name:
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      engine: GPU
+      label: to/be/set/xxx.labels
+      batch: 16
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [Topic, imageWindow]
+  connects:
+    - left: StandardCamera
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosTopic]
+    - left: ObjectDetection
+      right: [imageWindow]
+
+OpenvinoCommon:
+

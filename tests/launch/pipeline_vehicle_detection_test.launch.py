@@ -22,18 +22,18 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param/testParam/param',
-                                'pipeline_reidentification_test.yaml')
+    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_test'), 'param',
+                                'pipeline_vehicle_detection_test.yaml')
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/object/detected_objects',
-                 '/ros2_openvino_toolkit/detected_objects'),
-                ('/openvino_toolkit/object/reidentified_persons',
-                 '/ros2_openvino_toolkit/reidentified_persons')],
+                ('/openvino_toolkit/object/detected_license_plates',
+                 '/ros2_openvino_toolkit/detected_license_plates'),
+                ('/openvino_toolkit/object/detected_vehicles_attribs',
+                 '/ros2_openvino_toolkit/detected_vehicles_attribs')],
             output='screen'),
 
     ])

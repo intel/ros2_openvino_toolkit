@@ -16,8 +16,6 @@
 #include <gtest/gtest.h>
 #include <people_msgs/msg/reidentification.hpp>
 #include <people_msgs/msg/reidentification_stamped.hpp>
-#include <people_msgs/msg/landmark.hpp>
-#include <people_msgs/msg/landmark_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 
@@ -39,14 +37,11 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "extension/ext_list.hpp"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 
 #define MAX_SIZE 300
-static bool face_detection = false;
-static bool landmark_detection = false;
 static bool test_pass = false;
 
 template<typename DurationT>
@@ -66,72 +61,16 @@ void wait_for_future(
     " milliseconds\n";
 }
 
-TEST(UnitTestFaceReidentification, testFaceDetection)
-{
-  auto node = rclcpp::Node::make_shared("openvino_face_detection");
-  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-  std::promise<bool> sub_called;
-  std::shared_future<bool> sub_called_future(sub_called.get_future());
-
-  auto openvino_face_detection_callback =
-    [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
-        face_detection = true;
-      sub_called.set_value(true);
-    };
-
-  rclcpp::executors::SingleThreadedExecutor executor;
-  executor.add_node(node);
-
-  {
-    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-      "/ros2_openvino_toolkit/face_detection", rclcpp::QoS(1), openvino_face_detection_callback);
-
-    executor.spin_once(std::chrono::seconds(0));
-
-    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
-
-    EXPECT_TRUE(face_detection);
-  }
-}
-TEST(UnitTestFaceReidentification, testLandmarkDetection)
-{
-  auto node = rclcpp::Node::make_shared("openvino_landmark_detection");
-  auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-  std::promise<bool> sub_called;
-  std::shared_future<bool> sub_called_future(sub_called.get_future());
-
-  auto openvino_landmark_detection_callback =
-    [&sub_called](const people_msgs::msg::LandmarkStamped::SharedPtr msg) -> void {
-      if(msg->landmarks.size() > 0)
-        landmark_detection = true;
-      sub_called.set_value(true);
-    };
-
-  rclcpp::executors::SingleThreadedExecutor executor;
-  executor.add_node(node);
-
-  {
-    auto sub1 = node->create_subscription<people_msgs::msg::LandmarkStamped>(
-      "/ros2_openvino_toolkit/detected_landmarks", qos, openvino_landmark_detection_callback);
-
-    executor.spin_once(std::chrono::seconds(0));
-
-    wait_for_future(executor, sub_called_future, std::chrono::seconds(10));
-
-    EXPECT_TRUE(landmark_detection);
-  }
-}
-TEST(UnitTestFaceReidentification, testReidentification)
+TEST(UnitTestPersonReidentification, testReidentification)
 {
   auto node = rclcpp::Node::make_shared("openvino_reidentification_test");
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_face_reidentification_callback =
+  auto openvino_reidentification_callback =
     [&sub_called](const people_msgs::msg::ReidentificationStamped::SharedPtr msg) -> void {
-      if(msg->reidentified_vector.size() > 0)
-        test_pass = true;
+      test_pass = true;
       sub_called.set_value(true);
     };
 
@@ -140,7 +79,7 @@ TEST(UnitTestFaceReidentification, testReidentification)
 
   {
     auto sub1 = node->create_subscription<people_msgs::msg::ReidentificationStamped>(
-      "/ros2_openvino_toolkit/reidentified_faces", qos, openvino_face_reidentification_callback);
+      "/ros2_openvino_toolkit/reidentified_persons", qos, openvino_reidentification_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -155,9 +94,8 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_sample pipeline_face_reidentification_test.launch.py &");
+  system("ros2 launch dynamic_vino_test pipeline_reidentification_test.launch.py &");
   int ret = RUN_ALL_TESTS();
-  rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");
   rclcpp::shutdown();
   return ret;
