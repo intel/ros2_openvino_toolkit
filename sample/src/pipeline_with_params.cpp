@@ -72,24 +72,21 @@ bool parseAndCheckCommandLine(int argc, char ** argv)
 
 std::string getConfigPath(int argc, char * argv[])
 {
-  if (parseAndCheckCommandLine(argc, argv)) {
-    if (!FLAGS_config.empty()) {
-      return FLAGS_config;
+  for(int i = 1; i < argc - 1; i++){
+    std::string arg = argv[i];
+    if(arg == "-config" || arg == "--config"){
+      return argv[i+1];
     }
   }
 
-  std::string content;
-  std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  // slog::info << "prefix_path=" << prefix_path << slog::endl;
-  return prefix_path + "/share/dynamic_vino_sample/param/pipeline_people.yaml";
+  return "";
 }
 
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor exec;
-  rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline_manager");
+  rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline");
   rclcpp::Node::SharedPtr service_node = std::make_shared<vino_service::PipelineProcessingServer
       <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   // register signal SIGINT and signal handler
@@ -99,8 +96,11 @@ int main(int argc, char * argv[])
     std::cout << "InferenceEngine: " << InferenceEngine::GetInferenceEngineVersion() << std::endl;
 
     // ----- Parsing and validation of input args-----------------------
-
     std::string config = getConfigPath(argc, argv);
+    if(config.empty()){
+      throw std::runtime_error("Config File is not correctly set.");
+      return false;
+    }
     slog::info << "Config File Path =" << config << slog::endl;
 
     Params::ParamManager::getInstance().parse(config);
@@ -116,13 +116,12 @@ int main(int argc, char * argv[])
     }
 
     PipelineManager::getInstance().runAll();
-    //PipelineManager::getInstance().joinAll();
 
     //rclcpp::spin(main_node);
     exec.add_node(main_node);
     exec.add_node(service_node);
     exec.spin();
-    //PipelineManager::getInstance().joinAll();
+    PipelineManager::getInstance().stopAll();
     rclcpp::shutdown();
 
   } catch (const std::exception & error) {
