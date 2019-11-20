@@ -111,7 +111,6 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
   // slog::info << "Updateing filters ..." << slog::endl;
   // pipeline->addFilters(params.filters);
 
-
   pipelines_.insert({params.name, data});
 
   pipeline->setCallback();
@@ -190,12 +189,6 @@ PipelineManager::parseOutput(const PipelineData & pdata)
 std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
 PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & params)
 {
-  /**< update plugins for devices >**/
-  auto pcommon = Params::ParamManager::getInstance().getCommon();
-  std::string FLAGS_l = pcommon.custom_cpu_library;
-  std::string FLAGS_c = pcommon.custom_cldnn_library;
-  bool FLAGS_pc = pcommon.enable_performance_count;
-
   std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>> inferences;
   for (auto & infer : params.infers) {
     if (infer.name.empty() || infer.model.empty()) {
