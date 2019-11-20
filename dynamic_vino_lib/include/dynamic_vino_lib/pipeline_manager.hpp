@@ -49,7 +49,9 @@ public:
     return manager_;
   }
 
-  std::shared_ptr<Pipeline> createPipeline(const Params::ParamManager::PipelineRawData & params);
+  std::shared_ptr<Pipeline> createPipeline(
+    const Params::ParamManager::PipelineRawData & params,
+    rclcpp::Node::SharedPtr node = nullptr);
 
   void removePipeline(const std::string & name);
   PipelineManager & updatePipeline(
@@ -73,6 +75,7 @@ public:
   {
     Params::ParamManager::PipelineRawData params;
     std::shared_ptr<Pipeline> pipeline;
+    rclcpp::Node::SharedPtr parent_node = nullptr;
     std::vector<std::shared_ptr<rclcpp::Node>> spin_nodes;
     std::shared_ptr<std::thread> thread;
     std::shared_ptr<std::thread> thread_spin_nodes;
@@ -105,9 +108,9 @@ private:
   void threadPipeline(const char * name);
   void threadSpinNodes(const char * name);
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
-  parseInputDevice(const Params::ParamManager::PipelineRawData & params);
+  parseInputDevice(const PipelineData & params);
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-  parseOutput(const Params::ParamManager::PipelineRawData & params);
+  parseOutput(const PipelineData & pdata);
   std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
   parseInference(const Params::ParamManager::PipelineRawData & params);
   std::shared_ptr<dynamic_vino_lib::BaseInference>

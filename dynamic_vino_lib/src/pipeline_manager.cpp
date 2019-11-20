@@ -64,17 +64,23 @@
 #include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
 #include "dynamic_vino_lib/engines/engine_manager.hpp"
 std::shared_ptr<Pipeline>
-PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & params)
+PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & params,
+  rclcpp::Node::SharedPtr node)
 {
   if (params.name == "") {
     throw std::logic_error("The name of pipeline won't be empty!");
   }
-  PipelineData data;
 
   std::shared_ptr<Pipeline> pipeline = std::make_shared<Pipeline>(params.name);
   pipeline->getParameters()->update(params);
 
-  auto inputs = parseInputDevice(params);
+  PipelineData data;
+  data.parent_node = node;
+  data.pipeline = pipeline;
+  data.params = params;
+  data.state = PipelineState_ThreadNotCreated;
+
+  auto inputs = parseInputDevice(data);
   if (inputs.size() != 1) {
     slog::err << "currently one pipeline only supports ONE input." << slog::endl;
     return nullptr;
@@ -87,7 +93,7 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
     }
   }
 
-  auto outputs = parseOutput(params);
+  auto outputs = parseOutput(data);
   for (auto it = outputs.begin(); it != outputs.end(); ++it) {
     pipeline->add(it->first, it->second);
   }
@@ -105,9 +111,6 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
   // slog::info << "Updateing filters ..." << slog::endl;
   // pipeline->addFilters(params.filters);
 
-  data.pipeline = pipeline;
-  data.params = params;
-  data.state = PipelineState_ThreadNotCreated;
   pipelines_.insert({params.name, data});
 
   pipeline->setCallback();
@@ -117,10 +120,10 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
 }
 
 std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
-PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & params)
+PipelineManager::parseInputDevice(const PipelineData & pdata)
 {
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> inputs;
-  for (auto & name : params.inputs) {
+  for (auto & name : pdata.params.inputs) {
     slog::info << "Parsing InputDvice: " << name << slog::endl;
     std::shared_ptr<Input::BaseInputDevice> device = nullptr;
     if (name == kInputType_RealSenseCamera) {
@@ -128,18 +131,18 @@ PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & 
     } else if (name == kInputType_StandardCamera) {
       device = std::make_shared<Input::StandardCamera>();
     } else if (name == kInputType_IpCamera) {
-      if (params.input_meta != "") {
-        device = std::make_shared<Input::IpCamera>(params.input_meta);
+      if (pdata.params.input_meta != "") {
+        device = std::make_shared<Input::IpCamera>(pdata.params.input_meta);
       }
     } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
-      device = std::make_shared<Input::RealSenseCameraTopic>();
+      device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
     } else if (name == kInputType_Video) {
-      if (params.input_meta != "") {
-        device = std::make_shared<Input::Video>(params.input_meta);
+      if (pdata.params.input_meta != "") {
+        device = std::make_shared<Input::Video>(pdata.params.input_meta);
       }
     } else if (name == kInputType_Image) {
-      if (params.input_meta != "") {
-        device = std::make_shared<Input::Image>(params.input_meta);
+      if (pdata.params.input_meta != "") {
+        device = std::make_shared<Input::Image>(pdata.params.input_meta);
       }
     } else {
       slog::err << "Invalid input device name: " << name << slog::endl;
@@ -155,21 +158,22 @@ PipelineManager::parseInputDevice(const Params::ParamManager::PipelineRawData & 
   return inputs;
 }
 
+
 std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-PipelineManager::parseOutput(const Params::ParamManager::PipelineRawData & params)
+PipelineManager::parseOutput(const PipelineData & pdata)
 {
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> outputs;
-  for (auto & name : params.outputs) {
+  for (auto & name : pdata.params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
     if (name == kOutputTpye_RosTopic) {
-      object = std::make_shared<Outputs::RosTopicOutput>(params.name);
+      object = std::make_shared<Outputs::RosTopicOutput>(pdata.params.name, pdata.parent_node);
     } else if (name == kOutputTpye_ImageWindow) {
-      object = std::make_shared<Outputs::ImageWindowOutput>(params.name);
+      object = std::make_shared<Outputs::ImageWindowOutput>(pdata.params.name);
     } else if (name == kOutputTpye_RViz) {
-      object = std::make_shared<Outputs::RvizOutput>(params.name);
+      object = std::make_shared<Outputs::RvizOutput>(pdata.params.name, pdata.parent_node);
     } else if (name == kOutputTpye_RosService) {
-      object = std::make_shared<Outputs::RosServiceOutput>(params.name);
+      object = std::make_shared<Outputs::RosServiceOutput>(pdata.params.name);
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
     }
@@ -185,12 +189,6 @@ PipelineManager::parseOutput(const Params::ParamManager::PipelineRawData & param
 std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>>
 PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & params)
 {
-  /**< update plugins for devices >**/
-  auto pcommon = Params::ParamManager::getInstance().getCommon();
-  std::string FLAGS_l = pcommon.custom_cpu_library;
-  std::string FLAGS_c = pcommon.custom_cldnn_library;
-  bool FLAGS_pc = pcommon.enable_performance_count;
-
   std::map<std::string, std::shared_ptr<dynamic_vino_lib::BaseInference>> inferences;
   for (auto & infer : params.infers) {
     if (infer.name.empty() || infer.model.empty()) {
@@ -455,18 +453,23 @@ void PipelineManager::runAll()
     if (service_.state != PipelineState_ThreadRunning) {
       service_.state = PipelineState_ThreadRunning;
     }
-    if (service_.thread == nullptr) {
-      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
-    }
     if (it->second.thread == nullptr) {
       it->second.thread = std::make_shared<std::thread>(&PipelineManager::threadPipeline, this,
           it->second.params.name.c_str());
+    }
+    #if 0 //DEBUGING
+    // Consider of saving CPU loads, the spin thread is moved out from pipeline manager,
+    // which is supposed to be handled by the upper-level applications.
+    // (see @file pipeline_with_params.cpp for the calling sample.)
+    if (service_.thread == nullptr) {
+      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
     }
     if (it->second.spin_nodes.size() > 0 && it->second.thread_spin_nodes == nullptr) {
       it->second.thread_spin_nodes = std::make_shared<std::thread>(
         &PipelineManager::threadSpinNodes, this,
         it->second.params.name.c_str());
     }
+    #endif
   }
 }
 
@@ -476,7 +479,7 @@ void PipelineManager::runService()
       <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   while (service_.state != PipelineState_ThreadStopped && service_.thread != nullptr) {
     rclcpp::spin_some(node);
-    std::this_thread::sleep_for(std::chrono::microseconds(1));
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
 }
 

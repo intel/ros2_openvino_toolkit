@@ -24,28 +24,34 @@
 
 #define INPUT_TOPIC "/camera/color/image_raw"
 
-Input::ImageTopic::ImageTopic()
-: Node("image_topic")
-{
-}
 
-Input::ImageTopic::ImageTopic(std::string & name)
-: Node(name)
+Input::ImageTopic::ImageTopic(rclcpp::Node::SharedPtr node)
+: node_(node)
 {
 }
 
 bool Input::ImageTopic::initialize()
 {
   slog::debug << "before Image Topic init" << slog::endl;
-  std::shared_ptr<rclcpp::Node> node(this);
-  setHandler(node);
+
+  if(node_ == nullptr){
+    throw std::runtime_error("Image Topic is not instancialized because of no parent node.");
+    return false;
+  }
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();
-  sub_ = this->create_subscription<sensor_msgs::msg::Image>(
+  sub_ = node_->create_subscription<sensor_msgs::msg::Image>(
     INPUT_TOPIC, qos,
     std::bind(&ImageTopic::cb, this, std::placeholders::_1));
 
   return true;
 }
+
+  bool Input::ImageTopic::initialize(size_t width, size_t height)
+  {
+    slog::warn << "BE CAREFUL: nothing for resolution is done when calling initialize(width, height)"
+      << " for Image Topic" << slog::endl;
+    return initialize();
+  }
 
 void Input::ImageTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 {

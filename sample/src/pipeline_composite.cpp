@@ -82,9 +82,11 @@ private:
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
     }
+
+    std::shared_ptr<rclcpp::Node> node_handler(this);
     // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
-      PipelineManager::getInstance().createPipeline(p);
+      PipelineManager::getInstance().createPipeline(p, node_handler);
     }
 
     PipelineManager::getInstance().runAll();

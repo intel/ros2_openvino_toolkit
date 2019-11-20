@@ -60,7 +60,8 @@ namespace Outputs
 class RosTopicOutput : public BaseOutput
 {
 public:
-  explicit RosTopicOutput(std::string output_name_);
+  explicit RosTopicOutput(std::string output_name_, 
+    const rclcpp::Node::SharedPtr node=nullptr);
   /**
    * @brief Calculate the camera matrix of a frame.
    * @param[in] A frame.

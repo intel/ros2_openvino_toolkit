@@ -25,14 +25,19 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput(std::string output_name)
+Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
+  const rclcpp::Node::SharedPtr node)
 : BaseOutput(output_name)
 {
   // rmw_qos_profile_t qos = rmw_qos_profile_default;
   // qos.depth = 10;
   // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
   // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
-  node_ = rclcpp::Node::make_shared(output_name + "_topic_publisher");
+  if(node != nullptr){
+    node_ = node;
+  } else {
+    node_ = rclcpp::Node::make_shared(output_name + "_topic_publisher");
+  }
   pub_license_plate_ = node_->create_publisher<people_msgs::msg::LicensePlateStamped>(
     "/openvino_toolkit/" + output_name_ + "/detected_license_plates", 16);
   pub_vehicle_attribs_ = node_->create_publisher<people_msgs::msg::VehicleAttribsStamped>(
