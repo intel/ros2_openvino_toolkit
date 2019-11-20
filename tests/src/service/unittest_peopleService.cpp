@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <people_msgs/srv/people.hpp>
+#include <people_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <vino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -27,22 +29,22 @@
 std::string generate_file_path(std::string path)
 {
   std::string base_path = __FILE__;
-  const std::string filename = "dynamic_vino_lib/tests/service/unittest_objectService.cpp";
+  const std::string filename = "dynamic_vino_test/src/service/unittest_peopleService.cpp";
   base_path = base_path.substr(0, base_path.length() - filename.length() - 1);
   return base_path + "/" + path;
 }
 
-TEST(UnitTestObject, testObject)
+TEST(UnitTestPeople, testPeople)
 {
-  auto node = rclcpp::Node::make_shared("openvino_object_service_test");
+  auto node = rclcpp::Node::make_shared("openvino_people_service_test");
 
-  auto client = node->create_client<object_msgs::srv::DetectObject>("/openvino_toolkit/service");
-
+  auto client = node->create_client<people_msgs::srv::People>("/openvino_toolkit/service");
+  
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
   
-  auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
+  auto request = std::make_shared<people_msgs::srv::People::Request>();
 
-  std::string buffer = generate_file_path("data/images/car_vihecle.png");
+  std::string buffer = generate_file_path("data/images/team.jpg");
   std::cout << buffer << std::endl;
   request->image_path = buffer;
 
@@ -54,24 +56,14 @@ TEST(UnitTestObject, testObject)
 
   auto srv = result.get();
 
-  EXPECT_TRUE(srv->objects.objects_vector.size());
+  EXPECT_TRUE(srv->persons.faces.size());
 
-  for (unsigned int i = 0; i < srv->objects.objects_vector.size(); i++) {
-    EXPECT_EQ(srv->objects.objects_vector[i].object.object_name, "car");
+  for (unsigned int i = 0; i < srv->persons.faces.size(); i++) {
+    EXPECT_EQ(srv->persons.faces[i].object.object_name, "Person");
+    EXPECT_TRUE(srv->persons.emotions[i].emotion.c_str());
+    EXPECT_TRUE(srv->persons.agegenders[i].age);
+    EXPECT_TRUE(srv->persons.agegenders[i].gender.c_str());
   }
-
-  EXPECT_TRUE(srv->objects.objects_vector[0].roi.x_offset > 1080 &&
-    srv->objects.objects_vector[0].roi.x_offset < 1720 &&
-    srv->objects.objects_vector[0].roi.y_offset > 215 &&
-    srv->objects.objects_vector[0].roi.y_offset < 480);
-  EXPECT_TRUE(srv->objects.objects_vector[1].roi.x_offset > 310 &&
-    srv->objects.objects_vector[1].roi.x_offset < 785 &&
-    srv->objects.objects_vector[1].roi.y_offset > 225 &&
-    srv->objects.objects_vector[1].roi.y_offset < 460);
-  EXPECT_TRUE(srv->objects.objects_vector[2].roi.x_offset > 195 &&
-    srv->objects.objects_vector[2].roi.x_offset < 405 &&
-    srv->objects.objects_vector[2].roi.y_offset > 220 &&
-    srv->objects.objects_vector[2].roi.y_offset < 345);
 }
 
 int main(int argc, char ** argv)
@@ -79,10 +71,10 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);
   auto offset = std::chrono::seconds(20);
-  system("ros2 launch dynamic_vino_sample image_object_service_test.launch.py &");
+  system("ros2 launch dynamic_vino_test image_people_service_test.launch.py &");
   rclcpp::sleep_for(offset);
   int ret = RUN_ALL_TESTS();
-  system("killall -s SIGINT image_object_server &");
+  system("killall -s SIGINT image_people_server &");
   rclcpp::shutdown();
   return ret;
 }

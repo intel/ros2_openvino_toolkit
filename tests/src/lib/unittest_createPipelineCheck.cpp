@@ -35,18 +35,13 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "extension/ext_list.hpp"
-//#include "gflags/gflags.h"
-#include "inference_engine.hpp"
-#include "librealsense2/rs.hpp"
-#include "opencv2/opencv.hpp"
 
 std::string getConfigPath(std::string config_file)
 {
   std::string content;
   std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  return prefix_path + "/share/dynamic_vino_sample/param/testParam/param/" + config_file;
+  ament_index_cpp::get_resource("packages", "dynamic_vino_test", content, &prefix_path);
+  return prefix_path + "/share/dynamic_vino_test/param/" + config_file;
 }
 
 TEST(UnitTestCheckPipeline, testCreatePipeline)

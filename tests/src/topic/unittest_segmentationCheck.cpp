@@ -36,11 +36,10 @@
 #include "dynamic_vino_lib/pipeline.hpp"
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
+
 static bool test_pass = false;
 
 template<typename DurationT>
@@ -93,7 +92,7 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(60);
-  system("ros2 launch dynamic_vino_sample pipeline_segmentation_test.launch.py &");
+  system("ros2 launch dynamic_vino_test pipeline_segmentation_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");

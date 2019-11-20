@@ -14,7 +14,7 @@ limitations under the License.
 -->
 
 <package format="2">
-  <name>dynamic_vino_lib</name>
+  <name>dynamic_vino_test</name>
   <version>0.3.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
@@ -40,6 +40,7 @@ limitations under the License.
   <build_depend>vino_param_lib</build_depend>
   <build_depend>realsense2</build_depend>
   <build_depend>openvino_common</build_depend>
+  <build_depend>dynamic_vino_lib</build_depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>builtin_interfaces</exec_depend>
@@ -56,9 +57,11 @@ limitations under the License.
   <exec_depend>pipeline_srv_msgs</exec_depend>
   <exec_depend>vino_param_lib</exec_depend>
   <exec_depend>realsense2</exec_depend>
+  <exec_depend>dynamic_vino_lib</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
+  <test_depend>ament_cmake_gtest</test_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

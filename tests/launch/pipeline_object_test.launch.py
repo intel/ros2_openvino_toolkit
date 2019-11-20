@@ -22,12 +22,15 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param/testParam/param',
-                                'image_object_service_test.yaml')
+    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_test'), 'param',
+                                'pipeline_object_test.yaml')
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='dynamic_vino_sample', node_executable='image_object_server',
+            package='dynamic_vino_sample', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
+            remappings=[
+                ('/openvino_toolkit/object/detected_objects',
+                 '/ros2_openvino_toolkit/detected_objects')],
             output='screen'),
     ])

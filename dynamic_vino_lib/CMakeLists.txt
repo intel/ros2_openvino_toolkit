@@ -261,61 +261,6 @@ ament_target_dependencies(${PROJECT_NAME}
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
-
-  macro(custom_gtest target)
-    ament_add_gtest(${target} ${ARGN})
-    if(TARGET ${target})
-      target_include_directories(${target} PUBLIC
-        ${${PROJECT_NAME}_INCLUDE_DIRS}
-      )
-      target_link_libraries(${target}
-        dl
-        cpu_extension
-        ${PROJECT_NAME})
-      ament_target_dependencies(${target}
-        "rclcpp"
-        "InferenceEngine"
-        "vino_param_lib"
-        "OpenCV"
-        "object_msgs"
-        "people_msgs"
-        "pipeline_srv_msgs"
-        "ament_index_cpp"
-        "yaml_cpp_vendor"
-        "class_loader")
-    endif()
-  endmacro()
-
-  custom_gtest(unittest_createPipelineCheck
-    "tests/lib/unittest_createPipelineCheck.cpp"
-    TIMEOUT 300)
-  custom_gtest(unittest_faceDetection
-    "tests/topic/unittest_faceDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_objectDetection
-    "tests/topic/unittest_objectDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_imageDetection
-    "tests/topic/unittest_imageCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_segmentation
-    "tests/topic/unittest_segmentationCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_reidentification
-    "tests/topic/unittest_reidentification.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_face_reidentification
-    "tests/topic/unittest_face_reidentification.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_vehicleDetectionCheck
-    "tests/topic/unittest_vehicleDetectionCheck.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_objectService
-    "tests/service/unittest_objectService.cpp"
-    TIMEOUT 100)
-  custom_gtest(unittest_peopleService
-    "tests/service/unittest_peopleService.cpp"
-    TIMEOUT 100)
 endif()
 
 ament_export_include_directories(include)
