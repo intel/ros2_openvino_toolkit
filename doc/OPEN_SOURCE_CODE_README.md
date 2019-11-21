@@ -145,7 +145,7 @@ This project is a ROS2 wrapper for CV API of [OpenVINO™](https://software.inte
 	git clone https://github.com/intel/ros2_object_msgs
 	git clone https://github.com/ros-perception/vision_opencv -b ros2
 	git clone https://github.com/ros2/message_filters.git
-	git clone https://github.com/ros-perception/image_common.git -b ros2
+	git clone https://github.com/ros-perception/image_common.git -b dashing
 	git clone https://github.com/intel/ros2_intel_realsense.git -b refactor
 	```
 
