@@ -42,7 +42,6 @@
 #include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
@@ -56,30 +55,6 @@ void signalHandler(int signum)
   // terminate program
   PipelineManager::getInstance().stopAll();
   // exit(signum);
-}
-
-bool parseAndCheckCommandLine(int argc, char ** argv)
-{
-  // -----Parsing and validation of input args---------------------------
-  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
-  if (FLAGS_h) {
-    showUsageForParam();
-    return false;
-  }
-
-  return true;
-}
-
-std::string getConfigPath(int argc, char * argv[])
-{
-  for(int i = 1; i < argc - 1; i++){
-    std::string arg = argv[i];
-    if(arg == "-config" || arg == "--config"){
-      return argv[i+1];
-    }
-  }
-
-  return "";
 }
 
 int main(int argc, char * argv[])
@@ -99,7 +74,7 @@ int main(int argc, char * argv[])
     std::string config = getConfigPath(argc, argv);
     if(config.empty()){
       throw std::runtime_error("Config File is not correctly set.");
-      return false;
+      return -1;
     }
     slog::info << "Config File Path =" << config << slog::endl;
 
@@ -126,9 +101,11 @@ int main(int argc, char * argv[])
 
   } catch (const std::exception & error) {
     slog::err << error.what() << slog::endl;
-    return 1;
+    return -2;
   } catch (...) {
     slog::err << "Unknown/internal exception happened." << slog::endl;
-    return 1;
+    return -3;
   }
+
+  return 0;
 }
