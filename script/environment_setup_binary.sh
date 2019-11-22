@@ -76,7 +76,11 @@ if [ "$ROS2_SRC" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y curl
   curl http://repo.ros2.org/repos.key | sudo apt-key add -
   echo $ROOT_PASSWD | sudo -S sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
-  echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy="$http_proxy" --recv-key F42ED6FBAB17C654
+  if [ -n "$http_proxy" ]; then
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy="$http_proxy" --recv-key F42ED6FBAB17C654
+  else
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F42ED6FBAB17C654
+  fi
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y build-essential cmake git python3-colcon-common-extensions python3-pip python-rosdep python3-vcstool wget
 
 # install some pip packages needed for testing
@@ -112,9 +116,9 @@ if [ "$OPENVINO" == "1" ]; then
   echo "===================Installing OpenVINO Toolkit...======================="
 
   cd ~/Downloads
-  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/15944/l_openvino_toolkit_p_2019.3.334.tgz
-  tar -xvf l_openvino_toolkit_p_2019.3.334.tgz
-  cd l_openvino_toolkit_p_2019.3.334
+  wget -c http://registrationcenter-download.intel.com/akdlm/irc_nas/16057/l_openvino_toolkit_p_2019.3.376.tgz
+  tar -xvf l_openvino_toolkit_p_2019.3.376.tgz
+  cd l_openvino_toolkit_p_2019.3.376
   echo $ROOT_PASSWD | sudo -S ./install_openvino_dependencies.sh
   cp $basedir/openvino_silent.cfg .
   echo $ROOT_PASSWD | sudo -S ./install.sh --silent openvino_silent.cfg
@@ -142,8 +146,11 @@ if [ "$LIBREALSENSE" == "1" ]; then
   echo "===================Setting Up LibRealSense...======================="
 
   echo "Install server public key for librealsense"
-  CURRENT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-  sudo apt-key add ${CURRENT_DIR}/C8B3A55A6F3EFCDE
+  if [ -n "$http_proxy" ]; then
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy=$http_proxy --recv-key C8B3A55A6F3EFCDE
+  else
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C8B3A55A6F3EFCDE
+  fi
 
   if ! test "$(grep "http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo" /etc/apt/sources.list)"
   then
