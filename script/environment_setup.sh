@@ -77,6 +77,11 @@ if [ "$ROS2_SRC" == "1" ]; then
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y curl
   curl http://repo.ros2.org/repos.key | sudo apt-key add -
   echo $ROOT_PASSWD | sudo -S sh -c 'echo "deb [arch=amd64,arm64] http://repo.ros2.org/ubuntu/main `lsb_release -cs` main" > /etc/apt/sources.list.d/ros2-latest.list'
+  if [ -n "$http_proxy" ]; then
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy="$http_proxy" --recv-key F42ED6FBAB17C654
+  else
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F42ED6FBAB17C654
+  fi
   echo $ROOT_PASSWD | sudo -S apt-get update && sudo apt-get install -y build-essential cmake git python3-colcon-common-extensions python3-pip python-rosdep python3-vcstool wget
 
 # install some pip packages needed for testing
@@ -201,7 +206,7 @@ if [ "$DLDT" == "1" ]; then
   mkdir -p  ~/code && cd ~/code
   git clone https://github.com/opencv/dldt.git
   cd dldt/inference-engine/
-  git checkout 2019_R3
+  git checkout 2019_R3.1
   git submodule init
   git submodule update --recursive
   mkdir build && cd build
@@ -220,7 +225,7 @@ if [ "$MODEL_ZOO" == "1" ]; then
   mkdir -p ~/code && cd ~/code
   git clone https://github.com/opencv/open_model_zoo.git
   cd open_model_zoo/demos/
-  git checkout 2019_R3
+  git checkout 2019_R3.1
   mkdir build && cd build
   cmake -DCMAKE_BUILD_TYPE=Release /opt/openvino_toolkit/dldt/inference-engine
   make -j8
@@ -235,8 +240,11 @@ if [ "$LIBREALSENSE" == "1" ]; then
   echo "===================Setting Up LibRealSense...======================="
   
   echo "Install server public key for librealsense"
-  CURRENT_DIR=$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")
-  sudo apt-key add ${CURRENT_DIR}/C8B3A55A6F3EFCDE
+  if [ -n "$http_proxy" ]; then
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --keyserver-options http-proxy=$http_proxy --recv-key C8B3A55A6F3EFCDE
+  else
+    echo $ROOT_PASSWD | sudo -S apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key C8B3A55A6F3EFCDE
+  fi
 
   if ! test "$(grep "http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo" /etc/apt/sources.list)"
   then
