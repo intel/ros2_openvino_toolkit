@@ -32,29 +32,14 @@
 #include <vector>
 #include "utility.hpp"
 
-bool parseAndCheckCommandLine(int argc, char ** argv)
-{
-  // ------Parsing and validation of inpuu args----------------------
-  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
-  if (FLAGS_h) {
-    showUsageForParam();
-    return false;
-  }
-  slog::info << "Parsing input parameters" << slog::endl;
-  if (FLAGS_config.empty()) {
-    throw std::logic_error("Parameter -config is not set");
-  }
-  slog::info << "Config File:" << FLAGS_config << slog::endl;
-
-  return true;
-}
-
 int main(int argc, char * argv[])
 {
   try {
     // ------Parsing and validation of input args---------
-    if (!parseAndCheckCommandLine(argc, argv)) {
-      return 0;
+    std::string config = getConfigPath(argc, argv);
+    if(config.empty()){
+      throw std::runtime_error("Config File is not correctly set.");
+      return -1;
     }
 
     Params::ParamManager::getInstance().parse(FLAGS_config);
@@ -64,9 +49,11 @@ int main(int argc, char * argv[])
     Params::ParamManager::getInstance().print();
   } catch (const std::exception & error) {
     slog::err << error.what() << slog::endl;
-    return 1;
+    return -1;
   } catch (...) {
     slog::err << "Unknown/internal exception happened." << slog::endl;
-    return 1;
+    return -2;
   }
+
+  return 0;
 }

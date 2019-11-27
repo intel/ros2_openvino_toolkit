@@ -42,7 +42,6 @@
 #include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "extension/ext_list.hpp"
-#include "gflags/gflags.h"
 #include "inference_engine.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
@@ -58,38 +57,11 @@ void signalHandler(int signum)
   // exit(signum);
 }
 
-bool parseAndCheckCommandLine(int argc, char ** argv)
-{
-  // -----Parsing and validation of input args---------------------------
-  gflags::ParseCommandLineNonHelpFlags(&argc, &argv, true);
-  if (FLAGS_h) {
-    showUsageForParam();
-    return false;
-  }
-
-  return true;
-}
-
-std::string getConfigPath(int argc, char * argv[])
-{
-  if (parseAndCheckCommandLine(argc, argv)) {
-    if (!FLAGS_config.empty()) {
-      return FLAGS_config;
-    }
-  }
-
-  std::string content;
-  std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_sample", content, &prefix_path);
-  // slog::info << "prefix_path=" << prefix_path << slog::endl;
-  return prefix_path + "/share/dynamic_vino_sample/param/pipeline_people.yaml";
-}
-
 int main(int argc, char * argv[])
 {
   rclcpp::init(argc, argv);
   rclcpp::executors::SingleThreadedExecutor exec;
-  rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline_manager");
+  rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline");
   rclcpp::Node::SharedPtr service_node = std::make_shared<vino_service::PipelineProcessingServer
       <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
   // register signal SIGINT and signal handler
@@ -99,13 +71,15 @@ int main(int argc, char * argv[])
     std::cout << "InferenceEngine: " << InferenceEngine::GetInferenceEngineVersion() << std::endl;
 
     // ----- Parsing and validation of input args-----------------------
-
     std::string config = getConfigPath(argc, argv);
+    if(config.empty()){
+      throw std::runtime_error("Config File is not correctly set.");
+      return -1;
+    }
     slog::info << "Config File Path =" << config << slog::endl;
 
     Params::ParamManager::getInstance().parse(config);
     Params::ParamManager::getInstance().print();
-    auto pcommon = Params::ParamManager::getInstance().getCommon();
     auto pipelines = Params::ParamManager::getInstance().getPipelines();
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
@@ -116,20 +90,21 @@ int main(int argc, char * argv[])
     }
 
     PipelineManager::getInstance().runAll();
-    //PipelineManager::getInstance().joinAll();
 
     //rclcpp::spin(main_node);
     exec.add_node(main_node);
     exec.add_node(service_node);
     exec.spin();
-    //PipelineManager::getInstance().joinAll();
+    PipelineManager::getInstance().stopAll();
     rclcpp::shutdown();
 
   } catch (const std::exception & error) {
     slog::err << error.what() << slog::endl;
-    return 1;
+    return -2;
   } catch (...) {
     slog::err << "Unknown/internal exception happened." << slog::endl;
-    return 1;
+    return -3;
   }
+
+  return 0;
 }
