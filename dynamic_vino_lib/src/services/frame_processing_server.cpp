@@ -50,7 +50,6 @@ void FrameProcessingServer<T>::initService(
 {
   Params::ParamManager::getInstance().parse(config_path);
   Params::ParamManager::getInstance().print();
-  auto pcommon = Params::ParamManager::getInstance().getCommon();
   auto pipelines = Params::ParamManager::getInstance().getPipelines();
 
   if (pipelines.size() != 1) {

@@ -80,7 +80,6 @@ int main(int argc, char * argv[])
 
     Params::ParamManager::getInstance().parse(config);
     Params::ParamManager::getInstance().print();
-    auto pcommon = Params::ParamManager::getInstance().getCommon();
     auto pipelines = Params::ParamManager::getInstance().getPipelines();
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
