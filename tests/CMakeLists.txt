@@ -151,7 +151,7 @@ if(BUILD_TESTING)
         "object_msgs"
         "people_msgs"
         "pipeline_srv_msgs"
-	"inference_engine"
+	"InferenceEngine"
 	"OpenCV"
 	"realsense2"
         "ament_index_cpp"
