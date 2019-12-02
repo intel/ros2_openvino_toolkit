@@ -19,6 +19,8 @@ include_directories(
 
 add_executable(${PROJECT_NAME}
   src/visualization.cpp
+  src/viz_detection.cpp
+  src/viz_factory.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
