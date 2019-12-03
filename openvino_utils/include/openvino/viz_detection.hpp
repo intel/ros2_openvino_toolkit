@@ -28,6 +28,7 @@ private:
   std::unique_ptr<CamSub> cam_sub_;
   std::unique_ptr<ObjSub> obj_sub_;
   std::unique_ptr<Sync> sync_sub_;
+  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_;
 };
 }
 
