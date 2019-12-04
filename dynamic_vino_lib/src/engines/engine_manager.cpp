@@ -57,6 +57,9 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_pl
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
   InferenceEngine::Core core;
+  if ((device.find("CPU") != std::string::npos)) {
+    core.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>(), device);
+  }
   auto executable_network = core.LoadNetwork(model->getNetReader()->getNetwork(), device);
   auto request = executable_network.CreateInferRequestPtr();
 
