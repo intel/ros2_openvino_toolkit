@@ -33,6 +33,7 @@ def generate_launch_description():
     visualization = Node(
             package='openvino_utils', node_executable='openvino_utils',
             remappings=[('/rdk/openvino/detected_objects', '/openvino/detected_objects'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
+            parameters=[{'infer_type':'SSD'}],
             output='screen'
     )
 

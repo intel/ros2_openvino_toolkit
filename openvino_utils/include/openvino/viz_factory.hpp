@@ -8,13 +8,13 @@ namespace openvino
 {
 enum InferType
 {
-  Detection,
+  SSD,
   Segmentation,
   ReID
 };
 
 const std::map<std::string, InferType> Infer_MAP
-  = {{"Detection", Detection},
+  = {{"SSD", SSD},
      {"Segmentation", Segmentation},
      {"ReID", ReID}};
 
