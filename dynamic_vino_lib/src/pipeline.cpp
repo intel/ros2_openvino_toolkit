@@ -186,31 +186,28 @@ void Pipeline::runOnce()
 {
   initInferenceCounter();
 
-  // auto t0 = std::chrono::high_resolution_clock::now();
-  if(width_ != 0 || height_ != 0){
-    for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
-      std::string detection_name = pos.first->second;
-      auto detection_ptr = name_to_detection_map_[detection_name];
-      detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
-      increaseInferenceCounter();
-      detection_ptr->submitRequest();
-    }
-
-    for (auto & pair : name_to_output_map_) {
-      pair.second->feedFrame(frame_);
-    }
-    countFPS();
-  }
-
   if (!input_device_->read(&frame_)) {
     // throw std::logic_error("Failed to get frame from cv::VideoCapture");
     // slog::warn << "Failed to get frame from input_device." << slog::endl;
-    width_ = 0;
-    height_ = 0;
-  } else {
-    width_ = frame_.cols;
-    height_ = frame_.rows;
+    return; //do nothing if now frame read out
   }
+  width_ = frame_.cols;
+  height_ = frame_.rows;
+
+  // auto t0 = std::chrono::high_resolution_clock::now();
+  for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
+    std::string detection_name = pos.first->second;
+    auto detection_ptr = name_to_detection_map_[detection_name];
+    detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
+    increaseInferenceCounter();
+    detection_ptr->submitRequest();
+  }
+
+  for (auto &pair : name_to_output_map_)
+  {
+    pair.second->feedFrame(frame_);
+  }
+  countFPS();
 
   std::unique_lock<std::mutex> lock(counter_mutex_);
   cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
@@ -306,7 +303,7 @@ void Pipeline::decreaseInferenceCounter()
 }
 
 void Pipeline::countFPS()
-{  
+{
   frame_cnt_++;
   auto t_end = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
