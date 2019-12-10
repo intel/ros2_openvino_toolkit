@@ -15,12 +15,14 @@ limitations under the License.
 
 <package format="2">
   <name>dynamic_vino_lib</name>
-  <version>0.3.0</version>
+  <version>0.7.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
-  <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
-  <maintainer email="hongkun.chen@intel.com">Hongkun Chen</maintainer>
-  <maintainer email="yang1.lu@intel.com">Yang Lu</maintainer>
+  <author email="chao1.li@intel.com">Chao Li</author>
+  <author email="hongkun.chen@intel.com">Hongkun Chen</author>
+  <author email="yang1.lu@intel.com">Yang Lu</author>
+  <author email="xuyang.chen@intel.com">Xuyang Chen</author>
+  <author email="zhenzhenx.ren@intel.com">Rachel Ren</author>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

@@ -15,7 +15,7 @@ limitations under the License.
 
 <package format="3">
   <name>people_msgs</name>
-  <version>0.3.0</version>
+  <version>0.7.0</version>
   <description>A package containing people message definitions.</description>
   <author email="wei.zhi.liu@intel.com">Weizhi Liu</author>
   <author email="chao1.li@intel.com">Chao Li</author>
