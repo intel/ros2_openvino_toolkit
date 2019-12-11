@@ -37,7 +37,7 @@ def generate_launch_description():
             output='screen'
     )
 
-    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch', 'rviz/default.rviz')
+    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch', 'rviz/object_detection.rviz')
     rviz = Node(
             package='rviz2', node_executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]

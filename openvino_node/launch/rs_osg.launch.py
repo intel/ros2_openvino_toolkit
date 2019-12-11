@@ -1,5 +1,7 @@
 import launch
+import os
 from launch_ros.actions import ComposableNodeContainer
+from launch_ros.actions import Node
 from launch_ros.descriptions import ComposableNode
 from ament_index_python.packages import get_package_share_directory
 
@@ -28,4 +30,17 @@ def generate_launch_description():
             output='screen',
     )
 
-    return launch.LaunchDescription([container])
+    visualization = Node(
+            package='openvino_utils', node_executable='openvino_utils',
+            remappings=[('/rdk/openvino/segmented_objects', '/openvino/segmented_objects'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
+            parameters=[{'infer_type':'Segmentation'}],
+            output='screen'
+    )
+
+    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch', 'rviz/object_segmentation.rviz')
+    rviz = Node(
+            package='rviz2', node_executable='rviz2', output='screen',
+            arguments=['--display-config', default_rviz]
+    )
+
+    return launch.LaunchDescription([container, visualization, rviz])
