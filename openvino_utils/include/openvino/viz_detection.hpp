@@ -9,15 +9,15 @@
 #include "object_msgs/msg/object_in_box.hpp"
 #include "openvino/viz_base.hpp"
 
-using CamSub = message_filters::Subscriber<sensor_msgs::msg::Image>;
-using ObjSub = message_filters::Subscriber<object_msgs::msg::ObjectsInBoxes>;
-using Sync = message_filters::TimeSynchronizer<sensor_msgs::msg::Image, object_msgs::msg::ObjectsInBoxes>;
-
 namespace openvino
 {
 class VizDetection : public VizBase
 {
 public:
+  using CamSub = message_filters::Subscriber<sensor_msgs::msg::Image>;
+  using ObjSub = message_filters::Subscriber<object_msgs::msg::ObjectsInBoxes>;
+  using Sync = message_filters::TimeSynchronizer<sensor_msgs::msg::Image, object_msgs::msg::ObjectsInBoxes>;
+
   VizDetection(const std::string & node_name, const std::string & ns, const rclcpp::NodeOptions & node_options);
   virtual ~VizDetection() = default;
   void composeMessages() override;

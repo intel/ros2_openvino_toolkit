@@ -33,10 +33,11 @@ def generate_launch_description():
     visualization = Node(
             package='openvino_utils', node_executable='openvino_utils',
             remappings=[('/rdk/openvino/detected_objects', '/openvino/detected_objects'), ('/rdk/openvino/image_raw', '/camera/color/image_raw')],
+            parameters=[{'infer_type':'SSD'}],
             output='screen'
     )
 
-    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch', 'rviz/default.rviz')
+    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch', 'rviz/object_detection.rviz')
     rviz = Node(
             package='rviz2', node_executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]
