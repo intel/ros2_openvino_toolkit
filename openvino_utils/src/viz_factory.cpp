@@ -1,6 +1,7 @@
 #include "openvino/viz_factory.hpp"
 #include "openvino/viz_detection.hpp"
 #include "openvino/viz_segmentation.hpp"
+#include "openvino/viz_reidentification.hpp"
 
 namespace openvino
 {
@@ -16,6 +17,7 @@ std::shared_ptr<openvino::VizBase> VizFactory::createVizNode(const std::string &
       return std::make_shared<VizSegmentation>(node_name, ns, node_options);
       break;
     case ReID:
+      return std::make_shared<VizReidentification>(node_name, ns, node_options);
       break;
   }
 }

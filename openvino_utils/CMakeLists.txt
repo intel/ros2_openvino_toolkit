@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
   src/viz_detection.cpp
   src/viz_factory.cpp
   src/viz_segmentation.cpp
+  src/viz_reidentification.cpp
 )
 
 ament_target_dependencies(${PROJECT_NAME}
