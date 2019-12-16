@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch face detection and rviz."""
-
 import os
 
 from ament_index_python.packages import get_package_share_directory

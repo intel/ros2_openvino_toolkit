@@ -47,6 +47,11 @@ public:
    * @brief Using an Inference Request to initialize the inference Engine.
    */
   Engine(InferenceEngine::InferRequest::Ptr &);
+
+    /**
+   * @brief Using an executable network to initialize the inference Engine.
+   */
+  Engine(const InferenceEngine::ExecutableNetwork &);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
@@ -68,6 +73,7 @@ public:
 
 private:
   InferenceEngine::InferRequest::Ptr request_ = nullptr;
+  InferenceEngine::ExecutableNetwork network_;
 };
 }  // namespace Engines
 
