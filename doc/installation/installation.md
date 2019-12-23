@@ -8,4 +8,4 @@
 One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/OPEN_SOURCE_INSTALLATION.md) for details.
 
 ## Binary Version
-One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/rso2_openvino_toolkit/blob/devel/doc/installation/BINARY_INSTALLATION.md) for details.
+One-step installation scripts are provided for the dependencies' installation. Please see [the guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/BINARY_INSTALLATION.md) for details.

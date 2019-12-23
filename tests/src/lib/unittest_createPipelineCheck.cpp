@@ -44,34 +44,33 @@ std::string getConfigPath(std::string config_file)
   return prefix_path + "/share/dynamic_vino_test/param/" + config_file;
 }
 
-//TEST(UnitTestCheckPipeline, testCreatePipeline)
-//{
-//  auto node = rclcpp::Node::make_shared("pipeline_manager_test");
-//  std::vector<std::string> config_files = {"image_object_service_test.yaml", "pipeline_face_reid_video.yaml",
-//	                                   "pipeline_image_test.yaml", "pipeline_reidentification_test.yaml",
-//					   "pipeline_vehicle_detection_test.yaml", "image_people_service_test.yaml",
-//					   "pipeline_segmentation_test.yaml", "pipeline_object_yolo_test.yaml"};
-//  for (unsigned int i = 0; i < config_files.size(); i++)
-//  {
-//    std::string config_file = getConfigPath(config_files[i]);
-//    EXPECT_TRUE(std::ifstream(config_file).is_open());
-//    ASSERT_NO_THROW({
-//      Params::ParamManager::getInstance().parse(config_file);
-//      auto pipelines = Params::ParamManager::getInstance().getPipelines();
-//      EXPECT_GT(pipelines.size(), 0);
-//
-//      for (auto & p : pipelines) {
-//        PipelineManager::getInstance().createPipeline(p, node);
-//      }
-//    });
-//  }
-//}
-
-TEST(UnitTestCheckPipeline, testPipelineManager)
+TEST(UnitTestCheckPipeline, testCreatePipeline)
 {
-  auto node = rclcpp::Node::make_shared("pipeline_manager_test");
-  rclcpp::WallRate loop_rate(0.5); 
-  std::string config_files = "pipeline_face_test.yaml";
+  auto node = rclcpp::Node::make_shared("pipeline_test");
+  std::vector<std::string> config_files = {"image_object_service_test.yaml", "pipeline_face_reid_video.yaml",
+	                                   "pipeline_image_test.yaml", "pipeline_reidentification_test.yaml",
+					   "pipeline_vehicle_detection_test.yaml", "image_people_service_test.yaml",
+					   "pipeline_segmentation_test.yaml", "pipeline_face_test.yaml"};
+  for (unsigned int i = 0; i < config_files.size(); i++)
+  {
+    std::string config_file = getConfigPath(config_files[i]);
+    EXPECT_TRUE(std::ifstream(config_file).is_open());
+    ASSERT_NO_THROW({
+      Params::ParamManager::getInstance().parse(config_file);
+      auto pipelines = Params::ParamManager::getInstance().getPipelines();
+      EXPECT_GT(pipelines.size(), 0);
+
+      for (auto & p : pipelines) {
+        PipelineManager::getInstance().createPipeline(p, node);
+      }
+    });
+  }
+}
+
+TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
+{
+  auto node = rclcpp::Node::make_shared("pipeline_realsense_test");
+  std::string config_files = "pipeline_object_yolo_test.yaml";
   std::string config_file = getConfigPath(config_files);
   EXPECT_TRUE(std::ifstream(config_file).is_open());
   ASSERT_NO_THROW({
@@ -82,38 +81,33 @@ TEST(UnitTestCheckPipeline, testPipelineManager)
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, node);
     }
-
-    PipelineManager::getInstance().runAll();
-    PipelineManager::getInstance().joinAll();
-    rclcpp::spin_some(node);
-    loop_rate.sleep();
-    rclcpp::shutdown();
   });
 }
 
-//TEST(UnitTestCheckPipeline, testPipelineIncorrectConfig)
-//{
-//  std::string config_file = getConfigPath("pipeline_anormal.yaml");
-//  EXPECT_TRUE(std::ifstream(config_file).is_open());
-//  try{
-//    Params::ParamManager::getInstance().parse(config_file);
-//    auto pipelines = Params::ParamManager::getInstance().getPipelines();
-//    EXPECT_GT(pipelines.size(), 0);
-//
-//    for (auto & p : pipelines) {
-//      PipelineManager::getInstance().createPipeline(p);
-//    }
-//  }
-//  catch (...) {
-//    SUCCEED();
-//  }
-//}
+TEST(UnitTestCheckPipeline, testPipelineIncorrectConfig)
+{
+    auto node = rclcpp::Node::make_shared("pipeline_anormal_test");
+  std::string config_file = getConfigPath("pipeline_anormal.yaml");
+  EXPECT_TRUE(std::ifstream(config_file).is_open());
+  try{
+    Params::ParamManager::getInstance().parse(config_file);
+    auto pipelines = Params::ParamManager::getInstance().getPipelines();
+    EXPECT_GT(pipelines.size(), 0);
+
+    for (auto & p : pipelines) {
+      PipelineManager::getInstance().createPipeline(p,node);
+    }
+  }
+  catch (...) {
+    SUCCEED();
+  }
+}
 
 int main(int argc, char * argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   int ret = RUN_ALL_TESTS();
-  //rclcpp::shutdown();
+  rclcpp::shutdown();
   return ret;
 }

@@ -27,7 +27,7 @@
 std::string generate_file_path(std::string path)
 {
   std::string base_path = __FILE__;
-  const std::string filename = "dynamic_vino_test/src/service/unittest_objectService.cpp";
+  const std::string filename = "tests/src/service/unittest_objectService.cpp";
   base_path = base_path.substr(0, base_path.length() - filename.length() - 1);
   return base_path + "/" + path;
 }
