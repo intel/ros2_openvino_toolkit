@@ -31,3 +31,10 @@ Engines::Engine::Engine(
 {
   request_ = request;
 }
+
+Engines::Engine::Engine(
+  const InferenceEngine::ExecutableNetwork & network)
+{
+  network_ = network;
+  request_ = network_.CreateInferRequestPtr();
+}

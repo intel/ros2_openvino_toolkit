@@ -47,9 +47,9 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
 
   auto executeable_network = 
   plugins_for_devices_[device].LoadNetwork(model->getNetReader()->getNetwork(), {});
-  auto request = executeable_network.CreateInferRequestPtr();
+  // auto request = executeable_network.CreateInferRequestPtr();
 
-  return std::make_shared<Engines::Engine>(request);
+  return std::make_shared<Engines::Engine>(executeable_network);
 }
 
 #if(defined(USE_IE_CORE))
@@ -61,9 +61,9 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_pl
     core.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>(), device);
   }
   auto executable_network = core.LoadNetwork(model->getNetReader()->getNetwork(), device);
-  auto request = executable_network.CreateInferRequestPtr();
+  //auto request = executable_network.CreateInferRequestPtr();
 
-  return std::make_shared<Engines::Engine>(request);
+  return std::make_shared<Engines::Engine>(executable_network);
 }
 #endif
 

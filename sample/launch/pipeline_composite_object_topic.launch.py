@@ -18,7 +18,8 @@ def generate_launch_description():
                 node_plugin='realsense::RealSenseNodeFactory',
                 node_name='realsense',
                 parameters=[get_package_share_directory('realsense_examples')+'/config/d435i.yaml'],
-                extra_arguments=[{'use_intra_process_comms':'true'}]),
+                #extra_arguments=[{'use_intra_process_comms':'true'}]
+            ),
             ComposableNode(
                 package='dynamic_vino_sample',
                 node_plugin='ComposablePipeline',
@@ -28,7 +29,7 @@ def generate_launch_description():
                 ('/openvino_toolkit/object/detected_objects',
                  '/ros2_openvino_toolkit/detected_objects'),
                 ('/openvino_toolkit/object/images', '/ros2_openvino_toolkit/image_rviz')],
-                extra_arguments=[{'use_intra_process_comms':'true'}]
+                #extra_arguments=[{'use_intra_process_comms':'true'}]
             )
             ],
             output='screen',

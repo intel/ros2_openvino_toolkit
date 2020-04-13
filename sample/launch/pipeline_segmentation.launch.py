@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch face detection and rviz."""
-
 import os
 
 from ament_index_python.packages import get_package_share_directory
@@ -24,8 +22,7 @@ import launch_ros.actions
 def generate_launch_description():
     default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
                                 'pipeline_segmentation.yaml')
-    default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
-                                'rviz/default.rviz')
+
     return LaunchDescription([
         # Realsense
         # NOTE: Split realsense_node launching from OpenVINO package, which
@@ -45,8 +42,4 @@ def generate_launch_description():
                 ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
-        # Rviz
-        launch_ros.actions.Node(
-            package='rviz2', node_executable='rviz2', output='screen',
-            arguments=['--display-config', default_rviz]),
     ])
