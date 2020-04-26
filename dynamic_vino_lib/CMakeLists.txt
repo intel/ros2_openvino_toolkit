@@ -177,10 +177,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 include_directories(
     # ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${InferenceEngine_INCLUDE_DIRS}
-    ${InferenceEngine_INCLUDE_DIRS}/../samples
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../src
+    $ENV{InferenceEngine_DIR}/../include
+    $ENV{InferenceEngine_DIR}/../samples
+    $ENV{InferenceEngine_DIR}/../src
     ${realsense2_INCLUDE_DIRS}
 )
 
