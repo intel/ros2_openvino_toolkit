@@ -170,7 +170,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
 #If you concern the inference performence, you can try to get the resource from the follow url and enable the below line.
-#https://github.com/opencv/dldt/tree/2018/inference-engine/src/extension/cmake
+#https://github.com/openvinotoolkit/openvino/tree/2018/inference-engine/src/extension/cmake
 #include(feature_defs OPTIONAL)
 
 # Properties->C/C++->General->Additional Include Directories

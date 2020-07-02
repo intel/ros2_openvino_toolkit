@@ -8,7 +8,7 @@
 - ROS2 [Dashing](https://github.com/ros2/ros2/wiki)
 
 - OpenVINO™ Toolkit Open Source<br>
-  	* The [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt) that helps to enable fast, heterogeneous deep learning inferencing for Intel® processors (CPU and GPU/Intel® Processor Graphics), and supports more than 100 public and custom models.<br>
+  	* The [Deep Learning Deployment Toolkit](https://github.com/openvinotoolkit/openvino) that helps to enable fast, heterogeneous deep learning inferencing for Intel® processors (CPU and GPU/Intel® Processor Graphics), and supports more than 100 public and custom models.<br>
 	* [Open Model Zoo](https://github.com/opencv/open_model_zoo) includes 20+ pre-trained deep learning models to expedite development and improve deep learning inference on Intel® processors (CPU, Intel Processor Graphics, FPGA, VPU), along with many samples to easily get started.
 
 - RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
@@ -40,7 +40,7 @@
 		wget https://github.com/intel/compute-runtime/releases/download/19.04.12237/intel-ocloc_19.04.12237_amd64.deb
 		sudo dpkg -i *.deb
 		```
-	* Install [Deep Learning Deployment Toolkit](https://github.com/opencv/dldt)([tag 2019_R3.1](https://github.com/opencv/dldt/blob/2019_R3.1/inference-engine/README.md))<br>
+	* Install [Deep Learning Deployment Toolkit](https://github.com/openvinotoolkit/openvino)([tag 2019_R3.1](https://github.com/openvinotoolkit/openvino/blob/2019_R3.1/inference-engine/README.md))<br>
 	* Install [Open Model Zoo](https://github.com/opencv/open_model_zoo)([tag 2019_R3.1](https://github.com/opencv/open_model_zoo/blob/2019_R3.1/demos/README.md))<br>
 	
 - Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)<br>
