@@ -30,7 +30,6 @@
 **Note**:You can also choose to follow the steps below to build the environment step by step.
 * Install ROS2 [Dashing](https://github.com/ros2/ros2/wiki) ([guide](https://index.ros.org/doc/ros2/Installation/Dashing/Linux-Development-Setup/))<br>
 * Install OpenVINO™ Toolkit Open Source<br>
-	* Install [OpenCV 3.4.2](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
 	* Install OpenCL Driver for GPU<br>
 		```bash
 		cd ~/Downloads

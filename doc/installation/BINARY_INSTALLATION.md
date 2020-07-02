@@ -28,8 +28,6 @@
     	**Note**: Please use  *root privileges* to run the installer when installing the core components.
 * Install [the Intel® Graphics Compute Runtime for OpenCL™ driver components required to use the GPU plugin](https://docs.openvinotoolkit.org/latest/_docs_install_guides_installing_openvino_linux.html#additional-GPU-steps)
 
-* Install [OpenCV 3.4.2](https://docs.opencv.org/master/d9/df8/tutorial_root.html)([guide](https://docs.opencv.org/master/d7/d9f/tutorial_linux_install.html))
-
 - Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)<br>
 	* [Install from package](https://github.com/IntelRealSense/librealsense/blob/v2.30.0/doc/distribution_linux.md)<br>
 
@@ -65,7 +63,6 @@
 	```
 	source ~/ros2_ws/install/local_setup.bash
 	source /opt/intel/openvino/bin/setupvars.sh
-	export OpenCV_DIR=$HOME/code/opencv/build
 	cd ~/ros2_overlay_ws
 	colcon build --symlink-install
 	source ./install/local_setup.bash
