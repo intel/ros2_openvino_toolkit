@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Intel Corporation
+# Copyright (c) 2018-2020 Intel Corporation
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(dynamic_vino_lib)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
 ####################################
 ## to use C++14
 set(CMAKE_CXX_STANDARD 14)
@@ -26,9 +24,10 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
 ####################################
-## to use new InferenceEngine API (InferenceEngine::Core),
+## by default, new InferenceEngine API (InferenceEngine::Core) is used.
+## If the deprecated InferenceEngine API (InferenceEngine::InferencePlugin)
 ## then, uncomment below line
-#add_definitions(-DUSE_IE_CORE)
+## add_definitions(-DUSE_OLD_E_PLUGIN_API)
 ####################################
 
 ####################################
@@ -55,9 +54,10 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(realsense2)
-if(NOT realsense2_FOUND)
-  message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
+find_package(realsense2 QUIET)
+if(NOT (realsense2_FOUND))
+  message(STATUS "\n\n Intel RealSense SDK 2.0 is missing, some features depending on it won't work. \
+    please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -75,13 +75,13 @@ find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
-set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
+###################
+#To be deleted
+#set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
+#add_library(cpu_extension SHARED IMPORTED)
+#set_target_properties(cpu_extension PROPERTIES
+#  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
-add_library(cpu_extension SHARED IMPORTED)
-set_target_properties(cpu_extension PROPERTIES
-  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
-
-set(CMAKE_BUILD_TYPE "Release")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
     set(CMAKE_BUILD_TYPE "Release")
@@ -178,17 +178,14 @@ include_directories(
     # ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${InferenceEngine_INCLUDE_DIRS}
-    ${InferenceEngine_INCLUDE_DIRS}/../samples
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../src
-    ${realsense2_INCLUDE_DIRS}
+    #${realsense2_INCLUDE_DIRS}
 )
 
 if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} cpu_extension)
+set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} ${InferenceEngine_LIBRARIES})
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp

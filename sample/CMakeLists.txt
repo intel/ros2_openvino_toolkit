@@ -81,18 +81,6 @@ if( BUILD_SAMPLE_NAME AND NOT ${BUILD_SAMPLE_NAME} STREQUAL ${PROJECT_NAME} )
     return()
 endif()
 
-set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
-
-add_library(cpu_extension SHARED IMPORTED)
-set_target_properties(cpu_extension PROPERTIES
-  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
-
-set(Gflags_lib $ENV{GFLAGS_LIB})
-
-add_library(gflags STATIC IMPORTED)
-set_target_properties(gflags PROPERTIES
-  IMPORTED_LOCATION $ENV{GFLAGS_LIB})
-
 file(GLOB MAIN_SRC
   ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
 )
@@ -115,8 +103,8 @@ include_directories(${InferenceEngine_INCLUDE_DIRS})
 include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples)
 include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
 include_directories(${InferenceEngine_INCLUDE_DIRS}/../src)
-include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
-include_directories(${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
+#include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
+#include_directories(${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
 
 include_directories(${realsense2_INCLUDE_DIRS})
 #include_directories (/opt/ros2_openvino/include)
@@ -124,12 +112,16 @@ include_directories(${realsense2_INCLUDE_DIRS})
 # Create library file from sources.
 #add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
 
+if(UNIX)
+    set(LIB_DL dl)
+endif()
+
 add_executable(vino_param_sample
   src/parameters.cpp
 )
 target_link_libraries(vino_param_sample
   dl
-  gflags)
+  )
 
 ament_target_dependencies(vino_param_sample
   "vino_param_lib"
@@ -142,8 +134,7 @@ add_executable(pipeline_with_params
 )
 target_link_libraries(pipeline_with_params
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(pipeline_with_params
   "rclcpp"
   "rmw_implementation"
@@ -166,8 +157,7 @@ add_library(composable_pipeline SHARED
   src/pipeline_composite.cpp)
 target_link_libraries(composable_pipeline
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(composable_pipeline
   "rclcpp"
   "rmw_implementation"
@@ -195,8 +185,7 @@ add_executable(image_object_server
 )
 target_link_libraries(image_object_server
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(image_object_server
   "rclcpp"
   "rmw_implementation"
@@ -217,8 +206,7 @@ add_executable(image_people_server
 )
 target_link_libraries(image_people_server
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(image_people_server
   "rclcpp"
   "rmw_implementation"
@@ -239,8 +227,7 @@ add_executable(image_object_client
 )
 target_link_libraries(image_object_client
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(image_object_client
   "rclcpp"
   "rmw_implementation"
@@ -261,8 +248,7 @@ add_executable(image_people_client
 )
 target_link_libraries(image_people_client
   dl
-  cpu_extension
-  gflags)
+  )
 ament_target_dependencies(image_people_client
   "rclcpp"
   "rmw_implementation"

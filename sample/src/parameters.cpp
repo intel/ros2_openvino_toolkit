@@ -21,7 +21,6 @@
 
 #include <vino_param_lib/param_manager.hpp>
 #include <dynamic_vino_lib/slog.hpp>
-#include <gflags/gflags.h>
 #include <fstream>
 #include <functional>
 #include <iostream>
@@ -42,7 +41,7 @@ int main(int argc, char * argv[])
       return -1;
     }
 
-    Params::ParamManager::getInstance().parse(FLAGS_config);
+    Params::ParamManager::getInstance().parse(config);
     Params::ParamManager::getInstance().print();
 
     slog::info << "print again, should same as above....." << slog::endl;
