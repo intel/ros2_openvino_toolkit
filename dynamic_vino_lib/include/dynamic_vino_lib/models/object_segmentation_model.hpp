@@ -49,6 +49,18 @@ public:
   {
     return mask_output_;
   }
+  inline const size_t getOutputChannelSize()
+  {
+    return output_channels_;
+  }
+  inline const size_t getOutputHeight()
+  {
+    return output_height_;
+  }
+  inline const size_t getOutputWidth()
+  {
+    return output_width_;
+  }
 
   bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
     const cv::Rect & ) override;
@@ -75,9 +87,9 @@ private:
   std::string mask_output_ = "masks";
   std::string detection_output_ = "detection_output";
 
-  size_t input_channels_;
-  size_t input_height_;
-  size_t input_width_;
+  size_t output_channels_ = 0;
+  size_t output_height_ = 0;
+  size_t output_width_ = 0;
   InferenceEngine::InputsDataMap input_info_;
   InferenceEngine::OutputsDataMap output_info_;
 
