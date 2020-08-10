@@ -37,11 +37,36 @@ void Models::ObjectDetectionSSDModel::setLayerProperty(
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  for (const auto & item : input_info_map) {
+    if (item.second->getTensorDesc().getDims().size() == 4) { // first input contains images
+      slog::info << "The size of TensorDesc for Object Detect Model is 4, contains image DATA."
+                 << slog::endl;
+      input_ = item.first;
+      item.second->setPrecision(InferenceEngine::Precision::U8);
+      //item.second->getPreProcess().setResizeAlgorithm(
+      //  InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
+      item.second->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+    } else if (item.second->getTensorDesc().getDims().size() == 2) {
+      // second input contains image info
+      slog::info << "The size of TensorDesc for Object Detect Model is 2, contains image INFO."
+                 << slog::endl;
+      input_ = item.first;
+      item.second->setPrecision(InferenceEngine::Precision::FP32);
+    } else {
+      slog::err << "Unsupported "
+                << std::to_string(item.second->getTensorDesc().getDims().size()) << "D "
+                << "input layer '" << item.first << "'. "
+                << "Only 2D and 4D input layers are supported" << slog::endl;
+      throw std::logic_error("Unsupported " +
+        std::to_string(item.second->getTensorDesc().getDims().size()) + "D "
+        "input layer '" + item.first + "'. "
+        "Only 2D and 4D input layers are supported");
+    }
+  }
+
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+
   InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
   output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
   output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
