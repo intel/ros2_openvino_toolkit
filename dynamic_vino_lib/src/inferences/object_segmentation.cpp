@@ -170,12 +170,12 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   const auto masks_blob = request->GetBlob(mask_output.c_str());
   const auto masks_data = masks_blob->buffer().as<float *>();
   // amount of elements in each detected box description (batch, label, prob, x1, y1, x2, y2)
-  size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
-  size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
-  size_t box_description_size = do_blob->getTensorDesc().getDims().at(0);
-  size_t H = valid_model_->getOutputHeight(); //masks_blob->dims().at(1);
-  size_t W = valid_model_->getOutputWidth(); //masks_blob->dims().at(0);
-  size_t box_stride = W * H * label_num;
+  const size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
+  const size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
+  const size_t box_description_size = do_blob->getTensorDesc().getDims().at(0);
+  const size_t H = valid_model_->getOutputHeight(); //masks_blob->dims().at(1);
+  const size_t W = valid_model_->getOutputWidth(); //masks_blob->dims().at(0);
+  const size_t box_stride = W * H * label_num;
   for (size_t box = 0; box < box_num; ++box)
   {
     float *box_info = do_data + box * box_description_size;

@@ -49,15 +49,15 @@ public:
   {
     return mask_output_;
   }
-  inline const size_t getOutputChannelSize()
+  inline size_t getOutputChannelSize() const
   {
     return output_channels_;
   }
-  inline const size_t getOutputHeight()
+  inline size_t getOutputHeight() const
   {
     return output_height_;
   }
-  inline const size_t getOutputWidth()
+  inline size_t getOutputWidth() const
   {
     return output_width_;
   }

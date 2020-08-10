@@ -71,9 +71,9 @@ void Models::ObjectSegmentationModel::setLayerProperty(
   network.reshape(inputShapes);
 
   auto &inputInfo = *network.getInputsInfo().begin()->second;
-  inputInfo.getPreProcess().setResizeAlgorithm(ResizeAlgorithm::RESIZE_BILINEAR);
-  inputInfo.setLayout(Layout::NHWC);
-  inputInfo.setPrecision(Precision::U8);
+  inputInfo.getPreProcess().setResizeAlgorithm(InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
+  inputInfo.setLayout(InferenceEngine::Layout::NHWC);
+  inputInfo.setPrecision(InferenceEngine::Precision::U8);
 
   try
   {
@@ -189,12 +189,12 @@ bool Models::ObjectSegmentationModel::matToBlob(
     return false;
   }
 
-  size_t channels = mat.channels();
-  size_t height = mat.size().height;
-  size_t width = mat.size().width;
+  size_t channels = orig_image.channels();
+  size_t height = orig_image.size().height;
+  size_t width = orig_image.size().width;
 
-  size_t strideH = mat.step.buf[0];
-  size_t strideW = mat.step.buf[1];
+  size_t strideH = orig_image.step.buf[0];
+  size_t strideW = orig_image.step.buf[1];
 
   bool is_dense =
       strideW == channels &&
@@ -209,7 +209,7 @@ bool Models::ObjectSegmentationModel::matToBlob(
                                     {1, channels, height, width},
                                     InferenceEngine::Layout::NHWC);
 
-  auto shared_blob = InferenceEngine::make_shared_blob<uint8_t>(tDesc, mat.data);
+  auto shared_blob = InferenceEngine::make_shared_blob<uint8_t>(tDesc, orig_image.data);
   engine->getRequest()->SetBlob(getInputName(), shared_blob);
 
   return true;
