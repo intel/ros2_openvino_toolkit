@@ -32,7 +32,7 @@ namespace Models
 class FaceDetectionModel : public ObjectDetectionModel
 {
 public:
-  FaceDetectionModel(const std::string &, int, int, int);
+  FaceDetectionModel(const std::string & model_loc, int batch_size = 1);
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.

@@ -309,7 +309,7 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
         continue;
       }
       for (unsigned int j = i + 1; j < raw_results.size(); ++j) {
-        auto iou = dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(
+        auto iou = dynamic_vino_lib::ObjectDetection::calcIoU(
           raw_results[i].getLocation(), raw_results[j].getLocation());
         if (iou >= 0.45) {
           raw_results[j].setConfidence(0);

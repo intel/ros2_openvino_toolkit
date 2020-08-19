@@ -27,11 +27,8 @@
 
 // Validated Base Network
 Models::BaseModel::BaseModel(
-  const std::string & model_loc, int input_num, int output_num,
-  int max_batch_size)
-: input_num_(input_num),
-  output_num_(output_num),
-  model_loc_(model_loc),
+  const std::string & model_loc, int max_batch_size)
+: model_loc_(model_loc),
   max_batch_size_(max_batch_size)
 {
   if (model_loc.empty()) {
@@ -60,11 +57,11 @@ void Models::BaseModel::modelInit()
   std::ifstream input_file(label_file_name);
   std::copy(std::istream_iterator<std::string>(input_file), std::istream_iterator<std::string>(),
     std::back_inserter(labels_));
-  checkNetworkSize(input_num_, output_num_, net_reader_);
+  // checkNetworkSize(input_num_, output_num_, net_reader_);
   checkLayerProperty(net_reader_);
   setLayerProperty(net_reader_);
 }
-
+#if 0
 void Models::BaseModel::checkNetworkSize(
   int input_size, int output_size,
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -86,6 +83,7 @@ void Models::BaseModel::checkNetworkSize(
   }
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
 }
+#endif
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string & model_loc,

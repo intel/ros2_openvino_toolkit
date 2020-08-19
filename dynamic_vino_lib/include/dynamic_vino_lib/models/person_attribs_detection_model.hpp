@@ -29,7 +29,7 @@ namespace Models
 class PersonAttribsDetectionModel : public BaseModel
 {
 public:
-  PersonAttribsDetectionModel(const std::string &, int, int, int);
+  PersonAttribsDetectionModel(const std::string & model_loc, int batch_size = 1);
   inline const std::string getInputName() {return input_;}
   inline const std::string getOutputName() {return output_;}
   /**

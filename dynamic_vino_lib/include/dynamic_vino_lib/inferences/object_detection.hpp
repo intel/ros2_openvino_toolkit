@@ -194,7 +194,7 @@ public:
    * @brief Calculate the IoU ratio for the given rectangles.
    * @return IoU Ratio of the given rectangles.
    */
-  static double IntersectionOverUnion(const cv::Rect & box_1, const cv::Rect & box_2);
+  static double calcIoU(const cv::Rect & box_1, const cv::Rect & box_2);
 
 private:
   std::shared_ptr<Models::ObjectDetectionModel> valid_model_;

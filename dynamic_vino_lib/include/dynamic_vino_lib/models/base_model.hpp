@@ -55,10 +55,10 @@ public:
    * (model' s bin file should be the same as .xml file except for extension)
    * @param[in] input_num The number of input the network should have.
    * @param[in] output_num The number of output the network should have.
-   * @param[in] batch_size The number of batch size the network should have.
+   * @param[in] batch_size The number of batch size (default: 1) the network should have.
    * @return Whether the input device is successfully turned on.
    */
-  BaseModel(const std::string & model_loc, int input_num, int output_num, int batch_size);
+  BaseModel(const std::string & model_loc, int batch_size = 1);
   /**
    * @brief Get the label vector.
    * @return The label vector.
@@ -116,7 +116,7 @@ protected:
    * @param[in] network_reader The reader of the network to be set.
    */
   virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
-  virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
+  // virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
   InferenceEngine::CNNNetReader::Ptr net_reader_;
   void setFrameSize(const int & w, const int & h)
   {
@@ -142,7 +142,7 @@ private:
 class ObjectDetectionModel : public BaseModel
 {
 public:
-  ObjectDetectionModel(const std::string & a, int b, int c, int d);
+  ObjectDetectionModel(const std::string & model_loc, int batch_size = 1);
   virtual bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
     std::vector<dynamic_vino_lib::ObjectDetectionResult> & result,

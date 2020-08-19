@@ -28,7 +28,7 @@ namespace Models
 class ObjectSegmentationModel : public BaseModel
 {
 public:
-  ObjectSegmentationModel(const std::string &, int, int, int);
+  ObjectSegmentationModel(const std::string & model_loc, int batch_size = 1);
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;

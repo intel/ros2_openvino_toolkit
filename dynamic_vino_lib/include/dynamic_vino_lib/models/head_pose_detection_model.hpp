@@ -32,7 +32,7 @@ namespace Models
 class HeadPoseDetectionModel : public BaseModel
 {
 public:
-  HeadPoseDetectionModel(const std::string &, int, int, int);
+  HeadPoseDetectionModel(const std::string & model_loc, int batch_size = 1);
   inline const std::string getInputName() const
   {
     return input_;

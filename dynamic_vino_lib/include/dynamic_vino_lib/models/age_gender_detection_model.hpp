@@ -32,7 +32,7 @@ namespace Models
 class AgeGenderDetectionModel : public BaseModel
 {
 public:
-  AgeGenderDetectionModel(const std::string &, int, int, int);
+  AgeGenderDetectionModel(const std::string & model_loc, int batch_size = 1);
   /**
    * @brief Get the input name.
    * @return Input name.
