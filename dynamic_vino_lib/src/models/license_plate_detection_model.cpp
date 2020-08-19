@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
 Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
-  const std::string & model_loc, int input_num, int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size) {}
+  const std::string & model_loc, int max_batch_size)
+: BaseModel(model_loc, max_batch_size) {}
 
 void Models::LicensePlateDetectionModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -61,7 +61,7 @@ void Models::LicensePlateDetectionModel::checkLayerProperty(
   }
 }
 
-const std::string Models::LicensePlateDetectionModel::getModelName() const
+const std::string Models::LicensePlateDetectionModel::getModelCategory() const
 {
   return "Vehicle Attributes Detection";
 }

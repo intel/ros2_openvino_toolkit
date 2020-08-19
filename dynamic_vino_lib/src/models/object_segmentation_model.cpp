@@ -25,12 +25,12 @@
 // Validated Object Detection Network
 Models::ObjectSegmentationModel::ObjectSegmentationModel(
     const std::string &model_loc,
-    int input_num, int output_num,
     int max_batch_size)
-    : BaseModel(model_loc, input_num, output_num, max_batch_size)
+    : BaseModel(model_loc, max_batch_size)
 {
 }
 
+#if 0
 void Models::ObjectSegmentationModel::checkNetworkSize(
     int input_size, int output_size, InferenceEngine::CNNNetReader::Ptr net_reader)
 {
@@ -38,7 +38,7 @@ void Models::ObjectSegmentationModel::checkNetworkSize(
   InferenceEngine::InputsDataMap input_info(net_reader->getNetwork().getInputsInfo());
   if (input_info.size() != input_size)
   {
-    throw std::logic_error(getModelName() + " should have " + std::to_string(input_size) + " inpu"
+    throw std::logic_error(getModelCategory() + " should have " + std::to_string(input_size) + " inpu"
                                                                                            "t, but got " +
                            std::to_string(input_info.size()));
   }
@@ -48,11 +48,12 @@ void Models::ObjectSegmentationModel::checkNetworkSize(
   InferenceEngine::OutputsDataMap output_info(net_reader->getNetwork().getOutputsInfo());
   if (output_info.size() != output_size && output_info.size() != (output_size - 1))
   {
-    throw std::logic_error(getModelName() + " should have " + std::to_string(output_size) + " outpu"
+    throw std::logic_error(getModelCategory() + " should have " + std::to_string(output_size) + " outpu"
                                                                                             "t, but got " +
                            std::to_string(output_info.size()));
   }
 }
+#endif
 
 void Models::ObjectSegmentationModel::setLayerProperty(
     InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -81,7 +82,7 @@ void Models::ObjectSegmentationModel::setLayerProperty(
   }
   catch (std::exception &error)
   {
-    throw std::logic_error(getModelName() + "is failed when adding detection_output laryer.");
+    throw std::logic_error(getModelCategory() + "is failed when adding detection_output laryer.");
   }
 
   network.setBatchSize(1);
@@ -215,7 +216,7 @@ bool Models::ObjectSegmentationModel::matToBlob(
   return true;
 }
 
-const std::string Models::ObjectSegmentationModel::getModelName() const
+const std::string Models::ObjectSegmentationModel::getModelCategory() const
 {
   return "Object Segmentation";
 }

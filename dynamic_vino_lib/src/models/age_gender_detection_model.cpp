@@ -25,9 +25,8 @@
 // Validated Age Gender Classification Network
 Models::AgeGenderDetectionModel::AgeGenderDetectionModel(
   const std::string & model_loc,
-  int input_num, int output_num,
   int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size)
+: BaseModel(model_loc, max_batch_size)
 {
 }
 
@@ -82,7 +81,7 @@ void Models::AgeGenderDetectionModel::checkLayerProperty(
   slog::info << "Gender layer: " << gender_output_ptr->getCreatorLayer().lock()->name << slog::endl;
 }
 
-const std::string Models::AgeGenderDetectionModel::getModelName() const
+const std::string Models::AgeGenderDetectionModel::getModelCategory() const
 {
   return "Age Gender Detection";
 }

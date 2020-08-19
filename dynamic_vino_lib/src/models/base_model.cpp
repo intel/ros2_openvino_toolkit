@@ -34,6 +34,7 @@ Models::BaseModel::BaseModel(
   if (model_loc.empty()) {
     throw std::logic_error("model file name is empty!");
   }
+  attr_.setModelName(model_loc);
 
   net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
 }
@@ -56,7 +57,7 @@ void Models::BaseModel::modelInit()
   std::string label_file_name = raw_name + ".labels";
   std::ifstream input_file(label_file_name);
   std::copy(std::istream_iterator<std::string>(input_file), std::istream_iterator<std::string>(),
-    std::back_inserter(labels_));
+    std::back_inserter(attr_.labels));
   // checkNetworkSize(input_num_, output_num_, net_reader_);
   checkLayerProperty(net_reader_);
   setLayerProperty(net_reader_);
@@ -71,14 +72,14 @@ void Models::BaseModel::checkNetworkSize(
   slog::info << "Checking input size" << slog::endl;
   InferenceEngine::InputsDataMap input_info(net_reader->getNetwork().getInputsInfo());
   if (input_info.size() != input_size) {
-    throw std::logic_error(getModelName() + " should have " + std::to_string(input_size) + " inpu"
+    throw std::logic_error(getModelCategory() + " should have " + std::to_string(input_size) + " inpu"
             "t");
   }
   // check output size
   slog::info << "Checking output size" << slog::endl;
   InferenceEngine::OutputsDataMap output_info(net_reader->getNetwork().getOutputsInfo());
   if (output_info.size() != output_size) {
-    throw std::logic_error(getModelName() + " should have " + std::to_string(output_size) + " outpu"
+    throw std::logic_error(getModelCategory() + " should have " + std::to_string(output_size) + " outpu"
             "t");
   }
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
@@ -87,6 +88,5 @@ void Models::BaseModel::checkNetworkSize(
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string & model_loc,
-  int input_num, int output_num,
   int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size) {}
+: BaseModel(model_loc, max_batch_size) {}

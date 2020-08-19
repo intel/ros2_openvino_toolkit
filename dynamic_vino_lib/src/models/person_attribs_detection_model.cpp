@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Person Attributes Detection Network
 Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
-  const std::string & model_loc, int input_num, int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size) {}
+  const std::string & model_loc, int max_batch_size)
+: BaseModel(model_loc, max_batch_size) {}
 
 void Models::PersonAttribsDetectionModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -56,7 +56,7 @@ void Models::PersonAttribsDetectionModel::checkLayerProperty(
   }
 }
 
-const std::string Models::PersonAttribsDetectionModel::getModelName() const
+const std::string Models::PersonAttribsDetectionModel::getModelCategory() const
 {
   return "Person Attributes Detection";
 }

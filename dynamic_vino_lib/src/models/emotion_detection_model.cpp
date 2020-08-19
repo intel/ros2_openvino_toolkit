@@ -23,9 +23,8 @@
 
 // Validated Emotions Detection Network
 Models::EmotionDetectionModel::EmotionDetectionModel(
-  const std::string & model_loc, int input_num,
-  int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size)
+  const std::string & model_loc, int max_batch_size)
+: BaseModel(model_loc, max_batch_size)
 {
 }
 
@@ -63,7 +62,7 @@ void Models::EmotionDetectionModel::checkLayerProperty(
     slog::endl;
 }
 
-const std::string Models::EmotionDetectionModel::getModelName() const
+const std::string Models::EmotionDetectionModel::getModelCategory() const
 {
   return "Emotions Detection";
 }

@@ -24,17 +24,17 @@
 
 // Validated Face Detection Network
 Models::FaceDetectionModel::FaceDetectionModel(
-  const std::string & model_loc, int input_num,
-  int output_num, int max_batch_size)
-: ObjectDetectionModel(model_loc, input_num, output_num, max_batch_size)
+  const std::string & model_loc, int max_batch_size)
+: ObjectDetectionModel(model_loc, max_batch_size)
 {
 }
 
+#if 0
 void Models::FaceDetectionModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader)
 {
   slog::info << "Checking Face Detection inputs" << slog::endl;
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::err << "Face Detection network should have only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
@@ -90,8 +90,9 @@ void Models::FaceDetectionModel::checkLayerProperty(
             std::to_string(output_dims.size()));
   }
 }
+#endif
 
-const std::string Models::FaceDetectionModel::getModelName() const
+const std::string Models::FaceDetectionModel::getModelCategory() const
 {
   return "Face Detection";
 }

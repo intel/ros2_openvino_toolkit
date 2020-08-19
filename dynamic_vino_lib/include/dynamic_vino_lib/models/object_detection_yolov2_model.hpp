@@ -64,7 +64,7 @@ public:
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
+  const std::string getModelCategory() const override;
 
 protected:
   void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;

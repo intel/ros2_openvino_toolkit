@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Face Reidentification Network
 Models::FaceReidentificationModel::FaceReidentificationModel(
-  const std::string & model_loc, int input_num, int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size) {}
+  const std::string & model_loc, int max_batch_size)
+: BaseModel(model_loc, max_batch_size) {}
 
 void Models::FaceReidentificationModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -47,7 +47,7 @@ void Models::FaceReidentificationModel::setLayerProperty(
 void Models::FaceReidentificationModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader) {}
 
-const std::string Models::FaceReidentificationModel::getModelName() const
+const std::string Models::FaceReidentificationModel::getModelCategory() const
 {
   return "Face Reidentification";
 }

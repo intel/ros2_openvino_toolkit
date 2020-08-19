@@ -28,9 +28,8 @@
 
 // Validated Object Detection Network
 Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
-  const std::string & model_loc, int input_num,
-  int output_num, int max_batch_size)
-: ObjectDetectionModel(model_loc, input_num, output_num, max_batch_size)
+  const std::string & model_loc, int max_batch_size)
+: ObjectDetectionModel(model_loc, max_batch_size)
 {
 }
 
@@ -110,7 +109,7 @@ void Models::ObjectDetectionYolov2Model::checkLayerProperty(
   }
 }
 
-const std::string Models::ObjectDetectionYolov2Model::getModelName() const
+const std::string Models::ObjectDetectionYolov2Model::getModelCategory() const
 {
   return "Object Detection Yolo v2";
 }

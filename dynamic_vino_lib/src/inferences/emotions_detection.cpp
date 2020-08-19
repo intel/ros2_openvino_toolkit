@@ -119,7 +119,7 @@ dynamic_vino_lib::EmotionsDetection::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::EmotionsDetection::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::EmotionsDetection::observeOutput(

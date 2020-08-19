@@ -43,7 +43,7 @@ dynamic_vino_lib::ObjectSegmentation::~ObjectSegmentation() = default;
 void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
     const std::shared_ptr<Models::ObjectSegmentationModel> network)
 {
-  slog::info << "Loading Network: " << network->getModelName() << slog::endl;
+  slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
@@ -229,7 +229,7 @@ dynamic_vino_lib::ObjectSegmentation::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::ObjectSegmentation::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::ObjectSegmentation::observeOutput(
