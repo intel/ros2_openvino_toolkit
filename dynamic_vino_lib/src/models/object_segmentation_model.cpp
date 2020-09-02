@@ -30,31 +30,6 @@ Models::ObjectSegmentationModel::ObjectSegmentationModel(
 {
 }
 
-#if 0
-void Models::ObjectSegmentationModel::checkNetworkSize(
-    int input_size, int output_size, InferenceEngine::CNNNetReader::Ptr net_reader)
-{
-  slog::info << "Checking input size" << slog::endl;
-  InferenceEngine::InputsDataMap input_info(net_reader->getNetwork().getInputsInfo());
-  if (input_info.size() != input_size)
-  {
-    throw std::logic_error(getModelCategory() + " should have " + std::to_string(input_size) + " inpu"
-                                                                                           "t, but got " +
-                           std::to_string(input_info.size()));
-  }
-
-  // check output size
-  slog::info << "Checking output size" << slog::endl;
-  InferenceEngine::OutputsDataMap output_info(net_reader->getNetwork().getOutputsInfo());
-  if (output_info.size() != output_size && output_info.size() != (output_size - 1))
-  {
-    throw std::logic_error(getModelCategory() + " should have " + std::to_string(output_size) + " outpu"
-                                                                                            "t, but got " +
-                           std::to_string(output_info.size()));
-  }
-}
-#endif
-
 void Models::ObjectSegmentationModel::setLayerProperty(
     InferenceEngine::CNNNetReader::Ptr net_reader)
 {

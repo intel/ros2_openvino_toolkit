@@ -265,7 +265,6 @@ namespace Models
      */
     virtual void updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader);
 
-    // virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
     InferenceEngine::CNNNetReader::Ptr net_reader_;
     void setFrameSize(const int &w, const int &h)
     {
