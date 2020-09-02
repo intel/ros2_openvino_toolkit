@@ -31,6 +31,7 @@
 
 #include "inference_engine.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+#include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
 
 namespace Engines
 {
@@ -44,6 +45,7 @@ namespace dynamic_vino_lib
 
 namespace Models
 {
+  #if 0
   /**
  * @struct ModelAttr
  * @brief attributes for a given model
@@ -164,6 +166,8 @@ namespace Models
     slog::info << "--------------------------------" << slog::endl;
   }
   };
+  #endif
+
   /**
  * @class BaseModel
  * @brief This class represents the network given by .xml and .bin file
@@ -189,7 +193,10 @@ namespace Models
    */
     inline std::vector<std::string> & getLabels()
     {
-      return attr_.labels;
+      if(attr_ == nullptr){
+        throw std::logic_error("Model Attribute is not set!");
+      }
+      return attr_->getLabels();
     }
     /**
    * @brief Get the maximum batch size of the model.
@@ -219,28 +226,45 @@ namespace Models
    * @return The name of the model.
    */
     virtual const std::string getModelCategory() const = 0;
-    inline ModelAttr * getAttribute() { return &attr_; }
+    inline std::shared_ptr<ModelAttribute> getAttribute() { return attr_; }
 
-    virtual inline int getMaxProposalCount() const { return attr_.max_proposal_count; }
-    inline int getObjectSize() const { return attr_.object_size; }
-    inline void setObjectSize(int os) { attr_.object_size = os; }
+    virtual inline int getMaxProposalCount() const { return max_proposal_count_; } //DEPRECATED!
+    inline int getObjectSize() const { return object_size_; } //DEPRECATED!
+    inline void setObjectSize(int os) { object_size_ = os; } //DEPRECATED!
     inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
     {
       return net_reader_;
     }
 
+    inline void addCandidatedAttr(std::shared_ptr<ModelAttribute> attr)
+    {
+      if( attr != nullptr){
+        candidated_attrs_.push_back(attr);
+      }
+    }
+
   protected:
     /**
-   * @brief Check whether the layer property
-   * (output layer name, output layer type, etc.) is right
-   * @param[in] network_reader The reader of the network to be checked.
-   */
+    * DEPRECATED!
+    * @brief Check whether the layer property
+    * (output layer name, output layer type, etc.) is right
+    * @param[in] network_reader The reader of the network to be checked.
+    */
     virtual void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &network_reader) = 0;
-    /**
+  /**
+   * DEPRECATED!
    * @brief Set the layer property (layer layout, layer precision, etc.).
    * @param[in] network_reader The reader of the network to be set.
    */
     virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
+
+    /**
+     * New infterface to check and update Layer Property
+     * @brief Set the layer property (layer layout, layer precision, etc.).
+     * @param[in] network_reader The reader of the network to be set.
+     */
+    virtual void updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader);
+
     // virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
     InferenceEngine::CNNNetReader::Ptr net_reader_;
     void setFrameSize(const int &w, const int &h)
@@ -254,11 +278,12 @@ namespace Models
     }
 
   protected:
-    int max_proposal_count_;
-    int object_size_;
+    int max_proposal_count_; //DEPRECATED!
+    int object_size_; //DEPRECATED!
+    std::vector<std::shared_ptr<ModelAttribute> > candidated_attrs_;
 
   private:
-    ModelAttr attr_;
+    std::shared_ptr<ModelAttribute> attr_ = nullptr;
     int max_batch_size_;
     std::string model_loc_;
     cv::Size frame_size_;

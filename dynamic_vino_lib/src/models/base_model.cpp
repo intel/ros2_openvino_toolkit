@@ -24,6 +24,7 @@
 #include <iostream>
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+#include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
 
 // Validated Base Network
 Models::BaseModel::BaseModel(
@@ -34,7 +35,7 @@ Models::BaseModel::BaseModel(
   if (model_loc.empty()) {
     throw std::logic_error("model file name is empty!");
   }
-  attr_.setModelName(model_loc);
+  attr_->setModelName(model_loc);
 
   net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
 }
@@ -55,12 +56,13 @@ void Models::BaseModel::modelInit()
   net_reader_->ReadWeights(bin_file_name);
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
-  std::ifstream input_file(label_file_name);
-  std::copy(std::istream_iterator<std::string>(input_file), std::istream_iterator<std::string>(),
-    std::back_inserter(attr_.labels));
+  attr_->loadLabelsFromFile(label_file_name);
+
   // checkNetworkSize(input_num_, output_num_, net_reader_);
+  /** DEPRECATED!
   checkLayerProperty(net_reader_);
-  setLayerProperty(net_reader_);
+  setLayerProperty(net_reader_); */
+  updateLayerProperty(net_reader_);
 }
 #if 0
 void Models::BaseModel::checkNetworkSize(
@@ -85,6 +87,26 @@ void Models::BaseModel::checkNetworkSize(
   // InferenceEngine::DataPtr& output_data_ptr = output_info.begin()->second;
 }
 #endif
+
+void Models::BaseModel::updateLayerProperty(
+  InferenceEngine::CNNNetReader::Ptr net_reader)
+{
+  for(auto attr : candidated_attrs_) {
+    if (attr == nullptr) continue;
+    if (attr->updateLayerProperty(net_reader)){
+      if(attr_!=nullptr){
+        slog::warn << "The old attribute instance is replaced for model " << attr_->getModelName()
+          << ". Currently each model only supports one Attribute instance." << slog::endl;
+      }
+      attr_ = attr;
+    }
+  }
+  if(attr_ == nullptr){
+    slog::warn << "The attribute instance is set for model " << attr_->getModelName()
+          << ", using default settings" << slog::endl;
+    attr_ = std::make_shared<Models::ModelAttribute>("DefaultAttr");
+  }
+}
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string & model_loc,

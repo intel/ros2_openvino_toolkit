@@ -23,12 +23,14 @@
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
+#include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
 
 // Validated Object Detection Network
 Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
   const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(model_loc, max_batch_size)
 {
+  addCandidatedAttr(std::make_shared<Models::SSDModelAttr>());
 }
 
 void Models::ObjectDetectionSSDModel::setLayerProperty(
