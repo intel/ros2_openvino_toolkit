@@ -35,7 +35,6 @@ Models::BaseModel::BaseModel(
   if (model_loc.empty()) {
     throw std::logic_error("model file name is empty!");
   }
-  attr_->setModelName(model_loc);
 
   net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
 }

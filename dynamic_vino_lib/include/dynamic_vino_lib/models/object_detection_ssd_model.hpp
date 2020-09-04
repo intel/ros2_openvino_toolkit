@@ -51,11 +51,11 @@ public:
 
   inline const std::string getInputName()
   {
-    return input_;
+    return getAttribute()->getInputName("input");
   }
   inline const std::string getOutputName()
   {
-    return output_;
+    return getAttribute()->getOutputName("output");
   }
   /**
    * @brief Get the name of this detection model.

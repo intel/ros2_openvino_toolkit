@@ -30,6 +30,7 @@ Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
   const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(model_loc, max_batch_size)
 {
+  slog::warn << "TESTING: in ObjectDetectionSSDModel" << slog::endl;
   addCandidatedAttr(std::make_shared<Models::SSDModelAttr>());
 }
 
@@ -156,7 +157,8 @@ bool Models::ObjectDetectionSSDModel::matToBlob(
     return false;
   }
 
-  std::string input_name = getInputName();
+  std::string input_name = getAttribute()->getInputName();
+  slog::debug << "add input image to blob: " << input_name << slog::endl;
   InferenceEngine::Blob::Ptr input_blob =
     engine->getRequest()->GetBlob(input_name);
 
@@ -181,6 +183,7 @@ bool Models::ObjectDetectionSSDModel::matToBlob(
     }
   }
 
+  slog::debug << "Convert input image to blob: DONE!" << slog::endl;
   return true;
 }
 
@@ -190,17 +193,22 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   const float & confidence_thresh,
   const bool & enable_roi_constraint)
 {
+  slog::debug << "fetching Infer Resulsts from the given SSD model" << slog::endl;
   if (engine == nullptr) {
     slog::err << "Trying to fetch results from <null> Engines." << slog::endl;
     return false;
   }
 
+  slog::debug << "Fetching Detection Results ..." << slog::endl;
   InferenceEngine::InferRequest::Ptr request = engine->getRequest();
   std::string output = getOutputName();
   const float * detections = request->GetBlob(output)->buffer().as<float *>();
 
+  slog::debug << "Analyzing Detection results..." << slog::endl;
   auto max_proposal_count = getMaxProposalCount();
   auto object_size = getObjectSize();
+  slog::debug << "MaxProprosalCount=" << max_proposal_count
+    << ", ObjectSize=" << object_size << slog::endl;
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {

@@ -228,9 +228,12 @@ namespace Models
     virtual const std::string getModelCategory() const = 0;
     inline std::shared_ptr<ModelAttribute> getAttribute() { return attr_; }
 
-    virtual inline int getMaxProposalCount() const { return max_proposal_count_; } //DEPRECATED!
-    inline int getObjectSize() const { return object_size_; } //DEPRECATED!
-    inline void setObjectSize(int os) { object_size_ = os; } //DEPRECATED!
+    virtual inline int getMaxProposalCount() const
+    {
+      return attr_->getMaxProposalCount();
+    }
+    inline int getObjectSize() const { return attr_->getObjectSize(); } //DEPRECATED!
+    inline void setObjectSize(int os) { attr_->setObjectSize(os); } //DEPRECATED!
     inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
     {
       return net_reader_;
@@ -238,7 +241,9 @@ namespace Models
 
     inline void addCandidatedAttr(std::shared_ptr<ModelAttribute> attr)
     {
+      slog::info << "TESTING in addCandidatedAttr()" << slog::endl;
       if( attr != nullptr){
+        slog::info << "adding new ModelAttribute Candidate..." << slog::endl;
         candidated_attrs_.push_back(attr);
       }
     }

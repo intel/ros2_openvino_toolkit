@@ -72,7 +72,7 @@ public:
     }
 
     if(attr_.max_proposal_count <= 0 || attr_.object_size <= 0 || attr_.input_height <= 0
-      || attr_.input_width || attr_.input_names.empty() || attr_.output_names.empty()){
+      || attr_.input_width <= 0 || attr_.input_names.empty() || attr_.output_names.empty()){
       slog::info << "--------" << slog::endl;
       slog::warn << "Not all attributes are set correctly! not 0 or empty is allowed in"
         << " the above list." << slog::endl;
@@ -94,7 +94,7 @@ public:
     attr_.model_name = name;
   }
 
-  inline std::string getInputName(std::string & name) const
+  inline std::string getInputName(std::string name = "input") const
   {
     // std::map<std::string, std::string>::iterator it;
     auto it = attr_.input_names.find(name);
@@ -106,7 +106,7 @@ public:
     return it->second;
   }
 
-  inline std::string getOutputName(std::string & name) const
+  inline std::string getOutputName(std::string name = "output") const
   {
     //std::map<std::string, std::string>::iterator it;
     auto it = attr_.output_names.find(name);
@@ -129,21 +129,17 @@ public:
   }
 
   inline void loadLabelsFromFile(const std::string file_path)
-    {
-      std::ifstream input_file(file_path);
-      std::copy(std::istream_iterator<std::string>(input_file),
-        std::istream_iterator<std::string>(),
-        std::back_inserter(attr_.labels));
+  {
+    std::ifstream input_file(file_path);
+    std::copy(std::istream_iterator<std::string>(input_file),
+      std::istream_iterator<std::string>(),
+      std::back_inserter(attr_.labels));
     }
 
     inline std::vector<std::string>& getLabels()
     {
       return attr_.labels;
     }
-
-
-protected:
-  ModelAttr attr_;
 
   inline void addInputInfo(std::string key, std::string value)
   {
@@ -175,6 +171,11 @@ protected:
     attr_.object_size = size;
   }
 
+protected:
+  ModelAttr attr_;
+
+
+
 };
 
 class SSDModelAttr : public ModelAttribute
@@ -186,6 +187,8 @@ public:
     const InferenceEngine::CNNNetReader::Ptr &);
 
 };
+
+
 
 }  // namespace Models
 

@@ -48,6 +48,7 @@ bool dynamic_vino_lib::BaseInference::submitRequest()
   enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->StartAsync();
+  slog::debug << "Async Inference started!" << slog::endl;
   return true;
 }
 

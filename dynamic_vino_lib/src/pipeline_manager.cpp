@@ -23,6 +23,7 @@
 #include <utility>
 #include <map>
 
+#if 0
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
@@ -34,13 +35,7 @@
 #include "dynamic_vino_lib/inferences/face_reidentification.hpp"
 #include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
-#include "dynamic_vino_lib/inputs/base_input.hpp"
-#include "dynamic_vino_lib/inputs/image_input.hpp"
-#include "dynamic_vino_lib/inputs/realsense_camera.hpp"
-#include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
-#include "dynamic_vino_lib/inputs/standard_camera.hpp"
-#include "dynamic_vino_lib/inputs/ip_camera.hpp"
-#include "dynamic_vino_lib/inputs/video_input.hpp"
+
 #include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
@@ -52,8 +47,17 @@
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
-#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
+#endif
+#include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+#include "dynamic_vino_lib/inputs/base_input.hpp"
+#include "dynamic_vino_lib/inputs/image_input.hpp"
+#include "dynamic_vino_lib/inputs/realsense_camera.hpp"
+#include "dynamic_vino_lib/inputs/realsense_camera_topic.hpp"
+#include "dynamic_vino_lib/inputs/standard_camera.hpp"
+#include "dynamic_vino_lib/inputs/ip_camera.hpp"
+#include "dynamic_vino_lib/inputs/video_input.hpp"
 #include "dynamic_vino_lib/outputs/image_window_output.hpp"
 #include "dynamic_vino_lib/outputs/ros_topic_output.hpp"
 #include "dynamic_vino_lib/outputs/rviz_output.hpp"
@@ -197,7 +201,7 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
     slog::info << "Parsing Inference: " << infer.name << slog::endl;
     std::shared_ptr<dynamic_vino_lib::BaseInference> object = nullptr;
 
-    if (infer.name == kInferTpye_FaceDetection) {
+    /*if (infer.name == kInferTpye_FaceDetection) {
       object = createFaceDetection(infer);
     } else if (infer.name == kInferTpye_AgeGenderRecognition) {
       object = createAgeGenderRecognition(infer);
@@ -205,9 +209,9 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createEmotionRecognition(infer);
     } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
-    } else if (infer.name == kInferTpye_ObjectDetection) {
+    } else */if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentation) {
+    } /*else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
     } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
@@ -221,7 +225,7 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createVehicleAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LicensePlateDetection) {
       object = createLicensePlateDetection(infer);
-    } else {
+    }*/ else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
 
@@ -234,6 +238,7 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
   return inferences;
 }
 
+#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createFaceDetection(
   const Params::ParamManager::InferenceRawData & infer)
@@ -279,6 +284,7 @@ PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceR
 
   return infer;
 }
+#endif
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
@@ -286,29 +292,32 @@ PipelineManager::createObjectDetection(
 {
   std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
   std::shared_ptr<dynamic_vino_lib::ObjectDetection> object_inference_ptr;
-
+  slog::debug << "for test in createObjectDetection()" << slog::endl;
   if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD) {
     object_detection_model =
       std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, infer.batch);
   }
-
+#if 0
   if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2) {
     object_detection_model =
       std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, infer.batch);
   }
-
+#endif
+  slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
   object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
     infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
-
+  slog::debug << "for test in createObjectDetection(), before modelInit()" << slog::endl;
   object_detection_model->modelInit();
   auto object_detection_engine = engine_manager_.createEngine(
     infer.engine, object_detection_model);
+  slog::debug << "for test in createObjectDetection(), before loadNetwork" << slog::endl;
   object_inference_ptr->loadNetwork(object_detection_model);
   object_inference_ptr->loadEngine(object_detection_engine);
-
+  slog::debug << "for test in createObjectDetection(), OK" << slog::endl;
   return object_inference_ptr;
 }
 
+#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
 {
@@ -422,6 +431,7 @@ PipelineManager::createLicensePlateDetection(
 
   return license_plate_ptr;
 }
+#endif
 
 void PipelineManager::threadPipeline(const char * name)
 {
