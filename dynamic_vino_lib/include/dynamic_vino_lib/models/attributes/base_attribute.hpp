@@ -54,7 +54,12 @@ public:
     attr_.model_name = model_name;
   }
 
-  inline void verify()
+  inline bool isVerified()
+  {
+    return (attr_.max_proposal_count > 0 && attr_.object_size > 0 && attr_.input_height > 0
+      && attr_.input_width > 0 && attr_.input_names.empty() && attr_.output_names.empty());
+  }
+  inline void printAttribute()
   {
     slog::info << "----Attributes for Model " << attr_.model_name << "----" << slog::endl;
     slog::info << "| model_name: " << attr_.model_name << slog::endl;
@@ -173,8 +178,6 @@ public:
 
 protected:
   ModelAttr attr_;
-
-
 
 };
 

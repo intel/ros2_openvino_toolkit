@@ -30,7 +30,8 @@
 Models::BaseModel::BaseModel(
   const std::string & model_loc, int max_batch_size)
 : model_loc_(model_loc),
-  max_batch_size_(max_batch_size)
+  max_batch_size_(max_batch_size),
+  ModelAttribute(model_loc)
 {
   if (model_loc.empty()) {
     throw std::logic_error("model file name is empty!");
@@ -55,7 +56,7 @@ void Models::BaseModel::modelInit()
   net_reader_->ReadWeights(bin_file_name);
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
-  attr_->loadLabelsFromFile(label_file_name);
+  loadLabelsFromFile(label_file_name);
 
   /** DEPRECATED!
   checkLayerProperty(net_reader_);
@@ -63,25 +64,26 @@ void Models::BaseModel::modelInit()
   updateLayerProperty(net_reader_);
 }
 
-void Models::BaseModel::updateLayerProperty(
+#if 0
+bool Models::BaseModel::updateLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
 {
-  for(auto attr : candidated_attrs_) {
-    if (attr == nullptr) continue;
-    if (attr->updateLayerProperty(net_reader)){
-      if(attr_!=nullptr){
-        slog::warn << "The old attribute instance is replaced for model " << attr_->getModelName()
-          << ". Currently each model only supports one Attribute instance." << slog::endl;
-      }
-      attr_ = attr;
-    }
+#if 0
+  if (!updateLayerProperty(net_reader)){
+    slog::warn << "The model(name: " << getModelName() << ") failed to update Layer Property!"
+      << slog::endl;
+    return false;
   }
-  if(attr_ == nullptr){
-    slog::warn << "The attribute instance is set for model " << attr_->getModelName()
-          << ", using default settings" << slog::endl;
-    attr_ = std::make_shared<Models::ModelAttribute>("DefaultAttr");
+#endif
+  if(!isVerified()){
+    slog::warn << "The model(name: " << getModelName() << ") does NOT pass Attribute Check!"
+      << slog::endl;
+    return false;
   }
+
+  return true;
 }
+#endif
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string & model_loc,

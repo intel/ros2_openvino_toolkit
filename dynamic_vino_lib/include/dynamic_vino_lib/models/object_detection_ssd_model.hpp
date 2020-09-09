@@ -49,19 +49,13 @@ public:
     const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
     int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
 
-  inline const std::string getInputName()
-  {
-    return getAttribute()->getInputName("input");
-  }
-  inline const std::string getOutputName()
-  {
-    return getAttribute()->getOutputName("output");
-  }
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
+
+  virtual bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr);
 
 protected:
   void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;

@@ -172,7 +172,7 @@ namespace Models
  * @class BaseModel
  * @brief This class represents the network given by .xml and .bin file
  */
-  class BaseModel
+  class BaseModel : public ModelAttribute
   {
   public:
     using Ptr = std::shared_ptr<BaseModel>;
@@ -187,17 +187,7 @@ namespace Models
    * @return Whether the input device is successfully turned on.
    */
     BaseModel(const std::string &model_loc, int batch_size = 1);
-    /**
-   * @brief Get the label vector.
-   * @return The label vector.
-   */
-    inline std::vector<std::string> & getLabels()
-    {
-      if(attr_ == nullptr){
-        throw std::logic_error("Model Attribute is not set!");
-      }
-      return attr_->getLabels();
-    }
+
     /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
@@ -226,26 +216,11 @@ namespace Models
    * @return The name of the model.
    */
     virtual const std::string getModelCategory() const = 0;
-    inline std::shared_ptr<ModelAttribute> getAttribute() { return attr_; }
+    inline ModelAttr getAttribute() { return attr_; }
 
-    virtual inline int getMaxProposalCount() const
-    {
-      return attr_->getMaxProposalCount();
-    }
-    inline int getObjectSize() const { return attr_->getObjectSize(); } //DEPRECATED!
-    inline void setObjectSize(int os) { attr_->setObjectSize(os); } //DEPRECATED!
     inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
     {
       return net_reader_;
-    }
-
-    inline void addCandidatedAttr(std::shared_ptr<ModelAttribute> attr)
-    {
-      slog::info << "TESTING in addCandidatedAttr()" << slog::endl;
-      if( attr != nullptr){
-        slog::info << "adding new ModelAttribute Candidate..." << slog::endl;
-        candidated_attrs_.push_back(attr);
-      }
     }
 
   protected:
@@ -268,7 +243,7 @@ namespace Models
      * @brief Set the layer property (layer layout, layer precision, etc.).
      * @param[in] network_reader The reader of the network to be set.
      */
-    virtual void updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader);
+    virtual bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
 
     InferenceEngine::CNNNetReader::Ptr net_reader_;
     void setFrameSize(const int &w, const int &h)
@@ -281,13 +256,7 @@ namespace Models
       return frame_size_;
     }
 
-  protected:
-    int max_proposal_count_; //DEPRECATED!
-    int object_size_; //DEPRECATED!
-    std::vector<std::shared_ptr<ModelAttribute> > candidated_attrs_;
-
   private:
-    std::shared_ptr<ModelAttribute> attr_ = nullptr;
     int max_batch_size_;
     std::string model_loc_;
     cv::Size frame_size_;

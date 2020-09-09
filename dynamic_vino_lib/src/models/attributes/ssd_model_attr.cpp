@@ -108,7 +108,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
     return false;
   }
 
-  verify();
+  printAttribute();
   slog::info << "This model is SSDNet-like, Layer Property updated!" << slog::endl;
   return true;
 }
