@@ -47,9 +47,9 @@
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
-
-#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 #endif
+#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
+
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
@@ -297,12 +297,11 @@ PipelineManager::createObjectDetection(
     object_detection_model =
       std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, infer.batch);
   }
-#if 0
   if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2) {
     object_detection_model =
       std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, infer.batch);
   }
-#endif
+
   slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
   object_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectDetection>(
     infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
