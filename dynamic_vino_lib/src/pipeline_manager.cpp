@@ -26,7 +26,7 @@
 #if 0
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
-#include "dynamic_vino_lib/inferences/face_detection.hpp"
+
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/inferences/person_reidentification.hpp"
@@ -38,7 +38,7 @@
 
 #include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
-#include "dynamic_vino_lib/models/face_detection_model.hpp"
+
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/models/person_reidentification_model.hpp"
@@ -48,6 +48,8 @@
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
 #endif
+#include "dynamic_vino_lib/inferences/face_detection.hpp"
+#include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
@@ -201,15 +203,15 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
     slog::info << "Parsing Inference: " << infer.name << slog::endl;
     std::shared_ptr<dynamic_vino_lib::BaseInference> object = nullptr;
 
-    /*if (infer.name == kInferTpye_FaceDetection) {
+    if (infer.name == kInferTpye_FaceDetection) {
       object = createFaceDetection(infer);
-    } else if (infer.name == kInferTpye_AgeGenderRecognition) {
+    }/* else if (infer.name == kInferTpye_AgeGenderRecognition) {
       object = createAgeGenderRecognition(infer);
     } else if (infer.name == kInferTpye_EmotionRecognition) {
       object = createEmotionRecognition(infer);
     } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
-    } else */if (infer.name == kInferTpye_ObjectDetection) {
+    }*/ else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
     } /*else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
@@ -238,14 +240,14 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
   return inferences;
 }
 
-#if 0
+
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createFaceDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
   return createObjectDetection(infer);
 }
-
+#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & param)
 {
