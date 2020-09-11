@@ -33,11 +33,6 @@ Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
 {
 }
 
-void Models::ObjectDetectionYolov2Model::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
-{
-
-}
 bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr net_reader)
 {
@@ -53,6 +48,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::FP32);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  input_info_ = input_info;
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
@@ -73,7 +69,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
     net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
-  if (output_layer_ == nullptr ||
+  if (output_layer == nullptr ||
     output_layer->params.find("classes") == output_layer->params.end()) {
     slog::warn << "This model's output layer (" << output_info_map.begin()->first
       << ") should have num_classes integer attribute" << slog::endl;
@@ -114,11 +110,6 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   printAttribute();
   slog::info << "This model is Yolo-like, Layer Property updated!" << slog::endl;
   return true;
-}
-
-void Models::ObjectDetectionYolov2Model::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
 }
 
 const std::string Models::ObjectDetectionYolov2Model::getModelCategory() const

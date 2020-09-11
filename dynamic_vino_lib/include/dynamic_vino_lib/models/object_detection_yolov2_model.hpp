@@ -48,17 +48,6 @@ public:
   bool matToBlob(
     const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
     int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
-  inline const std::string getInputName()
-  {
-    return input_;
-  }
-  inline const std::string getOutputName()
-  {
-    return output_;
-  }
-
-  InferenceEngine::CNNLayerPtr getLayer() {return output_layer_;}
-  InferenceEngine::InputInfo::Ptr getInputInfo() {return input_info_;}
 
   /**
    * @brief Get the name of this detection model.
@@ -68,14 +57,8 @@ public:
   bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
-
-  std::string input_;
-  std::string output_;
-  InferenceEngine::CNNLayerPtr output_layer_;
-  InferenceEngine::InputInfo::Ptr input_info_;
+  InferenceEngine::InputInfo::Ptr input_info_ = nullptr;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_

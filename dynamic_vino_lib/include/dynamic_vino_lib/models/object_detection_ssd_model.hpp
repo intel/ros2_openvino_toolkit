@@ -57,12 +57,6 @@ public:
 
   bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
-protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-
-  std::string input_;
-  std::string output_;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_

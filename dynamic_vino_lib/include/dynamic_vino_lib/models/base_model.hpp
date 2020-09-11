@@ -225,20 +225,6 @@ namespace Models
 
   protected:
     /**
-    * DEPRECATED!
-    * @brief Check whether the layer property
-    * (output layer name, output layer type, etc.) is right
-    * @param[in] network_reader The reader of the network to be checked.
-    */
-    virtual void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &network_reader) = 0;
-  /**
-   * DEPRECATED!
-   * @brief Set the layer property (layer layout, layer precision, etc.).
-   * @param[in] network_reader The reader of the network to be set.
-   */
-    virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
-
-    /**
      * New infterface to check and update Layer Property
      * @brief Set the layer property (layer layout, layer precision, etc.).
      * @param[in] network_reader The reader of the network to be set.

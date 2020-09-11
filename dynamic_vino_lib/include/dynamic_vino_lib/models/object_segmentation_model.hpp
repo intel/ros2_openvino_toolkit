@@ -76,8 +76,8 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
+  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
   int max_proposal_count_;

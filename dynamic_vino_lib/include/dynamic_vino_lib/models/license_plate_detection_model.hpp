@@ -41,8 +41,8 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
+  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
   // up to 88 items per license plate, ended with "-1"
   const int max_sequence_size_ = 88;
   std::string input_;

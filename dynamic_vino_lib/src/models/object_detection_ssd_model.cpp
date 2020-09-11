@@ -34,18 +34,6 @@ Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
   //addCandidatedAttr(std::make_shared<Models::SSDModelAttr>());
 }
 
-void Models::ObjectDetectionSSDModel::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
-{
-  slog::debug << "check Layer Property deprecated!" << slog::endl;
-}
-
-void Models::ObjectDetectionSSDModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
-  slog::debug << "check Layer Property deprecated!" << slog::endl;
-}
-
 const std::string Models::ObjectDetectionSSDModel::getModelCategory() const
 {
   return "Object Detection SSD";
