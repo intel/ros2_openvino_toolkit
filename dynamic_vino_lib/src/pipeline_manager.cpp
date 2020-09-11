@@ -24,7 +24,7 @@
 #include <map>
 
 #if 0
-#include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
+
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
@@ -36,7 +36,7 @@
 #include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
 
-#include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
+
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
 
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
@@ -50,6 +50,8 @@
 #endif
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
+#include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
+#include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
@@ -205,9 +207,9 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
 
     if (infer.name == kInferTpye_FaceDetection) {
       object = createFaceDetection(infer);
-    }/* else if (infer.name == kInferTpye_AgeGenderRecognition) {
+    } else if (infer.name == kInferTpye_AgeGenderRecognition) {
       object = createAgeGenderRecognition(infer);
-    } else if (infer.name == kInferTpye_EmotionRecognition) {
+    }/* else if (infer.name == kInferTpye_EmotionRecognition) {
       object = createEmotionRecognition(infer);
     } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
@@ -247,7 +249,7 @@ PipelineManager::createFaceDetection(
 {
   return createObjectDetection(infer);
 }
-#if 0
+
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & param)
 {
@@ -260,7 +262,7 @@ PipelineManager::createAgeGenderRecognition(const Params::ParamManager::Inferenc
 
   return infer;
 }
-
+#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceRawData & param)
 {
