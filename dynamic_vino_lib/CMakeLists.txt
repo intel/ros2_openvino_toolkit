@@ -198,7 +198,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/base_filter.cpp
         src/inferences/base_inference.cpp
         #src/inferences/base_reidentification.cpp
-        #src/inferences/emotions_detection.cpp
+        src/inferences/emotions_detection.cpp
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp
         src/inferences/object_detection.cpp
@@ -218,7 +218,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inputs/image_input.cpp
         src/models/base_model.cpp
         #src/models/attributes/ssd_model_attr.cpp
-        #src/models/emotion_detection_model.cpp
+        src/models/emotion_detection_model.cpp
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
         #src/models/head_pose_detection_model.cpp
