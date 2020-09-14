@@ -44,12 +44,14 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::FP32);
   input_info->setLayout(InferenceEngine::Layout::NCHW);
+  addInputInfo("input", input_info_map.begin()->first);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
   if (output_info_map.size() != 2) {
     // throw std::logic_error("Age/Gender Recognition network should have two output layers");
-    slog::warn << "This model seems not Age-gender like, which should have and only have 1"
-      " output, but we got " << std::to_string(output_info_map.size()) << "outputs" << slog::endl;
+    slog::warn << "This model seems not Age-gender like, which should have and only have 2"
+      " outputs, but we got " << std::to_string(output_info_map.size()) << "outputs"
+      << slog::endl;
     return false;
   }
   auto it = output_info_map.begin();
@@ -82,13 +84,14 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   age_output_ptr->setLayout(InferenceEngine::Layout::NCHW);
   gender_output_ptr->setPrecision(InferenceEngine::Precision::FP32);
   gender_output_ptr->setLayout(InferenceEngine::Layout::NCHW);
-  // set input and output layer name
-  addInputInfo("input", input_info_map.begin()->first);
 
   //output_age_ = age_output_ptr->name;
   addOutputInfo("age", age_output_ptr->getName());
   //output_gender_ = gender_output_ptr->name;
   addOutputInfo("gender", gender_output_ptr->getName());
+
+  printAttribute();
+  return true;
 }
 
 const std::string Models::AgeGenderDetectionModel::getModelCategory() const
