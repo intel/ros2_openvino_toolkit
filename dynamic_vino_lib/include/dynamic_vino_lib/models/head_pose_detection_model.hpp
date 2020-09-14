@@ -33,10 +33,7 @@ class HeadPoseDetectionModel : public BaseModel
 {
 public:
   HeadPoseDetectionModel(const std::string & model_loc, int batch_size = 1);
-  inline const std::string getInputName() const
-  {
-    return input_;
-  }
+
   /**
    * @brief Get the output angle roll.
    * @return Roll value.
@@ -66,13 +63,10 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
-protected:
-  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
-  std::string input_;
   std::string output_angle_r_ = "angle_r_fc";
   std::string output_angle_p_ = "angle_p_fc";
   std::string output_angle_y_ = "angle_y_fc";

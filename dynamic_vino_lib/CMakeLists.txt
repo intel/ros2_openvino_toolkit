@@ -202,7 +202,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp
         src/inferences/object_detection.cpp
-        #src/inferences/head_pose_detection.cpp
+        src/inferences/head_pose_detection.cpp
         #src/inferences/object_segmentation.cpp
         #src/inferences/person_reidentification.cpp
         #src/inferences/person_attribs_detection.cpp
@@ -221,7 +221,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/emotion_detection_model.cpp
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
-        #src/models/head_pose_detection_model.cpp
+        src/models/head_pose_detection_model.cpp
         #src/models/object_segmentation_model.cpp
         #src/models/person_reidentification_model.cpp
         #src/models/person_attribs_detection_model.cpp

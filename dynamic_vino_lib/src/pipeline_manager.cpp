@@ -27,7 +27,7 @@
 
 
 
-#include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
+
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/inferences/person_reidentification.hpp"
 #include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
@@ -37,7 +37,7 @@
 #include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
 
 
-#include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
+
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/models/person_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
@@ -52,6 +52,8 @@
 #include "dynamic_vino_lib/models/age_gender_detection_model.hpp"
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
+#include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
+#include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
 
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
@@ -211,9 +213,9 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createAgeGenderRecognition(infer);
     } else if (infer.name == kInferTpye_EmotionRecognition) {
       object = createEmotionRecognition(infer);
-    }/* else if (infer.name == kInferTpye_HeadPoseEstimation) {
+    } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
-    }*/ else if (infer.name == kInferTpye_ObjectDetection) {
+    } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
     } /*else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
@@ -275,7 +277,7 @@ PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceR
 
   return infer;
 }
-#if 0
+
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & param)
 {
@@ -288,7 +290,7 @@ PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceR
 
   return infer;
 }
-#endif
+
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectDetection(
