@@ -1,4 +1,18 @@
-# ros2_openvino_toolkit
+# ros2_openvino_toolkit - branch ov-2020.3 - IN DEVELOP
+
+Current Status:
+ROS2 Version:
+[x] ROS2 Dashing
+[x] ROS2 Eloquent
+[ ] ROS2 Foxy
+
+Inference Features:
+[x] Object Detection
+[x] Face Detection
+[ ] Age-Gender Recognition
+[ ] Emotion Recognition
+[ ] Head Pose Estimation
+[ ] Object Segmentation
 
 ## Introduction
 The OpenVINO™ (Open visual inference and neural network optimization) toolkit provides a ROS-adaptered runtime framework of neural network which quickly deploys applications and solutions for vision inference. By leveraging Intel® OpenVINO™ toolkit and corresponding libraries, this runtime framework extends  workloads across Intel® hardware (including accelerators) and maximizes performance.
