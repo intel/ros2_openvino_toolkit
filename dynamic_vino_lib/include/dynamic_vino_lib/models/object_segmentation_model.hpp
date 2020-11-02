@@ -37,30 +37,6 @@ public:
   {
     return object_size_;
   }
-  inline const std::string getInputName()
-  {
-    return input_;
-  }
-  inline const std::string getDetectionOutputName()
-  {
-    return detection_output_;
-  }
-  inline const std::string getMaskOutputName()
-  {
-    return mask_output_;
-  }
-  inline size_t getOutputChannelSize() const
-  {
-    return output_channels_;
-  }
-  inline size_t getOutputHeight() const
-  {
-    return output_height_;
-  }
-  inline size_t getOutputWidth() const
-  {
-    return output_width_;
-  }
 
   bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
     const cv::Rect & ) override;
@@ -74,24 +50,13 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-
-protected:
-  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
   int max_proposal_count_;
   int object_size_;
-  std::string input_;
-  std::string mask_output_ = "masks";
-  std::string detection_output_ = "detection_output";
 
-  size_t output_channels_ = 0;
-  size_t output_height_ = 0;
-  size_t output_width_ = 0;
   InferenceEngine::InputsDataMap input_info_;
-  InferenceEngine::OutputsDataMap output_info_;
-
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_
