@@ -28,7 +28,7 @@ namespace Models
 class ObjectSegmentationModel : public BaseModel
 {
 public:
-  ObjectSegmentationModel(const std::string &, int, int, int);
+  ObjectSegmentationModel(const std::string & model_loc, int batch_size = 1);
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;
@@ -49,6 +49,18 @@ public:
   {
     return mask_output_;
   }
+  inline size_t getOutputChannelSize() const
+  {
+    return output_channels_;
+  }
+  inline size_t getOutputHeight() const
+  {
+    return output_height_;
+  }
+  inline size_t getOutputWidth() const
+  {
+    return output_width_;
+  }
 
   bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
     const cv::Rect & ) override;
@@ -61,12 +73,11 @@ public:
    * @brief Get the name of this segmentation model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
+  const std::string getModelCategory() const override;
 
 protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-  void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr) override;
+  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
+  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
   int max_proposal_count_;
@@ -75,9 +86,9 @@ private:
   std::string mask_output_ = "masks";
   std::string detection_output_ = "detection_output";
 
-  size_t input_channels_;
-  size_t input_height_;
-  size_t input_width_;
+  size_t output_channels_ = 0;
+  size_t output_height_ = 0;
+  size_t output_width_ = 0;
   InferenceEngine::InputsDataMap input_info_;
   InferenceEngine::OutputsDataMap output_info_;
 

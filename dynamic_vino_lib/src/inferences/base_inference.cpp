@@ -20,8 +20,9 @@
 #include <memory>
 
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
+#include "dynamic_vino_lib/models/base_model.hpp"
 
-// Result
+ // Result
 dynamic_vino_lib::Result::Result(const cv::Rect & location)
 {
   location_ = location;
@@ -48,6 +49,7 @@ bool dynamic_vino_lib::BaseInference::submitRequest()
   enqueued_frames_ = 0;
   results_fetched_ = false;
   engine_->getRequest()->StartAsync();
+  slog::debug << "Async Inference started!" << slog::endl;
   return true;
 }
 
@@ -72,4 +74,13 @@ bool dynamic_vino_lib::BaseInference::fetchResults()
   }
   results_fetched_ = true;
   return true;
+}
+
+void dynamic_vino_lib::BaseInference::addCandidatedModel(std::shared_ptr<Models::BaseModel> model)
+{
+  slog::info << "TESTING in addCandidatedModel()" << slog::endl;
+  if (model != nullptr) {
+    slog::info << "adding new Model Candidate..." << slog::endl;
+    candidated_models_.push_back(model);
+  }
 }

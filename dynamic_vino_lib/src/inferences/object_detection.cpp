@@ -104,7 +104,7 @@ dynamic_vino_lib::ObjectDetection::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::ObjectDetection::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::ObjectDetection::observeOutput(
@@ -176,32 +176,12 @@ bool dynamic_vino_lib::ObjectDetectionResultFilter::isValidResult(
   ISVALIDRESULT(key_to_function_, result);
 }
 
-double dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(
+double dynamic_vino_lib::ObjectDetection::calcIoU(
   const cv::Rect & box_1,
   const cv::Rect & box_2)
 {
-  int xmax_1 = box_1.x + box_1.width;
-  int xmin_1 = box_1.x;
-  int xmax_2 = box_2.x + box_2.width;
-  int xmin_2 = box_2.x;
+  cv::Rect i = box_1 & box_2;
+  cv::Rect u = box_1 | box_2;
 
-  int ymax_1 = box_1.y + box_1.height;
-  int ymin_1 = box_1.y;
-  int ymax_2 = box_2.y + box_2.height;
-  int ymin_2 = box_2.y;
-
-  double width_of_overlap_area = fmin(xmax_1, xmax_2) - fmax(xmin_1, xmin_2);
-  double height_of_overlap_area = fmin(ymax_1, ymax_2) - fmax(ymin_1, ymin_2);
-  double area_of_overlap;
-  if (width_of_overlap_area < 0 || height_of_overlap_area < 0) {
-    area_of_overlap = 0;
-  } else {
-    area_of_overlap = width_of_overlap_area * height_of_overlap_area;
-  }
-
-  double box_1_area = (ymax_1 - ymin_1) * (xmax_1 - xmin_1);
-  double box_2_area = (ymax_2 - ymin_2) * (xmax_2 - xmin_2);
-  double area_of_union = box_1_area + box_2_area - area_of_overlap;
-
-  return area_of_overlap / area_of_union;
+  return static_cast<double>(i.area()) / static_cast<double>(u.area());
 }

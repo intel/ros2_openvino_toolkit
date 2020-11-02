@@ -27,23 +27,23 @@
 #include "dynamic_vino_lib/slog.hpp"
 
 // ObjectSegmentationResult
-dynamic_vino_lib::ObjectSegmentationResult::ObjectSegmentationResult(const cv::Rect & location)
-: Result(location)
+dynamic_vino_lib::ObjectSegmentationResult::ObjectSegmentationResult(const cv::Rect &location)
+    : Result(location)
 {
 }
 
 // ObjectSegmentation
 dynamic_vino_lib::ObjectSegmentation::ObjectSegmentation(double show_output_thresh)
-: show_output_thresh_(show_output_thresh), dynamic_vino_lib::BaseInference()
+    : show_output_thresh_(show_output_thresh), dynamic_vino_lib::BaseInference()
 {
 }
 
 dynamic_vino_lib::ObjectSegmentation::~ObjectSegmentation() = default;
 
 void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
-  const std::shared_ptr<Models::ObjectSegmentationModel> network)
+    const std::shared_ptr<Models::ObjectSegmentationModel> network)
 {
-  slog::info << "Loading Network: " << network->getModelName() << slog::endl;
+  slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
@@ -53,15 +53,16 @@ void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
  * This function only support OpenVINO version <=2018R5
  */
 bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+    const cv::Mat &frame,
+    const cv::Rect &input_frame_loc)
 {
-  if (width_ == 0 && height_ == 0) {
+  if (width_ == 0 && height_ == 0)
+  {
     width_ = frame.cols;
     height_ = frame.rows;
   }
   if (!dynamic_vino_lib::BaseInference::enqueue<u_int8_t>(frame, input_frame_loc, 1, 0,
-    valid_model_->getInputName()))
+                                                          valid_model_->getInputName()))
   {
     return false;
   }
@@ -72,26 +73,29 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
 }
 
 bool dynamic_vino_lib::ObjectSegmentation::enqueue(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+    const cv::Mat &frame,
+    const cv::Rect &input_frame_loc)
 {
-  if (width_ == 0 && height_ == 0) {
+  if (width_ == 0 && height_ == 0)
+  {
     width_ = frame.cols;
     height_ = frame.rows;
   }
 
-  if (valid_model_ == nullptr || getEngine() == nullptr) {
+  if (valid_model_ == nullptr || getEngine() == nullptr)
+  {
     throw std::logic_error("Model or Engine is not set correctly!");
     return false;
   }
 
-  if (enqueued_frames_ >= valid_model_->getMaxBatchSize()) {
-    slog::warn << "Number of " << getName() << "input more than maximum(" <<
-      max_batch_size_ << ") processed by inference" << slog::endl;
+  if (enqueued_frames_ >= valid_model_->getMaxBatchSize())
+  {
+    slog::warn << "Number of " << getName() << "input more than maximum(" << max_batch_size_ << ") processed by inference" << slog::endl;
     return false;
   }
 
-  if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc)) {
+  if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc))
+  {
     return false;
   }
 
@@ -107,12 +111,58 @@ bool dynamic_vino_lib::ObjectSegmentation::submitRequest()
 bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
-  if (!can_fetch) {
+  if (!can_fetch)
+  {
     return false;
   }
   bool found_result = false;
   results_.clear();
   InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
+#if 0
+  //std::string detection_output = valid_model_->getDetectionOutputName();
+  std::string mask_output = valid_model_->getMaskOutputName();
+  //const auto do_blob = request->GetBlob(detection_output.c_str());
+  //const auto do_data = do_blob->buffer().as<float *>();
+  const auto masks_blob = request->GetBlob(mask_output);
+  const float *const masks_data = masks_blob->cbuffer().as<float *>();
+  cv::Mat inImg, resImg, maskImg(output_height_, output_width_, CV_8UC3);
+  for (int rowId = 0; rowId < output_height_; ++rowId)
+  {
+    for (int colId = 0; colId < output_width_; ++colId)
+    {
+      std::size_t classId = 0;
+      if (outChannels < 2)
+      { // assume the output is already ArgMax'ed
+        classId = static_cast<std::size_t>(predictions[rowId * output_width_ + colId]);
+      }
+      else
+      {
+        float maxProb = -1.0f;
+        for (int chId = 0; chId < outChannels; ++chId)
+        {
+          float prob = predictions[chId * output_height_ * output_width_ + rowId * output_width_ + colId];
+          if (prob > maxProb)
+          {
+            classId = chId;
+            maxProb = prob;
+          }
+        }
+      }
+      while (classId >= colors.size())
+      {
+        cv::Vec3b color(distr(rng), distr(rng), distr(rng));
+        colors.push_back(color);
+      }
+      maskImg.at<cv::Vec3b>(rowId, colId) = colors[classId];
+    }
+  }
+  cv::resize(maskImg, resImg, inImg.size());
+  //////////////////
+  //TODO: @todo, add result calculation here.
+  cv::Rect roi{0, 0, 0, 0};
+  Result result(roi);
+  //resImg = inImg * blending + resImg * (1 - blending);
+#else
   std::string detection_output = valid_model_->getDetectionOutputName();
   std::string mask_output = valid_model_->getMaskOutputName();
   const auto do_blob = request->GetBlob(detection_output.c_str());
@@ -120,20 +170,23 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   const auto masks_blob = request->GetBlob(mask_output.c_str());
   const auto masks_data = masks_blob->buffer().as<float *>();
   // amount of elements in each detected box description (batch, label, prob, x1, y1, x2, y2)
-  size_t box_num = masks_blob->dims().at(3);
-  size_t label_num = masks_blob->dims().at(2);
-  size_t box_description_size = do_blob->dims().at(0);
-  size_t H = masks_blob->dims().at(1);
-  size_t W = masks_blob->dims().at(0);
-  size_t box_stride = W * H * label_num;
-  for (size_t box = 0; box < box_num; ++box) {
-    float * box_info = do_data + box * box_description_size;
+  const size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
+  const size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
+  const size_t box_description_size = do_blob->getTensorDesc().getDims().at(0);
+  const size_t H = valid_model_->getOutputHeight(); //masks_blob->dims().at(1);
+  const size_t W = valid_model_->getOutputWidth(); //masks_blob->dims().at(0);
+  const size_t box_stride = W * H * label_num;
+  for (size_t box = 0; box < box_num; ++box)
+  {
+    float *box_info = do_data + box * box_description_size;
     float batch = box_info[0];
-    if (batch < 0) {
+    if (batch < 0)
+    {
       break;
     }
     float prob = box_info[2];
-    if (prob > show_output_thresh_) {
+    if (prob > show_output_thresh_)
+    {
       float x1 = std::min(std::max(0.0f, box_info[3] * width_), static_cast<float>(width_));
       float y1 = std::min(std::max(0.0f, box_info[4] * height_), static_cast<float>(height_));
       float x2 = std::min(std::max(0.0f, box_info[5] * width_), static_cast<float>(width_));
@@ -141,24 +194,25 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
       int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), width_);
       int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), height_);
       int class_id = static_cast<int>(box_info[1] + 1e-6f);
-      float * mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
+      float *mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
       cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
       cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
       cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
       cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
       Result result(roi);
       result.confidence_ = prob;
-      std::vector<std::string> & labels = valid_model_->getLabels();
-      result.label_ = class_id < labels.size() ? labels[class_id] :
-        std::string("label #") + std::to_string(class_id);
+      std::vector<std::string> &labels = valid_model_->getLabels();
+      result.label_ = class_id < labels.size() ? labels[class_id] : std::string("label #") + std::to_string(class_id);
       result.mask_ = resized_mask_mat;
       found_result = true;
       results_.emplace_back(result);
     }
   }
-  if (!found_result) {
+  if (!found_result)
+  {
     results_.clear();
   }
+#endif
   return true;
 }
 
@@ -175,26 +229,29 @@ dynamic_vino_lib::ObjectSegmentation::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::ObjectSegmentation::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::ObjectSegmentation::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+    const std::shared_ptr<Outputs::BaseOutput> &output)
 {
-  if (output != nullptr) {
+  if (output != nullptr)
+  {
     output->accept(results_);
   }
 }
 
 const std::vector<cv::Rect> dynamic_vino_lib::ObjectSegmentation::getFilteredROIs(
-  const std::string filter_conditions) const
+    const std::string filter_conditions) const
 {
-  if (!filter_conditions.empty()) {
-    slog::err << "Object segmentation does not support filtering now! " <<
-      "Filter conditions: " << filter_conditions << slog::endl;
+  if (!filter_conditions.empty())
+  {
+    slog::err << "Object segmentation does not support filtering now! "
+              << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
-  for (auto res : results_) {
+  for (auto res : results_)
+  {
     filtered_rois.push_back(res.getLocation());
   }
   return filtered_rois;

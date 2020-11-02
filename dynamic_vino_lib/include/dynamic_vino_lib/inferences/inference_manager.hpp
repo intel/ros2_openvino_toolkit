@@ -98,7 +98,7 @@ private:
     const Params::ParamManager::InferenceParams & infer);
 
   std::map<std::string, PipelineData> pipelines_;
-  std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
+  // std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
 };
 
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__INFERENCE_MANAGER_HPP_

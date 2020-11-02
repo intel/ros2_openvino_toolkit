@@ -23,18 +23,31 @@
 #include "dynamic_vino_lib/utils/version_info.hpp"
 #include <vino_param_lib/param_manager.hpp>
 #include <inference_engine.hpp>
+#if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
+#endif
 
 std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
-#if(defined(USE_IE_CORE))
-  return createEngine_V2019R2_plus(device, model);
-#else
+#if(defined(USE_OLD_E_PLUGIN_API))
   return createEngine_beforeV2019R2(device, model);
+#else
+  return createEngine_V2019R2_plus(device, model);
 #endif
 }
 
+std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_plus(
+  const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
+{
+  InferenceEngine::Core core;
+  auto executable_network = core.LoadNetwork(model->getNetReader()->getNetwork(), device);
+  auto request = executable_network.CreateInferRequestPtr();
+
+  return std::make_shared<Engines::Engine>(request);
+}
+
+#if(defined(USE_OLD_E_PLUGIN_API))
 std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV2019R2(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
@@ -51,21 +64,6 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
 
   return std::make_shared<Engines::Engine>(request);
 }
-
-#if(defined(USE_IE_CORE))
-std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_plus(
-  const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
-{
-  InferenceEngine::Core core;
-  if ((device.find("CPU") != std::string::npos)) {
-    core.AddExtension(std::make_shared<InferenceEngine::Extensions::Cpu::CpuExtensions>(), device);
-  }
-  auto executable_network = core.LoadNetwork(model->getNetReader()->getNetwork(), device);
-  auto request = executable_network.CreateInferRequestPtr();
-
-  return std::make_shared<Engines::Engine>(request);
-}
-#endif
 
 std::unique_ptr<InferenceEngine::InferencePlugin>
 Engines::EngineManager::makePluginByName(
@@ -109,3 +107,4 @@ Engines::EngineManager::makePluginByName(
   return std::make_unique<InferenceEngine::InferencePlugin>(
     InferenceEngine::InferenceEnginePluginPtr(plugin));
 }
+#endif
