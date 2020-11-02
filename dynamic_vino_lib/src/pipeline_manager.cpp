@@ -217,11 +217,12 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createHeadPoseEstimation(infer);
     } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
-    } /*else if (infer.name == kInferTpye_ObjectSegmentation) {
+    } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
     } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
-    } else if (infer.name == kInferTpye_PersonAttribsDetection) {
+    } 
+    /*else if (infer.name == kInferTpye_PersonAttribsDetection) {
       object = createPersonAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LandmarksDetection) {
       object = createLandmarksDetection(infer);
@@ -322,7 +323,34 @@ PipelineManager::createObjectDetection(
   return object_inference_ptr;
 }
 
-#if 0
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
+{
+  std::shared_ptr<Models::ObjectSegmentationModel> object_segmentation_model;
+  std::shared_ptr<dynamic_vino_lib::ObjectSegmentation> segmentation_inference_ptr;
+  slog::debug << "for test in createObjectSegmentation()"<<slog::endl;
+  /*if(infer.model_type == kInferTpye_ObjectSegmentation){
+    object_segmentation_model =
+      std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch);      
+  }*/
+  object_segmentation_model =
+      std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch); 
+  slog::debug <<"for test in createObjectSegmentation()"<<slog::endl;
+  segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(
+    infer.confidence_threshold);
+  slog::debug<< "for test in createObjectSegmentation(), before modelInit()"<<slog::endl;
+  object_segmentation_model->modelInit();
+  auto object_segmentation_engine = engine_manager_.createEngine(
+    infer.engine,object_segmentation_model);
+  slog::debug<< "for test in createObjectSegmentation(), before loadNetwork"<<slog::endl;
+  segmentation_inference_ptr->loadNetwork(object_segmentation_model);
+  segmentation_inference_ptr->loadEngine(object_segmentation_engine);
+  slog::debug << "for test in createObjectSegmentation(),OK"<<slog::endl;
+
+  return segmentation_inference_ptr;
+}
+
+/*
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
 {
@@ -339,8 +367,31 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceR
   segmentation_inference_ptr->loadEngine(engine);
 
   return segmentation_inference_ptr;
+}*/
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createPersonReidentification(
+  const Params::ParamManager::InferenceRawData & infer)
+{
+  std::shared_ptr<Models::PersonReidentificationModel> person_reidentification_model;
+  std::shared_ptr<dynamic_vino_lib::PersonReidentification> reidentification_inference_ptr;
+  slog::debug << "for test in createPersonReidentification()"<<slog::endl;
+  person_reidentification_model =
+    std::make_shared<Models::PersonReidentificationModel>(infer.model, infer.batch);
+  person_reidentification_model->modelInit();
+  slog::info << "Reidentification model initialized" << slog::endl;
+  auto person_reidentification_engine = engine_manager_.createEngine(infer.engine, person_reidentification_model);
+  reidentification_inference_ptr =
+    std::make_shared<dynamic_vino_lib::PersonReidentification>(infer.confidence_threshold);
+  slog::debug<< "for test in createPersonReidentification(), before loadNetwork"<<slog::endl;
+  reidentification_inference_ptr->loadNetwork(person_reidentification_model);
+  reidentification_inference_ptr->loadEngine(person_reidentification_engine);
+  slog::debug<< "for test in createPersonReidentification(), OK"<<slog::endl;
+
+  return reidentification_inference_ptr;
 }
 
+#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createPersonReidentification(
   const Params::ParamManager::InferenceRawData & infer)

@@ -55,7 +55,7 @@ bool Input::ImageTopic::initialize()
 
 void Input::ImageTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 {
-  slog::debug << "Receiving a new image from Camera topic." << slog::endl;
+  //slog::debug << "Receiving a new image from Camera topic." << slog::endl;
   setHeader(image_msg->header);
 
   image_ = cv_bridge::toCvCopy(image_msg, "bgr8")->image;
@@ -69,7 +69,7 @@ void Input::ImageTopic::cb(const sensor_msgs::msg::Image::SharedPtr image_msg)
 bool Input::ImageTopic::read(cv::Mat * frame)
 {
   if (image_count_.get() < 0 || image_.empty()) {
-    slog::debug << "No data received in CameraTopic instance" << slog::endl;
+    //slog::debug << "No data received in CameraTopic instance" << slog::endl;
     return false;
   }
 

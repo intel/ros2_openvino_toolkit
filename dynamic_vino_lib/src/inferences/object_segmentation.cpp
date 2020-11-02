@@ -21,10 +21,14 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <chrono>
+#include <iostream>
+#include <random>
 
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 
 // ObjectSegmentationResult
 dynamic_vino_lib::ObjectSegmentationResult::ObjectSegmentationResult(const cv::Rect &location)
@@ -96,6 +100,7 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue(
 
   if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc))
   {
+    slog::warn << "valid model don't have enque property"<<slog::endl;
     return false;
   }
 
@@ -111,110 +116,85 @@ bool dynamic_vino_lib::ObjectSegmentation::submitRequest()
 bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
+  slog::debug << "fetching Infer Resulsts from the given SSD model" << slog::endl;
   if (!can_fetch)
   {
     return false;
   }
+  slog::debug << "Fetching Detection Results ..." << slog::endl;
   bool found_result = false;
   results_.clear();
   InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
-#if 0
-  //std::string detection_output = valid_model_->getDetectionOutputName();
-  std::string mask_output = valid_model_->getMaskOutputName();
-  //const auto do_blob = request->GetBlob(detection_output.c_str());
-  //const auto do_data = do_blob->buffer().as<float *>();
-  const auto masks_blob = request->GetBlob(mask_output);
-  const float *const masks_data = masks_blob->cbuffer().as<float *>();
-  cv::Mat inImg, resImg, maskImg(output_height_, output_width_, CV_8UC3);
-  for (int rowId = 0; rowId < output_height_; ++rowId)
+  slog::debug << "Analyzing Detection results..." << slog::endl;  
+  std::string detection_output = valid_model_->getOutputName("detection");
+  std::string mask_output = valid_model_->getOutputName("masks");
+
+  const InferenceEngine::Blob::Ptr do_blob = request->GetBlob(detection_output.c_str());
+  const auto do_data = do_blob->buffer().as<float *>();
+  const auto masks_blob = request->GetBlob(mask_output.c_str());
+  const auto masks_data = masks_blob->buffer().as<float *>();
+  const size_t output_w = masks_blob->getTensorDesc().getDims().at(3);
+  const size_t output_h = masks_blob->getTensorDesc().getDims().at(2);
+  const size_t output_des = masks_blob-> getTensorDesc().getDims().at(1);
+  const size_t output_extra = masks_blob-> getTensorDesc().getDims().at(0);
+
+  slog::debug << "output w " << output_w<< slog::endl;
+  slog::debug << "output h " << output_h << slog::endl;
+  slog::debug << "output description " << output_des << slog::endl;
+  slog::debug << "output extra " << output_extra << slog::endl;
+
+  const float * detections = request->GetBlob(detection_output)->buffer().as<float *>();
+  std::vector<std::string> &labels = valid_model_->getLabels();
+  slog::debug << "label size " <<labels.size() << slog::endl;
+
+  cv::Mat inImg, resImg, maskImg(output_h, output_w, CV_8UC3);
+  cv::Mat colored_mask(output_h, output_w, CV_8UC3);
+  cv::Rect roi = cv::Rect(0, 0, output_w, output_h);
+
+  for (int rowId = 0; rowId < output_h; ++rowId)
   {
-    for (int colId = 0; colId < output_width_; ++colId)
+    for (int colId = 0; colId < output_w; ++colId)
     {
+      /*std::size_t classId = detections[rowId*output_w + colId];
+      for (int ch = 0; ch < colored_mask.channels();++ch){
+          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
+      }*/
       std::size_t classId = 0;
-      if (outChannels < 2)
-      { // assume the output is already ArgMax'ed
-        classId = static_cast<std::size_t>(predictions[rowId * output_width_ + colId]);
+      float maxProb = -1.0f;
+      if (output_des < 2) {  // assume the output is already ArgMax'ed
+        classId = static_cast<std::size_t>(detections[rowId * output_w + colId]);
+        for (int ch = 0; ch < colored_mask.channels();++ch){
+          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
+        }
+        //classId = static_cast<std::size_t>(predictions[rowId * output_w + colId]);
       }
-      else
-      {
-        float maxProb = -1.0f;
-        for (int chId = 0; chId < outChannels; ++chId)
+      else {      
+        for (int chId = 0; chId < output_des; ++chId)
         {
-          float prob = predictions[chId * output_height_ * output_width_ + rowId * output_width_ + colId];
+          float prob = detections[chId * output_h * output_w + rowId * output_w+ colId];
+          //float prob = predictions[chId * output_h * output_w + rowId * output_w+ colId];
           if (prob > maxProb)
           {
             classId = chId;
             maxProb = prob;
           }
         }
-      }
-      while (classId >= colors.size())
-      {
-        cv::Vec3b color(distr(rng), distr(rng), distr(rng));
-        colors.push_back(color);
-      }
-      maskImg.at<cv::Vec3b>(rowId, colId) = colors[classId];
+        if(maxProb > 0.5){
+        for (int ch = 0; ch < colored_mask.channels();++ch){
+          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
+        }
+       }  
+      } 
     }
   }
-  cv::resize(maskImg, resImg, inImg.size());
-  //////////////////
-  //TODO: @todo, add result calculation here.
-  cv::Rect roi{0, 0, 0, 0};
+  const float alpha = 0.7f;
   Result result(roi);
-  //resImg = inImg * blending + resImg * (1 - blending);
-#else
-  std::string detection_output = valid_model_->getDetectionOutputName();
-  std::string mask_output = valid_model_->getMaskOutputName();
-  const auto do_blob = request->GetBlob(detection_output.c_str());
-  const auto do_data = do_blob->buffer().as<float *>();
-  const auto masks_blob = request->GetBlob(mask_output.c_str());
-  const auto masks_data = masks_blob->buffer().as<float *>();
-  // amount of elements in each detected box description (batch, label, prob, x1, y1, x2, y2)
-  const size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
-  const size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
-  const size_t box_description_size = do_blob->getTensorDesc().getDims().at(0);
-  const size_t H = valid_model_->getOutputHeight(); //masks_blob->dims().at(1);
-  const size_t W = valid_model_->getOutputWidth(); //masks_blob->dims().at(0);
-  const size_t box_stride = W * H * label_num;
-  for (size_t box = 0; box < box_num; ++box)
-  {
-    float *box_info = do_data + box * box_description_size;
-    float batch = box_info[0];
-    if (batch < 0)
-    {
-      break;
-    }
-    float prob = box_info[2];
-    if (prob > show_output_thresh_)
-    {
-      float x1 = std::min(std::max(0.0f, box_info[3] * width_), static_cast<float>(width_));
-      float y1 = std::min(std::max(0.0f, box_info[4] * height_), static_cast<float>(height_));
-      float x2 = std::min(std::max(0.0f, box_info[5] * width_), static_cast<float>(width_));
-      float y2 = std::min(std::max(0.0f, box_info[6] * height_), static_cast<float>(height_));
-      int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), width_);
-      int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), height_);
-      int class_id = static_cast<int>(box_info[1] + 1e-6f);
-      float *mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
-      cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
-      cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
-      cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
-      cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
-      Result result(roi);
-      result.confidence_ = prob;
-      std::vector<std::string> &labels = valid_model_->getLabels();
-      result.label_ = class_id < labels.size() ? labels[class_id] : std::string("label #") + std::to_string(class_id);
-      result.mask_ = resized_mask_mat;
-      found_result = true;
-      results_.emplace_back(result);
-    }
-  }
-  if (!found_result)
-  {
-    results_.clear();
-  }
-#endif
+  result.mask_ = colored_mask;
+  found_result = true;
+  results_.emplace_back(result);
   return true;
 }
+
 
 int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
 {

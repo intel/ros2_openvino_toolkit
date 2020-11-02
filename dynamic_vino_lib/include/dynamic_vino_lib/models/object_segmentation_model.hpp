@@ -37,7 +37,7 @@ public:
   {
     return object_size_;
   }
-  inline const std::string getInputName()
+  /*inline const std::string getInputName()
   {
     return input_;
   }
@@ -60,7 +60,7 @@ public:
   inline size_t getOutputWidth() const
   {
     return output_width_;
-  }
+  }*/
 
   bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
     const cv::Rect & ) override;
@@ -74,6 +74,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 protected:
   //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
@@ -82,14 +83,16 @@ protected:
 private:
   int max_proposal_count_;
   int object_size_;
-  std::string input_;
-  std::string mask_output_ = "masks";
-  std::string detection_output_ = "detection_output";
+  //std::string input_ = "data";
+  //std::string mask_output_ = "masks";
+  //std::string detection_output_ = "detection";
 
+  //todo: output size
   size_t output_channels_ = 0;
   size_t output_height_ = 0;
   size_t output_width_ = 0;
   InferenceEngine::InputsDataMap input_info_;
+  //InferenceEngine::InputInfo::Ptr input_info_ = nullptr;
   InferenceEngine::OutputsDataMap output_info_;
 
 };

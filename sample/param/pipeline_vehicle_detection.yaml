@@ -3,7 +3,7 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
+      model: /opt/openvino_toolkit-V1/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
       engine: CPU
       label: /opt/intel/openvino/deployment_tools/tools/model_downloader/Security/object_detection/barrier/0106/dldt/vehicle-license-plate-detection-barrier-0106.labels
       batch: 1

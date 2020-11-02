@@ -33,7 +33,7 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 ## to get verbose log,
 ## then, uncomment below line
-#add_definitions(-DLOG_LEVEL_DEBUG)
+add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
@@ -197,14 +197,14 @@ add_library(${PROJECT_NAME} SHARED
         src/engines/engine_manager.cpp
         src/inferences/base_filter.cpp
         src/inferences/base_inference.cpp
-        #src/inferences/base_reidentification.cpp
+        src/inferences/base_reidentification.cpp
         src/inferences/emotions_detection.cpp
         src/inferences/age_gender_detection.cpp
         src/inferences/face_detection.cpp
         src/inferences/object_detection.cpp
         src/inferences/head_pose_detection.cpp
-        #src/inferences/object_segmentation.cpp
-        #src/inferences/person_reidentification.cpp
+        src/inferences/object_segmentation.cpp
+        src/inferences/person_reidentification.cpp
         #src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp
         #src/inferences/face_reidentification.cpp
@@ -222,8 +222,8 @@ add_library(${PROJECT_NAME} SHARED
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
         src/models/head_pose_detection_model.cpp
-        #src/models/object_segmentation_model.cpp
-        #src/models/person_reidentification_model.cpp
+        src/models/object_segmentation_model.cpp
+        src/models/person_reidentification_model.cpp
         #src/models/person_attribs_detection_model.cpp
         #src/models/landmarks_detection_model.cpp
         #src/models/face_reidentification_model.cpp

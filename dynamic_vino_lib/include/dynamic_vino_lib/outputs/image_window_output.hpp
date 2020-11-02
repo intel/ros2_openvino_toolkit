@@ -173,5 +173,9 @@ private:
     {81, 0, 81}
   };
 };
+/*template <typename T, std::size_t N>
+constexpr std::size_t arraySize(const T (&)[N]) noexcept {
+    return N;
+}*/
 }  // namespace Outputs
 #endif  // DYNAMIC_VINO_LIB__OUTPUTS__IMAGE_WINDOW_OUTPUT_HPP_

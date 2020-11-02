@@ -44,10 +44,24 @@ void Models::BaseModel::modelInit()
 {
   slog::info << "Loading network files" << slog::endl;
   // Read network model
+  InferenceEngine::Core ie;
+  auto network = ie.ReadNetwork(model_loc_);
+  //auto exec_net = ie.LoadNetwork(network, "CPU");
+  //const char *model = model_loc_.data();
+  //net_reader_->ReadNetwork(model, max_batch_size_);
   net_reader_->ReadNetwork(model_loc_);
+  slog::info << model_loc_<<slog::endl;
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
-  net_reader_->getNetwork().setBatchSize(max_batch_size_);
+  if (net_reader_.get() == nullptr){
+    slog::info << "error" << slog::endl;
+  }
+  slog::info << "test0"<< slog::endl;
+  //InferenceEngine::CNNNetwork network = net_reader_->getNetwork();
+  network.setBatchSize(max_batch_size_);
+  //net_reader_->getNetwork().setBatchSize(max_batch_size_);
+  
+  slog::info <<"new modified:comment set batch size"<<slog::endl;  
   // Extract model name and load it's weights
   // remove extension
   size_t last_index = model_loc_.find_last_of(".");
@@ -57,6 +71,7 @@ void Models::BaseModel::modelInit()
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
   loadLabelsFromFile(label_file_name);
+
 
   /** DEPRECATED!
   checkLayerProperty(net_reader_);

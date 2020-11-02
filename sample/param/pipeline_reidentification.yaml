@@ -10,7 +10,7 @@ Pipelines:
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: PersonReidentification
-      model: /opt/openvino_toolkit/models/person-reidentification/output/intel/person-reidentification-retail-0076/FP32/person-reidentification-retail-0076.xml
+      model: /opt/openvino_toolkit-V1/models/person-reidentification/output/FP32/Retail/object_reidentification/pedestrian/rmnet_based/0076/dldt/person-reidentification-retail-0076.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1

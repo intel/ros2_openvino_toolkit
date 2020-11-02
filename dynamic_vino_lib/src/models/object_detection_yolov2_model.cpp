@@ -140,6 +140,7 @@ bool Models::ObjectDetectionYolov2Model::matToBlob(
   }
 
   std::string input_name = getInputName();
+  slog::debug << "input name" << input_name << slog::endl;
   InferenceEngine::Blob::Ptr input_blob =
     engine->getRequest()->GetBlob(input_name);
 

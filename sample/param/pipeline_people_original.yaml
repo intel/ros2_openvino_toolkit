@@ -1,24 +1,23 @@
 Pipelines:
 - name: people
-  inputs: [Image]
-  input_path: /home/intel/ros2_optest09/src/ros2_openvino_toolkit/data/images/team.jpg
+  inputs: [StandardCamera]
   infers:
     - name: FaceDetection
-      model: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      model: /opt/openvino_toolkit/models/face_detection_new4/output/Retail/object_detection/face/sqnet1.0modif-ssd/0004/dldt/face-detection-retail-0004.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.labels
+      label: /to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: AgeGenderRecognition
-      model: /opt/openvino_toolkit/models/age-gender-recognition/output/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      model: /opt/openvino_toolkit/models/age-gender-recognition/output/intel/age-gender-recognition-retail-0013/FP16-INT8/age-gender-recognition-retail-0013.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
     - name: EmotionRecognition
       model: /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
+      label: /opt/openvino_toolkit/models/emotions-recognition/output/FP32/Retail/object_attributes/emotions_recognition/0003/dldt/emotions-recognition-retail-0003.labels
       batch: 16
     - name: HeadPoseEstimation
       model: /opt/openvino_toolkit/models/head-pose-estimation/output/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
@@ -27,7 +26,7 @@ Pipelines:
       batch: 16
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
-    - left: Image
+    - left: StandardCamera
       right: [FaceDetection]
     - left: FaceDetection
       right: [AgeGenderRecognition, EmotionRecognition, HeadPoseEstimation, ImageWindow, RosTopic, RViz]

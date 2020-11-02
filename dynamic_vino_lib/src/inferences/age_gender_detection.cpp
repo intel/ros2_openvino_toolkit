@@ -70,6 +70,7 @@ bool dynamic_vino_lib::AgeGenderDetection::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
   if (!can_fetch) {
+    slog::debug << "age gender detection fetch fails" << slog::endl;
     return false;
   }
   auto request = getEngine()->getRequest();

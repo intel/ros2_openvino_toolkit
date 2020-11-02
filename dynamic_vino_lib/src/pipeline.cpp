@@ -182,6 +182,7 @@ int Pipeline::getCatagoryOrder(const std::string name)
   return order;
 }
 
+//TO DO
 void Pipeline::runOnce()
 {
   initInferenceCounter();
@@ -243,20 +244,70 @@ void Pipeline::setCallback()
         return;
       };
     pair.second->getEngine()->getRequest()->SetCompletionCallback(callb);
+    slog::debug << "set call back" << slog::endl;
   }
 }
 
+//TO DO
 void Pipeline::callback(const std::string & detection_name)
 {
   slog::debug <<"Hello callback ----> " << detection_name <<slog::endl;
   auto detection_ptr = name_to_detection_map_[detection_name];
+  slog::debug <<"Before Fetch Results" <<slog::endl;
   detection_ptr->fetchResults();
+  slog::debug <<"Fetch Results" <<slog::endl;
   // set output
   for (auto pos = next_.equal_range(detection_name); pos.first != pos.second; ++pos.first) {
     std::string next_name = pos.first->second;
-
+    slog::debug <<"detetction name : " << next_name <<slog::endl;
     std::string filter_conditions = findFilterConditions(detection_name, next_name);
+    
+    if (output_names_.find(next_name) != output_names_.end()) {
+      detection_ptr->observeOutput(name_to_output_map_[next_name]);
+    } else {
+      auto detection_ptr_iter = name_to_detection_map_.find(next_name);
+      if (detection_ptr_iter != name_to_detection_map_.end()) {
+        auto next_detection_ptr = detection_ptr_iter->second;
+        size_t batch_size = next_detection_ptr->getMaxBatchSize();
+        slog::debug << "batch size " << batch_size << slog::endl;
+        std::vector<cv::Rect> next_rois = detection_ptr->getFilteredROIs(filter_conditions);
+        slog::debug << "size " << next_rois.size() << slog::endl;
+        for (size_t i = 0; i < next_rois.size(); i++) {
+          
+          auto roi = next_rois[i];
+          auto clippedRect = roi & cv::Rect(0, 0, width_, height_);
+          cv::Mat next_input = frame_(clippedRect);
+          next_detection_ptr->enqueue(next_input, roi);
+          if ((i + 1) == next_rois.size() || (i + 1) % batch_size == 0) {
+            increaseInferenceCounter();
+            next_detection_ptr->submitRequest();
+            auto request = next_detection_ptr->getEngine()->getRequest();
+            request->Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+          }
+        }
+      }
+    }
+  }
 
+  slog::debug <<"Fetch Results successfully" <<slog::endl;
+  decreaseInferenceCounter();
+  cv_.notify_all();
+}
+
+/*
+void Pipeline::callback(const std::string & detection_name)
+{
+  slog::debug <<"Hello callback ----> " << detection_name <<slog::endl;
+  auto detection_ptr = name_to_detection_map_[detection_name];
+  slog::debug <<"Before Fetch Results" <<slog::endl;
+  detection_ptr->fetchResults();
+  slog::debug <<"Fetch Results" <<slog::endl;
+  // set output
+  for (auto pos = next_.equal_range(detection_name); pos.first != pos.second; ++pos.first) {
+    std::string next_name = pos.first->second;
+    slog::debug <<"detetction name : " << next_name <<slog::endl;
+    std::string filter_conditions = findFilterConditions(detection_name, next_name);
+    
     if (output_names_.find(next_name) != output_names_.end()) {
       detection_ptr->observeOutput(name_to_output_map_[next_name]);
     } else {
@@ -281,9 +332,11 @@ void Pipeline::callback(const std::string & detection_name)
     }
   }
 
+  slog::debug <<"Fetch Results successfully" <<slog::endl;
   decreaseInferenceCounter();
   cv_.notify_all();
 }
+*/
 
 void Pipeline::initInferenceCounter()
 {
