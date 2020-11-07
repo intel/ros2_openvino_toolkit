@@ -15,10 +15,10 @@ Inference Features:
 
 * [x] Object Detection
 * [x] Face Detection
-* [ ] Age-Gender Recognition
-* [ ] Emotion Recognition
-* [ ] Head Pose Estimation
-* [ ] Object Segmentation
+* [x] Age-Gender Recognition
+* [x] Emotion Recognition
+* [x] Head Pose Estimation
+* [x] Object Segmentation
 * [ ] Object Re-ID
 
 ## Introduction
