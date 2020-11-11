@@ -21,14 +21,11 @@
 #include <string>
 #include <vector>
 #include <algorithm>
-#include <chrono>
-#include <iostream>
 #include <random>
 
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "dynamic_vino_lib/outputs/image_window_output.hpp"
 
 // ObjectSegmentationResult
 dynamic_vino_lib::ObjectSegmentationResult::ObjectSegmentationResult(const cv::Rect &location)
@@ -100,7 +97,6 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue(
 
   if (!valid_model_->enqueue(getEngine(), frame, input_frame_loc))
   {
-    slog::warn << "valid model don't have enque property"<<slog::endl;
     return false;
   }
 
@@ -116,16 +112,14 @@ bool dynamic_vino_lib::ObjectSegmentation::submitRequest()
 bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
-  slog::debug << "fetching Infer Resulsts from the given SSD model" << slog::endl;
   if (!can_fetch)
   {
     return false;
   }
-  slog::debug << "Fetching Detection Results ..." << slog::endl;
   bool found_result = false;
   results_.clear();
   InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
-  slog::debug << "Analyzing Detection results..." << slog::endl;  
+  slog::debug << "Analyzing Detection results..." << slog::endl;
   std::string detection_output = valid_model_->getOutputName("detection");
   std::string mask_output = valid_model_->getOutputName("masks");
 
@@ -155,10 +149,6 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   {
     for (int colId = 0; colId < output_w; ++colId)
     {
-      /*std::size_t classId = detections[rowId*output_w + colId];
-      for (int ch = 0; ch < colored_mask.channels();++ch){
-          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
-      }*/
       std::size_t classId = 0;
       float maxProb = -1.0f;
       if (output_des < 2) {  // assume the output is already ArgMax'ed
@@ -167,8 +157,7 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
           colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
         }
         //classId = static_cast<std::size_t>(predictions[rowId * output_w + colId]);
-      }
-      else {      
+      } else {
         for (int chId = 0; chId < output_des; ++chId)
         {
           float prob = detections[chId * output_h * output_w + rowId * output_w+ colId];
@@ -179,12 +168,19 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
             maxProb = prob;
           }
         }
+        while (classId >= colors_.size())
+        {
+          static std::mt19937 rng(classId);
+          std::uniform_int_distribution<int> distr(0, 255);
+          cv::Vec3b color(distr(rng), distr(rng), distr(rng));
+          colors_.push_back(color);
+        }
         if(maxProb > 0.5){
         for (int ch = 0; ch < colored_mask.channels();++ch){
           colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
         }
-       }  
-      } 
+       }
+      }
     }
   }
   const float alpha = 0.7f;
@@ -194,7 +190,6 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   results_.emplace_back(result);
   return true;
 }
-
 
 int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
 {

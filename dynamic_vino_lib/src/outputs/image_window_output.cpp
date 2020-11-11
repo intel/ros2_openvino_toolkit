@@ -138,11 +138,8 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
-  //slog::debug << "Ouput Image Window enabled" << slog::endl;
-  std::map<std::string, int> class_color;
-  //slog::debug << "frame size" << frame_.size() << slog::endl;
-
   /*
+  std::map<std::string, int> class_color;
   for (unsigned i = 0; i < results.size(); i++) {
     std::string class_label = results[i].getLabel();
     if (class_color.find(class_label) == class_color.end()) {
@@ -156,9 +153,7 @@ void Outputs::ImageWindowOutput::mergeMask(
     cv::Mat roi_img = frame_(location);
     cv::Mat mask = results[i].getMask();
     cv::Mat colored_mask(location.height, location.width, frame_.type());
-    slog::debug << "mask size height " << mask.size().height << slog::endl;
-    slog::debug << "mask size width " << mask.size().width << slog::endl;
-    slog::debug <<"colored mask channel" << colored_mask.channels() <<slog::endl;
+
     for (int h = 0; h < mask.size().height; ++h) {
       for (int w = 0; w < mask.size().width; ++w) {
         for (int ch = 0; ch < colored_mask.channels(); ++ch) {

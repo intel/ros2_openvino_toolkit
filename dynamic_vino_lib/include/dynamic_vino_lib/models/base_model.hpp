@@ -187,8 +187,7 @@ namespace Models
    * @return Whether the input device is successfully turned on.
    */
     BaseModel(const std::string &model_loc, int batch_size = 1);
-    //virtual ~BaseModel(){std::cout<<"output from the destructor of class basemodel"<<std::endl;}
-    //BaseModel(const std::string &model_loc, const size_t batch_size = 1);
+
     /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.

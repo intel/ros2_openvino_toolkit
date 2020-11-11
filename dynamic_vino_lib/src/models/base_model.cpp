@@ -22,6 +22,7 @@
 #include <memory>
 #include <algorithm>
 #include <iostream>
+#include <unistd.h>
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
@@ -44,35 +45,20 @@ void Models::BaseModel::modelInit()
 {
   slog::info << "Loading network files" << slog::endl;
   // Read network model
-  InferenceEngine::Core ie;
-  auto network = ie.ReadNetwork(model_loc_);
-  //auto exec_net = ie.LoadNetwork(network, "CPU");
-  //const char *model = model_loc_.data();
-  //net_reader_->ReadNetwork(model, max_batch_size_);
   net_reader_->ReadNetwork(model_loc_);
-  slog::info << model_loc_<<slog::endl;
-  // Set batch size to given max_batch_size_
-  slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
-  if (net_reader_.get() == nullptr){
-    slog::info << "error" << slog::endl;
-  }
-  slog::info << "test0"<< slog::endl;
-  //InferenceEngine::CNNNetwork network = net_reader_->getNetwork();
-  network.setBatchSize(max_batch_size_);
-  //net_reader_->getNetwork().setBatchSize(max_batch_size_);
-  
-  slog::info <<"new modified:comment set batch size"<<slog::endl;  
+  // Set batch size to given max_batch_size_  
   // Extract model name and load it's weights
   // remove extension
   size_t last_index = model_loc_.find_last_of(".");
   std::string raw_name = model_loc_.substr(0, last_index);
   std::string bin_file_name = raw_name + ".bin";
   net_reader_->ReadWeights(bin_file_name);
+  slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
+  net_reader_->getNetwork().setBatchSize(max_batch_size_);
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
   loadLabelsFromFile(label_file_name);
-
-
+  
   /** DEPRECATED!
   checkLayerProperty(net_reader_);
   setLayerProperty(net_reader_); */

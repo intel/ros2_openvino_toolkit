@@ -23,7 +23,6 @@
 Models::PersonReidentificationModel::PersonReidentificationModel(
   const std::string & model_loc, int max_batch_size)
 : BaseModel(model_loc, max_batch_size) {}
-
 /*
 void Models::PersonReidentificationModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -44,6 +43,11 @@ void Models::PersonReidentificationModel::setLayerProperty(
 
 void Models::PersonReidentificationModel::checkLayerProperty(
   const InferenceEngine::CNNNetReader::Ptr & net_reader) {}
+
+const std::string Models::PersonReidentificationModel::getModelCategory() const
+{
+  return "Person Reidentification";
+}
 */
 bool Models::PersonReidentificationModel::updateLayerProperty(
   InferenceEngine::CNNNetReader::Ptr netreader)

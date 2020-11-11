@@ -28,7 +28,7 @@
 
 
 
-#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+
 #include "dynamic_vino_lib/inferences/person_reidentification.hpp"
 #include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/landmarks_detection.hpp"
@@ -38,7 +38,7 @@
 
 
 
-#include "dynamic_vino_lib/models/object_segmentation_model.hpp"
+
 #include "dynamic_vino_lib/models/person_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_reidentification_model.hpp"
@@ -55,8 +55,9 @@
 #include "dynamic_vino_lib/inferences/head_pose_detection.hpp"
 #include "dynamic_vino_lib/models/head_pose_detection_model.hpp"
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
-
 #include "dynamic_vino_lib/models/object_detection_ssd_model.hpp"
+#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+#include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
 #include "dynamic_vino_lib/inputs/realsense_camera.hpp"
@@ -221,18 +222,17 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createObjectSegmentation(infer);
     } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
-    } 
-    /*else if (infer.name == kInferTpye_PersonAttribsDetection) {
+    } /*else if (infer.name == kInferTpye_PersonAttribsDetection) {
       object = createPersonAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LandmarksDetection) {
       object = createLandmarksDetection(infer);
     } else if (infer.name == kInferTpye_FaceReidentification) {
       object = createFaceReidentification(infer);
-    } else if (infer.name == kInferTpye_VehicleAttribsDetection) {
+    } */ else if (infer.name == kInferTpye_VehicleAttribsDetection) {
       object = createVehicleAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LicensePlateDetection) {
       object = createLicensePlateDetection(infer);
-    }*/ else {
+    }else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
 
@@ -326,34 +326,6 @@ PipelineManager::createObjectDetection(
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
 {
-  std::shared_ptr<Models::ObjectSegmentationModel> object_segmentation_model;
-  std::shared_ptr<dynamic_vino_lib::ObjectSegmentation> segmentation_inference_ptr;
-  slog::debug << "for test in createObjectSegmentation()"<<slog::endl;
-  /*if(infer.model_type == kInferTpye_ObjectSegmentation){
-    object_segmentation_model =
-      std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch);      
-  }*/
-  object_segmentation_model =
-      std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch); 
-  slog::debug <<"for test in createObjectSegmentation()"<<slog::endl;
-  segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(
-    infer.confidence_threshold);
-  slog::debug<< "for test in createObjectSegmentation(), before modelInit()"<<slog::endl;
-  object_segmentation_model->modelInit();
-  auto object_segmentation_engine = engine_manager_.createEngine(
-    infer.engine,object_segmentation_model);
-  slog::debug<< "for test in createObjectSegmentation(), before loadNetwork"<<slog::endl;
-  segmentation_inference_ptr->loadNetwork(object_segmentation_model);
-  segmentation_inference_ptr->loadEngine(object_segmentation_engine);
-  slog::debug << "for test in createObjectSegmentation(),OK"<<slog::endl;
-
-  return segmentation_inference_ptr;
-}
-
-/*
-std::shared_ptr<dynamic_vino_lib::BaseInference>
-PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
-{
   auto model =
     std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch);
   model->modelInit();
@@ -367,7 +339,7 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceR
   segmentation_inference_ptr->loadEngine(engine);
 
   return segmentation_inference_ptr;
-}*/
+}
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createPersonReidentification(
@@ -389,6 +361,38 @@ PipelineManager::createPersonReidentification(
   slog::debug<< "for test in createPersonReidentification(), OK"<<slog::endl;
 
   return reidentification_inference_ptr;
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createVehicleAttribsDetection(
+  const Params::ParamManager::InferenceRawData & infer)
+{
+  auto model =
+    std::make_shared<Models::VehicleAttribsDetectionModel>(infer.model, infer.batch);
+  model->modelInit();
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  auto vehicle_attribs_ptr =
+    std::make_shared<dynamic_vino_lib::VehicleAttribsDetection>();
+  vehicle_attribs_ptr->loadNetwork(model);
+  vehicle_attribs_ptr->loadEngine(engine);
+
+  return vehicle_attribs_ptr;
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createLicensePlateDetection(
+  const Params::ParamManager::InferenceRawData & infer)
+{
+  auto model =
+    std::make_shared<Models::LicensePlateDetectionModel>(infer.model, infer.batch);
+  model->modelInit();
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  auto license_plate_ptr =
+    std::make_shared<dynamic_vino_lib::LicensePlateDetection>();
+  license_plate_ptr->loadNetwork(model);
+  license_plate_ptr->loadEngine(engine);
+
+  return license_plate_ptr;
 }
 
 #if 0
