@@ -133,6 +133,14 @@ private:
   int width_ = 0;
   int height_ = 0;
   double show_output_thresh_ = 0;
+
+  std::vector<cv::Vec3b> colors_ = {
+    {128, 64, 128}, {232, 35, 244}, {70, 70, 70}, {156, 102, 102}, {153, 153, 190},
+    {153, 153, 153}, {30, 170, 250}, {0, 220, 220}, {35, 142, 107}, {152, 251, 152},
+    {180, 130, 70}, {60, 20, 220}, {0, 0, 255}, {142, 0, 0}, {70, 0, 0},
+    {100, 60, 0}, {90, 0, 0}, {230, 0, 0}, {32, 11, 119}, {0, 74, 111},
+    {81, 0, 81}
+  };
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__OBJECT_SEGMENTATION_HPP_
