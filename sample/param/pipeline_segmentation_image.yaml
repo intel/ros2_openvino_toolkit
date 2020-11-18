@@ -1,0 +1,23 @@
+Pipelines:
+- name: segmentation
+  inputs: [Image]
+  input_path: /home/intel/ros2_opvn_10/src/ros2_openvino_toolkit/data/images/expressway.jpg
+  infers:
+    - name: ObjectSegmentation
+      model: /opt/openvino_toolkit/models/semantic-segmentation/output/Transportation/segmentation/semantic_segmentation/icnet_icv/dldt/semantic-segmentation-adas-0001-fp16.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [ImageWindow, RosTopic, RViz]
+  connects:
+    - left: Image
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [ImageWindow]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+    - left: ObjectSegmentation
+      right: [RViz]
+
+OpenvinoCommon:
