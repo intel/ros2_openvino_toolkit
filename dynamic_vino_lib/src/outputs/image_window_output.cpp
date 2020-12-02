@@ -334,9 +334,7 @@ void Outputs::ImageWindowOutput::decorateFrame()
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
       o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
-    slog::debug << "draw " << slog::endl;
     if (o.pa_top != o.pa_bottom){
-      slog::debug << "draw points"<< slog::endl;
       cv::circle(frame_, o.pa_top, 3, cv::Scalar(255, 0, 0), 2);
       cv::circle(frame_, o.pa_bottom, 3, cv::Scalar(0, 255, 0), 2);
     }
