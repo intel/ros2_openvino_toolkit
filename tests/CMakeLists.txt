@@ -26,7 +26,7 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
 message(STATUS "Looking for inference engine configuration file at: ${CMAKE_PREFIX_PATH}")
-find_package(InferenceEngine 1.1)
+find_package(InferenceEngine REQUIRED)
 if(NOT InferenceEngine_FOUND)
     message(FATAL_ERROR "")
 endif()

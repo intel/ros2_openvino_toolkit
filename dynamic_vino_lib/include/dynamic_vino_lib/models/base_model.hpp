@@ -210,7 +210,7 @@ namespace Models
    * the network input, output size, check layer property and
    * set layer property.
    */
-    void modelInit();
+    void modelInit(const std::shared_ptr<Engines::Engine> & engine);
     /**
    * @brief Get the name of the model.
    * @return The name of the model.
@@ -218,9 +218,9 @@ namespace Models
     virtual const std::string getModelCategory() const = 0;
     inline ModelAttr getAttribute() { return attr_; }
 
-    inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
+    inline InferenceEngine::CNNNetwork & getNetwork()
     {
-      return net_reader_;
+      return network_;
     }
 
   protected:
@@ -229,9 +229,10 @@ namespace Models
      * @brief Set the layer property (layer layout, layer precision, etc.).
      * @param[in] network_reader The reader of the network to be set.
      */
-    virtual bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
+    virtual bool updateLayerProperty() = 0;
+    std::shared_ptr<Engines::Engine> engine_;
 
-    InferenceEngine::CNNNetReader::Ptr net_reader_;
+    InferenceEngine::CNNNetwork network_;
     void setFrameSize(const int &w, const int &h)
     {
       frame_size_.width = w;

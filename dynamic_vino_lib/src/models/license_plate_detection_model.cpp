@@ -25,28 +25,27 @@ Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
 : BaseModel(model_loc, max_batch_size) {}
 /*
 void Models::LicensePlateDetectionModel::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+   )
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   // set input and output layer name
   input_ = input_info_map.begin()->first;
   seq_input_ = (++input_info_map.begin())->first;
   output_ = output_info_map.begin()->first;
 }
 
-void Models::LicensePlateDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
+void Models::LicensePlateDetectionModel::checkLayerProperty()
 {
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   if (input_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
@@ -55,17 +54,16 @@ void Models::LicensePlateDetectionModel::checkLayerProperty(
     throw std::logic_error("License plate detection max sequence size dismatch");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs Network expects networks having one output");
   }
 }*/
-bool Models::LicensePlateDetectionModel::updateLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::LicensePlateDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   if (input_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
@@ -74,7 +72,7 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(
     throw std::logic_error("License plate detection max sequence size dismatch");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs Network expects networks having one output");
   }

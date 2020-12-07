@@ -30,11 +30,10 @@ Models::FaceDetectionModel::FaceDetectionModel(
 }
 
 #if 0
-void Models::FaceDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
+void Models::FaceDetectionModel::checkLayerProperty()
 {
   slog::info << "Checking Face Detection inputs" << slog::endl;
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::err << "Face Detection network should have only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
@@ -42,7 +41,7 @@ void Models::FaceDetectionModel::checkLayerProperty(
   }
 
   slog::info << "Checking Face Detection outputs" << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
   slog::info << "Checking Face Detection outputs ..." << slog::endl;
   if (output_info_map.size() != 1) {
     throw std::logic_error("This sample accepts networks having only one output");
@@ -52,7 +51,7 @@ void Models::FaceDetectionModel::checkLayerProperty(
   slog::info << "Checking Object Detection output ... Name=" << output_ << slog::endl;
 
   const InferenceEngine::CNNLayerPtr output_layer =
-    net_reader->getNetwork().getLayerByName(output_.c_str());
+    getNetwork().getLayerByName(output_.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
   if (output_layer->params.find("num_classes") == output_layer->params.end()) {

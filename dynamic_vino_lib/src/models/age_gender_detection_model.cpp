@@ -30,11 +30,11 @@ Models::AgeGenderDetectionModel::AgeGenderDetectionModel(
 {
 }
 bool Models::AgeGenderDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+   )
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
       <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
@@ -46,7 +46,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   input_info->setLayout(InferenceEngine::Layout::NCHW);
   addInputInfo("input", input_info_map.begin()->first);
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
   if (output_info_map.size() != 2) {
     // throw std::logic_error("Age/Gender Recognition network should have two output layers");
     slog::warn << "This model seems not Age-gender like, which should have and only have 2"

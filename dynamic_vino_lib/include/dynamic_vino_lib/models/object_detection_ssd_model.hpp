@@ -55,7 +55,7 @@ public:
    */
   const std::string getModelCategory() const override;
 
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty() override;
 
 };
 }  // namespace Models

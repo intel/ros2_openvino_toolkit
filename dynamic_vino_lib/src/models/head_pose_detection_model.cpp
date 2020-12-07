@@ -31,11 +31,10 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 }
 
 #if 0
-void Models::HeadPoseDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
+void Models::HeadPoseDetectionModel::checkLayerProperty()
 {
   slog::info << "Checking Head Pose network outputs" << slog::endl;
-  InferenceEngine::OutputsDataMap outputInfo(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap outputInfo(getNetwork().getOutputsInfo());
   std::map<std::string, bool> layerNames = {{output_angle_r_, false},
     {output_angle_p_, false},
     {output_angle_y_, false}};
@@ -62,12 +61,11 @@ void Models::HeadPoseDetectionModel::checkLayerProperty(
 }
 #endif
 
-bool Models::HeadPoseDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::HeadPoseDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model should have only one input, but we got"
       << std::to_string(input_info_map.size()) << "inputs"
@@ -80,7 +78,7 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
   for (auto & output : output_info_map) {
     output.second->setPrecision(InferenceEngine::Precision::FP32);
     output.second->setLayout(InferenceEngine::Layout::NC);

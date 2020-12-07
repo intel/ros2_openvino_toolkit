@@ -41,7 +41,7 @@
 #include "dynamic_vino_lib/pipeline_manager.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "inference_engine.hpp"
-#include "librealsense2/rs.hpp"
+////#include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 
 static bool face_test_pass = false;

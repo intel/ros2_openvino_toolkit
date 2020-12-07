@@ -147,12 +147,11 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   return true;
 }
 
-bool Models::ObjectDetectionSSDModel::updateLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::ObjectDetectionSSDModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
 
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like, SSDnet has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
@@ -168,7 +167,7 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
   setInputWidth(input_dims[3]);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like! We got " 
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
@@ -181,9 +180,10 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
     << slog::endl;
   output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
 
+#if 0
 ///TODO: double check this part: BEGIN
   const InferenceEngine::CNNLayerPtr output_layer =
-    net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
+    getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
   if (output_layer->params.find("num_classes") == output_layer->params.end()) {
@@ -194,7 +194,6 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
   // class number should be equal to size of label vector
   // if network has default "background" class, fake is used
   const int num_classes = output_layer->GetParamAsInt("num_classes");
-#if 0
   slog::info << "Checking Object Detection output ... num_classes=" << num_classes << slog::endl;
   if (getLabels().size() != num_classes) {
     if (getLabels().size() == (num_classes - 1)) {

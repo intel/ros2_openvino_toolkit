@@ -49,6 +49,7 @@ public:
    * @brief Using an Inference Request to initialize the inference Engine.
    */
   Engine(InferenceEngine::InferRequest::Ptr &);
+  Engine(const std::string &);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
@@ -68,8 +69,12 @@ public:
     request_->SetCompletionCallback(callbackToSet);
   }
 
+  InferenceEngine::CNNNetwork ReadNetwork(const std::string);
+
 private:
   InferenceEngine::InferRequest::Ptr request_ = nullptr;
+  InferenceEngine::Core ie_;
+  std::string device_;
 };
 }  // namespace Engines
 

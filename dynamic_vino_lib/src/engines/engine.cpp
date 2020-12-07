@@ -33,3 +33,15 @@ Engines::Engine::Engine(
 {
   request_ = request;
 }
+
+Engines::Engine::Engine(
+  const std::string & device)
+  : device_(device)
+ {
+ }
+
+InferenceEngine::CNNNetwork
+Engines::Engine::ReadNetwork(const std::string model)
+{
+  return ie_.ReadNetwork(model);
+}

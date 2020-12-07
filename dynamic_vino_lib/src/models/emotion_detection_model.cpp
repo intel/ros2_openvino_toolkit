@@ -28,12 +28,11 @@ Models::EmotionDetectionModel::EmotionDetectionModel(
 {
 }
 
-bool Models::EmotionDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::EmotionDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
       <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
@@ -46,7 +45,7 @@ bool Models::EmotionDetectionModel::updateLayerProperty
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
     // throw std::logic_error("Age/Gender Recognition network should have two output layers");
     slog::warn << "This model should have and only have 1 output, but we got "

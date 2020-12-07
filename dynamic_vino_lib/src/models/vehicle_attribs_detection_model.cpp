@@ -24,18 +24,17 @@ Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
   const std::string & model_loc, int max_batch_size)
 : BaseModel(model_loc, max_batch_size) {}
 /*
-void Models::VehicleAttribsDetectionModel::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+void Models::VehicleAttribsDetectionModel::setLayerProperty()
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   // set input and output layer name
   input_ = input_info_map.begin()->first;
   auto output_iter = output_info_map.begin();
@@ -44,32 +43,31 @@ void Models::VehicleAttribsDetectionModel::setLayerProperty(
 }
 
 void Models::VehicleAttribsDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
+  const  & )
 {
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }
 }
 */
-bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::VehicleAttribsDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
     // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }

@@ -24,33 +24,31 @@ Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
   const std::string & model_loc, int max_batch_size)
 : BaseModel(model_loc, max_batch_size) {}
 
-void Models::PersonAttribsDetectionModel::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+void Models::PersonAttribsDetectionModel::setLayerProperty()
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   // set input and output layer name
   input_ = input_info_map.begin()->first;
   output_ = output_info_map.begin()->first;
 }
 
-void Models::PersonAttribsDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
+void Models::PersonAttribsDetectionModel::checkLayerProperty()
 {
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
     throw std::logic_error("Person Attribs topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    getNetwork().getOutputsInfo());
   if (output_info_map.size() != 1) {
     throw std::logic_error("Person Attribs Network expects networks having one output");
   }
