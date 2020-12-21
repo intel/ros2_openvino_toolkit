@@ -121,8 +121,14 @@ ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
 ```bash
 ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
 ```
-
-
+* run person attributes sample code input from StandardCamera.
+```bash
+ros2 launch dynamic_vino_sample pipeline_person_attributes.launch.py
+```
+* run person reidentification sample code input from StandardCamera.
+```bash
+ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
+```
 
 
 
