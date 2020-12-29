@@ -116,7 +116,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {
-      // slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
+      //slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
       break;
     }
 
