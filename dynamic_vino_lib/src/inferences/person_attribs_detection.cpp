@@ -110,13 +110,10 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   int net_attrib_length = net_attributes_.size();
   for (int i = 0; i < getResultsLength(); i++) {
     results_[i].male_probability_ = attri_values[i * net_attrib_length];
-    slog::debug << "male probability"<<results_[i].male_probability_<<slog::endl;
     results_[i].top_point_.x = top_values[i];
     results_[i].top_point_.y = top_values[i+1];
     results_[i].bottom_point_.x = bottom_values[i];
     results_[i].bottom_point_.y = bottom_values[i+1];
-    slog::debug << "top values"<<top_values[i]<<slog::endl;
-    slog::debug << "bottom values"<<bottom_values[i]<<slog::endl;
     std::string attrib = "";
     for (int j = 1; j < net_attrib_length; j++) {
       attrib += (attri_values[i * net_attrib_length + j] > attribs_confidence_) ?
