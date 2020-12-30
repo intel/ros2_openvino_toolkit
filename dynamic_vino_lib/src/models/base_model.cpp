@@ -22,6 +22,7 @@
 #include <memory>
 #include <algorithm>
 #include <iostream>
+#include <unistd.h>
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
@@ -58,7 +59,6 @@ void Models::BaseModel::modelInit()
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
   net_reader_->getNetwork().setBatchSize(max_batch_size_);
-
   /** DEPRECATED!
   checkLayerProperty(net_reader_);
   setLayerProperty(net_reader_); */

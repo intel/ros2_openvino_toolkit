@@ -19,7 +19,9 @@ Inference Features:
 * [x] Emotion Recognition
 * [x] Head Pose Estimation
 * [x] Object Segmentation
-* [ ] Object Re-ID
+* [x] Person Re-Identification
+* [x] Vehicle Attribute Detection
+* [x] Vehicle License Plate Detection
 
 ## Introduction
 The OpenVINO™ (Open visual inference and neural network optimization) toolkit provides a ROS-adaptered runtime framework of neural network which quickly deploys applications and solutions for vision inference. By leveraging Intel® OpenVINO™ toolkit and corresponding libraries, this runtime framework extends  workloads across Intel® hardware (including accelerators) and maximizes performance.
