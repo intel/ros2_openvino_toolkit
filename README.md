@@ -31,7 +31,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 
 ## Prerequisite
 
-* Process: A platform with Intel processors assembled. (see [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
+* Processor: A platform with Intel processors assembled. (see [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
 * OS: Ubuntu 18.04
 * ROS2: Foxy Fitzroy
 * OpenVINO: V2020.3, see [the release notes](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for more info.
@@ -47,7 +47,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
   - [How to create multiple pipelines in a process?](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
 
 ## Installation
-See [Installation Page](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/installation.md) for detailed installation instructions.
+See Installation Pages for [ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/installation.md) or [ROS2 Foxy]() for detailed installation instructions.
 
 ## Launching
 See [Launching Page](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/launching/launch.md) for detailed launching instructions.
