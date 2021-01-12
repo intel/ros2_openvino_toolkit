@@ -1,24 +1,30 @@
-# ROS2_OpenVINO_Toolkit
+# ROS2_FOXY_OpenVINO_Toolkit
 
-## 1. Prerequiste
-* An x86_64 computer running Ubuntu 18.04. Below processors are supported:
-	* 6th-8th Generation Intel® Core™
-	* Intel® Xeon® v5 family
-	* Intel® Xeon® v6 family
-* ROS2 Dashing
-* OpenVINO™ Toolkit
-* RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
-* Graphics are required only if you use a GPU. The official system requirements for GPU are:
-	* 6th to 8th generation Intel® Core™ processors with Iris® Pro graphics and Intel® HD Graphics
-	* 6th to 8th generation Intel® Xeon® processors with Iris Pro graphics and Intel HD Graphics (excluding the e5 product family, which does not have graphics)
-	* Intel® Pentium® processors N4200/5, N3350/5, N3450/5 with Intel HD Graphics
-* Use one of the following methods to determine the GPU on your hardware:
-	* [lspci] command: GPU info may lie in the [VGA compatible controller] line.
-	* Ubuntu system: Menu [System Settings] --> [Details] may help you find the graphics information.
-	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
+**NOTE:** 
+Below steps have been tested on **Ubuntu 18.04**.
 
+## 1. Install ROS2 Foxy from source code
+* Before colcon build, update the cmake to 3.14+
+```bash
+mkdir -p ~/cmake
+cd ~/cmake
+wget -t 3 -c https://www.cmake.org/files/v3.14/cmake-3.14.3.tar.gz 
+tar xf cmake-3.14.3.tar.gz 
+cd cmake-3.14.3 
+./bootstrap --parallel=$(nproc --all) 
+make --jobs=$(nproc --all) 
+sudo make install
+sudo ldconfig
+````
+* Install ROS2 Foxy [(guide)](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/)
+
+*  Build ROS2 Foxy packages from source code
+```bash
+cd ~/ros2_foxy
+colcon build --symlink-install
+. ~/ros2_foxy/install/setup.bash
+```
 ## 2. Environment Setup
-* Install ROS2 Dashing [(guide)](https://index.ros.org/doc/ros2/Installation/Dashing/)
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
 * Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)
@@ -44,6 +50,7 @@ git clone https://github.com/intel/ros2_intel_realsense.git -b refactor
 ```
 * Build package
 ```bash
+source ~/ros2_foxy/install/local_setup.bash
 source /opt/intel/<INSTALL_DIR>/bin/setupvars.sh
 cd ~/my_ros2_ws/src
 colcon build --symlink-install
@@ -79,7 +86,7 @@ source ./install/local_setup.bash
 	sudo python3 downloader.py --name vehicle-license-plate-detection-barrier-0106 --output_dir /opt/openvino_toolkit/models/vehicle-license-plate-detection/output
 	sudo python3 downloader.py --name vehicle-attributes-recognition-barrier-0039 --output_dir /opt/openvino_toolkit/models/vehicle-attributes-recongnition/output
 	sudo python3 downloader.py --name license-plate-recognition-barrier-0001 --output_dir /opt/openvino_toolkit/models/license-plate-recognition/output
-	sudo python3 downloader.py --name semantic-segmentation-adas-0001 --output_dir /opt/openvino_toolkit/models/semantic-segmentation/output
+	sudo python3 downloader.py --name road-segmentation-adas-0001 --output_dir /opt/openvino_toolkit/models/road-segmentation/output
 	sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 --output_dir /opt/openvino_toolkit/models/person-attributes/output
 	```
 	* copy label files (execute once)

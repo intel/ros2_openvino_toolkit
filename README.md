@@ -1,17 +1,12 @@
-# ros2_openvino_toolkit - branch ov-2020.3
-# IN DEVELOPMENT
+# ros2_openvino_toolkit
 
-This branch is now under development of supporting OpenVINO V2020.3 version. 
-
-Current Status:
-
-ROS2 Version:
+ROS2 Version supported:
 
 * [x] ROS2 Dashing
 * [x] ROS2 Eloquent
-* [ ] ROS2 Foxy
+* [x] ROS2 Foxy
 
-Inference Features:
+Inference Features supported:
 
 * [x] Object Detection
 * [x] Face Detection
@@ -38,25 +33,14 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 * [Optional] RealSense D400 Series Camera
 * [Optional] Intel NCS2 Stick
 ## Tables of contents
-* [Design Architecture and Logic Flow](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/Design_Architecture_and_logic_flow.md)
-* [Supported Features](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/supported_features/Supported_features.md)
+* [Design Architecture and Logic Flow](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/Design_Architecture_and_logic_flow.md)
+* [Supported Features](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/supported_features/Supported_features.md)
 * Tutorials
-  - [How to install ros2 openvinot toolkit based on ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/BINARY_INSTALLATION.md)
-  - [How to install ros2 openvinot toolkit based on ROS2 Foxy](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/BINARY_INSTALLATION.md)
-  - [How to configure a inference pipeline?](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/tutorials/configuration_file_customization.md)
-  - [How to create multiple pipelines in a process?](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
+  - [How to configure a inference pipeline?](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/tutorials/configuration_file_customization.md)
+  - [How to create multiple pipelines in a process?](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
 
-## Installation
-See Installation Pages for [ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/installation/installation.md) or [ROS2 Foxy]() for detailed installation instructions.
-
-## Launching
-See [Launching Page](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/launching/launch.md) for detailed launching instructions.
-
-
-# TODO Features
-* Support **result filtering** for inference process, so that the inference results can be filtered to different subsidiary inference. For example, given an image, firstly we do Object Detection on it, secondly we pass cars to vehicle brand recognition and pass license plate to license number recognition.
-* Design **resource manager** to better use such resources as models, engines, and other external plugins.
-* Develop GUI based **configuration and management tools** (and monitoring and diagnose tools), in order to provide easy entry for end users to simplify their operation. 
+## Installation & Launching
+See Getting Start Pages for [ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/getting_started_with_Dashing.md) or [ROS2 Foxy](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/getting_started_with_Foxy.md) for detailed installation & lauching instructions.
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 

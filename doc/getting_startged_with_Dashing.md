@@ -1,35 +1,15 @@
-# ROS2_FOXY_OpenVINO_Toolkit
+# ROS2_OpenVINO_Toolkit
 
 **NOTE:** 
 Below steps have been tested on **Ubuntu 18.04**.
 
-## 1. Install ROS2 Foxy from source code
-* Before colcon build, update the cmake to 3.14+
-```bash
-mkdir -p ~/cmake
-cd ~/cmake
-wget -t 3 -c https://www.cmake.org/files/v3.14/cmake-3.14.3.tar.gz 
-tar xf cmake-3.14.3.tar.gz 
-cd cmake-3.14.3 
-./bootstrap --parallel=$(nproc --all) 
-make --jobs=$(nproc --all) 
-sudo make install
-sudo ldconfig
-````
-* Install ROS2 Foxy [(guide)](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/)
-
-*  Build ROS2 Foxy packages from source code
-```bash
-cd ~/ros2_foxy
-colcon build --symlink-install
-. ~/ros2_foxy/install/setup.bash
-```
-## 3. Environment Setup
+## 1. Environment Setup
+* Install ROS2 Dashing [(guide)](https://index.ros.org/doc/ros2/Installation/Dashing/)
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
-* Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)
+* Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0) or later version.
 
-## 4. Building and Installation
+## 2. Building and Installation
 * Build demo code in OpenVINO toolkit
 ```bash
  # root is required instead of sudo
@@ -50,14 +30,13 @@ git clone https://github.com/intel/ros2_intel_realsense.git -b refactor
 ```
 * Build package
 ```bash
-source ~/ros2_foxy/install/local_setup.bash
 source /opt/intel/<INSTALL_DIR>/bin/setupvars.sh
 cd ~/my_ros2_ws/src
 colcon build --symlink-install
 source ./install/local_setup.bash
 ```
 
-## 5. Running the Demo
+## 3. Running the Demo
 * Preparation
 	* Configure the Neural Compute Stick USB Driver 
 	```bash
@@ -86,7 +65,7 @@ source ./install/local_setup.bash
 	sudo python3 downloader.py --name vehicle-license-plate-detection-barrier-0106 --output_dir /opt/openvino_toolkit/models/vehicle-license-plate-detection/output
 	sudo python3 downloader.py --name vehicle-attributes-recognition-barrier-0039 --output_dir /opt/openvino_toolkit/models/vehicle-attributes-recongnition/output
 	sudo python3 downloader.py --name license-plate-recognition-barrier-0001 --output_dir /opt/openvino_toolkit/models/license-plate-recognition/output
-	sudo python3 downloader.py --name road-segmentation-adas-0001 --output_dir /opt/openvino_toolkit/models/road-segmentation/output
+	sudo python3 downloader.py --name semantic-segmentation-adas-0001 --output_dir /opt/openvino_toolkit/models/semantic-segmentation/output
 	sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 --output_dir /opt/openvino_toolkit/models/person-attributes/output
 	```
 	* copy label files (execute once)
