@@ -61,7 +61,7 @@ bool dynamic_vino_lib::PersonAttribsDetection::submitRequest()
 {
   return dynamic_vino_lib::BaseInference::submitRequest();
 }
-
+/*
 bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
@@ -81,6 +81,48 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
     results_[i].attributes_ = attrib;
     found_result = true;
   }
+  if (!found_result) {results_.clear();}
+  return true;
+}
+*/
+bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
+{
+  bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
+  if (!can_fetch) {return false;}
+  bool found_result = false;
+  InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
+  slog::debug << "Analyzing Attributes Detection results..." << slog::endl;
+  std::string attribute_output = valid_model_->getOutputName("attributes_output_");
+  std::string top_output = valid_model_->getOutputName("top_output_");
+  std::string bottom_output = valid_model_->getOutputName("bottom_output_");
+
+  /*auto attri_values = request->GetBlob(attribute_output)->buffer().as<float*>();
+  auto top_values = request->GetBlob(top_output)->buffer().as<float*>();
+  auto bottom_values = request->GetBlob(bottom_output)->buffer().as<float*>();*/
+  InferenceEngine::Blob::Ptr attribBlob = request->GetBlob(attribute_output);
+  InferenceEngine::Blob::Ptr topBlob = request->GetBlob(top_output);
+  InferenceEngine::Blob::Ptr bottomBlob = request->GetBlob(bottom_output);
+
+  auto attri_values = attribBlob->buffer().as<float*>();
+  auto top_values = topBlob->buffer().as<float*>();
+  auto bottom_values = bottomBlob->buffer().as<float*>();
+
+  int net_attrib_length = net_attributes_.size();
+  for (int i = 0; i < getResultsLength(); i++) {
+    results_[i].male_probability_ = attri_values[i * net_attrib_length];
+    results_[i].top_point_.x = top_values[i];
+    results_[i].top_point_.y = top_values[i+1];
+    results_[i].bottom_point_.x = bottom_values[i];
+    results_[i].bottom_point_.y = bottom_values[i+1];
+    std::string attrib = "";
+    for (int j = 1; j < net_attrib_length; j++) {
+      attrib += (attri_values[i * net_attrib_length + j] > attribs_confidence_) ?
+        net_attributes_[j] + ", " : "";
+    }
+    results_[i].attributes_ = attrib;    
+
+    found_result = true;
+  }  
   if (!found_result) {results_.clear();}
   return true;
 }
