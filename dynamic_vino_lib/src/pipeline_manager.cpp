@@ -24,28 +24,20 @@
 #include <map>
 
 #if 0
-
-
-
-
-
-#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
-#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/landmarks_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_reidentification.hpp"
-#include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
-#include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
-
-
-
-
-#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
-#include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
+#endif
+
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
-#endif
+#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
+#include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
+#include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
+#include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
+#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
+#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"

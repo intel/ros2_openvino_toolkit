@@ -141,10 +141,10 @@ public:
       std::back_inserter(attr_.labels));
     }
 
-    inline std::vector<std::string>& getLabels()
-    {
-      return attr_.labels;
-    }
+  inline std::vector<std::string>& getLabels()
+  {
+    return attr_.labels;
+  }
 
   inline void addInputInfo(std::string key, std::string value)
   {

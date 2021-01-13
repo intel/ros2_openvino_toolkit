@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @brief A header file with declaration for RosTopicOutput Class
- * @file ros_topic_output.h
+ * @brief A header file with declaration for RosServiceOutput Class
+ * @file ros_topic_output.hpp
  */
 
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__ROS_SERVICE_OUTPUT_HPP_

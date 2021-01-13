@@ -63,7 +63,7 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
     height_ = frame.rows;
   }
   if (!dynamic_vino_lib::BaseInference::enqueue<u_int8_t>(frame, input_frame_loc, 1, 0,
-                                                          valid_model_->getInputName()))
+    valid_model_->getInputName()))
   {
     return false;
   }
@@ -91,7 +91,8 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue(
 
   if (enqueued_frames_ >= valid_model_->getMaxBatchSize())
   {
-    slog::warn << "Number of " << getName() << "input more than maximum(" << max_batch_size_ << ") processed by inference" << slog::endl;
+    slog::warn << "Number of " << getName() << "input more than maximum(" <<
+      max_batch_size_ << ") processed by inference" << slog::endl;
     return false;
   }
 

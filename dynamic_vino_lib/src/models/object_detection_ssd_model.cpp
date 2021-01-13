@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectDetectionSSDModel class
- * @file object_detection_model.cpp
+ * @file object_detection_ssd_model.cpp
  */
 #include <string>
 #include <memory>

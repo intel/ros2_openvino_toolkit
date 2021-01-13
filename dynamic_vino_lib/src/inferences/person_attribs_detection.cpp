@@ -61,30 +61,7 @@ bool dynamic_vino_lib::PersonAttribsDetection::submitRequest()
 {
   return dynamic_vino_lib::BaseInference::submitRequest();
 }
-/*
-bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
-{
-  bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
-  if (!can_fetch) {return false;}
-  bool found_result = false;
-  InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
-  std::string output = valid_model_->getOutputName();
-  const float * output_values = request->GetBlob(output)->buffer().as<float *>();
-  int net_attrib_length = net_attributes_.size();
-  for (int i = 0; i < getResultsLength(); i++) {
-    results_[i].male_probability_ = output_values[i * net_attrib_length];
-    std::string attrib = "";
-    for (int j = 1; j < net_attrib_length; j++) {
-      attrib += (output_values[i * net_attrib_length + j] > attribs_confidence_) ?
-        net_attributes_[j] + ", " : "";
-    }
-    results_[i].attributes_ = attrib;
-    found_result = true;
-  }
-  if (!found_result) {results_.clear();}
-  return true;
-}
-*/
+
 bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
 {
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
