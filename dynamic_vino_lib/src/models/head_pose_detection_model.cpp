@@ -30,38 +30,6 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 {
 }
 
-#if 0
-void Models::HeadPoseDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
-  slog::info << "Checking Head Pose network outputs" << slog::endl;
-  InferenceEngine::OutputsDataMap outputInfo(net_reader->getNetwork().getOutputsInfo());
-  std::map<std::string, bool> layerNames = {{output_angle_r_, false},
-    {output_angle_p_, false},
-    {output_angle_y_, false}};
-
-  for (auto && output : outputInfo) {
-    InferenceEngine::CNNLayerPtr layer = output.second->getCreatorLayer().lock();
-    if (layerNames.find(layer->name) == layerNames.end()) {
-      throw std::logic_error("Head Pose network output layer unknown: " + layer->name +
-              ", should be " + output_angle_r_ + " or " + output_angle_p_ + " or " +
-              output_angle_y_);
-    }
-    if (layer->type != "FullyConnected") {
-      throw std::logic_error("Head Pose network output layer (" + layer->name +
-              ") has invalid type: " + layer->type + ", should be FullyConnected");
-    }
-    auto fc = dynamic_cast<InferenceEngine::FullyConnectedLayer *>(layer.get());
-    if (fc->_out_num != 1) {
-      throw std::logic_error("Head Pose network output layer (" + layer->name +
-              ") has invalid out-size=" + std::to_string(fc->_out_num) +
-              ", should be 1");
-    }
-    layerNames[layer->name] = true;
-  }
-}
-#endif
-
 bool Models::HeadPoseDetectionModel::updateLayerProperty
 (InferenceEngine::CNNNetReader::Ptr net_reader)
 {

@@ -34,10 +34,7 @@ class ImageWindowOutput : public BaseOutput
 {
 public:
   explicit ImageWindowOutput(const std::string & output_name, int focal_length = 950);
-  // ~ImageWindowOutput()
-  // {
-  //   cv::destroyWindow(output_name_);
-  // }
+
   /**
    * @brief Calculate the camera matrix of a frame for image
    * window output.
