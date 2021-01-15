@@ -39,6 +39,7 @@ class PersonAttribsDetectionResult : public Result
 public:
   friend class PersonAttribsDetection;
   explicit PersonAttribsDetectionResult(const cv::Rect & location);
+
   std::string getAttributes() const
   {
     return attributes_;
@@ -47,9 +48,20 @@ public:
   {
     return male_probability_;
   }
+  cv::Point2f getTopLocation() const
+  {
+    return top_point_;
+  }
+  cv::Point2f getBottomLocation() const
+  {
+    return bottom_point_;
+  }
 
 private:
   float male_probability_;
+  float attributes_probability_[8];
+  cv::Point2f top_point_;
+  cv::Point2f bottom_point_;
   std::string attributes_ = "";
 };
 /**
@@ -115,8 +127,15 @@ private:
   std::shared_ptr<Models::PersonAttribsDetectionModel> valid_model_;
   std::vector<Result> results_;
   double attribs_confidence_;
-  const std::vector<std::string> net_attributes_ = {"is male", "hat",
-    "longsleeves", "longpants", "longhair", "coatjacket"};
+  const std::vector<std::string> net_attributes_ = {
+    "is male", 
+    "has_bag", 
+    "has_backpack" , 
+    "has hat",
+    "has longsleeves", 
+    "has longpants", 
+    "has longhair", 
+    "has coat_jacket"};
 };
 }  // namespace dynamic_vino_lib
 #endif  // DYNAMIC_VINO_LIB__INFERENCES__PERSON_ATTRIBS_DETECTION_HPP_

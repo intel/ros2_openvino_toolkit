@@ -24,7 +24,9 @@
 #include <ie_plugin_ptr.hpp>
 #include <cpp/ie_cnn_net_reader.h>
 #include <cpp/ie_infer_request.hpp>
+#if(defined(USE_OLD_E_PLUGIN_API))
 #include <ie_device.hpp>
+#endif
 #include <string>
 #include <map>
 #include <vector>
@@ -54,17 +56,6 @@ inline std::string & trim(std::string & s)
   return s;
 }
 
-/**
-* @brief Converts string to TargetDevice
-* @param deviceName - string value representing device
-* @return TargetDevice value that corresponds to input string.
-*         eDefault in case no corresponding value was found
-*/
-static InferenceEngine::TargetDevice getDeviceFromStr(const std::string & deviceName)
-{
-  return InferenceEngine::TargetDeviceInfo::fromStr(deviceName);
-}
-
 static std::ostream & operator<<(std::ostream & os, const InferenceEngine::Version * version)
 {
   os << "\n\tAPI version ............ ";
@@ -84,6 +75,7 @@ static std::ostream & operator<<(std::ostream & os, const InferenceEngine::Versi
   return os;
 }
 
+#if(defined(USE_OLD_E_PLUGIN_API))
 /**
  * @class PluginVersion
  * @brief A PluginVersion class stores plugin version and initialization status
@@ -139,5 +131,6 @@ inline void printPluginVersion(InferenceEngine::InferenceEnginePluginPtr ptr, st
   ptr->GetVersion((const InferenceEngine::Version * &)pluginVersion);
   stream << pluginVersion << std::endl;
 }
+#endif // (defined(USE_OLD_E_PLUGIN_API))
 
 #endif  // DYNAMIC_VINO_LIB__UTILS__VERSION_INFO_HPP_

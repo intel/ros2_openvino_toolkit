@@ -204,7 +204,7 @@ if [ "$DLDT" == "1" ]; then
     fi
   fi
   mkdir -p  ~/code && cd ~/code
-  git clone https://github.com/opencv/dldt.git
+  git clone https://github.com/openvinotoolkit/openvino.git
   cd dldt/inference-engine/
   git checkout 2019_R3.1
   git submodule init

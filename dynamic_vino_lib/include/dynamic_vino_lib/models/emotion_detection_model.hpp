@@ -32,28 +32,18 @@ namespace Models
 class EmotionDetectionModel : public BaseModel
 {
 public:
-  EmotionDetectionModel(const std::string &, int, int, int);
-  inline const std::string getInputName()
-  {
-    return input_;
-  }
-  inline const std::string getOutputName()
-  {
-    return output_;
-  }
+  EmotionDetectionModel(const std::string & model_loc, int batch_size = 1);
+
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
-
-protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  const std::string getModelCategory() const override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
-  std::string input_;
-  std::string output_;
+  bool verifyOutputLayer(const InferenceEngine::DataPtr & ptr);
+
 };
 }  // namespace Models
 

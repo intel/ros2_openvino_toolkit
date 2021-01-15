@@ -15,7 +15,7 @@
 #ifndef UTILITY_HPP_
 #define UTILITY_HPP_
 
-#include <gflags/gflags.h>
+//#include <gflags/gflags.h>
 
 #include <string>
 #include <vector>
@@ -32,13 +32,6 @@ static const char help_message[] = "Print a usage message.";
 
 /// @brief message absolute path of parameter config file
 static const char parameter_file_message[] = "Absolute path of parameter config file.";
-
-/// \brief Define flag for showing help message <br>
-DEFINE_bool(h, false, help_message);
-
-/// @brief Absolute path to yaml-format configuration file <br>
-/// It is a optional parameter
-DEFINE_string(config, "", parameter_file_message);
 
 /**
 * \brief This function show a help message

@@ -29,7 +29,7 @@ namespace Models
 class LicensePlateDetectionModel : public BaseModel
 {
 public:
-  LicensePlateDetectionModel(const std::string &, int, int, int);
+  LicensePlateDetectionModel(const std::string & model_loc, int batch_size = 1);
   inline const std::string getInputName() {return input_;}
   inline const std::string getSeqInputName() {return seq_input_;}
   inline const std::string getOutputName() {return output_;}
@@ -38,11 +38,12 @@ public:
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
+  const std::string getModelCategory() const override;
 
 protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
+  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
   // up to 88 items per license plate, ended with "-1"
   const int max_sequence_size_ = 88;
   std::string input_;

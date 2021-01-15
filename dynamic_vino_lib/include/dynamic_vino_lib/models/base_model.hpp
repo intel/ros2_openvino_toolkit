@@ -25,29 +25,34 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <map>
+#include <iostream>
+#include <fstream>
 
 #include "inference_engine.hpp"
+#include "dynamic_vino_lib/slog.hpp"
+#include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
 
 namespace Engines
 {
-class Engine;
+  class Engine;
 }
 
 namespace dynamic_vino_lib
 {
-class ObjectDetectionResult;
+  class ObjectDetectionResult;
 }
 
 namespace Models
 {
-/**
- * @class BaseModel
- * @brief This class represents the network given by .xml and .bin file
- */
-class BaseModel
-{
-public:
-  using Ptr = std::shared_ptr<BaseModel>;
+  /**
+   * @class BaseModel
+   * @brief This class represents the network given by .xml and .bin file
+   */
+  class BaseModel : public ModelAttribute
+  {
+  public:
+    using Ptr = std::shared_ptr<BaseModel>;
   /**
    * @brief Initialize the class with given .xml, .bin and .labels file. It will
    * also check whether the number of input and output are fit.
@@ -55,104 +60,85 @@ public:
    * (model' s bin file should be the same as .xml file except for extension)
    * @param[in] input_num The number of input the network should have.
    * @param[in] output_num The number of output the network should have.
-   * @param[in] batch_size The number of batch size the network should have.
+   * @param[in] batch_size The number of batch size (default: 1) the network should have.
    * @return Whether the input device is successfully turned on.
    */
-  BaseModel(const std::string & model_loc, int input_num, int output_num, int batch_size);
-  /**
-   * @brief Get the label vector.
-   * @return The label vector.
-   */
-  inline std::vector<std::string> & getLabels()
-  {
-    return labels_;
-  }
+    BaseModel(const std::string &model_loc, int batch_size = 1);
+
   /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
    */
-  inline int getMaxBatchSize() const
-  {
-    return max_batch_size_;
-  }
-  inline void setMaxBatchSize(int max_batch_size)
-  {
-    max_batch_size_ = max_batch_size;
-  }
+    inline int getMaxBatchSize() const
+    {
+      return max_batch_size_;
+    }
+    inline void setMaxBatchSize(int max_batch_size)
+    {
+      max_batch_size_ = max_batch_size;
+    }
 
-  virtual bool enqueue(
-    const std::shared_ptr<Engines::Engine> & engine,
-    const cv::Mat & frame,
-    const cv::Rect & input_frame_loc) {return true;}
+    virtual bool enqueue(
+        const std::shared_ptr<Engines::Engine> &engine,
+        const cv::Mat &frame,
+        const cv::Rect &input_frame_loc) { return true; }
   /**
    * @brief Initialize the model. During the process the class will check
    * the network input, output size, check layer property and
    * set layer property.
    */
-  void modelInit();
+    void modelInit();
   /**
    * @brief Get the name of the model.
    * @return The name of the model.
    */
-  virtual const std::string getModelName() const = 0;
+    virtual const std::string getModelCategory() const = 0;
+    inline ModelAttr getAttribute() { return attr_; }
 
-  virtual inline int getMaxProposalCount() const {return max_proposal_count_;}
-  inline int getObjectSize() const {return object_size_;}
-  inline void setObjectSize(int os) {object_size_ = os;}
-  inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
+    inline InferenceEngine::CNNNetReader::Ptr getNetReader() const
+    {
+      return net_reader_;
+    }
+
+  protected:
+    /**
+     * New infterface to check and update Layer Property
+     * @brief Set the layer property (layer layout, layer precision, etc.).
+     * @param[in] network_reader The reader of the network to be set.
+     */
+    virtual bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
+
+    InferenceEngine::CNNNetReader::Ptr net_reader_;
+    void setFrameSize(const int &w, const int &h)
+    {
+      frame_size_.width = w;
+      frame_size_.height = h;
+    }
+    cv::Size getFrameSize()
+    {
+      return frame_size_;
+    }
+
+  private:
+    int max_batch_size_;
+    std::string model_loc_;
+    cv::Size frame_size_;
+  };
+
+  class ObjectDetectionModel : public BaseModel
   {
-    return net_reader_;
-  }
+  public:
+    ObjectDetectionModel(const std::string &model_loc, int batch_size = 1);
+    virtual bool fetchResults(
+        const std::shared_ptr<Engines::Engine> &engine,
+        std::vector<dynamic_vino_lib::ObjectDetectionResult> &result,
+        const float &confidence_thresh = 0.3,
+        const bool &enable_roi_constraint = false) = 0;
+    virtual bool matToBlob(
+        const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
+        int batch_index, const std::shared_ptr<Engines::Engine> &engine) = 0;
+  };
 
-protected:
-  /**
-   * @brief Check whether the layer property
-   * (output layer name, output layer type, etc.) is right
-   * @param[in] network_reader The reader of the network to be checked.
-   */
-  virtual void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr & network_reader) = 0;
-  /**
-   * @brief Set the layer property (layer layout, layer precision, etc.).
-   * @param[in] network_reader The reader of the network to be set.
-   */
-  virtual void setLayerProperty(InferenceEngine::CNNNetReader::Ptr network_reader) = 0;
-  virtual void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr);
-  InferenceEngine::CNNNetReader::Ptr net_reader_;
-  void setFrameSize(const int & w, const int & h)
-  {
-    frame_size_.width = w;
-    frame_size_.height = h;
-  }
-  cv::Size getFrameSize()
-  {return frame_size_;}
+} // namespace Models
 
-protected:
-  int max_proposal_count_;
-  int object_size_;
-
-private:
-  std::vector<std::string> labels_;
-  int input_num_;
-  int output_num_;
-  int max_batch_size_;
-  std::string model_loc_;
-  cv::Size frame_size_;
-};
-
-class ObjectDetectionModel : public BaseModel
-{
-public:
-  ObjectDetectionModel(const std::string & a, int b, int c, int d);
-  virtual bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<dynamic_vino_lib::ObjectDetectionResult> & result,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false) = 0;
-  virtual bool matToBlob(
-    const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-    int batch_index, const std::shared_ptr<Engines::Engine> & engine) = 0;
-};
-
-}  // namespace Models
-
-#endif  // DYNAMIC_VINO_LIB__MODELS__BASE_MODEL_HPP_
+#endif // DYNAMIC_VINO_LIB__MODELS__BASE_MODEL_HPP_

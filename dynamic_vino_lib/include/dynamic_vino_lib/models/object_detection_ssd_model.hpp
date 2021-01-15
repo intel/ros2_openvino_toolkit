@@ -32,7 +32,7 @@ class ObjectDetectionSSDModel : public ObjectDetectionModel
   using Result = dynamic_vino_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionSSDModel(const std::string &, int, int, int);
+  ObjectDetectionSSDModel(const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
@@ -49,26 +49,14 @@ public:
     const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
     int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
 
-  inline const std::string getInputName()
-  {
-    return input_;
-  }
-  inline const std::string getOutputName()
-  {
-    return output_;
-  }
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
+  const std::string getModelCategory() const override;
 
-protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
-  std::string input_;
-  std::string output_;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_

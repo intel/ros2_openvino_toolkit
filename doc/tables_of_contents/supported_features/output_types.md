@@ -10,11 +10,11 @@
 |Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([people_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/AgeGenderStamped.msg))|
 |Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([people_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_openvino_toolkit/blob/master/people_msgs/msg/HeadPoseStamped.msg))|
 |Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ObjectsInMasks.msg))|
-|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ReidentificationStamped.msg))|
-|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/ReidentificationStamped.msg))|
-|Vehicle Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::VehicleAttribsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/VehicleAttribsStamped.msg))|
-|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/msg/LicensePlateStamped.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/msg/ObjectsInMasks.msg))|
+|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/msg/ReidentificationStamped.msg))|
+|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([people_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/msg/ReidentificationStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::VehicleAttribsStamped](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/msg/VehicleAttribsStamped.msg))|
+|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/msg/LicensePlateStamped.msg))|
 
 ## Image View Window
 >> The original image and the inference results are rendered together and shown in a CV window.
@@ -32,9 +32,9 @@
 |---|---|
 |Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
 |Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
-|Age Gender Detection Service|```/detect_age_gender```([people_msgs::srv::AgeGender](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/AgeGender.srv))|
-|Headpose Detection Service|```/detect_head_pose```([people_msgs::srv::HeadPose](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/HeadPose.srv))|
-|Emotion Detection Service|```/detect_emotion```([people_msgs::srv::Emotion](https://github.com/intel/ros2_openvino_toolkit/blob/devel/people_msgs/srv/Emotion.srv))|
+|Age Gender Detection Service|```/detect_age_gender```([people_msgs::srv::AgeGender](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/srv/AgeGender.srv))|
+|Headpose Detection Service|```/detect_head_pose```([people_msgs::srv::HeadPose](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/srv/HeadPose.srv))|
+|Emotion Detection Service|```/detect_emotion```([people_msgs::srv::Emotion](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/people_msgs/srv/Emotion.srv))|
 
 - **Inference Pipeline Lifecycle Management**
    - Create new pipeline

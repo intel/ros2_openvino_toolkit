@@ -24,13 +24,12 @@
 
 // Validated Face Detection Network
 Models::FaceDetectionModel::FaceDetectionModel(
-  const std::string & model_loc, int input_num,
-  int output_num, int max_batch_size)
-: ObjectDetectionModel(model_loc, input_num, output_num, max_batch_size)
+  const std::string & model_loc, int max_batch_size)
+: ObjectDetectionModel(model_loc, max_batch_size)
 {
 }
 
-const std::string Models::FaceDetectionModel::getModelName() const
+const std::string Models::FaceDetectionModel::getModelCategory() const
 {
   return "Face Detection";
 }

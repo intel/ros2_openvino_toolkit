@@ -9,7 +9,7 @@ Two kinds of models are supported currently:
 ## Demo Result Snapshots
 * object detection input from realsense camera
 
-![object_detection_demo_realsense](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/object_detection.gif "object detection demo realsense")
+![object_detection_demo_realsense](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/data/images/object_detection.gif "object detection demo realsense")
 
 ## Download Models
 >> Before using the supported models, you need to first downloand and optimize them into OpenVINO mode. mobilenet-SSD caffe model is the default one used in the Object Detection configuration. 

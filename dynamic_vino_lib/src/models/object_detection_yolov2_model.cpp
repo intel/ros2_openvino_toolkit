@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectDetectionModel class
- * @file object_detection_model.cpp
+ * @file object_detection_yolov2_model.cpp
  */
 
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
@@ -28,61 +28,56 @@
 
 // Validated Object Detection Network
 Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
-  const std::string & model_loc, int input_num,
-  int output_num, int max_batch_size)
-: ObjectDetectionModel(model_loc, input_num, output_num, max_batch_size)
+  const std::string & model_loc, int max_batch_size)
+: ObjectDetectionModel(model_loc, max_batch_size)
 {
 }
 
-void Models::ObjectDetectionYolov2Model::setLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
+  const InferenceEngine::CNNNetReader::Ptr net_reader)
 {
-  // set input property
+  slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
+
   InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
-  input_info_ = input_info_map.begin()->second;
-  if (input_info_ == nullptr) {
-    throw std::logic_error("Input info of Yolov2 model should not be nullptr!");
+  if (input_info_map.size() != 1) {
+    slog::warn << "This model seems not Yolo-like, which has only one input, but we got "
+      << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
+    return false;
   }
 
-  input_info_->setPrecision(InferenceEngine::Precision::FP32);
-  input_info_->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
+  input_info->setPrecision(InferenceEngine::Precision::FP32);
+  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  input_info_ = input_info;
+  addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
-  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
-
-  // set input and output layer name
-  input_ = input_info_map.begin()->first;
-  output_ = output_info_map.begin()->first;
-}
-
-void Models::ObjectDetectionYolov2Model::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
-  slog::info << "Checking Object Detection outputs" << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
-  slog::info << "Checking Object Detection outputs ..." << slog::endl;
   if (output_info_map.size() != 1) {
-    throw std::logic_error("This sample accepts networks having only one output");
+    slog::warn << "This model seems not Yolo-like! We got "
+      << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
+      << slog::endl;
+    return false;
   }
   InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  output_ = output_info_map.begin()->first;
-  slog::info << "Checking Object Detection output ... Name=" << output_ << slog::endl;
+  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
+  addOutputInfo("output", output_info_map.begin()->first);
+  slog::info << "Checking Object Detection output ... Name=" << output_info_map.begin()->first
+    << slog::endl;
 
-  output_layer_ = net_reader->getNetwork().getLayerByName(output_.c_str());
+  const InferenceEngine::CNNLayerPtr output_layer =
+    net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
-  if (output_layer_ == nullptr ||
-    output_layer_->params.find("classes") == output_layer_->params.end())
-  {
-    throw std::logic_error("Object Detection network output layer (" + output_ +
-            ") should have classes integer attribute");
+  if (output_layer == nullptr ||
+    output_layer->params.find("classes") == output_layer->params.end()) {
+    slog::warn << "This model's output layer (" << output_info_map.begin()->first
+      << ") should have num_classes integer attribute" << slog::endl;
+    return false;
   }
   // class number should be equal to size of label vector
   // if network has default "background" class, fake is used
-  const int num_classes = output_layer_->GetParamAsInt("classes");
-
+  const int num_classes = output_layer->GetParamAsInt("classes");
   slog::info << "Checking Object Detection output ... num_classes=" << num_classes << slog::endl;
   if (getLabels().size() != num_classes) {
     if (getLabels().size() == (num_classes - 1)) {
@@ -91,26 +86,33 @@ void Models::ObjectDetectionYolov2Model::checkLayerProperty(
       getLabels().clear();
     }
   }
+
   // last dimension of output layer should be 7
   const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
-  max_proposal_count_ = static_cast<int>(output_dims[2]);
-  slog::info << "max proposal count is: " << max_proposal_count_ << slog::endl;
+  setMaxProposalCount(static_cast<int>(output_dims[2]));
+  slog::info << "max proposal count is: " << getMaxProposalCount() << slog::endl;
+
   auto object_size = static_cast<int>(output_dims[3]);
   if (object_size != 33) {
-    throw std::logic_error("Object Detection network output layer should have 33 as a last "
-            "dimension");
+    slog::warn << "This model is NOT Yolo-like, whose output data for each detected object"
+      << "should have 7 dimensions, but was " << std::to_string(object_size)
+      << slog::endl;
+    return false;
   }
   setObjectSize(object_size);
 
   if (output_dims.size() != 2) {
-    throw std::logic_error("Object Detection network output dimensions not compatible shoulld be "
-            "2, "
-            "but was " +
-            std::to_string(output_dims.size()));
+    slog::warn << "This model is not Yolo-like, output dimensions shoulld be 2, but was"
+      << std::to_string(output_dims.size()) << slog::endl;
+    return false;
   }
+
+  printAttribute();
+  slog::info << "This model is Yolo-like, Layer Property updated!" << slog::endl;
+  return true;
 }
 
-const std::string Models::ObjectDetectionYolov2Model::getModelName() const
+const std::string Models::ObjectDetectionYolov2Model::getModelCategory() const
 {
   return "Object Detection Yolo v2";
 }
@@ -224,7 +226,8 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
     const float * detections =
       request->GetBlob(output)->buffer().as<InferenceEngine::PrecisionTrait
         <InferenceEngine::Precision::FP32>::value_type *>();
-    InferenceEngine::CNNLayerPtr layer = getLayer();
+    InferenceEngine::CNNLayerPtr layer =
+      getNetReader()->getNetwork().getLayerByName(output.c_str());
     int input_height = input_info_->getTensorDesc().getDims()[2];
     int input_width = input_info_->getTensorDesc().getDims()[3];
 
@@ -236,8 +239,8 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
     const int num = layer->GetParamAsInt("num");
     const int coords = layer->GetParamAsInt("coords");
     const int classes = layer->GetParamAsInt("classes");
-
-    const int out_blob_h = layer->input()->dims[0];
+    auto blob = request->GetBlob(output);
+    const int out_blob_h = static_cast<int>(blob->getTensorDesc().getDims()[2]);;
 
     std::vector<float> anchors = {
       0.572730, 0.677385,
@@ -309,7 +312,7 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
         continue;
       }
       for (unsigned int j = i + 1; j < raw_results.size(); ++j) {
-        auto iou = dynamic_vino_lib::ObjectDetection::IntersectionOverUnion(
+        auto iou = dynamic_vino_lib::ObjectDetection::calcIoU(
           raw_results[i].getLocation(), raw_results[j].getLocation());
         if (iou >= 0.45) {
           raw_results[j].setConfidence(0);

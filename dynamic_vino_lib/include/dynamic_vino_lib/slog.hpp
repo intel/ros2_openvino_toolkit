@@ -163,7 +163,7 @@ public:
 };
 
 #ifdef LOG_LEVEL_DEBUG
-  static LogStream debug("DEBUG", std::cout);
+  static LogStream debug("DEBUG", std::cout, GREEN);
 #else
   static NullStream debug;
 #endif

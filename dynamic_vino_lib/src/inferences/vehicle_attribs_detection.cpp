@@ -68,8 +68,10 @@ bool dynamic_vino_lib::VehicleAttribsDetection::fetchResults()
   if (!can_fetch) {return false;}
   bool found_result = false;
   InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
-  std::string color_name = valid_model_->getColorOutputName();
-  std::string type_name = valid_model_->getTypeOutputName();
+  //std::string color_name = valid_model_->getColorOutputName();
+  //std::string type_name = valid_model_->getTypeOutputName();
+  std::string color_name = valid_model_->getOutputName("color_output_");
+  std::string type_name = valid_model_->getOutputName("type_output_");
   const float * color_values = request->GetBlob(color_name)->buffer().as<float *>();
   const float * type_values = request->GetBlob(type_name)->buffer().as<float *>();
   for (int i = 0; i < getResultsLength(); i++) {
@@ -98,7 +100,7 @@ dynamic_vino_lib::VehicleAttribsDetection::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::VehicleAttribsDetection::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::VehicleAttribsDetection::observeOutput(

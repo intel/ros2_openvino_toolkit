@@ -2,7 +2,7 @@
 >> This is a way to run more than one pipeline in the same process.Having multiple pipelines in a single instance allows each pipeline to have custom configuration and different performance.
 
 ## prerequest
-see [this guide](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/tables_of_contents/tutorials/configuration_file_customization.md) to see how to customize a pipeline.
+see [this guide](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/tutorials/configuration_file_customization.md) to see how to customize a pipeline.
 
 ## A demo for multiple pipeline
 ```bash

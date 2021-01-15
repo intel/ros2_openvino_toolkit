@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Intel Corporation
+# Copyright (c) 2018-2020 Intel Corporation
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@ cmake_minimum_required(VERSION 3.5)
 
 project(dynamic_vino_lib)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
-
 ####################################
 ## to use C++14
 set(CMAKE_CXX_STANDARD 14)
@@ -26,15 +24,16 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
 ####################################
-## to use new InferenceEngine API (InferenceEngine::Core),
+## by default, new InferenceEngine API (InferenceEngine::Core) is used.
+## If the deprecated InferenceEngine API (InferenceEngine::InferencePlugin)
 ## then, uncomment below line
-#add_definitions(-DUSE_IE_CORE)
+## add_definitions(-DUSE_OLD_E_PLUGIN_API)
 ####################################
 
 ####################################
 ## to get verbose log,
 ## then, uncomment below line
-#add_definitions(-DLOG_LEVEL_DEBUG)
+add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
 # environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
@@ -55,9 +54,10 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(realsense2)
-if(NOT realsense2_FOUND)
-  message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
+find_package(realsense2 QUIET)
+if(NOT (realsense2_FOUND))
+  message(STATUS "\n\n Intel RealSense SDK 2.0 is missing, some features depending on it won't work. \
+    please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -75,13 +75,13 @@ find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
-set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
+###################
+#To be deleted
+#set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
+#add_library(cpu_extension SHARED IMPORTED)
+#set_target_properties(cpu_extension PROPERTIES
+#  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
-add_library(cpu_extension SHARED IMPORTED)
-set_target_properties(cpu_extension PROPERTIES
-  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
-
-set(CMAKE_BUILD_TYPE "Release")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
     set(CMAKE_BUILD_TYPE "Release")
@@ -170,7 +170,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
 #If you concern the inference performence, you can try to get the resource from the follow url and enable the below line.
-#https://github.com/opencv/dldt/tree/2018/inference-engine/src/extension/cmake
+#https://github.com/openvinotoolkit/openvino/tree/2018/inference-engine/src/extension/cmake
 #include(feature_defs OPTIONAL)
 
 # Properties->C/C++->General->Additional Include Directories
@@ -178,17 +178,14 @@ include_directories(
     # ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${InferenceEngine_INCLUDE_DIRS}
-    ${InferenceEngine_INCLUDE_DIRS}/../samples
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../src
-    ${realsense2_INCLUDE_DIRS}
+    #${realsense2_INCLUDE_DIRS}
 )
 
 if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} cpu_extension)
+set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} ${InferenceEngine_LIBRARIES})
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
@@ -209,8 +206,8 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/object_segmentation.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
-        src/inferences/landmarks_detection.cpp
-        src/inferences/face_reidentification.cpp
+        #src/inferences/landmarks_detection.cpp
+        #src/inferences/face_reidentification.cpp
         src/inferences/vehicle_attribs_detection.cpp
         src/inferences/license_plate_detection.cpp
         src/inputs/realsense_camera.cpp
@@ -220,6 +217,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inputs/video_input.cpp
         src/inputs/image_input.cpp
         src/models/base_model.cpp
+        src/models/attributes/ssd_model_attr.cpp
         src/models/emotion_detection_model.cpp
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
@@ -227,8 +225,8 @@ add_library(${PROJECT_NAME} SHARED
         src/models/object_segmentation_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
-        src/models/landmarks_detection_model.cpp
-        src/models/face_reidentification_model.cpp
+        #src/models/landmarks_detection_model.cpp
+        #src/models/face_reidentification_model.cpp
         src/models/vehicle_attribs_detection_model.cpp
         src/models/license_plate_detection_model.cpp
         src/models/object_detection_ssd_model.cpp

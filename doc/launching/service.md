@@ -1,10 +1,10 @@
 # Service
 ## Download Models
 ### Object Detection Service
-* See [object detection download model](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/inferences/Object_Detection.md#mobilenet-ssd) section for detailed instructions.
+* See [object detection download model](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/inferences/Object_Detection.md#mobilenet-ssd) section for detailed instructions.
 
 ### People Detection Service
-* See [People Detection download model](https://github.com/intel/ros2_openvino_toolkit/blob/devel/doc/inferences/Face_Detection.md#opensource-version) section for detaild instructions.
+* See [People Detection download model](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/inferences/Face_Detection.md#opensource-version) section for detaild instructions.
 
 ## Launching
 * run object detection service sample code input from Image  

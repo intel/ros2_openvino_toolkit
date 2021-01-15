@@ -39,7 +39,7 @@ def generate_launch_description():
             output='screen'),
 
         # Rviz
-        launch_ros.actions.Node(
-            package='rviz2', node_executable='rviz2', output='screen',
-            arguments=['--display-config', default_rviz]),
+        #launch_ros.actions.Node(
+        #    package='rviz2', node_executable='rviz2', output='screen',
+        #    arguments=['--display-config', default_rviz]),
     ])

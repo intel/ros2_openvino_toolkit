@@ -21,31 +21,14 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
 Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
-  const std::string & model_loc, int input_num, int output_num, int max_batch_size)
-: BaseModel(model_loc, input_num, output_num, max_batch_size) {}
+  const std::string & model_loc, int max_batch_size)
+: BaseModel(model_loc, max_batch_size) {}
 
-void Models::VehicleAttribsDetectionModel::setLayerProperty(
+bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
 {
-  // set input property
-  InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  // set output property
-  InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
-  // set input and output layer name
-  input_ = input_info_map.begin()->first;
-  auto output_iter = output_info_map.begin();
-  color_output_ = (output_iter++)->second->name;
-  type_output_ = (output_iter++)->second->name;
-}
-
-void Models::VehicleAttribsDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
+  slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
+    // set input property
   InferenceEngine::InputsDataMap input_info_map(
     net_reader->getNetwork().getInputsInfo());
   if (input_info_map.size() != 1) {
@@ -56,9 +39,29 @@ void Models::VehicleAttribsDetectionModel::checkLayerProperty(
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }
+
+  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
+  input_info->setPrecision(InferenceEngine::Precision::U8);
+  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+ 
+  // set input and output layer name
+  input_ = input_info_map.begin()->first;
+  auto output_iter = output_info_map.begin();
+  // color_output_ = (output_iter++)->second->name;
+  // type_output_ = (output_iter++)->second->name;
+  InferenceEngine::DataPtr color_output_ptr = (output_iter++)->second;
+  InferenceEngine::DataPtr type_output_ptr = (output_iter++)->second;
+    
+  addOutputInfo("color_output_", color_output_ptr->getName());
+  //output_gender_ = gender_output_ptr->name;
+  addOutputInfo("type_output_", type_output_ptr->getName());
+
+  printAttribute();
+  return true;
 }
 
-const std::string Models::VehicleAttribsDetectionModel::getModelName() const
+const std::string Models::VehicleAttribsDetectionModel::getModelCategory() const
 {
   return "Vehicle Attributes Detection";
 }
+

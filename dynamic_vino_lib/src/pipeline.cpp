@@ -193,13 +193,15 @@ void Pipeline::runOnce()
   }
   width_ = frame_.cols;
   height_ = frame_.rows;
-
+  slog::debug << "DEBUG: in Pipeline run process..." << slog::endl;
   // auto t0 = std::chrono::high_resolution_clock::now();
   for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
     std::string detection_name = pos.first->second;
+    slog::debug << "DEBUG: Enqueue for detection: " << detection_name << slog::endl;
     auto detection_ptr = name_to_detection_map_[detection_name];
     detection_ptr->enqueue(frame_, cv::Rect(width_ / 2, height_ / 2, width_, height_));
     increaseInferenceCounter();
+    slog::debug << "DEBUG: Submit Infer request for detection: " << detection_name << slog::endl;
     detection_ptr->submitRequest();
   }
 
@@ -209,12 +211,14 @@ void Pipeline::runOnce()
   }
   countFPS();
 
+  slog::debug << "DEBUG: align inference process, waiting until all inferences done!" << slog::endl;
   std::unique_lock<std::mutex> lock(counter_mutex_);
   cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
 
   //auto t1 = std::chrono::high_resolution_clock::now();
   //typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
 
+  slog::debug << "DEBUG: in Pipeline run process...handleOutput" << slog::endl;
   for (auto & pair : name_to_output_map_) {
     // slog::info << "Handling Output ..." << pair.first << slog::endl;
     pair.second->handleOutput();
@@ -244,7 +248,7 @@ void Pipeline::setCallback()
 
 void Pipeline::callback(const std::string & detection_name)
 {
-  // slog::info<<"Hello callback ----> " << detection_name <<slog::endl;
+  slog::debug <<"Hello callback ----> " << detection_name <<slog::endl;
   auto detection_ptr = name_to_detection_map_[detection_name];
   detection_ptr->fetchResults();
   // set output

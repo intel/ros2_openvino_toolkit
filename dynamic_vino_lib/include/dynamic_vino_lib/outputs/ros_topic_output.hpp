@@ -14,7 +14,7 @@
 
 /**
  * @brief A header file with declaration for RosTopicOutput Class
- * @file ros_topic_output.h
+ * @file ros_topic_output.hpp
  */
 
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__ROS_TOPIC_OUTPUT_HPP_

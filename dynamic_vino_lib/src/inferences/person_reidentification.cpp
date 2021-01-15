@@ -98,7 +98,7 @@ dynamic_vino_lib::PersonReidentification::getLocationResult(int idx) const
 
 const std::string dynamic_vino_lib::PersonReidentification::getName() const
 {
-  return valid_model_->getModelName();
+  return valid_model_->getModelCategory();
 }
 
 void dynamic_vino_lib::PersonReidentification::observeOutput(

@@ -28,7 +28,7 @@ namespace Models
 class ObjectSegmentationModel : public BaseModel
 {
 public:
-  ObjectSegmentationModel(const std::string &, int, int, int);
+  ObjectSegmentationModel(const std::string & model_loc, int batch_size = 1);
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;
@@ -36,18 +36,6 @@ public:
   inline int getObjectSize() const
   {
     return object_size_;
-  }
-  inline const std::string getInputName()
-  {
-    return input_;
-  }
-  inline const std::string getDetectionOutputName()
-  {
-    return detection_output_;
-  }
-  inline const std::string getMaskOutputName()
-  {
-    return mask_output_;
   }
 
   bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
@@ -61,26 +49,14 @@ public:
    * @brief Get the name of this segmentation model.
    * @return Name of the model.
    */
-  const std::string getModelName() const override;
-
-protected:
-  void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-  void checkNetworkSize(int, int, InferenceEngine::CNNNetReader::Ptr) override;
+  const std::string getModelCategory() const override;
+  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
 
 private:
   int max_proposal_count_;
   int object_size_;
-  std::string input_;
-  std::string mask_output_ = "masks";
-  std::string detection_output_ = "detection_output";
 
-  size_t input_channels_;
-  size_t input_height_;
-  size_t input_width_;
   InferenceEngine::InputsDataMap input_info_;
-  InferenceEngine::OutputsDataMap output_info_;
-
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_

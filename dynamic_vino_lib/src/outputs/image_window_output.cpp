@@ -119,6 +119,14 @@ void Outputs::ImageWindowOutput::accept(
     if (results[i].getMaleProbability() < 0.5) {
       outputs_[target_index].scalar = cv::Scalar(0, 0, 255);
     }
+    else{
+      outputs_[target_index].scalar = cv::Scalar(0, 255, 0);
+    }
+    outputs_[target_index].pa_top.x = results[i].getTopLocation().x*result_rect.width + result_rect.x;
+    outputs_[target_index].pa_top.y = results[i].getTopLocation().y*result_rect.height + result_rect.y;
+    outputs_[target_index].pa_bottom.x = results[i].getBottomLocation().x*result_rect.width + result_rect.x;
+    outputs_[target_index].pa_bottom.y = results[i].getBottomLocation().y*result_rect.height + result_rect.y;
+
     outputs_[target_index].rect = result_rect;
     outputs_[target_index].desc += "[" + results[i].getAttributes() + "]";
   }
@@ -138,6 +146,7 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
+  /*
   std::map<std::string, int> class_color;
   for (unsigned i = 0; i < results.size(); i++) {
     std::string class_label = results[i].getLabel();
@@ -164,6 +173,12 @@ void Outputs::ImageWindowOutput::mergeMask(
     }
     cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
   }
+  */
+  const float alpha = 0.5f;
+  cv::Mat roi_img = frame_;
+  cv::Mat colored_mask = results[0].getMask();
+  cv::resize(colored_mask,colored_mask,cv::Size(frame_.size().width,frame_.size().height));
+  cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
 }
 
 void Outputs::ImageWindowOutput::accept(
@@ -319,6 +334,10 @@ void Outputs::ImageWindowOutput::decorateFrame()
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
       o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
+    if (o.pa_top != o.pa_bottom){
+      cv::circle(frame_, o.pa_top, 3, cv::Scalar(255, 0, 0), 2);
+      cv::circle(frame_, o.pa_bottom, 3, cv::Scalar(0, 255, 0), 2);
+    }
     if (o.hp_cp != o.hp_x) {
       cv::line(frame_, o.hp_cp, o.hp_x, cv::Scalar(0, 0, 255), 2);
     }

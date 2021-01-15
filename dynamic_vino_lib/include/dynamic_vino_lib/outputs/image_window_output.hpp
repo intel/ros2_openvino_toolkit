@@ -34,10 +34,7 @@ class ImageWindowOutput : public BaseOutput
 {
 public:
   explicit ImageWindowOutput(const std::string & output_name, int focal_length = 950);
-  // ~ImageWindowOutput()
-  // {
-  //   cv::destroyWindow(output_name_);
-  // }
+
   /**
    * @brief Calculate the camera matrix of a frame for image
    * window output.
@@ -159,6 +156,8 @@ private:
     cv::Point hp_y;   // for headpose, end point of yAxis
     cv::Point hp_zs;  // for headpose, start point of zAxis
     cv::Point hp_ze;  // for headpose, end point of zAxis
+    cv::Point pa_top; // for person attributes, top position
+    cv::Point pa_bottom; //for person attributes, bottom position
     std::vector<cv::Point> landmarks;
   };
 

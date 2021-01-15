@@ -24,6 +24,7 @@
 #include <vector>
 
 #include "dynamic_vino_lib/engines/engine.hpp"
+#include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
@@ -175,6 +176,8 @@ public:
   virtual const std::vector<cv::Rect> getFilteredROIs(
     const std::string filter_conditions) const = 0;
 
+  void addCandidatedModel(std::shared_ptr<Models::BaseModel> model);
+
 protected:
   /**
     * @brief Enqueue the fram into the input blob of the target calculation
@@ -201,6 +204,7 @@ protected:
 
 protected:
   std::shared_ptr<Engines::Engine> engine_ = nullptr;
+  std::vector<std::shared_ptr<Models::BaseModel> > candidated_models_;
   int max_batch_size_ = 1;
   int enqueued_frames_ = 0;
   bool results_fetched_ = false;
