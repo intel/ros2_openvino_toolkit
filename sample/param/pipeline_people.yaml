@@ -4,7 +4,7 @@ Pipelines:
   infers:
     - name: FaceDetection
       model: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
-      engine: MYRIAD
+      engine: CPU
       label: /to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5

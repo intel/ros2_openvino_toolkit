@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectSegmentationModel class
- * @file object_detection_model.cpp
+ * @file object_segmentation_model.cpp
  */
 #include <string>
 #include <vector>
@@ -22,7 +22,7 @@
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
-// Validated Object Detection Network
+// Validated Object Segmentation Network
 Models::ObjectSegmentationModel::ObjectSegmentationModel(
     const std::string &model_loc,
     int max_batch_size)

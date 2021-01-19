@@ -1,0 +1,61 @@
+name: dev-ov.2020.3-CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the refactor branch
+on:
+  push:
+    branches: [ dev-ov.2020.3 ]
+  pull_request:
+    branches: [ dev-ov.2020.3 ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # install ros2 eloquent
+    - uses: ros-tooling/setup-ros@0.1.1
+      with:
+        required-ros-distributions: eloquent
+    - run: "source /opt/ros/eloquent/setup.bash && ros2 run --help"
+    
+    # install openvino 2020.3
+    - name: install openvino 2020.3
+      run: |
+        sudo apt update && sudo apt install curl gnupg2 lsb-release
+        curl -s https://apt.repos.intel.com/openvino/2020/GPG-PUB-KEY-INTEL-OPENVINO-2020 |sudo apt-key add -
+        echo "deb https://apt.repos.intel.com/openvino/2020 all main" | sudo tee /etc/apt/sources.list.d/intel-openvino-2020.list
+        sudo apt update
+        sudo apt-cache search openvino
+        sudo apt-get install -y intel-openvino-runtime-ubuntu18-2020.3.194 intel-openvino-ie-samples-2020.3.194 intel-openvino-omz-dev-2020.3.194 intel-openvino-omz-tools-2020.3.341
+        ls -lh /opt/intel/openvino
+        source /opt/intel/openvino/bin/setupvars.sh
+        
+    # install librealsense2
+    - name: install librealsense2
+      run: |
+        sudo apt-key adv --keyserver keys.gnupg.net --recv-key C8B3A55A6F3EFCDE 
+        sudo sh -c 'echo "deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo `lsb_release -cs` main" > /etc/apt/sources.list.d/librealsense.list'
+        sudo apt-get update && sudo apt-get install -y librealsense2-dkms librealsense2-utils librealsense2-dev
+        dpkg -l |grep realsense
+        
+    # build ros2 openvino toolkit
+    - name: build ros2 openvino toolkit
+      run: |
+        mkdir -p ~/ros2_ws/src
+        env
+        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src
+        cd ~/ros2_ws/src
+        git clone https://github.com/intel/ros2_object_msgs.git
+        cd ~/ros2_ws/
+        source /opt/ros/eloquent/setup.bash
+        source /opt/intel/openvino/bin/setupvars.sh
+        colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+          

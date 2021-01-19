@@ -45,138 +45,15 @@ namespace dynamic_vino_lib
 
 namespace Models
 {
-  #if 0
   /**
- * @struct ModelAttr
- * @brief attributes for a given model
- */
-  struct ModelAttr
-  {
-    int max_proposal_count = 0;
-    int object_size = 0;
-    int input_height = 0;
-    int input_width = 0;
-    std::string model_name;
-    std::map<std::string, std::string> input_names;
-    std::map<std::string, std::string> output_names;
-    std::vector<std::string> labels;
-
-    inline std::string getModelName() const
-    {
-      return model_name;
-    }
-
-    inline std::string getInputName(std::string &name)
-    {
-      std::map<std::string, std::string>::iterator it;
-      it = input_names.find(name);
-      if (it == input_names.end())
-      {
-        slog::warn << "No input named: " << name << slog::endl;
-        return std::string("");
-      }
-
-      return it->second;
-    }
-
-    inline std::string getOutputName(std::string &name)
-    {
-      std::map<std::string, std::string>::iterator it;
-      it = output_names.find(name);
-      if (it == output_names.end())
-      {
-        slog::warn << "No output named: " << name << slog::endl;
-        return std::string("");
-      }
-
-      return it->second;
-    }
-
-    inline int getMaxProposalCount() const
-    {
-      return max_proposal_count;
-    }
-
-    inline int getObjectSize() const
-    {
-      return object_size;
-    }
-
-    inline void addInputInfo(std::string &key, std::string &value)
-    {
-      input_names[key] = value;
-    }
-
-    inline void addOutputInfo(std::string &key, std::string &value)
-    {
-      output_names[key] = value;
-    }
-
-    inline void setInputHeight(const int height)
-    {
-      input_height = height;
-    }
-
-    inline void setInputWidth(const int width)
-    {
-      input_width = width;
-    }
-
-    inline void setModelName(const std::string& name)
-    {
-      model_name = name;
-    }
-
-    inline void loadLabelsFromFile(const std::string& file_path)
-    {
-      std::ifstream input_file(file_path);
-      std::copy(std::istream_iterator<std::string>(input_file),
-        std::istream_iterator<std::string>(),
-        std::back_inserter(labels));
-    }
-
-    inline std::vector<std::string>& getLabels()
-    {
-      return labels;
-    }
-
-    inline void verify()
-  {
-    slog::info << "----Attributes for Model " << model_name << "----" << slog::endl;
-    slog::info << "| model_name: " << model_name << slog::endl;
-    slog::info << "| max_proposal_count: " << max_proposal_count << slog::endl;
-    slog::info << "| object_size: " << object_size << slog::endl;
-    slog::info << "| input_height: " << input_height << slog::endl;
-    slog::info << "| input_width: " << input_width << slog::endl;
-    slog::info << "| input_names: " << slog::endl;
-    for (auto & item: input_names) {
-      slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
-    }
-    slog::info << "| output_names: " << slog::endl;
-    for (auto & item: output_names) {
-      slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
-    }
-
-    if(max_proposal_count <= 0 || object_size <= 0 || input_height <= 0
-      || input_width || input_names.empty() || output_names.empty()){
-      slog::info << "--------" << slog::endl;
-      slog::warn << "Not all attributes are set correctly! not 0 or empty is allowed in"
-        << "the above list." << slog::endl;
-    }
-    slog::info << "--------------------------------" << slog::endl;
-  }
-  };
-  #endif
-
-  /**
- * @class BaseModel
- * @brief This class represents the network given by .xml and .bin file
- */
+   * @class BaseModel
+   * @brief This class represents the network given by .xml and .bin file
+   */
   class BaseModel : public ModelAttribute
   {
   public:
     using Ptr = std::shared_ptr<BaseModel>;
-    /**
+  /**
    * @brief Initialize the class with given .xml, .bin and .labels file. It will
    * also check whether the number of input and output are fit.
    * @param[in] model_loc The location of model' s .xml file
@@ -188,7 +65,7 @@ namespace Models
    */
     BaseModel(const std::string &model_loc, int batch_size = 1);
 
-    /**
+  /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
    */
@@ -205,13 +82,13 @@ namespace Models
         const std::shared_ptr<Engines::Engine> &engine,
         const cv::Mat &frame,
         const cv::Rect &input_frame_loc) { return true; }
-    /**
+  /**
    * @brief Initialize the model. During the process the class will check
    * the network input, output size, check layer property and
    * set layer property.
    */
-    void modelInit(const std::shared_ptr<Engines::Engine> & engine);
-    /**
+    void modelInit();
+  /**
    * @brief Get the name of the model.
    * @return The name of the model.
    */

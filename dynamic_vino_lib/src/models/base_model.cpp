@@ -41,6 +41,7 @@ Models::BaseModel::BaseModel(
   size_t last_index = model_loc_.find_last_of(".");
   std::string raw_name = model_loc_.substr(0, last_index);
   std::string bin_file_name = raw_name + ".bin";
+  net_reader_->ReadWeights(bin_file_name);
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
   loadLabelsFromFile(label_file_name);
@@ -61,7 +62,9 @@ void Models::BaseModel::modelInit(const std::shared_ptr<Engines::Engine> & engin
   updateLayerProperty();
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
-  network_.setBatchSize(max_batch_size_);
+  net_reader_->getNetwork().setBatchSize(max_batch_size_);
+
+  updateLayerProperty(net_reader_);
 }
 
 #if 0

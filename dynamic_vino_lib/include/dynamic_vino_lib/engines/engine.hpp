@@ -24,7 +24,6 @@
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "inference_engine.hpp"
 
-
 namespace Engines
 {
 /**

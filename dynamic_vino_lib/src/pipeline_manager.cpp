@@ -24,30 +24,20 @@
 #include <map>
 
 #if 0
-
-
-
-
-
-#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
-#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/landmarks_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_reidentification.hpp"
-#include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
-#include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
-
-
-#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
-#include "dynamic_vino_lib/models/object_segmentation_model.hpp"
-
-
-#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
-#include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/face_reidentification_model.hpp"
 #include "dynamic_vino_lib/models/landmarks_detection_model.hpp"
+#endif
+
 #include "dynamic_vino_lib/models/vehicle_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/models/license_plate_detection_model.hpp"
-#endif
+#include "dynamic_vino_lib/models/person_reidentification_model.hpp"
+#include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
+#include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
+#include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
+#include "dynamic_vino_lib/inferences/person_reidentification.hpp"
+#include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/face_detection.hpp"
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
@@ -222,9 +212,9 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createObjectSegmentation(infer);
     }*/ else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
-    } /*else if (infer.name == kInferTpye_PersonAttribsDetection) {
+    } else if (infer.name == kInferTpye_PersonAttribsDetection) {
       object = createPersonAttribsDetection(infer);
-    } else if (infer.name == kInferTpye_LandmarksDetection) {
+    } /*else if (infer.name == kInferTpye_LandmarksDetection) {
       object = createLandmarksDetection(infer);
     } else if (infer.name == kInferTpye_FaceReidentification) {
       object = createFaceReidentification(infer);
@@ -399,6 +389,23 @@ PipelineManager::createLicensePlateDetection(
   license_plate_ptr->loadEngine(engine);
 
   return license_plate_ptr;
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createPersonAttribsDetection(
+  const Params::ParamManager::InferenceRawData & infer)
+{
+  auto model =
+    std::make_shared<Models::PersonAttribsDetectionModel>(infer.model, infer.batch);
+  slog::debug << "for test in createPersonAttributesDetection()"<<slog::endl;
+  model->modelInit();
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  auto attribs_inference_ptr =
+    std::make_shared<dynamic_vino_lib::PersonAttribsDetection>(infer.confidence_threshold);
+  attribs_inference_ptr->loadNetwork(model);
+  attribs_inference_ptr->loadEngine(engine);
+
+  return attribs_inference_ptr;
 }
 
 #if 0

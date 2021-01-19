@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @brief a header file with declaration of ImageWindowOutput class
- * @file image_window_output.cpp
+ * @brief a header file with declaration of RvizOutput class
+ * @file rviz_output.cpp
  */
 
 #include <algorithm>

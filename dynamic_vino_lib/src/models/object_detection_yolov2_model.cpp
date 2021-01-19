@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectDetectionModel class
- * @file object_detection_model.cpp
+ * @file object_detection_yolov2_model.cpp
  */
 
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
