@@ -34,13 +34,13 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 * [Optional] Intel NCS2 Stick
 ## Tables of contents
 * [Design Architecture and Logic Flow](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/Design_Architecture_and_logic_flow.md)
-* [Supported Features](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/supported_features/Supported_features.md)
+* [Supported Features](https://github.com/intel/ros2_openvino_toolkit/blob/master/doc/tables_of_contents/supported_features/Supported_features.md)
 * Tutorials
-  - [How to configure a inference pipeline?](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/tutorials/configuration_file_customization.md)
-  - [How to create multiple pipelines in a process?](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
+  - [How to configure a inference pipeline?](https://github.com/intel/ros2_openvino_toolkit/blob/master/doc/tables_of_contents/tutorials/configuration_file_customization.md)
+  - [How to create multiple pipelines in a process?](https://github.com/intel/ros2_openvino_toolkit/blob/master/doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
 
 ## Installation & Launching
-See Getting Start Pages for [ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/getting_started_with_Dashing.md) or [ROS2 Foxy](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/doc/getting_started_with_Foxy.md) for detailed installation & lauching instructions.
+See Getting Start Pages for [ROS2 Dashing](https://github.com/intel/ros2_openvino_toolkit/blob/master/doc/getting_startged_with_Dashing.md) or [ROS2 Foxy](https://github.com/intel/ros2_openvino_toolkit/blob/master/doc/getting_started_with_Foxy.md) for detailed installation & lauching instructions.
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
