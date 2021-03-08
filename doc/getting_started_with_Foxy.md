@@ -27,7 +27,7 @@ colcon build --symlink-install
 ## 2. Environment Setup
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
-* Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)
+* Install Intel® RealSense™ SDK 2.0 [for Linux Distribution](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
 ## 3. Building and Installation
 * Build demo code in OpenVINO toolkit
