@@ -1,52 +1,22 @@
 # ROS2_FOXY_OpenVINO_Toolkit
 
 **NOTE:** 
-Below steps have been tested on **Ubuntu 18.04**.
+Below steps have been tested on **Ubuntu 20.04**.
 
-## 1. Install ROS2 Foxy from source code
-* Before colcon build, update the cmake to 3.14+
-```bash
-mkdir -p ~/cmake
-cd ~/cmake
-wget -t 3 -c https://www.cmake.org/files/v3.14/cmake-3.14.3.tar.gz 
-tar xf cmake-3.14.3.tar.gz 
-cd cmake-3.14.3 
-./bootstrap --parallel=$(nproc --all) 
-make --jobs=$(nproc --all) 
-sudo make install
-sudo ldconfig
-````
+## 1. Environment Setup
 * Install ROS2 Foxy [(guide)](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/)
-
-*  Build ROS2 Foxy packages from source code
-```bash
-cd ~/ros2_foxy
-colcon build --symlink-install
-. ~/ros2_foxy/install/setup.bash
-```
-## 2. Environment Setup
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
 * Install Intel® RealSense™ SDK 2.0 [for Linux Distribution](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
-## 3. Building and Installation
-* Build demo code in OpenVINO toolkit
-```bash
- # root is required instead of sudo
- source /opt/intel/<INSTALL_DIR>/bin/setupvars.sh
- cd /opt/intel/<INSTALL_DIR>/deployment_tools/open_model_zoo/demos
- source build_demos.sh
-```
-* Install ROS2_OpenVINO packages
+## 2. Building and Installation
+
+* Install ROS2_OpenVINO and dependent packages
 ```bash
 mkdir -p ~/my_ros2_ws/src
 cd ~/my_ros2_ws/src
 git clone https://github.com/intel/ros2_openvino_toolkit
 git clone https://github.com/intel/ros2_object_msgs
-git clone https://github.com/ros-perception/vision_opencv -b ros2
-git clone https://github.com/ros2/message_filters.git
-git clone https://github.com/ros-perception/image_common.git -b dashing
-git clone https://github.com/intel/ros2_intel_realsense.git -b refactor
 ```
 * Build package
 ```bash
