@@ -8,12 +8,12 @@ ROS2 Version supported:
 
 Inference Features supported:
 
-* [x] Object Detection
+* [x] Object Detection (_only SSD models_)
 * [x] Face Detection
 * [x] Age-Gender Recognition
 * [x] Emotion Recognition
 * [x] Head Pose Estimation
-* [x] Object Segmentation
+* [ ] Object Segmentation
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
