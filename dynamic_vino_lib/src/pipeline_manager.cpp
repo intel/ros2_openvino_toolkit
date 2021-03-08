@@ -398,8 +398,9 @@ PipelineManager::createPersonAttribsDetection(
   auto model =
     std::make_shared<Models::PersonAttribsDetectionModel>(infer.model, infer.batch);
   slog::debug << "for test in createPersonAttributesDetection()"<<slog::endl;
-  model->modelInit();
   auto engine = engine_manager_.createEngine(infer.engine, model);
+  model->modelInit(engine);
+
   auto attribs_inference_ptr =
     std::make_shared<dynamic_vino_lib::PersonAttribsDetection>(infer.confidence_threshold);
   attribs_inference_ptr->loadNetwork(model);

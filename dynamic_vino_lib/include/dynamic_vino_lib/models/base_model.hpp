@@ -87,7 +87,7 @@ namespace Models
    * the network input, output size, check layer property and
    * set layer property.
    */
-    void modelInit();
+    void modelInit(const std::shared_ptr<Engines::Engine> &);
   /**
    * @brief Get the name of the model.
    * @return The name of the model.

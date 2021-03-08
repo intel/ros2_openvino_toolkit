@@ -39,7 +39,7 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty() override;
+  bool updateLayerProperty();
   //void checkLayerProperty(const  &) override;
   //void setLayerProperty() override;
   std::string input_;

@@ -42,7 +42,7 @@ public:
 protected:
   //void checkLayerProperty(const  &) override;
   //void setLayerProperty() override;
-  bool updateLayerProperty() override;
+  bool updateLayerProperty();
   std::string input_;
   std::string color_output_;
   std::string type_output_;

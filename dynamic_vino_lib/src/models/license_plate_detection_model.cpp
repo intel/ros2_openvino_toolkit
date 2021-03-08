@@ -24,8 +24,7 @@ Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
   const std::string & model_loc, int max_batch_size)
 : BaseModel(model_loc, max_batch_size) {}
 
-bool Models::LicensePlateDetectionModel::updateLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::LicensePlateDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   InferenceEngine::InputsDataMap input_info_map(

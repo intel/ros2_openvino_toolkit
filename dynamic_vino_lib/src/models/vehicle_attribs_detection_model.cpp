@@ -24,8 +24,7 @@ Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
   const std::string & model_loc, int max_batch_size)
 : BaseModel(model_loc, max_batch_size) {}
 
-bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::VehicleAttribsDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
     // set input property

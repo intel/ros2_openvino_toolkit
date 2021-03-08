@@ -39,7 +39,7 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty();
   std::string input_;
   std::string output_;
 };

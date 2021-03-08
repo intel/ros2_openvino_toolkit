@@ -43,7 +43,7 @@ public:
 protected:
   //void checkLayerProperty(const  &) override;
   //void setLayerProperty() override;
-  bool updateLayerProperty() override;
+  bool updateLayerProperty();
   // up to 88 items per license plate, ended with "-1"
   const int max_sequence_size_ = 88;
   std::string input_;

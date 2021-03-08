@@ -61,7 +61,7 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty() override;
+  bool updateLayerProperty();
 
 };
 }  // namespace Models

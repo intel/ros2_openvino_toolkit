@@ -39,7 +39,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty() override;
+  bool updateLayerProperty();
 
 private:
   bool verifyOutputLayer(const InferenceEngine::DataPtr & ptr);

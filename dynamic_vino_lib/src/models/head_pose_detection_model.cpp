@@ -30,8 +30,7 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 {
 }
 
-bool Models::HeadPoseDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::HeadPoseDetectionModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
