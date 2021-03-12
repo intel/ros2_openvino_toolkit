@@ -59,6 +59,8 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   InferenceEngine::DataPtr gender_output_ptr = (it++)->second;
 
   //Check More Configuration:
+  //TODO: getCreatorLayer() func not supported.
+#if 0
   if (gender_output_ptr->getCreatorLayer().lock()->type == "Convolution") {
     std::swap(age_output_ptr, gender_output_ptr);
   }
@@ -79,6 +81,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   }
   slog::info << "Age layer: " << age_output_ptr->getCreatorLayer().lock()->name << slog::endl;
   slog::info << "Gender layer: " << gender_output_ptr->getCreatorLayer().lock()->name << slog::endl;
+#endif
 
   age_output_ptr->setPrecision(InferenceEngine::Precision::FP32);
   age_output_ptr->setLayout(InferenceEngine::Layout::NCHW);

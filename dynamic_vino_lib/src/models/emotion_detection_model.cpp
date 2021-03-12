@@ -53,8 +53,9 @@ bool Models::EmotionDetectionModel::updateLayerProperty()
     return false;
   }
   InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  slog::info << "Emotions layer: " << output_data_ptr->getCreatorLayer().lock()->name <<
-    slog::endl;
+  //TODO: getCreatorLayer() func not supported.
+  //slog::info << "Emotions layer: " << output_data_ptr->getCreatorLayer().lock()->name <<
+  //  slog::endl;
   output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
   output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
   addOutputInfo("output", output_info_map.begin()->first);
@@ -65,6 +66,9 @@ bool Models::EmotionDetectionModel::updateLayerProperty()
 
 bool Models::EmotionDetectionModel::verifyOutputLayer(const InferenceEngine::DataPtr & ptr)
 {
+
+  //TODO: getCreatorLayer() func not supported.
+#if 0
   if (ptr->getCreatorLayer().lock()->type != "SoftMax") {
     slog::err <<"In Emotion network, gender layer ("
       << ptr->getCreatorLayer().lock()->name
@@ -73,7 +77,7 @@ bool Models::EmotionDetectionModel::verifyOutputLayer(const InferenceEngine::Dat
       << slog::endl;
     return false;
   }
-
+#endif
   return true;
 }
 
