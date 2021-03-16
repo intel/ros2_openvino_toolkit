@@ -208,9 +208,9 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createHeadPoseEstimation(infer);
     } else if (infer.name == kInferTpye_ObjectDetection) {
       object = createObjectDetection(infer);
-    } /*else if (infer.name == kInferTpye_ObjectSegmentation) {
+    } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
-    }*/ else if (infer.name == kInferTpye_PersonReidentification) {
+    } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
     } else if (infer.name == kInferTpye_PersonAttribsDetection) {
       object = createPersonAttribsDetection(infer);
@@ -317,7 +317,6 @@ PipelineManager::createObjectDetection(
   return object_inference_ptr;
 }
 
-#if 0
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
 {
@@ -335,7 +334,6 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceR
 
   return segmentation_inference_ptr;
 }
-#endif
 
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createPersonReidentification(

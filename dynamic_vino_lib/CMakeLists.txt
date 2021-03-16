@@ -36,11 +36,6 @@ set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
-# environment variable InferenceEngine_DIR can be use instead of relaive path to specify location of configuration file
-#set(InferenceEngine_DIR /opt/intel/computer_vision_sdk_2018.2.299/deployment_tools/inference_engine/share)
-#set(OpenCV_DIR /opt/intel/computer_vision_sdk_2018.2.299/opencv/share/OpenCV)
-
-
 message(STATUS "Looking for inference engine configuration file at: ${CMAKE_PREFIX_PATH}")
 find_package(InferenceEngine REQUIRED)
 if(NOT InferenceEngine_FOUND)
@@ -74,13 +69,6 @@ find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-
-###################
-#To be deleted
-#set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
-#add_library(cpu_extension SHARED IMPORTED)
-#set_target_properties(cpu_extension PROPERTIES
-#  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
@@ -203,7 +191,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/face_detection.cpp
         src/inferences/object_detection.cpp
         src/inferences/head_pose_detection.cpp
-        #src/inferences/object_segmentation.cpp
+        src/inferences/object_segmentation.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp
@@ -221,7 +209,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/age_gender_detection_model.cpp
         src/models/face_detection_model.cpp
         src/models/head_pose_detection_model.cpp
-        #src/models/object_segmentation_model.cpp
+        src/models/object_segmentation_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
         #src/models/landmarks_detection_model.cpp
