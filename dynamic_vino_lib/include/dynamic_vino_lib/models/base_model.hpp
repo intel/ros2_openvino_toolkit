@@ -94,11 +94,7 @@ namespace Models
    */
     virtual const std::string getModelCategory() const = 0;
     inline ModelAttr getAttribute() { return attr_; }
-
-    inline InferenceEngine::CNNNetwork & getNetwork()
-    {
-      return network_;
-    }
+    InferenceEngine::CNNNetwork & getNetwork();
 
   protected:
     /**
@@ -107,9 +103,8 @@ namespace Models
      * @param[in] network_reader The reader of the network to be set.
      */
     virtual bool updateLayerProperty() = 0;
-    std::shared_ptr<Engines::Engine> engine_;
+    std::shared_ptr<Engines::Engine> engine_ = nullptr;
 
-    InferenceEngine::CNNNetwork network_;
     void setFrameSize(const int &w, const int &h)
     {
       frame_size_.width = w;

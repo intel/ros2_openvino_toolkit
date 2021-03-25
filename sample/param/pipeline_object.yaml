@@ -3,7 +3,7 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output/FP16/mobilenet-ssd.xml
+      model: /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output/mobilenet-ssd.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1

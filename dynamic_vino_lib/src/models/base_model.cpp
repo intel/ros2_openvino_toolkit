@@ -58,11 +58,7 @@ void Models::BaseModel::modelInit(const std::shared_ptr<Engines::Engine> & engin
   engine_ = engine;
 
   // Read network model
-  network_ = engine->ReadNetwork(model_loc_);
-
-  // Set batch size to given max_batch_size_
-  slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
-  network_.setBatchSize(max_batch_size_);
+  engine_->prepareNetwork(model_loc_, max_batch_size_);
 
   updateLayerProperty();
 }
@@ -86,6 +82,15 @@ bool Models::BaseModel::updateLayerProperty()
   return true;
 }
 #endif
+
+InferenceEngine::CNNNetwork &
+Models::BaseModel::getNetwork()
+{
+  if(engine_ == nullptr){
+    throw std::logic_error("Module is not Initialized!");
+  }
+  return *(engine_->getNetwork());
+}
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string & model_loc,

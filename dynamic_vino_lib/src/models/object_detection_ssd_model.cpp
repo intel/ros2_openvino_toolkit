@@ -66,11 +66,13 @@ bool Models::ObjectDetectionSSDModel::matToBlob(
   InferenceEngine::Blob::Ptr input_blob =
     engine->getRequest()->GetBlob(input_name);
 
+  InferenceEngine::LockedMemory<void> blobMapped =
+    InferenceEngine::as<InferenceEngine::MemoryBlob>(input_blob)->wmap();
   InferenceEngine::SizeVector blob_size = input_blob->getTensorDesc().getDims();
   const int width = blob_size[3];
   const int height = blob_size[2];
   const int channels = blob_size[1];
-  u_int8_t * blob_data = input_blob->buffer().as<u_int8_t *>();
+  u_int8_t * blob_data = blobMapped.as<u_int8_t *>();
 
   cv::Mat resized_image(orig_image);
   if (width != orig_image.size().width || height != orig_image.size().height) {
@@ -106,7 +108,11 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   slog::debug << "Fetching Detection Results ..." << slog::endl;
   InferenceEngine::InferRequest::Ptr request = engine->getRequest();
   std::string output = getOutputName();
-  const float * detections = request->GetBlob(output)->buffer().as<float *>();
+  //const float * detections = request->GetBlob(output)->buffer().as<float *>();
+
+  InferenceEngine::LockedMemory<const void> outputMapped =
+    InferenceEngine::as<InferenceEngine::MemoryBlob>(request->GetBlob(output))->rmap();
+  const float * detections = outputMapped.as<float *>();
 
   slog::debug << "Analyzing Detection results..." << slog::endl;
   auto max_proposal_count = getMaxProposalCount();
@@ -116,7 +122,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {
-      //slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
+      slog::debug << "Found objects: " << i << "|" << results.size() << slog::endl;
       break;
     }
 
@@ -150,8 +156,8 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
 bool Models::ObjectDetectionSSDModel::updateLayerProperty()
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-
-  InferenceEngine::InputsDataMap input_info_map(getNetwork().getInputsInfo());
+  auto network = engine_->getNetwork();
+  InferenceEngine::InputsDataMap input_info_map(network->getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like, SSDnet has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
@@ -160,14 +166,16 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty()
   
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
+  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
   addInputInfo("input", input_info_map.begin()->first);
 
   const InferenceEngine::SizeVector input_dims = input_info->getTensorDesc().getDims();
+  slog::debug << "Input Data Map size=" << input_dims.size()<< slog::endl;
   setInputHeight(input_dims[2]);
   setInputWidth(input_dims[3]);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(network->getOutputsInfo());
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like! We got " 
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
@@ -218,6 +226,7 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty()
     return false;
   }
   setObjectSize(object_size);
+  output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
 
   if (output_dims.size() != 4) {
     slog::warn << "This model is not SSDNet-like, output dimensions shoulld be 4, but was"

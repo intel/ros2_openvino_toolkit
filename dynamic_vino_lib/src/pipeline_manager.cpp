@@ -228,7 +228,7 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
 
     if (object != nullptr) {
       inferences.insert({infer.name, object});
-      slog::info << " ... Adding one Inference: " << infer.name << slog::endl;
+      slog::info << " ... Added one Inference: " << infer.name << slog::endl;
     }
   }
 

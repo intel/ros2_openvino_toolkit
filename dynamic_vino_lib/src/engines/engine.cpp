@@ -40,8 +40,23 @@ Engines::Engine::Engine(
  {
  }
 
-InferenceEngine::CNNNetwork
-Engines::Engine::ReadNetwork(const std::string model)
+InferenceEngine::CNNNetwork &
+Engines::Engine::prepareNetwork(const std::string model, const int batch)
 {
-  return ie_.ReadNetwork(model);
+  network_ = ie_.ReadNetwork(model);
+  executable_network_ = ie_.LoadNetwork(network_, device_);
+  request_ = executable_network_.CreateInferRequestPtr();
+
+  slog::info << "Engine is used:  " << device_ << slog::endl;
+  // Set batch size to given max_batch_size_
+  slog::info << "Batch size is set to  " << batch << slog::endl;
+  network_.setBatchSize(batch);
+
+  return network_;
+}
+
+InferenceEngine::CNNNetwork *
+Engines::Engine::getNetwork()
+{
+  return &network_;
 }
