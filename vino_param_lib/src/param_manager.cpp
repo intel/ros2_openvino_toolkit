@@ -40,7 +40,7 @@ void operator>>(const YAML::Node & node, ParamManager::CommonRawData & common);
   { \
     node[key] >> val; \
   } \
-  catch (YAML::Exception e) \
+  catch (const YAML::Exception & e) \
   { \
     slog::warn << e.msg << slog::endl; \
   } \

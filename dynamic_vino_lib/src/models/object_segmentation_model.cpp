@@ -93,8 +93,10 @@ bool Models::ObjectSegmentationModel::matToBlob(
     return false;
   }
 
-  InferenceEngine::TensorDesc tDesc(InferenceEngine::Precision::U8,
-                                    {1, channels, height, width},
+  InferenceEngine::SizeVector dims = {1, channels, height, width};
+  InferenceEngine::Precision precision = InferenceEngine::Precision::U8;
+  InferenceEngine::TensorDesc tDesc(precision,
+                                    dims,
                                     InferenceEngine::Layout::NHWC);
 
   auto shared_blob = InferenceEngine::make_shared_blob<uint8_t>(tDesc, orig_image.data);
@@ -108,12 +110,11 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
   return "Object Segmentation";
 }
 
-bool Models::ObjectSegmentationModel::updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr net_reader)
+bool Models::ObjectSegmentationModel::updateLayerProperty()
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
-  auto network = net_reader->getNetwork();
+  auto network = getNetwork();
   input_info_ = InferenceEngine::InputsDataMap(network.getInputsInfo());
 
   InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
@@ -191,14 +192,12 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   addOutputInfo("masks", (outputsDataMap.begin()++)->first);
   addOutputInfo("detection", outputsDataMap.begin()->first);
 
-  //const InferenceEngine::CNNLayerPtr output_layer =
-  //network.getLayerByName(outputsDataMap.begin()->first.c_str());
+#if 0 //TODO: try to change NGraph method to check Layer and Class num.
   const InferenceEngine::CNNLayerPtr output_layer =
       network.getLayerByName(getOutputName("detection").c_str());
   //const int num_classes = output_layer->GetParamAsInt("num_classes");
   //slog::info << "Checking Object Segmentation output ... num_classes=" << num_classes << slog::endl;
 
-#if 0
   if (getLabels().size() != num_classes)
   {
     if (getLabels().size() == (num_classes - 1))

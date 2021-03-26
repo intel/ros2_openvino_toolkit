@@ -45,7 +45,7 @@
 #include <extension/ext_list.hpp>
 #endif
 #include "inference_engine.hpp"
-#include "librealsense2/rs.hpp"
+//#include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
 

@@ -234,9 +234,11 @@ void Pipeline::printPipeline()
 
 void Pipeline::setCallback()
 {
+  slog::debug << "Setting Callbacks for all inference instances..." << slog::endl;
   for (auto & pair : name_to_detection_map_) {
     std::string detection_name = pair.first;
     std::function<void(void)> callb;
+    slog::debug << "----Callbacks for inference: " << detection_name << slog::endl;
     callb = [detection_name, self = this]()
       {
         self->callback(detection_name);
@@ -244,6 +246,7 @@ void Pipeline::setCallback()
       };
     pair.second->getEngine()->getRequest()->SetCompletionCallback(callb);
   }
+  slog::debug << "Setting Callbacks for all inference instances...DONE!" << slog::endl;
 }
 
 void Pipeline::callback(const std::string & detection_name)

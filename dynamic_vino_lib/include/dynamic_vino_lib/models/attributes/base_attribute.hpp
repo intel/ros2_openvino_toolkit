@@ -85,8 +85,7 @@ public:
     slog::info << "--------------------------------" << slog::endl;
   }
 
-  virtual bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &)
+  virtual bool updateLayerProperty()
   { return false; }
 
   inline std::string getModelName() const
@@ -186,8 +185,7 @@ class SSDModelAttr : public ModelAttribute
 public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
-  bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &);
+  bool updateLayerProperty();
 
 };
 
