@@ -20,10 +20,6 @@
 #ifndef DYNAMIC_VINO_LIB__UTILS__VERSION_INFO_HPP_
 #define DYNAMIC_VINO_LIB__UTILS__VERSION_INFO_HPP_
 
-#include <ie_plugin_dispatcher.hpp>
-#include <ie_plugin_ptr.hpp>
-#include <cpp/ie_cnn_net_reader.h>
-#include <cpp/ie_infer_request.hpp>
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <ie_device.hpp>
 #endif

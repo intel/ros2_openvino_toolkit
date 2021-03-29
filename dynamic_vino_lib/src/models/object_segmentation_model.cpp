@@ -109,11 +109,11 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr net_reader)
+    InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
-  auto network = net_reader->getNetwork();
+  auto network = net_reader;
   input_info_ = InferenceEngine::InputsDataMap(network.getInputsInfo());
 
   InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
@@ -193,8 +193,8 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
 
   //const InferenceEngine::CNNLayerPtr output_layer =
   //network.getLayerByName(outputsDataMap.begin()->first.c_str());
-  const InferenceEngine::CNNLayerPtr output_layer =
-      network.getLayerByName(getOutputName("detection").c_str());
+  ///const InferenceEngine::CNNLayerPtr output_layer =
+  ///    network.getLayerByName(getOutputName("detection").c_str());
   //const int num_classes = output_layer->GetParamAsInt("num_classes");
   //slog::info << "Checking Object Segmentation output ... num_classes=" << num_classes << slog::endl;
 

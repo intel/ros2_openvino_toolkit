@@ -41,7 +41,7 @@ public:
 protected:
   //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
   //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
   std::string input_;
   std::string output_;
 };

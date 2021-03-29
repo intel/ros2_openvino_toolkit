@@ -25,17 +25,17 @@ Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
 : BaseModel(model_loc, max_batch_size) {}
 
 bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+  InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
     // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs topology should have only one input");
   }
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    net_reader.getOutputsInfo());
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }

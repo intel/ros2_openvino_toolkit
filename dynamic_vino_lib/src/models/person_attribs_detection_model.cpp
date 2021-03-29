@@ -25,11 +25,11 @@ Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
 : BaseModel(model_loc, max_batch_size) {}
 
 bool Models::PersonAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+  InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader->getNetwork().getInputsInfo());
+    net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     throw std::logic_error("Person Attribs topology should have only one input");
   }
@@ -40,7 +40,7 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader->getNetwork().getOutputsInfo());
+    net_reader.getOutputsInfo());
   if (output_info_map.size() != 3) {
     throw std::logic_error("Person Attribs Network expects networks having 3 output");
   }
