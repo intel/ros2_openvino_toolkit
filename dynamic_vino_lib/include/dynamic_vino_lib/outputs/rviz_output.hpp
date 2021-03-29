@@ -14,7 +14,7 @@
 
 /**
 * @brief A header file with declaration for RvizOutput Class
-* @file image_window_output.h
+* @file rviz_output.h
 */
 
 #ifndef DYNAMIC_VINO_LIB__OUTPUTS__RVIZ_OUTPUT_HPP_
