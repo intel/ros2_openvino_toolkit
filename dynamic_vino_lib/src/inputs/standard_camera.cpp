@@ -55,7 +55,7 @@ int Input::StandardCamera::getCameraId()
   static int STANDARD_CAMERA_COUNT = -1;
   int fd; // A file descriptor to the video device
   struct v4l2_capability cap;
-  char file[20];
+  char file[32];
   //if it is a realsense camera then skip it until we meet a standard camera
   do
   {
