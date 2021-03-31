@@ -54,7 +54,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
 
 protected:
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);

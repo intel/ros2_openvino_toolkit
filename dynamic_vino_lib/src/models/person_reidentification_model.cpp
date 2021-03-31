@@ -50,11 +50,11 @@ const std::string Models::PersonReidentificationModel::getModelCategory() const
 }
 */
 bool Models::PersonReidentificationModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr netreader)
+  InferenceEngine::CNNNetwork& netreader)
 {
   slog::info << "Checking Inputs for Model" << getModelName() << slog::endl;
 
-  auto network = netreader->getNetwork();
+  auto network = netreader;
   
   InferenceEngine::InputsDataMap input_info_map(network.getInputsInfo());
   
