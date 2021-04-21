@@ -1,0 +1,62 @@
+name: dev-ov.2021.3-CI
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the refactor branch
+on:
+  push:
+    branches: [ dev-ov.2021.3 ]
+  pull_request:
+    branches: [ dev-ov.2021.3 ]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-20.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
+
+    # install ros2 eloquent
+    - uses: ros-tooling/setup-ros@0.1.1
+      with:
+        required-ros-distributions: foxy
+    - run: "source /opt/ros/foxy/setup.bash && ros2 run --help"
+    
+    # install openvino 2021.3
+    - name: install openvino 2021.3
+      run: |
+        # https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_apt.html
+        sudo apt update && sudo apt install curl gnupg2 lsb-release
+        curl -s https://apt.repos.intel.com/openvino/2021/GPG-PUB-KEY-INTEL-OPENVINO-2021 |sudo apt-key add -
+        echo "deb https://apt.repos.intel.com/openvino/2021 all main" | sudo tee /etc/apt/sources.list.d/intel-openvino-2021.list
+        sudo apt update
+        sudo apt-cache search openvino
+        sudo apt-get install -y intel-openvino-dev-ubuntu20-2021.3.394 
+        ls -lh /opt/intel/openvino_2021
+        source /opt/intel/openvino_2021/bin/setupvars.sh 
+        
+    # install librealsense2
+    - name: install librealsense2
+      run: |
+        # https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
+        sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE 
+        sudo add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo focal main" -u
+        sudo apt-get update && sudo apt-get install -y librealsense2-dev librealsense2
+        dpkg -l |grep realsense
+        
+    # build ros2 openvino toolkit
+    - name: build ros2 openvino toolkit
+      run: |
+        mkdir -p ~/ros2_ws/src
+        env
+        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src
+        cd ~/ros2_ws/src
+        git clone https://github.com/intel/ros2_object_msgs.git
+        cd ~/ros2_ws/
+        source /opt/ros/foxy/setup.bash
+        source /opt/intel/openvino_2021/bin/setupvars.sh
+        colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
