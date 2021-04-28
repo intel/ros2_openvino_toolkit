@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectSegmentationModel class
- * @file object_detection_model.cpp
+ * @file object_segmentation_model.cpp
  */
 #include <string>
 #include <vector>
@@ -22,7 +22,7 @@
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
-// Validated Object Detection Network
+// Validated Object Segmentation Network
 Models::ObjectSegmentationModel::ObjectSegmentationModel(
     const std::string &model_loc,
     int max_batch_size)
@@ -109,11 +109,11 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr net_reader)
+    InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
-  auto network = net_reader->getNetwork();
+  auto network = net_reader;
   input_info_ = InferenceEngine::InputsDataMap(network.getInputsInfo());
 
   InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
@@ -193,8 +193,8 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
 
   //const InferenceEngine::CNNLayerPtr output_layer =
   //network.getLayerByName(outputsDataMap.begin()->first.c_str());
-  const InferenceEngine::CNNLayerPtr output_layer =
-      network.getLayerByName(getOutputName("detection").c_str());
+  ///const InferenceEngine::CNNLayerPtr output_layer =
+  ///    network.getLayerByName(getOutputName("detection").c_str());
   //const int num_classes = output_layer->GetParamAsInt("num_classes");
   //slog::info << "Checking Object Segmentation output ... num_classes=" << num_classes << slog::endl;
 

@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectDetectionModel class
- * @file object_detection_model.cpp
+ * @file object_detection_yolov2_model.cpp
  */
 
 #include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
@@ -34,11 +34,11 @@ Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
 }
 
 bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr net_reader)
+  InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
 
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like, which has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
@@ -52,7 +52,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like! We got "
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
@@ -65,6 +65,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   slog::info << "Checking Object Detection output ... Name=" << output_info_map.begin()->first
     << slog::endl;
 
+#if(0) /// 
   const InferenceEngine::CNNLayerPtr output_layer =
     net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
@@ -86,6 +87,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
       getLabels().clear();
     }
   }
+#endif
 
   // last dimension of output layer should be 7
   const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
@@ -226,19 +228,19 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
     const float * detections =
       request->GetBlob(output)->buffer().as<InferenceEngine::PrecisionTrait
         <InferenceEngine::Precision::FP32>::value_type *>();
-    InferenceEngine::CNNLayerPtr layer =
-      getNetReader()->getNetwork().getLayerByName(output.c_str());
+    ///InferenceEngine::CNNLayerPtr layer =
+    ///  getNetReader()->getNetwork().getLayerByName(output.c_str());
     int input_height = input_info_->getTensorDesc().getDims()[2];
     int input_width = input_info_->getTensorDesc().getDims()[3];
 
     // --------------------------- Validating output parameters --------------------------------
-    if (layer != nullptr && layer->type != "RegionYolo") {
-      throw std::runtime_error("Invalid output type: " + layer->type + ". RegionYolo expected");
-    }
+    ///if (layer != nullptr && layer->type != "RegionYolo") {
+    ///  throw std::runtime_error("Invalid output type: " + layer->type + ". RegionYolo expected");
+    ///}
     // --------------------------- Extracting layer parameters --------------------------------
-    const int num = layer->GetParamAsInt("num");
-    const int coords = layer->GetParamAsInt("coords");
-    const int classes = layer->GetParamAsInt("classes");
+    const int num = 3; ///layer->GetParamAsInt("num");
+    const int coords = 9; ///layer->GetParamAsInt("coords");
+    const int classes = 21; ///layer->GetParamAsInt("classes");
     auto blob = request->GetBlob(output);
     const int out_blob_h = static_cast<int>(blob->getTensorDesc().getDims()[2]);;
 

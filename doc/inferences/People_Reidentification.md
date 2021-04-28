@@ -2,7 +2,7 @@
 ## Demo Result Snapshots
 See below pictures for the demo result snapshots.
 * Person Reidentification input from standard camera
-![person_reidentification_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/person-reidentification.gif "person reidentification demo video")
+![person_reidentification_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/data/images/person-reidentification.gif "person reidentification demo video")
 ## Download Models
 * download the optimized Intermediate Representation (IR) of model (excute _once_)<br>
   ```bash

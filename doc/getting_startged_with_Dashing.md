@@ -1,29 +1,15 @@
 # ROS2_OpenVINO_Toolkit
 
-## 1. Prerequiste
-* An x86_64 computer running Ubuntu 18.04. Below processors are supported:
-	* 6th-8th Generation Intel® Core™
-	* Intel® Xeon® v5 family
-	* Intel® Xeon® v6 family
-* ROS2 Dashing
-* OpenVINO™ Toolkit
-* RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
-* Graphics are required only if you use a GPU. The official system requirements for GPU are:
-	* 6th to 8th generation Intel® Core™ processors with Iris® Pro graphics and Intel® HD Graphics
-	* 6th to 8th generation Intel® Xeon® processors with Iris Pro graphics and Intel HD Graphics (excluding the e5 product family, which does not have graphics)
-	* Intel® Pentium® processors N4200/5, N3350/5, N3450/5 with Intel HD Graphics
-* Use one of the following methods to determine the GPU on your hardware:
-	* [lspci] command: GPU info may lie in the [VGA compatible controller] line.
-	* Ubuntu system: Menu [System Settings] --> [Details] may help you find the graphics information.
-	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
+**NOTE:** 
+Below steps have been tested on **Ubuntu 18.04**.
 
-## 2. Environment Setup
+## 1. Environment Setup
 * Install ROS2 Dashing [(guide)](https://index.ros.org/doc/ros2/Installation/Dashing/)
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
-* Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)
+* Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0) or later version.
 
-## 3. Building and Installation
+## 2. Building and Installation
 * Build demo code in OpenVINO toolkit
 ```bash
  # root is required instead of sudo
@@ -50,7 +36,7 @@ colcon build --symlink-install
 source ./install/local_setup.bash
 ```
 
-## 4. Running the Demo
+## 3. Running the Demo
 * Preparation
 	* Configure the Neural Compute Stick USB Driver 
 	```bash

@@ -48,9 +48,7 @@ private:
   void setPipelineByRequest(std::string pipeline_name, PipelineManager::PipelineState state);
 
   std::shared_ptr<rclcpp::Service<T>> service_;
-
   std::map<std::string, PipelineManager::PipelineData> * pipelines_;
-
   std::string service_name_;
 };
 }  // namespace vino_service

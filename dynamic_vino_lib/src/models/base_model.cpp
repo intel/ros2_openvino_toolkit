@@ -38,30 +38,30 @@ Models::BaseModel::BaseModel(
     throw std::logic_error("model file name is empty!");
   }
 
-  net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
+  ///net_reader_ = std::make_shared<InferenceEngine::CNNNetReader>();
 }
 
 void Models::BaseModel::modelInit()
 {
   slog::info << "Loading network files" << slog::endl;
   // Read network model
-  net_reader_->ReadNetwork(model_loc_);
+  ///net_reader_->ReadNetwork(model_loc_);
+  net_reader_ = engine.ReadNetwork(model_loc_);
   // Extract model name and load it's weights
   // remove extension
   size_t last_index = model_loc_.find_last_of(".");
   std::string raw_name = model_loc_.substr(0, last_index);
-  std::string bin_file_name = raw_name + ".bin";
-  net_reader_->ReadWeights(bin_file_name);
+  ///std::string bin_file_name = raw_name + ".bin";
+  ///net_reader_->ReadWeights(bin_file_name);
   // Read labels (if any)
   std::string label_file_name = raw_name + ".labels";
   loadLabelsFromFile(label_file_name);
 
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
-  net_reader_->getNetwork().setBatchSize(max_batch_size_);
-  /** DEPRECATED!
-  checkLayerProperty(net_reader_);
-  setLayerProperty(net_reader_); */
+  ///net_reader_->getNetwork().setBatchSize(max_batch_size_);
+  net_reader_.setBatchSize(max_batch_size_);
+
   updateLayerProperty(net_reader_);
 }
 

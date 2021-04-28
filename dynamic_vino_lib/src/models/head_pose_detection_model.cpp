@@ -30,44 +30,12 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 {
 }
 
-#if 0
-void Models::HeadPoseDetectionModel::checkLayerProperty(
-  const InferenceEngine::CNNNetReader::Ptr & net_reader)
-{
-  slog::info << "Checking Head Pose network outputs" << slog::endl;
-  InferenceEngine::OutputsDataMap outputInfo(net_reader->getNetwork().getOutputsInfo());
-  std::map<std::string, bool> layerNames = {{output_angle_r_, false},
-    {output_angle_p_, false},
-    {output_angle_y_, false}};
-
-  for (auto && output : outputInfo) {
-    InferenceEngine::CNNLayerPtr layer = output.second->getCreatorLayer().lock();
-    if (layerNames.find(layer->name) == layerNames.end()) {
-      throw std::logic_error("Head Pose network output layer unknown: " + layer->name +
-              ", should be " + output_angle_r_ + " or " + output_angle_p_ + " or " +
-              output_angle_y_);
-    }
-    if (layer->type != "FullyConnected") {
-      throw std::logic_error("Head Pose network output layer (" + layer->name +
-              ") has invalid type: " + layer->type + ", should be FullyConnected");
-    }
-    auto fc = dynamic_cast<InferenceEngine::FullyConnectedLayer *>(layer.get());
-    if (fc->_out_num != 1) {
-      throw std::logic_error("Head Pose network output layer (" + layer->name +
-              ") has invalid out-size=" + std::to_string(fc->_out_num) +
-              ", should be 1");
-    }
-    layerNames[layer->name] = true;
-  }
-}
-#endif
-
 bool Models::HeadPoseDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+(InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model should have only one input, but we got"
       << std::to_string(input_info_map.size()) << "inputs"
@@ -80,7 +48,7 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
   for (auto & output : output_info_map) {
     output.second->setPrecision(InferenceEngine::Precision::FP32);
     output.second->setLayout(InferenceEngine::Layout::NC);

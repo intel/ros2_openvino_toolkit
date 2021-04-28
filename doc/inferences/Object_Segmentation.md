@@ -2,7 +2,7 @@
 ## Demo Result Snapshots
 See below pictures for the demo result snapshots.
 * object segmentation input from video
-![object_segmentation_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/devel/data/images/object_segmentation.gif "object segmentation demo video")
+![object_segmentation_demo_video](https://github.com/intel/ros2_openvino_toolkit/blob/doc-ov.2020.3/data/images/object_segmentation.gif "object segmentation demo video")
 ## Download Models
 * download and convert a trained model to produce an optimized Intermediate Representation (IR) of the model 
   ```bash

@@ -23,9 +23,6 @@
 #include "dynamic_vino_lib/outputs/ros_service_output.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-// Outputs::RosServiceOutput::RosServiceOutput()
-
-
 void Outputs::RosServiceOutput::setServiceResponse(
   std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {

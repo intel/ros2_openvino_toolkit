@@ -86,7 +86,7 @@ public:
   }
 
   virtual bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &)
+    const InferenceEngine::CNNNetwork&)
   { return false; }
 
   inline std::string getModelName() const
@@ -141,10 +141,10 @@ public:
       std::back_inserter(attr_.labels));
     }
 
-    inline std::vector<std::string>& getLabels()
-    {
-      return attr_.labels;
-    }
+  inline std::vector<std::string>& getLabels()
+  {
+    return attr_.labels;
+  }
 
   inline void addInputInfo(std::string key, std::string value)
   {
@@ -187,7 +187,7 @@ public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
   bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &);
+    const InferenceEngine::CNNNetwork&);
 
 };
 

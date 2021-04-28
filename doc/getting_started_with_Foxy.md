@@ -1,25 +1,10 @@
 # ROS2_FOXY_OpenVINO_Toolkit
 
-## 1. Prerequiste
-* An x86_64 computer running Ubuntu 18.04. Below processors are supported:
-	* 6th-8th Generation Intel® Core™
-	* Intel® Xeon® v5 family
-	* Intel® Xeon® v6 family
-* ROS2 Foxy
-* OpenVINO™ Toolkit
-* RGB Camera, e.g. RealSense D400 Series or standard USB camera or Video/Image File
-* Graphics are required only if you use a GPU. The official system requirements for GPU are:
-	* 6th to 8th generation Intel® Core™ processors with Iris® Pro graphics and Intel® HD Graphics
-	* 6th to 8th generation Intel® Xeon® processors with Iris Pro graphics and Intel HD Graphics (excluding the e5 product family, which does not have graphics)
-	* Intel® Pentium® processors N4200/5, N3350/5, N3450/5 with Intel HD Graphics
-* Use one of the following methods to determine the GPU on your hardware:
-	* [lspci] command: GPU info may lie in the [VGA compatible controller] line.
-	* Ubuntu system: Menu [System Settings] --> [Details] may help you find the graphics information.
-	* Openvino: Download the install package, install_GUI.sh inside will check the GPU information before installation.
+**NOTE:** 
+Below steps have been tested on **Ubuntu 18.04**.
 
-## 2. Install ROS2 Foxy from source code
-* Install ROS2 Foxy [(guide)](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/)
-* Before colcon build, update the cmake to 3.14
+## 1. Install ROS2 Foxy from source code
+* Before colcon build, update the cmake to 3.14+
 ```bash
 mkdir -p ~/cmake
 cd ~/cmake
@@ -31,18 +16,20 @@ make --jobs=$(nproc --all)
 sudo make install
 sudo ldconfig
 ````
-*  build from source
+* Install ROS2 Foxy [(guide)](https://index.ros.org/doc/ros2/Installation/Foxy/Linux-Development-Setup/)
+
+*  Build ROS2 Foxy packages from source code
 ```bash
 cd ~/ros2_foxy
 colcon build --symlink-install
 . ~/ros2_foxy/install/setup.bash
 ```
-## 3. Environment Setup
+## 2. Environment Setup
 * Install OpenVINO™ Toolkit Version: 2020.3 [(guide)](https://software.intel.com/content/www/us/en/develop/tools/openvino-toolkit/download.html)
 **Note:** Please use root privileges to run the installer when installing the core components.
 * Install Intel® RealSense™ SDK 2.0 [(tag v2.30.0)](https://github.com/IntelRealSense/librealsense/tree/v2.30.0)
 
-## 4. Building and Installation
+## 3. Building and Installation
 * Build demo code in OpenVINO toolkit
 ```bash
  # root is required instead of sudo
@@ -70,7 +57,7 @@ colcon build --symlink-install
 source ./install/local_setup.bash
 ```
 
-## 5. Running the Demo
+## 4. Running the Demo
 * Preparation
 	* Configure the Neural Compute Stick USB Driver 
 	```bash
