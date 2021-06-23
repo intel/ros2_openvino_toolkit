@@ -29,7 +29,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 * Processor: A platform with Intel processors assembled. (see [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
 * OS: Ubuntu 20.04
 * ROS2: Foxy Fitzroy
-* OpenVINO: V2020.3, see [the release notes](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for more info.
+* OpenVINO: V2021.3, see [the release notes](https://software.intel.com/content/www/us/en/develop/articles/openvino-relnotes.html)  for more info.
 * [Optional] RealSense D400 Series Camera
 * [Optional] Intel NCS2 Stick
 ## Tables of contents
