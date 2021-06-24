@@ -21,7 +21,7 @@ jobs:
     - uses: actions/checkout@v2
 
     # install ros2 eloquent
-    - uses: ros-tooling/setup-ros@0.1.1
+    - uses: ros-tooling/setup-ros@v0.2
       with:
         required-ros-distributions: foxy
     - run: "source /opt/ros/foxy/setup.bash && ros2 run --help"
