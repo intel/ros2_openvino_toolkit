@@ -86,7 +86,7 @@ public:
   }
 
   virtual bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &)
+    const InferenceEngine::CNNNetwork&)
   { return false; }
 
   inline std::string getModelName() const
@@ -187,7 +187,7 @@ public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
   bool updateLayerProperty(
-    const InferenceEngine::CNNNetReader::Ptr &);
+    const InferenceEngine::CNNNetwork&);
 
 };
 
