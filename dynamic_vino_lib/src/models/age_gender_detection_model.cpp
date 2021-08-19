@@ -30,11 +30,11 @@ Models::AgeGenderDetectionModel::AgeGenderDetectionModel(
 {
 }
 bool Models::AgeGenderDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr net_reader)
+  InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
       <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
@@ -46,7 +46,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   input_info->setLayout(InferenceEngine::Layout::NCHW);
   addInputInfo("input", input_info_map.begin()->first);
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
   if (output_info_map.size() != 2) {
     // throw std::logic_error("Age/Gender Recognition network should have two output layers");
     slog::warn << "This model seems not Age-gender like, which should have and only have 2"
@@ -58,6 +58,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   InferenceEngine::DataPtr age_output_ptr = (it++)->second;
   InferenceEngine::DataPtr gender_output_ptr = (it++)->second;
 
+#if(0) ///
   //Check More Configuration:
   if (gender_output_ptr->getCreatorLayer().lock()->type == "Convolution") {
     std::swap(age_output_ptr, gender_output_ptr);
@@ -79,6 +80,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   }
   slog::info << "Age layer: " << age_output_ptr->getCreatorLayer().lock()->name << slog::endl;
   slog::info << "Gender layer: " << gender_output_ptr->getCreatorLayer().lock()->name << slog::endl;
+#endif
 
   age_output_ptr->setPrecision(InferenceEngine::Precision::FP32);
   age_output_ptr->setLayout(InferenceEngine::Layout::NCHW);

@@ -29,11 +29,11 @@ Models::EmotionDetectionModel::EmotionDetectionModel(
 }
 
 bool Models::EmotionDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+(InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
       <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
@@ -46,34 +46,34 @@ bool Models::EmotionDetectionModel::updateLayerProperty
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
   if (output_info_map.size() != 1) {
     // throw std::logic_error("Age/Gender Recognition network should have two output layers");
     slog::warn << "This model should have and only have 1 output, but we got "
       << std::to_string(output_info_map.size()) << "outputs" << slog::endl;
     return false;
   }
-  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  slog::info << "Emotions layer: " << output_data_ptr->getCreatorLayer().lock()->name <<
-    slog::endl;
-  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
-  output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
+  ///InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
+  ///slog::info << "Emotions layer: " << output_data_ptr->getCreatorLayer().lock()->name <<
+  ///  slog::endl;
+  ///output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
+  ///output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
   addOutputInfo("output", output_info_map.begin()->first);
 
   printAttribute();
-  return verifyOutputLayer(output_data_ptr);
+  return true; ///verifyOutputLayer(output_data_ptr);
 }
 
 bool Models::EmotionDetectionModel::verifyOutputLayer(const InferenceEngine::DataPtr & ptr)
 {
-  if (ptr->getCreatorLayer().lock()->type != "SoftMax") {
-    slog::err <<"In Emotion network, gender layer ("
-      << ptr->getCreatorLayer().lock()->name
-      << ") should be a SoftMax, but was: "
-      << ptr->getCreatorLayer().lock()->type
-      << slog::endl;
-    return false;
-  }
+///  if (ptr->getCreatorLayer().lock()->type != "SoftMax") {
+///    slog::err <<"In Emotion network, gender layer ("
+///      << ptr->getCreatorLayer().lock()->name
+///      << ") should be a SoftMax, but was: "
+///      << ptr->getCreatorLayer().lock()->type
+///      << slog::endl;
+///    return false;
+///  }
 
   return true;
 }
