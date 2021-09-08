@@ -26,7 +26,7 @@ git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2
 ```
 * Build package
 ```
-source ~/ros2_foxy/install/local_setup.bash
+source /opt/ros/galactic/setup.bash 
 source /opt/intel/<INSTALL_DIR>/bin/setupvars.sh
 cd ~/my_ros2_ws/src
 colcon build --symlink-install
