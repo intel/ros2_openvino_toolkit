@@ -4,7 +4,7 @@
 Below steps have been tested on **Ubuntu 20.04**.
 
 ## 1. Environment Setup
-* Install ROS2 Foxy ([guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html))
+* Install ROS2 Galactic ([guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html))
 * Install Intel® OpenVINO™ Toolkit Version: 2021.4 ([guide](https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_apt.html)) or building by source code ([guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingForLinux))
 * Install Intel®  RealSense ™ SDK ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
 
