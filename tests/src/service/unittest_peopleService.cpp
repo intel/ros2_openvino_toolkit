@@ -51,7 +51,7 @@ TEST(UnitTestPeople, testPeople)
   auto result = client->async_send_request(request);
 
   ASSERT_EQ(
-    rclcpp::executor::FutureReturnCode::SUCCESS,
+    rclcpp::FutureReturnCode::SUCCESS,
     rclcpp::spin_until_future_complete(node, result));
 
   auto srv = result.get();
