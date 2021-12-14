@@ -3,10 +3,10 @@ Pipelines:
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/object_detection/YOLOv2-voc/tf/output/FP16/yolov2-voc.xml
+      model: /opt/openvino_toolkit/models/public/yolo-v2-tf/FP16/yolo-v2-tf.xml
       #model: /opt/openvino_toolkit/darkflow/output/fp16/yolov2-voc.xml 
       model_type: yolov2
-      engine: MYRIAD
+      engine: CPU #MYRIAD
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5

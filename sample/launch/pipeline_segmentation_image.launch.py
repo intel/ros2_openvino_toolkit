@@ -23,25 +23,27 @@ import launch_ros.actions
 
 def generate_launch_description():
     default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
-                                'pipeline_image.yaml')
+                                'pipeline_segmentation_image.yaml')
     default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
+        # Realsense
+        # NOTE: Split realsense_node launching from OpenVINO package, which
+		# will be launched by RDK launching file or manually.
+        #launch_ros.actions.Node(
+        #    package='realsense_ros2_camera', node_executable='realsense_ros2_camera',
+        #    output='screen'),
+
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample',
             executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
-                ('/openvino_toolkit/people/faces',
-                 '/ros2_openvino_toolkit/face_detection'),
-                ('/openvino_toolkit/people/emotions',
-                 '/ros2_openvino_toolkit/emotions_recognition'),
-                ('/openvino_toolkit/people/headposes',
-                 '/ros2_openvino_toolkit/headposes_estimation'),
-                ('/openvino_toolkit/people/age_genders',
-                 '/ros2_openvino_toolkit/people/age_genders_Recognition'),
-                ('/openvino_toolkit/people/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
+                ('/openvino_toolkit/segmentation/segmented_obejcts',
+                 '/ros2_openvino_toolkit/segmented_obejcts'),
+                ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
