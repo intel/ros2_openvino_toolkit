@@ -64,6 +64,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 ```
 
 * copy label files (execute once)
+* Before launch, copy label files to the same model path, make sure the model path and label path match the ros_openvino_toolkit/vino_launch/param/xxxx.yaml.
 ```
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
@@ -71,7 +72,6 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
- 
 ```
 
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
@@ -111,7 +111,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   ros2 launch dynamic_vino_sample pipeline_image.launch.py
   ```
-  * run object segmentation sample code input from RealSenseCameraTopic.
+  * run object segmentation sample code input from RealSenseCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
   ```
