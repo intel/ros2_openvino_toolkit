@@ -44,11 +44,11 @@ static bool test_pass = false;
 
 template<typename DurationT>
 void wait_for_future(
-  rclcpp::Executor & executor, std::shared_future<bool> & future,
+  rclcpp::executor::Executor & executor, std::shared_future<bool> & future,
   const DurationT & timeout)
 {
-  using rclcpp::FutureReturnCode;
-  rclcpp::FutureReturnCode future_ret;
+  using rclcpp::executor::FutureReturnCode;
+  rclcpp::executor::FutureReturnCode future_ret;
   auto start_time = std::chrono::steady_clock::now();
   future_ret = executor.spin_until_future_complete(future, timeout);
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;

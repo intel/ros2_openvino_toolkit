@@ -32,14 +32,6 @@ source ./install/local_setup.bash
 ```
 
 ## 3. Running the Demo
-* Preparation
-```
-source /opt/intel/openvino_2021/bin/setupvars.sh
-sudo mkdir -p /opt/openvino_toolkit
-sudo ln -s /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader /opt/openvino_toolkit/models
-sudo chmod 777 -R /opt/openvino_toolkit/models
-```
-
 * See all available models
 ```
 cd /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader
@@ -64,7 +56,6 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 ```
 
 * copy label files (execute once)
-* Before launch, copy label files to the same model path, make sure the model path and label path match the ros_openvino_toolkit/vino_launch/param/xxxx.yaml.
 ```
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
@@ -72,27 +63,22 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
+ 
 ```
 
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
-  * ssd_mobilenet_v2_coco
-  ```
-  cd /opt/openvino_toolkit/models/
-  sudo python3 downloader/downloader.py --name ssd_mobilenet_v2_coco
-  sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=ssd_mobilenet_v2_coco --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
-  ```
+  * mobilenet-ssd
+    ```
+    sudo python3 downloader.py --name mobilenet-ssd --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output
+    cd /opt/intel/openvino_2021/deployment_tools/model_optimizer
+    sudo python3 mo.py --input_model /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output/public/mobilenet-ssd/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output
+    ```
   * deeplabv3
-  ```
-  cd /opt/openvino_toolkit/models/
-  sudo python3 downloader/downloader.py --name deeplabv3
-  sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=deeplabv3 --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
-  ```
-  * YOLOV2
-  ```
-  cd /opt/openvino_toolkit/models/
-  sudo python3 downloader/downloader.py --name yolo-v2-tf
-  sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=yolo-v2-tf --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
-  ```
+    ```
+    cd /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader
+    sudo python3 downloader.py --name deeplabv3 --output_dir /opt/openvino_toolkit/models/deeplabv3/output
+    sudo python3 converter.py --name=deeplabv3 --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py 
+    ```
 
 * Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
@@ -111,14 +97,14 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   ros2 launch dynamic_vino_sample pipeline_image.launch.py
   ```
-  * run object segmentation sample code input from RealSenseCamera.
+  * run object segmentation sample code input from RealSenseCameraTopic.
   ```
   ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
   ```
-  * run object segmentation sample code input from Image.
+  <!-- * run object segmentation sample code input from Image.
   ```
   ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
-  ``` 
+  ``` -->
   * run vehicle detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
@@ -127,7 +113,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   ros2 launch dynamic_vino_sample pipeline_person_attributes.launch.py
   ```
-
+  
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
