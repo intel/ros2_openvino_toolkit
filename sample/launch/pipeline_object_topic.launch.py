@@ -20,13 +20,17 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 import launch_ros.actions
 
+from launch.substitutions import LaunchConfiguration, PythonExpression
+import launch
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
-                                'pipeline_object_topic.yaml')
+    #default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
+                                #'pipeline_object_topic.yaml')
     default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
+    	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
+                                             os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param','pipeline_object_topic.yaml')),
         # Realsense
         # NOTE: Split realsense_node launching from OpenVINO package, which
 		# will be launched by RDK launching file or manually.
@@ -37,8 +41,9 @@ def generate_launch_description():
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample',
-            node_executable='pipeline_with_params',
-            arguments=['-config', default_yaml],
+            executable='pipeline_with_params',
+            #arguments=['-config', default_yaml],
+            arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/object/detected_objects',
                  '/ros2_openvino_toolkit/detected_objects'),
@@ -48,6 +53,6 @@ def generate_launch_description():
         # Rviz
         launch_ros.actions.Node(
             package='rviz2',
-            node_executable='rviz2', output='screen',
+            executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]),
     ])
