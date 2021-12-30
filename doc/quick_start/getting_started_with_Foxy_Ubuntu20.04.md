@@ -75,6 +75,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 ```
 
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
+* (Note: Tensorflow=1.15.5, Python<=3.7)
   * ssd_mobilenet_v2_coco
   ```
   cd /opt/openvino_toolkit/models/
