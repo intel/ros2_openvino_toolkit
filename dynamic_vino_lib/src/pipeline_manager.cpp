@@ -248,7 +248,7 @@ PipelineManager::createFaceDetection(
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & param)
 {
-  auto model = std::make_shared<Models::AgeGenderDetectionModel>(param.model, param.batch);
+  auto model = std::make_shared<Models::AgeGenderDetectionModel>(param.label, param.model, param.batch);
   model->modelInit();
   auto engine = engine_manager_.createEngine(param.engine, model);
   auto infer = std::make_shared<dynamic_vino_lib::AgeGenderDetection>();
@@ -261,7 +261,7 @@ PipelineManager::createAgeGenderRecognition(const Params::ParamManager::Inferenc
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceRawData & param)
 {
-  auto model = std::make_shared<Models::EmotionDetectionModel>(param.model, param.batch);
+  auto model = std::make_shared<Models::EmotionDetectionModel>(param.label, param.model, param.batch);
   model->modelInit();
   auto engine = engine_manager_.createEngine(param.engine, model);
   auto infer = std::make_shared<dynamic_vino_lib::EmotionsDetection>();
@@ -274,7 +274,7 @@ PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceR
 std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & param)
 {
-  auto model = std::make_shared<Models::HeadPoseDetectionModel>(param.model, param.batch);
+  auto model = std::make_shared<Models::HeadPoseDetectionModel>(param.label, param.model, param.batch);
   model->modelInit();
   auto engine = engine_manager_.createEngine(param.engine, model);
   auto infer = std::make_shared<dynamic_vino_lib::HeadPoseDetection>();
@@ -294,11 +294,11 @@ PipelineManager::createObjectDetection(
   slog::debug << "for test in createObjectDetection()" << slog::endl;
   if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD) {
     object_detection_model =
-      std::make_shared<Models::ObjectDetectionSSDModel>(infer.model, infer.batch);
+      std::make_shared<Models::ObjectDetectionSSDModel>(infer.label, infer.model, infer.batch);
   }
   if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov2) {
     object_detection_model =
-      std::make_shared<Models::ObjectDetectionYolov2Model>(infer.model, infer.batch);
+      std::make_shared<Models::ObjectDetectionYolov2Model>(infer.label, infer.model, infer.batch);
   }
 
   slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
@@ -319,7 +319,7 @@ std::shared_ptr<dynamic_vino_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer)
 {
   auto model =
-    std::make_shared<Models::ObjectSegmentationModel>(infer.model, infer.batch);
+    std::make_shared<Models::ObjectSegmentationModel>(infer.label, infer.model, infer.batch);
   model->modelInit();
   slog::info << "Segmentation model initialized." << slog::endl;
   auto engine = engine_manager_.createEngine(infer.engine, model);
@@ -341,7 +341,7 @@ PipelineManager::createPersonReidentification(
   std::shared_ptr<dynamic_vino_lib::PersonReidentification> reidentification_inference_ptr;
   slog::debug << "for test in createPersonReidentification()"<<slog::endl;
   person_reidentification_model =
-    std::make_shared<Models::PersonReidentificationModel>(infer.model, infer.batch);
+    std::make_shared<Models::PersonReidentificationModel>(infer.label, infer.model, infer.batch);
   person_reidentification_model->modelInit();
   slog::info << "Reidentification model initialized" << slog::endl;
   auto person_reidentification_engine = engine_manager_.createEngine(infer.engine, person_reidentification_model);
@@ -360,7 +360,7 @@ PipelineManager::createVehicleAttribsDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
   auto model =
-    std::make_shared<Models::VehicleAttribsDetectionModel>(infer.model, infer.batch);
+    std::make_shared<Models::VehicleAttribsDetectionModel>(infer.label, infer.model, infer.batch);
   model->modelInit();
   auto engine = engine_manager_.createEngine(infer.engine, model);
   auto vehicle_attribs_ptr =
@@ -376,7 +376,7 @@ PipelineManager::createLicensePlateDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
   auto model =
-    std::make_shared<Models::LicensePlateDetectionModel>(infer.model, infer.batch);
+    std::make_shared<Models::LicensePlateDetectionModel>(infer.label, infer.model, infer.batch);
   model->modelInit();
   auto engine = engine_manager_.createEngine(infer.engine, model);
   auto license_plate_ptr =
@@ -392,7 +392,7 @@ PipelineManager::createPersonAttribsDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
   auto model =
-    std::make_shared<Models::PersonAttribsDetectionModel>(infer.model, infer.batch);
+    std::make_shared<Models::PersonAttribsDetectionModel>(infer.label, infer.model, infer.batch);
   slog::debug << "for test in createPersonAttributesDetection()"<<slog::endl;
   model->modelInit();
   auto engine = engine_manager_.createEngine(infer.engine, model);
