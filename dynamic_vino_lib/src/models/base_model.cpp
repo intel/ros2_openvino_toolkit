@@ -29,8 +29,9 @@
 
 // Validated Base Network
 Models::BaseModel::BaseModel(
-  const std::string & model_loc, int max_batch_size)
-: model_loc_(model_loc),
+  const std::string& label_loc, const std::string& model_loc, int max_batch_size)
+: label_loc_(label_loc),
+  model_loc_(model_loc),
   max_batch_size_(max_batch_size),
   ModelAttribute(model_loc)
 {
@@ -43,7 +44,8 @@ Models::BaseModel::BaseModel(
 
 void Models::BaseModel::modelInit()
 {
-  slog::info << "Loading network files" << slog::endl;
+  slog::info << "Loading network files" << model_loc_ << slog::endl;
+  slog::info << label_loc_ << slog::endl;
   // Read network model
   ///net_reader_->ReadNetwork(model_loc_);
   net_reader_ = engine.ReadNetwork(model_loc_);
@@ -54,8 +56,9 @@ void Models::BaseModel::modelInit()
   ///std::string bin_file_name = raw_name + ".bin";
   ///net_reader_->ReadWeights(bin_file_name);
   // Read labels (if any)
-  std::string label_file_name = raw_name + ".labels";
-  loadLabelsFromFile(label_file_name);
+  std::string label_file_name = label_loc_.substr(0, last_index);
+  //std::string label_file_name = raw_name + ".labels";
+  loadLabelsFromFile(label_loc_);
 
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
@@ -87,6 +90,7 @@ bool Models::BaseModel::updateLayerProperty(
 #endif
 
 Models::ObjectDetectionModel::ObjectDetectionModel(
-  const std::string & model_loc,
+  const std::string& label_loc, 
+  const std::string& model_loc,
   int max_batch_size)
-: BaseModel(model_loc, max_batch_size) {}
+: BaseModel(label_loc, model_loc, max_batch_size) {}
