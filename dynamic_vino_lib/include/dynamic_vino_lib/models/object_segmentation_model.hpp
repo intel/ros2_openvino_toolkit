@@ -28,7 +28,7 @@ namespace Models
 class ObjectSegmentationModel : public BaseModel
 {
 public:
-  ObjectSegmentationModel(const std::string & model_loc, int batch_size = 1);
+  ObjectSegmentationModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;
@@ -50,7 +50,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
 
 private:
   int max_proposal_count_;

@@ -1,10 +1,10 @@
 Pipelines:
 - name: segmentation
   inputs: [Image]
-  input_path: /home/intel/ros2_opvn_10/src/ros2_openvino_toolkit/data/images/expressway.jpg
+  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/data/images/car_vihecle.png
   infers:
     - name: ObjectSegmentation
-      model: /opt/openvino_toolkit/models/semantic-segmentation/output/Transportation/segmentation/semantic_segmentation/icnet_icv/dldt/semantic-segmentation-adas-0001-fp16.xml
+      model: /opt/openvino_toolkit/models/semantic-segmentation/output/intel/semantic-segmentation-adas-0001/FP16/semantic-segmentation-adas-0001.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1

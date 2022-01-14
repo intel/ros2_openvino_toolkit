@@ -25,17 +25,17 @@
 
 // Validated Head Pose Network
 Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
-  const std::string & model_loc, int max_batch_size)
-: BaseModel(model_loc, max_batch_size)
+  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
+: BaseModel(label_loc, model_loc, max_batch_size)
 {
 }
 
 bool Models::HeadPoseDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetReader::Ptr net_reader)
+(InferenceEngine::CNNNetwork& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader->getNetwork().getInputsInfo());
+  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
   if (input_info_map.size() != 1) {
     slog::warn << "This model should have only one input, but we got"
       << std::to_string(input_info_map.size()) << "inputs"
@@ -48,7 +48,7 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
   addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader->getNetwork().getOutputsInfo());
+  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
   for (auto & output : output_info_map) {
     output.second->setPrecision(InferenceEngine::Precision::FP32);
     output.second->setLayout(InferenceEngine::Layout::NC);

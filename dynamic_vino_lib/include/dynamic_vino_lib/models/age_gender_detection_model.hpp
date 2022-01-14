@@ -32,7 +32,7 @@ namespace Models
 class AgeGenderDetectionModel : public BaseModel
 {
 public:
-  AgeGenderDetectionModel(const std::string & model_loc, int batch_size = 1);
+  AgeGenderDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
   /**
    * @brief Get the input name.
    * @return Input name.
@@ -61,7 +61,7 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
 
 };
 }  // namespace Models

@@ -41,7 +41,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_pl
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
   InferenceEngine::Core core;
-  auto executable_network = core.LoadNetwork(model->getNetReader()->getNetwork(), device);
+  auto executable_network = core.LoadNetwork(model->getNetReader(), device);
   auto request = executable_network.CreateInferRequestPtr();
 
   return std::make_shared<Engines::Engine>(request);

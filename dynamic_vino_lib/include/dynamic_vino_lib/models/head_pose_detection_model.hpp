@@ -32,7 +32,7 @@ namespace Models
 class HeadPoseDetectionModel : public BaseModel
 {
 public:
-  HeadPoseDetectionModel(const std::string & model_loc, int batch_size = 1);
+  HeadPoseDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   /**
    * @brief Get the output angle roll.
@@ -63,7 +63,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
 
 
 private:

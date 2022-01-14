@@ -29,7 +29,7 @@ namespace Models
 class PersonAttribsDetectionModel : public BaseModel
 {
 public:
-  PersonAttribsDetectionModel(const std::string & model_loc, int batch_size = 1);
+  PersonAttribsDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
   //inline const std::string getInputName() {return input_;}
   //inline const std::string getOutputName() {return output_;}
   /**
@@ -41,7 +41,7 @@ public:
 protected:
   //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
   //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
   std::string input_;
   std::string output_;
 };

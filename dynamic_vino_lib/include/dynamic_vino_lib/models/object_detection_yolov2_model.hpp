@@ -32,7 +32,7 @@ class ObjectDetectionYolov2Model : public ObjectDetectionModel
   using Result = dynamic_vino_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov2Model(const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov2Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
@@ -54,7 +54,7 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
+  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
 
 protected:
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);

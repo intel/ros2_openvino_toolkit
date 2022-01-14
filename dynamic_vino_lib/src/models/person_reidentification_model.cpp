@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Person Reidentification Network
 Models::PersonReidentificationModel::PersonReidentificationModel(
-  const std::string & model_loc, int max_batch_size)
-: BaseModel(model_loc, max_batch_size) {}
+  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
+: BaseModel(label_loc, model_loc, max_batch_size) {}
 /*
 void Models::PersonReidentificationModel::setLayerProperty(
   InferenceEngine::CNNNetReader::Ptr net_reader)
@@ -50,11 +50,11 @@ const std::string Models::PersonReidentificationModel::getModelCategory() const
 }
 */
 bool Models::PersonReidentificationModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr netreader)
+  InferenceEngine::CNNNetwork& netreader)
 {
   slog::info << "Checking Inputs for Model" << getModelName() << slog::endl;
 
-  auto network = netreader->getNetwork();
+  auto network = netreader;
   
   InferenceEngine::InputsDataMap input_info_map(network.getInputsInfo());
   
