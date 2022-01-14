@@ -1,7 +1,7 @@
 Pipelines:
 - name: people
   inputs: [Image]
-  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/data/images/team.jpg
+  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/data/images/sample_faces.jpg
   infers:
     - name: FaceDetection
       model: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml

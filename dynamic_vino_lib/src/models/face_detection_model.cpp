@@ -24,8 +24,8 @@
 
 // Validated Face Detection Network
 Models::FaceDetectionModel::FaceDetectionModel(
-  const std::string & model_loc, int max_batch_size)
-: ObjectDetectionModel(model_loc, max_batch_size)
+  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
+: ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
 }
 

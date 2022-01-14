@@ -32,7 +32,7 @@ class ObjectDetectionSSDModel : public ObjectDetectionModel
   using Result = dynamic_vino_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionSSDModel(const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionSSDModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
