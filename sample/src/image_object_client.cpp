@@ -48,7 +48,7 @@ int main(int argc, char ** argv)
 
   auto result = client->async_send_request(request);
   if (rclcpp::spin_until_future_complete(node, result) ==
-    rclcpp::executor::FutureReturnCode::SUCCESS)
+    rclcpp::FutureReturnCode::SUCCESS)
   {
     auto srv = result.get();
 
