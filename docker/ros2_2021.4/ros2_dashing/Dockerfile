@@ -1,10 +1,6 @@
 # ros2 openvino toolkit env master f1b1ca4d914186a1881b87f103be9c6e910c9d80
 
 from amd64/ros:dashing
-#osrf/ros:dashing-desktop
-# setting proxy env --option 
-ENV http_proxy=http://child-prc.intel.com:913
-ENV https_proxy=http://child-prc.intel.com:913
 
 # maintainer information
 LABEL maintainer="Pengqiang Li <pengqiang.li@intel.com>"
