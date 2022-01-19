@@ -2,10 +2,6 @@
 
 from osrf/ros:foxy-desktop
 
-# setting proxy env --option 
-ENV http_proxy=http://child-prc.intel.com:913
-ENV https_proxy=http://child-prc.intel.com:913
-
 # maintainer information
 LABEL maintainer="Pengqiang Li <pengqiang.li@intel.com>"
 
