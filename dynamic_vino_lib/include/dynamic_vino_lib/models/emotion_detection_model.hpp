@@ -32,7 +32,7 @@ namespace Models
 class EmotionDetectionModel : public BaseModel
 {
 public:
-  EmotionDetectionModel(const std::string & model_loc, int batch_size = 1);
+  EmotionDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
   /**
    * @brief Get the name of this detection model.
