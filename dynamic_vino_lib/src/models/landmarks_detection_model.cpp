@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Landmarks Detection Network
 Models::LandmarksDetectionModel::LandmarksDetectionModel(
-  const std::string & model_loc, int max_batch_size)
-: BaseModel(model_loc, max_batch_size) {}
+  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
+: BaseModel(label_loc, model_loc, max_batch_size) {}
 
 void Models::LandmarksDetectionModel::setLayerProperty(
   InferenceEngine::CNNNetwork& net_reader)

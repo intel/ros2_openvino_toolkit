@@ -21,8 +21,8 @@
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
 Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
-  const std::string & model_loc, int max_batch_size)
-: BaseModel(model_loc, max_batch_size) {}
+  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
+: BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
   InferenceEngine::CNNNetwork& net_reader)

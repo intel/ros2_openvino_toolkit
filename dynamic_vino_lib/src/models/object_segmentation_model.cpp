@@ -24,9 +24,10 @@
 #include "dynamic_vino_lib/engines/engine.hpp"
 // Validated Object Segmentation Network
 Models::ObjectSegmentationModel::ObjectSegmentationModel(
-    const std::string &model_loc,
+    const std::string & label_loc, 
+    const std::string & model_loc,
     int max_batch_size)
-    : BaseModel(model_loc, max_batch_size)
+    : BaseModel(label_loc, model_loc, max_batch_size)
 {
 }
 
