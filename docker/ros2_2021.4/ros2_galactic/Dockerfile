@@ -29,7 +29,7 @@ software-properties-common
 # https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
 # Make sure you set http-proxy in below commands if your environment needs.
 # RUN apt-key adv --keyserver-options http-proxy=your_proxy --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || apt-key adv --keyserver-options http-proxy=your_proxy --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE 
-RUN apt-key adv --keyserver-options --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || apt-key adv --keyserver-options --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE 
+RUN apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE 
 RUN add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo focal main" -u \
 && apt-get install -y --no-install-recommends \
 librealsense2-dkms \
