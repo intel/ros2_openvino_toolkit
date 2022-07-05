@@ -37,6 +37,7 @@ docker Images
 * Preparation
 ```
 source /opt/intel/openvino_2021/bin/setupvars.sh
+source ./install/local_setup.sh
 sudo mkdir -p /opt/openvino_toolkit
 sudo ln -s /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader /opt/openvino_toolkit/models
 sudo chmod 777 -R /opt/openvino_toolkit/models
