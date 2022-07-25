@@ -96,7 +96,7 @@ private:
 
   std::string getConfigPath()
   {
-    return declare_parameter("config").get<rclcpp::PARAMETER_STRING>();
+    return rclcpp::Node::declare_parameter<const std::string>("config");
   }
 
 };
