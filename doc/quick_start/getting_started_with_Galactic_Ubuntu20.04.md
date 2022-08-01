@@ -136,6 +136,8 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   * run object segmentation sample code input from Image.
   ```
+  sudo mkdir -p /opt/openvino_toolkit/ros2_openvino_toolkit/data/images
+  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/images/expressway.jpg /opt/openvino_toolkit/ros2_openvino_toolkit/data/images/
   ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
   ``` 
   * run vehicle detection sample code input from StandardCamera.
