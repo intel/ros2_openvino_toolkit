@@ -4,9 +4,9 @@ name: Ros2_Openvino Run
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: [ "master" ]
+    branches: [ "other" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "other" ]
   schedule:
   # * is a special character in YAML so you have to quote this string
   - cron:  '30 8,20 * * *'
