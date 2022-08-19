@@ -18,6 +18,7 @@ pipeline {
                         echo "test pass"
                     } else {
                         echo "test fail"
+                        exit -1
                     }
                 
                 }
