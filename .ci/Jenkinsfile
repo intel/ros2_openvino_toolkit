@@ -2,7 +2,7 @@ pipeline {
     agent any
     environment {
         // Test_Server is the local test machine.
-        Test_Server = "intel-NUC11PHi7"
+        Test_Server = "robotics-testNUC11"
         WORKSPACE_PATH = "/home/intel/ros2_openvino_toolkit"
     }
     stages {
