@@ -6,6 +6,8 @@ Below steps have been tested on **Ubuntu 20.04**.
 ## 1. Environment Setup
 * Install ROS2 Galactic ([guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html))
 * Install Intel® OpenVINO™ Toolkit Version: 2021.4 ([guide](https://docs.openvino.ai/2021.4/openvino_docs_install_guides_installing_openvino_linux.html)) or building by source code ([guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingForLinux))
+
+  * version **intel-openvino-dev-ubuntu20-2021.4.752** was tested. It is recommend to use 2021.4.752 or the newer.
 * Install Intel®  RealSense ™ SDK ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
 
 ## 2. Building and Installation
@@ -13,7 +15,7 @@ Below steps have been tested on **Ubuntu 20.04**.
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
-git clone https://github.com/intel/ros2_openvino_toolkit -b galactic_dev
+git clone https://github.com/intel/ros2_openvino_toolkit -b galactic
 git clone https://github.com/intel/ros2_object_msgs
 git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2
 git clone https://github.com/ros-perception/vision_opencv.git -b ros2
@@ -21,6 +23,9 @@ git clone https://github.com/ros-perception/vision_opencv.git -b ros2
 * Install dependencies
 ```
 sudo apt-get install ros-galactic-diagnostic-updater
+sudo pip3 install networkx
+sudo apt-get install python3-defusedxml
+sudo pip3 install tensorflow==2.4.1
 ```
 * Build package
 ```
@@ -66,16 +71,29 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 * copy label files (execute once)
 * Before launch, copy label files to the same model path, make sure the model path and label path match the ros_openvino_toolkit/vino_launch/param/xxxx.yaml.
 ```
+ # Lables for Face-Detection
+ sudo mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
+ sudo mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
+
+ # Lables for Emotions-Recognition
+ sudo mkdir -p /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/
+
+ # Labels for Sementic-Segmentation
+ sudo mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
+ sudo mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
+
+ # Labels for Vehicle-License_Plate
+ sudo mkdir -p /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
-* (Note: Tensorflow=1.15.5, Python<=3.7)
+* (Note: Tensorflow=2.4.1, Python<=3.7)
   * ssd_mobilenet_v2_coco
   ```
   cd /opt/openvino_toolkit/models/
@@ -86,7 +104,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   cd /opt/openvino_toolkit/models/
   sudo python3 downloader/downloader.py --name deeplabv3
-  sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=deeplabv3 --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
+  sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=deeplabv3 --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py -d /opt/openvino_toolkit/models/
   ```
   * YOLOV2
   ```
@@ -118,6 +136,8 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
   * run object segmentation sample code input from Image.
   ```
+  sudo mkdir -p /opt/openvino_toolkit/ros2_openvino_toolkit/data/images
+  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/images/expressway.jpg /opt/openvino_toolkit/ros2_openvino_toolkit/data/images/
   ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
   ``` 
   * run vehicle detection sample code input from StandardCamera.
