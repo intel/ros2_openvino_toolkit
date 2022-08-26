@@ -146,7 +146,6 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
-  /*
   std::map<std::string, int> class_color;
   for (unsigned i = 0; i < results.size(); i++) {
     std::string class_label = results[i].getLabel();
@@ -173,12 +172,6 @@ void Outputs::ImageWindowOutput::mergeMask(
     }
     cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
   }
-  */
-  const float alpha = 0.5f;
-  cv::Mat roi_img = frame_;
-  cv::Mat colored_mask = results[0].getMask();
-  cv::resize(colored_mask,colored_mask,cv::Size(frame_.size().width,frame_.size().height));
-  cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
 }
 
 void Outputs::ImageWindowOutput::accept(

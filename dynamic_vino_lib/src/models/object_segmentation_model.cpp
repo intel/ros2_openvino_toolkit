@@ -119,6 +119,9 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
 
   InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
   slog::debug<<"input size"<<inputShapes.size()<<slog::endl;
+  
+  /* Doesn't check the size of input shapes:
+   For Maskrcnn_inception_v2: inputShpares.size() ==2
   if (inputShapes.size() != 1) {
     // throw std::runtime_error("Demo supports topologies only with 1 input");
     slog::warn << "This inference sample should have only one input, but we got"
@@ -126,40 +129,48 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
       << slog::endl;
     return false;
   }
+  */
 
+  // Check Input Shapes
   InferenceEngine::SizeVector &in_size_vector = inputShapes.begin()->second;
   slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
-  if (in_size_vector.size() != 4 || in_size_vector[1] != 3) {
-    //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
-    slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
-      << std::to_string(in_size_vector[1]) << " channels and "
-      << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
-    return false;
-  }
-  in_size_vector[0] = 1;
-  network.reshape(inputShapes);
+  auto input_it = input_info_.begin();
 
-  InferenceEngine:: InputInfo &inputInfo = *network.getInputsInfo().begin()->second;
-  inputInfo.getPreProcess().setResizeAlgorithm(InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
-  inputInfo.setLayout(InferenceEngine::Layout::NHWC);
-  inputInfo.setPrecision(InferenceEngine::Precision::U8);
-
-  //InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  //addInputInfo("input", input_info_map.begin()->first.c_str());
-  addInputInfo("input", inputShapes.begin()->first);
+  for ( auto& input_item : inputShapes ){
+    InferenceEngine::SizeVector& vector = input_item.second;
+    if (input_it == input_info_.end()){
+      throw std::logic_error("Segmentation: the size of InputShapes doesn't match the one of InputData");
+    }
+    if (vector.size() == 4) {
+      if (vector[1] == 3) {
+        vector[0] = 1;
+        input_it->second->getPreProcess().setResizeAlgorithm(InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
+        network.reshape(inputShapes);
+      }
+      input_it->second->setLayout(InferenceEngine::Layout::NHWC);
+      input_it->second->setPrecision(InferenceEngine::Precision::U8);
+      addInputInfo("input", input_it->first);
+    } else if (vector.size() == 2) {
+      input_it->second->setPrecision(InferenceEngine::Precision::FP32);
+      try {
+        network.addOutput(std::string("detection_output"), 0);
+      } catch (std::exception & error) {
+        throw std::logic_error(getModelName() + "is failed when adding detection_output laryer.");
+      }
+    } else {
+      throw std::logic_error("Unsupported input shape with size = " + std::to_string(vector.size()));
+    }
+    ++input_it;
+  } 
 
   InferenceEngine::OutputsDataMap outputsDataMap = network.getOutputsInfo();
-  if (outputsDataMap.size() != 1) {
-    //throw std::runtime_error("Demo supports topologies only with 1 output");
-    slog::warn << "This inference sample should have only one output, but we got"
-      << std::to_string(outputsDataMap.size()) << "outputs"
-      << slog::endl;
-    return false;
+  slog::debug<<"The size of Outputs Datamap is "<< outputsDataMap.size() <<slog::endl;
+  for (auto & output_item : outputsDataMap) {
+    output_item.second->setPrecision(InferenceEngine::Precision::FP32);
   }
 
+  /** Currently, not used this check.
   InferenceEngine::Data & data = *outputsDataMap.begin()->second;
-  data.setPrecision(InferenceEngine::Precision::FP32);
-
   const InferenceEngine::SizeVector& outSizeVector = data.getTensorDesc().getDims();
   int outChannels, outHeight, outWidth;
   slog::debug << "output size vector " << outSizeVector.size() << slog::endl;
@@ -189,6 +200,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   slog::debug << "output width " << outWidth<< slog::endl;
   slog::debug << "output hEIGHT " << outHeight<< slog::endl;
   slog::debug << "output CHANNALS " << outChannels<< slog::endl;
+  */
   addOutputInfo("masks", (outputsDataMap.begin()++)->first);
   addOutputInfo("detection", outputsDataMap.begin()->first);
 
