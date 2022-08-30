@@ -133,7 +133,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
 
   // Check Input Shapes
   InferenceEngine::SizeVector &in_size_vector = inputShapes.begin()->second;
-  slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
+  slog::debug<<"channel size="<<in_size_vector[1]<<", dimensional="<<in_size_vector.size()<<slog::endl;
   auto input_it = input_info_.begin();
 
   for ( auto& input_item : inputShapes ){
@@ -141,27 +141,33 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
     if (input_it == input_info_.end()){
       throw std::logic_error("Segmentation: the size of InputShapes doesn't match the one of InputData");
     }
+    slog::debug << "Vector_size=" << vector.size() << ", [" ;
+    for(auto i=0; i< vector.size(); i++){
+	    slog::debug << vector[i] << ",";
+    }
+    slog::debug << "]" << slog::endl;
+
     if (vector.size() == 4) {
       if (vector[1] == 3) {
         vector[0] = 1;
         input_it->second->getPreProcess().setResizeAlgorithm(InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
-        network.reshape(inputShapes);
+        //network.reshape(inputShapes);
       }
       input_it->second->setLayout(InferenceEngine::Layout::NHWC);
       input_it->second->setPrecision(InferenceEngine::Precision::U8);
       addInputInfo("input", input_it->first);
     } else if (vector.size() == 2) {
       input_it->second->setPrecision(InferenceEngine::Precision::FP32);
-      try {
-        network.addOutput(std::string("detection_output"), 0);
-      } catch (std::exception & error) {
-        throw std::logic_error(getModelName() + "is failed when adding detection_output laryer.");
-      }
     } else {
       throw std::logic_error("Unsupported input shape with size = " + std::to_string(vector.size()));
     }
     ++input_it;
   } 
+  try {
+    network.addOutput(std::string("detection_output"), 0);
+  } catch (std::exception & error) {
+    throw std::logic_error(getModelName() + "is failed when adding detection_output laryer.");
+  }
 
   InferenceEngine::OutputsDataMap outputsDataMap = network.getOutputsInfo();
   slog::debug<<"The size of Outputs Datamap is "<< outputsDataMap.size() <<slog::endl;
@@ -201,8 +207,12 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   slog::debug << "output hEIGHT " << outHeight<< slog::endl;
   slog::debug << "output CHANNALS " << outChannels<< slog::endl;
   */
-  addOutputInfo("masks", (outputsDataMap.begin()++)->first);
-  addOutputInfo("detection", outputsDataMap.begin()->first);
+  auto it = outputsDataMap.begin();
+  addOutputInfo("detection", it->first);
+  slog::debug << "Detection_Output is set to " << it->first << slog::endl;
+  it++;
+  addOutputInfo("masks", it->first);
+  slog::debug << "Mask_output is set to " << it->first <<slog::endl;
 
   //const InferenceEngine::CNNLayerPtr output_layer =
   //network.getLayerByName(outputsDataMap.begin()->first.c_str());

@@ -1,22 +1,19 @@
 Pipelines:
 - name: segmentation
-  inputs: [RealSenseCameraTopic]
+  inputs: [StandardCamera]
   infers:
     - name: ObjectSegmentation
-      model: /opt/openvino_toolkit/models/public/deeplabv3/FP16/deeplabv3.xml
+      model: /opt/openvino_toolkit/models/segmentation/output/FP32/frozen_inference_graph.xml
       engine: CPU #"HETERO:CPU,GPU,MYRIAD"
-      label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
-  outputs: [ImageWindow, RosTopic, RViz]
+  outputs: [ImageWindow, RosTopic]
   connects:
-    - left: RealSenseCameraTopic
+    - left: StandardCamera
       right: [ObjectSegmentation]
     - left: ObjectSegmentation
       right: [ImageWindow]
     - left: ObjectSegmentation
       right: [RosTopic]
-    - left: ObjectSegmentation
-      right: [RViz]
 
 OpenvinoCommon:

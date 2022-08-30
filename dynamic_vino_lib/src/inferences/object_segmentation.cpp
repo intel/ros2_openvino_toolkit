@@ -123,11 +123,17 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   slog::debug << "Analyzing Detection results..." << slog::endl;
   std::string detection_output = valid_model_->getOutputName("detection");
   std::string mask_output = valid_model_->getOutputName("masks");
+  slog::debug << "Detection_output=" << detection_output << ", Mask_output=" << mask_output << slog::endl;
 
   const InferenceEngine::Blob::Ptr do_blob = request->GetBlob(detection_output.c_str());
   const auto do_data = do_blob->buffer().as<float *>();
   const auto masks_blob = request->GetBlob(mask_output.c_str());
   const auto masks_data = masks_blob->buffer().as<float *>();
+  slog::debug << "Detection Blob: [" ;
+  for(int i =0; i<7; i++) {
+	  slog::debug << do_blob->getTensorDesc().getDims().at(0) << ", ";
+  }
+  slog::debug << "]" << slog::endl;
 
   size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
   size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
@@ -135,13 +141,20 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   size_t H = masks_blob->getTensorDesc().getDims().at(1);
   size_t W = masks_blob->getTensorDesc().getDims().at(0);
   size_t box_stride = W * H * label_num;
+  slog::debug << "box_num=" << box_num << ", box_desc_size=" << box_description_size
+	  << ", H=" << H << ", W=" << W << ", label_num=" << label_num << slog::endl;
+  //DEBUG:
+  box_description_size = 7;
   for (size_t box = 0; box < box_num; ++box) {
     float * box_info = do_data + box * box_description_size;
     float batch = box_info[0];
+    slog::debug << "batch=" << batch << slog::endl;
     if (batch < 0) {
+      slog::warn << "Batch size should be greater than 0. [batch=" << batch <<"]." << slog::endl;
       break;
     }
     float prob = box_info[2];
+    slog::debug << "prob=" << prob << slog::endl;
     if (prob > show_output_thresh_) {
       float x1 = std::min(std::max(0.0f, box_info[3] * width_), static_cast<float>(width_));
       float y1 = std::min(std::max(0.0f, box_info[4] * height_), static_cast<float>(height_));
@@ -149,6 +162,7 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
       float y2 = std::min(std::max(0.0f, box_info[6] * height_), static_cast<float>(height_));
       int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), width_);
       int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), height_);
+      slog::debug << "Box[" << box_width << "x" << box_height << slog::endl;
       int class_id = static_cast<int>(box_info[1] + 1e-6f);
       float * mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
       cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
@@ -162,10 +176,12 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
         std::string("label #") + std::to_string(class_id);
       result.mask_ = resized_mask_mat;
       found_result = true;
+      slog::debug << "adding one segmentation Box ..." << slog::endl;
       results_.emplace_back(result);
     }
   }
   if (!found_result) {
+    slog::debug << "No Segmentation Result Found!" << slog::endl;
     results_.clear();
   }
   return true;
