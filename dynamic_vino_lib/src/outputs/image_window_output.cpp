@@ -160,7 +160,9 @@ void Outputs::ImageWindowOutput::mergeMask(
     cv::Mat roi_img = frame_(location);
     cv::Mat mask = results[i].getMask();
     cv::Mat colored_mask(location.height, location.width, frame_.type());
+    roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
 
+/**
     for (int h = 0; h < mask.size().height; ++h) {
       for (int w = 0; w < mask.size().width; ++w) {
         for (int ch = 0; ch < colored_mask.channels(); ++ch) {
@@ -170,6 +172,7 @@ void Outputs::ImageWindowOutput::mergeMask(
         }
       }
     }
+*/
     cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
   }
 }

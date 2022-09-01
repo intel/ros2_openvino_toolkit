@@ -25,6 +25,7 @@
 
 #include "dynamic_vino_lib/inferences/object_segmentation.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
+#include "dynamic_vino_lib/utils/common.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
 // ObjectSegmentationResult
@@ -122,19 +123,39 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
   slog::debug << "Analyzing Detection results..." << slog::endl;
   std::string detection_output = valid_model_->getOutputName("detection");
+  //std::string detection_output("reshape_do_2d");
   std::string mask_output = valid_model_->getOutputName("masks");
   slog::debug << "Detection_output=" << detection_output << ", Mask_output=" << mask_output << slog::endl;
 
   const InferenceEngine::Blob::Ptr do_blob = request->GetBlob(detection_output.c_str());
-  const auto do_data = do_blob->buffer().as<float *>();
+  //const auto do_data = do_blob->buffer().as<float *>();
+  InferenceEngine::LockedMemory<const void> doBlobMapped = InferenceEngine::as<InferenceEngine::MemoryBlob>(do_blob)->rmap();
+  const auto do_data  = doBlobMapped.as<float*>();
+  slog::debug << "Detection Blob getDims = " << do_blob->getTensorDesc().getDims().size() << "[Should be 2]" << slog::endl;
+
   const auto masks_blob = request->GetBlob(mask_output.c_str());
-  const auto masks_data = masks_blob->buffer().as<float *>();
+  //const auto masks_data = masks_blob->buffer().as<float *>();
+  InferenceEngine::LockedMemory<const void> masksBlobMapped = InferenceEngine::as<InferenceEngine::MemoryBlob>(masks_blob)->rmap();
+  const auto masks_data = masksBlobMapped.as<float*>();
+
   slog::debug << "Detection Blob: [" ;
   for(int i =0; i<7; i++) {
 	  slog::debug << do_blob->getTensorDesc().getDims().at(0) << ", ";
   }
   slog::debug << "]" << slog::endl;
 
+  size_t box_description_size = do_blob->getTensorDesc().getDims().back();
+  const InferenceEngine::TensorDesc& masksDesc = masks_blob->getTensorDesc();
+  IE_ASSERT(masksDesc.getDims().size() == 4);
+  slog::debug << "Mask Blob getDims = " << masksDesc.getDims().size() << "[Should be 4]" << slog::endl;
+  size_t box_num = getTensorBatch(masksDesc);
+  size_t C = getTensorChannels(masksDesc);
+  size_t H = getTensorHeight(masksDesc);
+  size_t W = getTensorWidth(masksDesc);
+  size_t box_stride = W * H * C;
+  slog::debug << "box_num=" << box_num << ", box_desc_size=" << box_description_size
+	  << ", H=" << H << ", W=" << W << ", C=" << C << slog::endl;
+/**
   size_t box_num = masks_blob->getTensorDesc().getDims().at(3);
   size_t label_num = masks_blob->getTensorDesc().getDims().at(2);
   size_t box_description_size = do_blob->getTensorDesc().getDims().at(0);
@@ -143,28 +164,29 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   size_t box_stride = W * H * label_num;
   slog::debug << "box_num=" << box_num << ", box_desc_size=" << box_description_size
 	  << ", H=" << H << ", W=" << W << ", label_num=" << label_num << slog::endl;
-  //DEBUG:
-  box_description_size = 7;
+*/
   for (size_t box = 0; box < box_num; ++box) {
     float * box_info = do_data + box * box_description_size;
-    float batch = box_info[0];
+    auto batch = static_cast<int>(box_info[0]);
     slog::debug << "batch=" << batch << slog::endl;
     if (batch < 0) {
       slog::warn << "Batch size should be greater than 0. [batch=" << batch <<"]." << slog::endl;
       break;
     }
     float prob = box_info[2];
-    slog::debug << "prob=" << prob << slog::endl;
     if (prob > show_output_thresh_) {
       float x1 = std::min(std::max(0.0f, box_info[3] * width_), static_cast<float>(width_));
       float y1 = std::min(std::max(0.0f, box_info[4] * height_), static_cast<float>(height_));
       float x2 = std::min(std::max(0.0f, box_info[5] * width_), static_cast<float>(width_));
       float y2 = std::min(std::max(0.0f, box_info[6] * height_), static_cast<float>(height_));
-      int box_width = std::min(static_cast<int>(std::max(0.0f, x2 - x1)), width_);
-      int box_height = std::min(static_cast<int>(std::max(0.0f, y2 - y1)), height_);
-      slog::debug << "Box[" << box_width << "x" << box_height << slog::endl;
+      int box_width = static_cast<int>(x2 - x1);
+      int box_height = static_cast<int>(y2 - y1);
+      slog::debug << "Box[" << box_width << "x" << box_height << "]" << slog::endl;
+      if (box_width <= 0 || box_height <=0) break;
       int class_id = static_cast<int>(box_info[1] + 1e-6f);
       float * mask_arr = masks_data + box_stride * box + H * W * (class_id - 1);
+      slog::info << "Detected class " << class_id << " with probability " << prob << " from batch " << batch
+                           << ": [" << x1 << ", " << y1 << "], [" << x2 << ", " << y2 << "]" << slog::endl;
       cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
       cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
       cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
