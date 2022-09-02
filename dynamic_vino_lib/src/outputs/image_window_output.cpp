@@ -152,14 +152,15 @@ void Outputs::ImageWindowOutput::mergeMask(
     if (class_color.find(class_label) == class_color.end()) {
       class_color[class_label] = class_color.size();
     }
-    auto & color = colors_[class_color[class_label]];
+    auto & color = colors_[class_color[class_label] % colors_.size() ];
     const float alpha = 0.7f;
     const float MASK_THRESHOLD = 0.5;
 
     cv::Rect location = results[i].getLocation();
     cv::Mat roi_img = frame_(location);
     cv::Mat mask = results[i].getMask();
-    cv::Mat colored_mask(location.height, location.width, frame_.type());
+    cv::Mat colored_mask(location.height, location.width, frame_.type(),
+		   cv::Scalar(color[2], color[1], color[0]) );
     roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
 
 /**
