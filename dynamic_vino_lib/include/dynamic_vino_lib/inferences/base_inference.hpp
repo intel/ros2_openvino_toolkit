@@ -42,7 +42,7 @@ class BaseOutput;
  */
 template<typename T>
 void matU8ToBlob(
-  const cv::Mat & orig_image, InferenceEngine::Blob::Ptr & blob,
+  const cv::Mat & orig_image, ov::Tensor & tensor,
   float scale_factor = 1.0, int batch_index = 0)
 {
   InferenceEngine::SizeVector blob_size = blob->getTensorDesc().getDims();
