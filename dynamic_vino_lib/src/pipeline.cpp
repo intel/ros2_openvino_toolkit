@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <openvino/openvino.hpp>
 
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
@@ -236,14 +237,17 @@ void Pipeline::setCallback()
 {
   for (auto & pair : name_to_detection_map_) {
     std::string detection_name = pair.first;
-    std::function<void(void)> callb;
-    callb = [detection_name, self = this]()
+    std::function<void(std::__exception_ptr::exception_ptr)> callb;
+    callb = [detection_name, self = this](std::exception_ptr ex)
       {
+        if (ex)
+          throw ex;
+
         self->callback(detection_name);
         return;
       };
-    pair.second->getEngine()->getRequest()->SetCompletionCallback(callb);
-  }
+    pair.second->getEngine()->getRequest().set_callback(callb);
+   }
 }
 
 void Pipeline::callback(const std::string & detection_name)
@@ -274,7 +278,7 @@ void Pipeline::callback(const std::string & detection_name)
             increaseInferenceCounter();
             next_detection_ptr->submitRequest();
             auto request = next_detection_ptr->getEngine()->getRequest();
-            request->Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+            request.wait();
           }
         }
       }
