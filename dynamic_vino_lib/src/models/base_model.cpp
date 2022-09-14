@@ -48,7 +48,8 @@ void Models::BaseModel::modelInit()
   slog::info << label_loc_ << slog::endl;
   // Read network model
   ///net_reader_->ReadNetwork(model_loc_);
-  net_reader_ = engine.ReadNetwork(model_loc_);
+  //net_reader_ = engine.ReadNetwork(model_loc_);
+  net_reader_ = engine.read_model(model_loc_);
   // Extract model name and load it's weights
   // remove extension
   size_t last_index = model_loc_.find_last_of(".");
@@ -63,7 +64,7 @@ void Models::BaseModel::modelInit()
   // Set batch size to given max_batch_size_
   slog::info << "Batch size is set to  " << max_batch_size_ << slog::endl;
   ///net_reader_->getNetwork().setBatchSize(max_batch_size_);
-  net_reader_.setBatchSize(max_batch_size_);
+  //net_reader_.setBatchSize(max_batch_size_);
 
   updateLayerProperty(net_reader_);
 }
