@@ -86,7 +86,7 @@ public:
   }
 
   virtual bool updateLayerProperty(
-    const InferenceEngine::CNNNetwork&)
+    const std::shared_ptr<ov::Model>&)
   { return false; }
 
   inline std::string getModelName() const
