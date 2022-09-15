@@ -52,7 +52,7 @@ inline std::string & trim(std::string & s)
   return s;
 }
 
-static std::ostream & operator<<(std::ostream & os, const InferenceEngine::Version * version)
+static std::ostream & operator<<(std::ostream & os, const ov::Version * version)
 {
   os << "\n\tAPI version ............ ";
   if (nullptr == version) {
