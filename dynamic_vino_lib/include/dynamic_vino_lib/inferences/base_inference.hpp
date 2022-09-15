@@ -26,7 +26,8 @@
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
-#include "inference_engine.hpp"
+// #include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "opencv2/opencv.hpp"
 
 namespace Outputs
