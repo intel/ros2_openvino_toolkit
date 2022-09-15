@@ -22,7 +22,8 @@
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/utils/version_info.hpp"
 #include <vino_param_lib/param_manager.hpp>
-#include <inference_engine.hpp>
+// #include <inference_engine.hpp>
+#include <openvino/openvino.hpp>
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif

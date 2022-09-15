@@ -18,7 +18,8 @@
  */
 #include <string>
 #include <vector>
-#include <inference_engine.hpp>
+// #include <inference_engine.hpp>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
