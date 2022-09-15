@@ -110,12 +110,14 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    InferenceEngine::CNNNetwork& net_reader)
+    std::shared_ptr<ov::Model> net_reader)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
   auto network = net_reader;
-  input_info_ = InferenceEngine::InputsDataMap(network.getInputsInfo());
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor ppp(network);
+  input_tensor_name_ = network->input().get_any_name();
+  ov::preprocess::InputInfo& input_info_ = ppp.input(input_tensor_name)
 
   InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
   slog::debug<<"input size"<<inputShapes.size()<<slog::endl;
