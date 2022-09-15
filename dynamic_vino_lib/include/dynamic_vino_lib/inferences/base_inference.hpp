@@ -195,8 +195,8 @@ protected:
         ") processed by inference" << slog::endl;
       return false;
     }
-    ov::Tensor input_blob = engine_->getRequest().get_tensor(input_name);
-    matU8ToBlob<T>(frame, input_blob, scale_factor, batch_index);
+    ov::Tensor input_tensor = engine_->getRequest().get_tensor(input_name);
+    matU8ToBlob<T>(frame, input_tensor, scale_factor, batch_index);
     enqueued_frames_ += 1;
     return true;
   }
