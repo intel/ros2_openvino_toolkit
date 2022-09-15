@@ -18,6 +18,7 @@
 #ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_
 #define DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_
 #include <string>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/models/base_model.hpp"
 namespace Models
 {
@@ -50,13 +51,15 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>) override;
 
 private:
   int max_proposal_count_;
   int object_size_;
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
 
-  ov::preprocess::InputInfo input_info_;
+  std::vector<ov::Output<ov::Node>> inputs_info_;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_
