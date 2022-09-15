@@ -52,22 +52,15 @@ inline std::string & trim(std::string & s)
   return s;
 }
 
-static std::ostream & operator<<(std::ostream & os, const ov::Version * version)
+static std::ostream & operator<<(std::ostream & os, const ov::Version& version)
 {
   os << "\n\tAPI version ............ ";
-  if (nullptr == version) {
-    os << "UNKNOWN";
-  } else {
-    os << version->apiVersion.major << "." << version->apiVersion.minor;
-    if (nullptr != version->buildNumber) {
-      os << "\n\t" <<
-        "Build .................. " << version->buildNumber;
-    }
-    if (nullptr != version->description) {
-      os << "\n\t" <<
-        "Description ............ " << version->description;
-    }
-  }
+  os << OPENVINO_VERSION_MAJOR << "." << OPENVINO_VERSION_MINOR << "." << OPENVINO_VERSION_PATCH;
+  os << "\n\t" <<
+    "Build .................. " << version.buildNumber;
+  os << "\n\t" <<
+    "Description ............ " << version.description;
+
   return os;
 }
 
