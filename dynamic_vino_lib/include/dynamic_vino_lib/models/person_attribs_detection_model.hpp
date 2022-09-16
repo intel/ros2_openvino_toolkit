@@ -41,9 +41,14 @@ public:
 protected:
   //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
   //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
-  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>) override;
   std::string input_;
   std::string output_;
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
+
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__PERSON_ATTRIBS_DETECTION_MODEL_HPP_
