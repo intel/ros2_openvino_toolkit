@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/inferences/person_attribs_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
@@ -67,7 +68,7 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
   if (!can_fetch) {return false;}
   bool found_result = false;
-  InferenceEngine::InferRequest::Ptr request = getEngine()->getRequest();
+  ov::InferRequest request = getEngine()->getRequest();
   slog::debug << "Analyzing Attributes Detection results..." << slog::endl;
   std::string attribute_output = valid_model_->getOutputName("attributes_output_");
   std::string top_output = valid_model_->getOutputName("top_output_");
@@ -76,13 +77,13 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   /*auto attri_values = request->GetBlob(attribute_output)->buffer().as<float*>();
   auto top_values = request->GetBlob(top_output)->buffer().as<float*>();
   auto bottom_values = request->GetBlob(bottom_output)->buffer().as<float*>();*/
-  InferenceEngine::Blob::Ptr attribBlob = request->GetBlob(attribute_output);
-  InferenceEngine::Blob::Ptr topBlob = request->GetBlob(top_output);
-  InferenceEngine::Blob::Ptr bottomBlob = request->GetBlob(bottom_output);
+  ov::Tensor attribBlob = request.get_tensor(attribute_output);
+  ov::Tensor topBlob = request.get_tensor(top_output);
+  ov::Tensor bottomBlob = request.get_tensor(bottom_output);
 
-  auto attri_values = attribBlob->buffer().as<float*>();
-  auto top_values = topBlob->buffer().as<float*>();
-  auto bottom_values = bottomBlob->buffer().as<float*>();
+  auto attri_values = attribBlob.data<float>();
+  auto top_values = topBlob.data<float>();
+  auto bottom_values = bottomBlob.data<float>();
 
   int net_attrib_length = net_attributes_.size();
   for (int i = 0; i < getResultsLength(); i++) {
