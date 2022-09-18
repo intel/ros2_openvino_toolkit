@@ -40,7 +40,6 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
   //   slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
   //     <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
   //     << slog::endl;
-    return false;
   auto network = net_reader;
   inputs_info_ = network->inputs();
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(network);
