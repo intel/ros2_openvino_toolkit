@@ -20,6 +20,7 @@
 #include <string>
 #include <memory>
 #include <vector>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/inferences/age_gender_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 
@@ -73,12 +74,12 @@ bool dynamic_vino_lib::AgeGenderDetection::fetchResults()
     return false;
   }
   auto request = getEngine()->getRequest();
-  InferenceEngine::Blob::Ptr genderBlob = request->GetBlob(valid_model_->getOutputGenderName());
-  InferenceEngine::Blob::Ptr ageBlob = request->GetBlob(valid_model_->getOutputAgeName());
+  ov::Tensor genderBlob = request.get_tensor(valid_model_->getOutputGenderName());
+  ov::Tensor ageBlob = request.get_tensor(valid_model_->getOutputAgeName());
 
   for (int i = 0; i < results_.size(); ++i) {
-    results_[i].age_ = ageBlob->buffer().as<float *>()[i] * 100;
-    results_[i].male_prob_ = genderBlob->buffer().as<float *>()[i * 2 + 1];
+    results_[i].age_ = ageBlob.data<float>()[i] * 100;
+    results_[i].male_prob_ = genderBlob.data<float>()[i * 2 + 1];
   }
   return true;
 }

@@ -50,7 +50,7 @@ void matU8ToBlob(
   const size_t width = blob_size[3];
   const size_t height = blob_size[2];
   const size_t channels = blob_size[1];
-  T * blob_data = (unsigned char*)input_tensor.data();
+  T * blob_data = (float*)input_tensor.data();
 
   cv::Mat resized_image(orig_image);
   if (width != orig_image.size().width || height != orig_image.size().height) {
