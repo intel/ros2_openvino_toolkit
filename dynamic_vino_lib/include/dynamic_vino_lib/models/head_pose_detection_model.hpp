@@ -63,13 +63,18 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
 
 
 private:
   std::string output_angle_r_ = "angle_r_fc";
   std::string output_angle_p_ = "angle_p_fc";
   std::string output_angle_y_ = "angle_y_fc";
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
+
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 };
 }  // namespace Models
 
