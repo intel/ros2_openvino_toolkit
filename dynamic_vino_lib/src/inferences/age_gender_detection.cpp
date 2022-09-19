@@ -74,12 +74,12 @@ bool dynamic_vino_lib::AgeGenderDetection::fetchResults()
     return false;
   }
   auto request = getEngine()->getRequest();
-  ov::Tensor genderBlob = request.get_tensor(valid_model_->getOutputGenderName());
-  ov::Tensor ageBlob = request.get_tensor(valid_model_->getOutputAgeName());
+  ov::Tensor gender_tensor = request.get_tensor(valid_model_->getOutputGenderName());
+  ov::Tensor age_tensor = request.get_tensor(valid_model_->getOutputAgeName());
 
   for (int i = 0; i < results_.size(); ++i) {
-    results_[i].age_ = ageBlob.data<float>()[i] * 100;
-    results_[i].male_prob_ = genderBlob.data<float>()[i * 2 + 1];
+    results_[i].age_ = age_tensor.data<float>()[i] * 100;
+    results_[i].male_prob_ = gender_tensor.data<float>()[i * 2 + 1];
   }
   return true;
 }

@@ -77,13 +77,13 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   /*auto attri_values = request->GetBlob(attribute_output)->buffer().as<float*>();
   auto top_values = request->GetBlob(top_output)->buffer().as<float*>();
   auto bottom_values = request->GetBlob(bottom_output)->buffer().as<float*>();*/
-  ov::Tensor attribBlob = request.get_tensor(attribute_output);
-  ov::Tensor topBlob = request.get_tensor(top_output);
-  ov::Tensor bottomBlob = request.get_tensor(bottom_output);
+  ov::Tensor attrib_tensor = request.get_tensor(attribute_output);
+  ov::Tensor top_tensor = request.get_tensor(top_output);
+  ov::Tensor bottom_tensor = request.get_tensor(bottom_output);
 
-  auto attri_values = attribBlob.data<float>();
-  auto top_values = topBlob.data<float>();
-  auto bottom_values = bottomBlob.data<float>();
+  auto attri_values = attrib_tensor.data<float>();
+  auto top_values = top_tensor.data<float>();
+  auto bottom_values = bottom_tensor.data<float>();
 
   int net_attrib_length = net_attributes_.size();
   for (int i = 0; i < getResultsLength(); i++) {
