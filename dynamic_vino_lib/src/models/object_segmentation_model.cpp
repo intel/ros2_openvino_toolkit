@@ -114,7 +114,7 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    std::shared_ptr<ov::Model> net_reader)
+    std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 

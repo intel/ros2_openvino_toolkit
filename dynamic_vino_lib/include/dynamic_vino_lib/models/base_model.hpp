@@ -107,7 +107,7 @@ namespace Models
      * @brief Set the layer property (layer layout, layer precision, etc.).
      * @param[in] network_reader The reader of the network to be set.
      */
-    virtual bool updateLayerProperty(std::shared_ptr<ov::Model> network_reader) = 0;
+    virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
 
     ///InferenceEngine::CNNNetReader::Ptr net_reader_;
     ov::Core engine;
