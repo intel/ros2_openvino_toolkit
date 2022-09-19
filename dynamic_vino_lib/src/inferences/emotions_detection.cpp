@@ -18,9 +18,10 @@
  * @file emotions_recognition.cpp
  */
 
-#include <memory>
+#include <memory> 
 #include <string>
 #include <vector>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/inferences/emotions_detection.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
@@ -78,11 +79,15 @@ bool dynamic_vino_lib::EmotionsDetection::fetchResults()
   }
   int label_length = static_cast<int>(valid_model_->getLabels().size());
   std::string output_name = valid_model_->getOutputName();
-  InferenceEngine::Blob::Ptr emotions_blob = getEngine()->getRequest()->GetBlob(output_name);
+  ov::Tensor emotions_tensor = getEngine()->getRequest().get_tensor(output_name);
   /** emotions vector must have the same size as number of channels
       in model output. Default output format is NCHW so we check index 1 */
 
-  int64 num_of_channels = emotions_blob->getTensorDesc().getDims().at(1);
+  // int64 num_of_channels = emotions_blob->getTensorDesc().getDims().at(1);
+  // const ov::Shape int64 num_of_channels;
+  // ov::Shape int64 num_of_channels = emotions_blob.get_shape().at(1);
+  ov::Shape shape = emotions_tensor.get_shape();
+  int64 num_of_channels = shape[1];
   if (num_of_channels != label_length) {
     slog::err << "Output size (" << num_of_channels <<
       ") of the Emotions Recognition network is not equal " <<
@@ -95,7 +100,7 @@ bool dynamic_vino_lib::EmotionsDetection::fetchResults()
 
   /** we identify an index of the most probable emotion in output array
       for idx image to return appropriate emotion name */
-  auto emotions_values = emotions_blob->buffer().as<float *>();
+  auto emotions_values = emotions_tensor.data<float>();
   for (int idx = 0; idx < results_.size(); ++idx) {
     auto output_idx_pos = emotions_values + label_length * idx;
     int64 max_prob_emotion_idx =
