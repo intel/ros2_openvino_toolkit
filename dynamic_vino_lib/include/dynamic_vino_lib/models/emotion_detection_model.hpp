@@ -19,7 +19,7 @@
 
 #ifndef DYNAMIC_VINO_LIB__MODELS__EMOTION_DETECTION_MODEL_HPP_
 #define DYNAMIC_VINO_LIB__MODELS__EMOTION_DETECTION_MODEL_HPP_
-
+ 
 #include <string>
 #include "dynamic_vino_lib/models/base_model.hpp"
 
@@ -39,10 +39,15 @@ public:
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
-  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>) override;
 
 private:
-  bool verifyOutputLayer(const InferenceEngine::DataPtr & ptr);
+  // bool verifyOutputLayer(const InferenceEngine::DataPtr & ptr);
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
+
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 
 };
 }  // namespace Models
