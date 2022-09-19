@@ -61,7 +61,7 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty(std::shared_ptr<ov::Model>) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
   std::string input_tensor_name_;
   std::string output_tensor_name_;
 
