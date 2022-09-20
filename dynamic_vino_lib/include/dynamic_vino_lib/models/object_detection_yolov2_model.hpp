@@ -57,8 +57,9 @@ public:
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
 
 protected:
+
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
-  InferenceEngine::InputInfo::Ptr input_info_ = nullptr;
+  // ov::preprocess::InputInfo input_info_ = nullptr;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
