@@ -26,65 +26,32 @@ Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::PersonAttribsDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model> net_reader)
+  std::shared_ptr<ov::Model>& net_reader)
 { 
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-
-
-  // InferenceEngine::InputsDataMap input_info_map(
-  //   net_reader.getInputsInfo());
-  // if (input_info_map.size() != 1) {
-  //   throw std::logic_error("Person Attribs topology should have only one input");
-  auto network = net_reader;
-  inputs_info_ = network->inputs();
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(network);
-  input_tensor_name_ = network->input().get_any_name();
-  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-
-  ov::Shape input_tensor_shape = network->input().get_shape();
-  if (input_tensor_shape.size() != 1) {
+  auto input_info_map = net_reader->inputs();
+  if (input_info_map.size() != 1) {
     throw std::logic_error("Person Attribs topology should have only one input");
   }
-
-
-  // InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  // input_info->setPrecision(InferenceEngine::Precision::U8);
-  // input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  // addInputInfo("input", input_info_map.begin()->first);
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout tensor_layout{"NHWC"};
   input_info.tensor().
               set_element_type(ov::element::u8).
               set_layout(tensor_layout);
-  // ppp.input().preprocess().
-  //           convert_element_type(ov::element::f32).
-  //           convert_layout("NCHW");
-  // input_info.model().set_layout("NCHW");
-  // ppp.input().preprocess().resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
-
+  addInputInfo("input", input_tensor_name_);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  // InferenceEngine::OutputsDataMap output_info_map(
-  //   net_reader.getOutputsInfo());
-  outputs_info_ = network->outputs();
-  output_tensor_name_ = network->output().get_any_name();
-  ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
-  ov::Shape output_tensor_shape = network->output().get_shape();
-  if (output_tensor_shape.size() != 3) {
+  auto output_info_map = net_reader->outputs();
+  if (output_info_map.size() != 3) {
     throw std::logic_error("Person Attribs Network expects networks having 3 output");
   }
-  // network = ppp.build
-// //   input_ = input_info_map.begin()->first;
-// //   output_ = output_info_map.begin()->first;
-// //   auto output_iter = output_info_map.begin();
-// //   InferenceEngine::DataPtr attribute_output_ptr = (output_iter++)->second;
-// //   InferenceEngine::DataPtr top_output_ptr = (output_iter++)->second;
-// //   InferenceEngine::DataPtr bottom_output_ptr = (output_iter++)->second;
-    
-// //   addOutputInfo("attributes_output_", attribute_output_ptr->getName());
-// //   //output_gender_ = gender_output_ptr->name;
-// //   addOutputInfo("top_output_", top_output_ptr->getName());
-// //   addOutputInfo("bottom_output_", bottom_output_ptr->getName());
 
+  addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
+  //output_gender_ = gender_output_ptr->name;
+  addOutputInfo("top_output_", output_info_map[1].get_any_name());
+  addOutputInfo("bottom_output_", output_info_map[0].get_any_name());
 
   printAttribute();
   return true;
