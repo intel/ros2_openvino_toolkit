@@ -25,7 +25,8 @@
 #include <string>
 #include <fstream>
 
-#include "inference_engine.hpp"
+// #include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
 namespace Models
@@ -187,7 +188,7 @@ public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
   bool updateLayerProperty(
-    const InferenceEngine::CNNNetwork&);
+    const std::shared_ptr<ov::Model>&);
 
 };
 
