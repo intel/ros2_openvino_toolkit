@@ -50,24 +50,23 @@ const std::string Models::PersonReidentificationModel::getModelCategory() const
 }
 */
 bool Models::PersonReidentificationModel::updateLayerProperty(
-  InferenceEngine::CNNNetwork& netreader)
+  std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info << "Checking Inputs for Model" << getModelName() << slog::endl;
-
-  auto network = netreader;
-  
-  InferenceEngine::InputsDataMap input_info_map(network.getInputsInfo());
-  
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  auto input_info_map = net_reader->inputs();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+  const ov::Layout input_tensor_layout{"NHWC"};
+  input_info.tensor().
+              set_element_type(ov::element::u8).
+              set_layout(input_tensor_layout);
+  addInputInfo("input", input_tensor_name_);
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(
-    network.getOutputsInfo());
-  // set input and output layer name
-  input_ = input_info_map.begin()->first;
-  output_ = output_info_map.begin()->first;
-  
+  auto output_info_map = net_reader -> outputs();
+  std::string output_tensor_name_ = net_reader->output().get_any_name();
+  ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
+  addOutputInfo("output", output_tensor_name_);
   return true;
 }
 
