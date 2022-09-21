@@ -29,7 +29,7 @@ Models::EmotionDetectionModel::EmotionDetectionModel(
 }
 
 bool Models::EmotionDetectionModel::updateLayerProperty
-(std::shared_ptr<ov::Model> net_reader)
+(std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
