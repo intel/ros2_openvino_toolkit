@@ -40,14 +40,15 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   input_info.tensor().
               set_element_type(ov::element::u8).
               set_layout(tensor_layout);
-  addInputInfo("input", input_tensor_name_);
-
+ 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   auto output_info_map = net_reader->outputs();
   if (output_info_map.size() != 3) {
     throw std::logic_error("Person Attribs Network expects networks having 3 output");
   }
 
+  net_reader = ppp.build();
+  addInputInfo("input", input_tensor_name_);
   addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
   //output_gender_ = gender_output_ptr->name;
   addOutputInfo("top_output_", output_info_map[1].get_any_name());
