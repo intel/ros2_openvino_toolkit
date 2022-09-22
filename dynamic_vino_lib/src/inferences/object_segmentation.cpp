@@ -126,12 +126,12 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   std::string mask_output = valid_model_->getOutputName("masks");
 
   ov::Tensor output_tensor = infer_request.get_tensor(detection_output);
-  const auto out_data = output_tensor.data<int64_t>();
+  const auto out_data = output_tensor.data<float>();
   ov::Shape out_shape = output_tensor.get_shape();
   // const auto masks_blob = request->GetBlob(mask_output.c_str());
   // const auto masks_data = masks_blob->buffer().as<float *>();
   ov::Tensor masks_tensor = infer_request.get_tensor(detection_output.c_str());
-  const auto masks_data = masks_tensor.data<int64_t>();
+  const auto masks_data = masks_tensor.data<float>();
   // const size_t output_w = masks_blob->getTensorDesc().getDims().at(3);
   // const size_t output_h = masks_blob->getTensorDesc().getDims().at(2);
   // const size_t output_des = masks_blob-> getTensorDesc().getDims().at(1);
@@ -146,7 +146,7 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   slog::debug << "output description " << output_des << slog::endl;
   slog::debug << "output extra " << output_extra << slog::endl;
 
-  const auto detections = output_tensor.data<int64_t>();
+  const auto detections = output_tensor.data<float>();
   std::vector<std::string> &labels = valid_model_->getLabels();
   slog::debug << "label size " <<labels.size() << slog::endl;
 
