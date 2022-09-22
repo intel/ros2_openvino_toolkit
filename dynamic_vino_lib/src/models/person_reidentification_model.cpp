@@ -55,18 +55,20 @@ bool Models::PersonReidentificationModel::updateLayerProperty(
   slog::info << "Checking Inputs for Model" << getModelName() << slog::endl;
   auto input_info_map = net_reader->inputs();
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  std::string input_tensor_name_ = net_reader->input().get_any_name();
-  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  const ov::Layout input_tensor_layout{"NHWC"};
-  input_info.tensor().
-              set_element_type(ov::element::u8).
-              set_layout(input_tensor_layout);
-  addInputInfo("input", input_tensor_name_);
+  input_ = input_info_map[0].get_any_name();
+  const ov::Layout input_tensor_layout{"NCHW"};
+  ppp.input(input_).
+    tensor().
+    set_element_type(ov::element::u8).
+    set_layout(input_tensor_layout);
+
   // set output property
-  auto output_info_map = net_reader -> outputs();
-  std::string output_tensor_name_ = net_reader->output().get_any_name();
-  ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
-  addOutputInfo("output", output_tensor_name_);
+  auto output_info_map = net_reader->outputs();
+  output_ = output_info_map[0].get_any_name();
+
+  net_reader = ppp.build();
+  ov::set_batch(net_reader_, getMaxBatchSize());
+
   return true;
 }
 
