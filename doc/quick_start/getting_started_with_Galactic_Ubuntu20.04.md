@@ -5,7 +5,7 @@ Below steps have been tested on **Ubuntu 20.04**.
 
 ## 1. Environment Setup
 * Install ROS2 Galactic ([guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html))
-* Install Intel® OpenVINO™ Toolkit Version: 2021.4 ([guide](https://docs.openvino.ai/2021.4/openvino_docs_install_guides_installing_openvino_linux.html)) or building by source code ([guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingForLinux))
+* Install Intel® OpenVINO™ Toolkit Version: 2022.1 ([guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html)) or building by source code ([guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingForLinux))
 * Install Intel®  RealSense ™ SDK ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
 
 ## 2. Building and Installation
@@ -13,10 +13,10 @@ Below steps have been tested on **Ubuntu 20.04**.
 ```
 mkdir -p ~/catkin_ws/src
 cd ~/catkin_ws/src
-git clone https://github.com/intel/ros2_openvino_toolkit -b galactic_dev
+git clone https://github.com/intel/ros2_openvino_toolkit -b galactic
 git clone https://github.com/intel/ros2_object_msgs
 git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2
-git clone https://github.com/ros-perception/vision_opencv.git -b ros2
+git clone https://github.com/ros-perception/vision_opencv.git -b galactic
 ```
 * Install dependencies
 ```
@@ -25,7 +25,7 @@ sudo apt-get install ros-galactic-diagnostic-updater
 * Build package
 ```
 source /opt/ros/galactic/setup.bash 
-source /opt/intel/openvino_2021/bin/setupvars.sh
+source ./intel/openvino_2022.1.0.643/setupvars.sh
 cd ~/catkin_ws
 colcon build --symlink-install
 source ./install/local_setup.bash
@@ -34,13 +34,13 @@ source ./install/local_setup.bash
 ## 3. Running the Demo
 * See all available models
 ```
-cd /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader
+cd ./openvino/thirdparty/open_model_zoo/tools/model_tools
 sudo python3 downloader.py --print_all
 ```
 
 * Download the optimized Intermediate Representation (IR) of model (execute once), for example:
 ```
-cd /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader
+cd ./openvino/thirdparty/open_model_zoo/tools/model_tools
 sudo python3 downloader.py --name face-detection-adas-0001 --output_dir /opt/openvino_toolkit/models/face_detection/output
 sudo python3 downloader.py --name age-gender-recognition-retail-0013 --output_dir /opt/openvino_toolkit/models/age-gender-recognition/output
 sudo python3 downloader.py --name emotions-recognition-retail-0003 --output_dir /opt/openvino_toolkit/models/emotions-recognition/output
@@ -65,20 +65,6 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
  
 ```
-
-* If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
-  * mobilenet-ssd
-    ```
-    sudo python3 downloader.py --name mobilenet-ssd --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output
-    cd /opt/intel/openvino_2021/deployment_tools/model_optimizer
-    sudo python3 mo.py --input_model /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output/public/mobilenet-ssd/mobilenet-ssd.caffemodel --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/caffe/output
-    ```
-  * deeplabv3
-    ```
-    cd /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader
-    sudo python3 downloader.py --name deeplabv3 --output_dir /opt/openvino_toolkit/models/deeplabv3/output
-    sudo python3 converter.py --name=deeplabv3 --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py 
-    ```
 
 * Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
