@@ -96,12 +96,6 @@ bool Models::ObjectSegmentationModel::matToBlob(
     return false;
   }
 
-  // InferenceEngine::TensorDesc tDesc(InferenceEngine::Precision::U8,
-  //                                   {1, channels, height, width},
-  //                                   InferenceEngine::Layout::NHWC);
-
-  // auto shared_blob = InferenceEngine::make_shared_blob<uint8_t>(tDesc, orig_image.data);
-  // // engine->getRequest()->SetBlob(getInputName(), shared_blob);
   ov::Tensor input_tensor{ov::element::u8, input_shape_, orig_image.data};
   engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
 
@@ -168,7 +162,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
   output_info.tensor().set_element_type(ov::element::f32);
   net_reader = ppp.build();
-  ov::set_batch(net_reader_, getMaxBatchSize());
+  ov::set_batch(net_reader, getMaxBatchSize());
 
   auto& outSizeVector = data.get_shape();
   int outChannels, outHeight, outWidth;

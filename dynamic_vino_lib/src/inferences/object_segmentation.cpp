@@ -136,17 +136,17 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   // const size_t output_h = masks_blob->getTensorDesc().getDims().at(2);
   // const size_t output_des = masks_blob-> getTensorDesc().getDims().at(1);
   // const size_t output_extra = masks_blob-> getTensorDesc().getDims().at(0);
-  const size_t output_w = out_shape[3];
-  const size_t output_h = out_shape[2];
-  const size_t output_des = out_shape[1];
-  const size_t output_extra = out_shape[0];
+  const size_t output_w = out_shape[2];
+  const size_t output_h = out_shape[1];
+  const size_t output_des = out_shape[0];
+  const size_t output_extra = out_shape[3];
 
   slog::debug << "output w " << output_w<< slog::endl;
   slog::debug << "output h " << output_h << slog::endl;
   slog::debug << "output description " << output_des << slog::endl;
   slog::debug << "output extra " << output_extra << slog::endl;
 
-  const auto detections = output_tensor.data<float>();
+  const float *detections = output_tensor.data<float>();
   std::vector<std::string> &labels = valid_model_->getLabels();
   slog::debug << "label size " <<labels.size() << slog::endl;
 
