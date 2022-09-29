@@ -6,6 +6,17 @@ pipeline {
         Test_WORKSPACE = "/home/intel/ros2_openvino_toolkit_test"
     }
     stages {
+        stage('Get The env') {
+            steps {
+                script {
+                    // rm the old env
+                    sh script: "ssh intel@$Test_Server 'rm -rf $Test_WORKSPACE/env'", returnStatus: true
+                    // get new env
+                    sh script: "export | tee -a env", returnStatus: true
+                    sh script: "scp -r env intel@$Test_Server:$Test_WORKSPACE", returnStatus: true
+                }
+            }
+        }
         stage('Moving The Code To Test Machine') {
             steps {
                 script {
