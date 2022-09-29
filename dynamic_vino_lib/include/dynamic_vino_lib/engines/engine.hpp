@@ -22,7 +22,8 @@
 #pragma once
 
 #include "dynamic_vino_lib/models/base_model.hpp"
-#include "inference_engine.hpp"
+// #include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 
 namespace Engines
 {
@@ -47,12 +48,12 @@ public:
   /**
    * @brief Using an Inference Request to initialize the inference Engine.
    */
-  Engine(InferenceEngine::InferRequest::Ptr &);
+  Engine(ov::InferRequest &);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
    */
-  inline InferenceEngine::InferRequest::Ptr & getRequest()
+  inline ov::InferRequest & getRequest()
   {
     return request_;
   }
@@ -64,11 +65,12 @@ public:
   template<typename T>
   void setCompletionCallback(const T & callbackToSet)
   {
-    request_->SetCompletionCallback(callbackToSet);
+    request_.set_callback(callbackToSet);
   }
 
 private:
-  InferenceEngine::InferRequest::Ptr request_ = nullptr;
+  // InferenceEngine::InferRequest::Ptr request_ = nullptr;
+  ov::InferRequest request_;
 };
 }  // namespace Engines
 

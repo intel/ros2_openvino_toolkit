@@ -61,8 +61,12 @@ public:
   const std::string getModelCategory() const override;
 
 protected:
-  bool updateLayerProperty(InferenceEngine::CNNNetwork&) override;
+  bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
 
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 };
 }  // namespace Models
 

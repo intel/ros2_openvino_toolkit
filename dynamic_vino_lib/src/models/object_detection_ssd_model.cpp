@@ -63,14 +63,15 @@ bool Models::ObjectDetectionSSDModel::matToBlob(
 
   std::string input_name = getInputName();
   slog::debug << "add input image to blob: " << input_name << slog::endl;
-  InferenceEngine::Blob::Ptr input_blob =
-    engine->getRequest()->GetBlob(input_name);
 
-  InferenceEngine::SizeVector blob_size = input_blob->getTensorDesc().getDims();
-  const int width = blob_size[3];
-  const int height = blob_size[2];
-  const int channels = blob_size[1];
-  u_int8_t * blob_data = input_blob->buffer().as<u_int8_t *>();
+  ov::Tensor in_tensor = engine->getRequest().get_tensor(input_name);
+
+  ov::Shape in_shape = in_tensor.get_shape();
+  const int width = in_shape[3];
+  const int height = in_shape[2];
+  const int channels = in_shape[1];
+
+  u_int8_t * blob_data = (u_int8_t *)in_tensor.data();
 
   cv::Mat resized_image(orig_image);
   if (width != orig_image.size().width || height != orig_image.size().height) {
@@ -104,9 +105,9 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   }
 
   slog::debug << "Fetching Detection Results ..." << slog::endl;
-  InferenceEngine::InferRequest::Ptr request = engine->getRequest();
+  ov::InferRequest request = engine->getRequest();
   std::string output = getOutputName();
-  const float * detections = request->GetBlob(output)->buffer().as<float *>();
+  float * detections = (float * )request.get_tensor(output).data();
 
   slog::debug << "Analyzing Detection results..." << slog::endl;
   auto max_proposal_count = getMaxProposalCount();
@@ -148,38 +149,43 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
 }
 
 bool Models::ObjectDetectionSSDModel::updateLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
+  std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
 
-  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
+  auto input_info_map = net_reader->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like, SSDnet has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
     return false;
   }
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  addInputInfo("input", input_info_map.begin()->first);
+  input_info.tensor().set_element_type(ov::element::u8);
+  addInputInfo("input", input_tensor_name_);
 
-  const InferenceEngine::SizeVector input_dims = input_info->getTensorDesc().getDims();
+  ov::Shape input_dims = input_info_map[0].get_shape();
+
   setInputHeight(input_dims[2]);
   setInputWidth(input_dims[3]);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
-  if (output_info_map.size() != 1) {
+  auto outputs_info = net_reader->outputs();
+  if (outputs_info.size() != 1) {
     slog::warn << "This model seems not SSDNet-like! We got " 
-      << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
+      << std::to_string(outputs_info.size()) << "outputs, but SSDnet has only one."
       << slog::endl;
     return false;
   }
-  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  addOutputInfo("output", output_info_map.begin()->first);
-  slog::info << "Checking Object Detection output ... Name=" << output_info_map.begin()->first
+  ov::preprocess::OutputInfo& output_info = ppp.output();
+  addOutputInfo("output", net_reader->output().get_any_name());
+  slog::info << "Checking Object Detection output ... Name=" << net_reader->output().get_any_name()
     << slog::endl;
-  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
+
+  output_info.tensor().set_element_type(ov::element::f32);
+  net_reader = ppp.build();
 
 ///TODO: double check this part: BEGIN
 #if(0)
@@ -209,7 +215,10 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
   ///TODO: double check this part: END
 
   // last dimension of output layer should be 7
-  const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
+  // const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
+  auto outputsDataMap = net_reader->outputs();
+  auto & data = outputsDataMap[0];
+  ov::Shape output_dims = data.get_shape();
   setMaxProposalCount(static_cast<int>(output_dims[2]));
   slog::info << "max proposal count is: " << getMaxProposalCount() << slog::endl;
 

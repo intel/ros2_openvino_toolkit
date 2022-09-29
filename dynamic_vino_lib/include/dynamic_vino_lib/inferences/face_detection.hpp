@@ -31,7 +31,6 @@
 #include "dynamic_vino_lib/models/face_detection_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
-#include "inference_engine.hpp"
 #include "opencv2/opencv.hpp"
 
 // namespace

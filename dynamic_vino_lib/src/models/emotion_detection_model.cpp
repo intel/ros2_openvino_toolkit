@@ -17,9 +17,10 @@
  * @file emotion_detection_model.cpp
  */
 #include <string>
-
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
+
 
 // Validated Emotions Detection Network
 Models::EmotionDetectionModel::EmotionDetectionModel(
@@ -29,53 +30,46 @@ Models::EmotionDetectionModel::EmotionDetectionModel(
 }
 
 bool Models::EmotionDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetwork& net_reader)
+(std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
-  if (input_info_map.size() != 1) {
-    slog::warn << "This model seems not Age-Gender-like, which should have only one input,"
-      <<" but we got " << std::to_string(input_info_map.size()) << "inputs"
+  inputs_info_ = net_reader->inputs();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+
+  ov::Shape input_tensor_shape = net_reader->input().get_shape();
+  if (inputs_info_.size() != 1) {
+    slog::warn << "This model seems not Emotion-detection-model-like, which should have only one input, but we got"
+      << std::to_string(input_tensor_shape.size()) << "inputs"
       << slog::endl;
     return false;
   }
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::FP32);
-  input_info->setLayout(InferenceEngine::Layout::NCHW);
-  addInputInfo("input", input_info_map.begin()->first);
+
+  addInputInfo("input", input_tensor_name_);
+  const ov::Layout tensor_layout{"NHWC"};
+  input_info.tensor().
+    set_element_type(ov::element::f32).
+    set_layout(tensor_layout);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
-  if (output_info_map.size() != 1) {
-    // throw std::logic_error("Age/Gender Recognition network should have two output layers");
+  outputs_info_ = net_reader->outputs();
+  output_tensor_name_ = net_reader->output().get_any_name();
+  ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
+  if (outputs_info_.size() != 1) {
     slog::warn << "This model should have and only have 1 output, but we got "
-      << std::to_string(output_info_map.size()) << "outputs" << slog::endl;
+      << std::to_string(outputs_info_.size()) << "outputs"
+      << slog::endl;
     return false;
   }
-  ///InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  ///slog::info << "Emotions layer: " << output_data_ptr->getCreatorLayer().lock()->name <<
-  ///  slog::endl;
-  ///output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
-  ///output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
-  addOutputInfo("output", output_info_map.begin()->first);
+
+  net_reader = ppp.build();
+  ov::set_batch(net_reader_, getMaxBatchSize());
+  addOutputInfo("output", output_tensor_name_);
 
   printAttribute();
   return true; ///verifyOutputLayer(output_data_ptr);
-}
-
-bool Models::EmotionDetectionModel::verifyOutputLayer(const InferenceEngine::DataPtr & ptr)
-{
-///  if (ptr->getCreatorLayer().lock()->type != "SoftMax") {
-///    slog::err <<"In Emotion network, gender layer ("
-///      << ptr->getCreatorLayer().lock()->name
-///      << ") should be a SoftMax, but was: "
-///      << ptr->getCreatorLayer().lock()->type
-///      << slog::endl;
-///    return false;
-///  }
-
-  return true;
 }
 
 const std::string Models::EmotionDetectionModel::getModelCategory() const

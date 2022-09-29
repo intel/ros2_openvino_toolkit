@@ -17,6 +17,7 @@
  * @file person_attribs_detection_model.cpp
  */
 #include <string>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 // Validated Person Attributes Detection Network
@@ -25,37 +26,34 @@ Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::PersonAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
-{
+  std::shared_ptr<ov::Model>& net_reader)
+{ 
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::InputsDataMap input_info_map(
-    net_reader.getInputsInfo());
+  auto input_info_map = net_reader->inputs();
   if (input_info_map.size() != 1) {
     throw std::logic_error("Person Attribs topology should have only one input");
   }
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  addInputInfo("input", input_info_map.begin()->first);
-
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+  const ov::Layout tensor_layout{"NHWC"};
+  input_info.tensor().
+              set_element_type(ov::element::u8).
+              set_layout(tensor_layout);
+ 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::OutputsDataMap output_info_map(
-    net_reader.getOutputsInfo());
+  auto output_info_map = net_reader->outputs();
   if (output_info_map.size() != 3) {
     throw std::logic_error("Person Attribs Network expects networks having 3 output");
   }
-  input_ = input_info_map.begin()->first;
-  output_ = output_info_map.begin()->first;
 
-  auto output_iter = output_info_map.begin();
-  InferenceEngine::DataPtr attribute_output_ptr = (output_iter++)->second;
-  InferenceEngine::DataPtr top_output_ptr = (output_iter++)->second;
-  InferenceEngine::DataPtr bottom_output_ptr = (output_iter++)->second;
-    
-  addOutputInfo("attributes_output_", attribute_output_ptr->getName());
+  net_reader = ppp.build();
+  addInputInfo("input", input_tensor_name_);
+  addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
   //output_gender_ = gender_output_ptr->name;
-  addOutputInfo("top_output_", top_output_ptr->getName());
-  addOutputInfo("bottom_output_", bottom_output_ptr->getName());
+  addOutputInfo("top_output_", output_info_map[1].get_any_name());
+  addOutputInfo("bottom_output_", output_info_map[0].get_any_name());
+
   printAttribute();
   return true;
 }

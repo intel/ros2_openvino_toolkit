@@ -22,7 +22,8 @@
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/utils/version_info.hpp"
 #include <vino_param_lib/param_manager.hpp>
-#include <inference_engine.hpp>
+// #include <inference_engine.hpp>
+#include <openvino/openvino.hpp>
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
@@ -33,18 +34,18 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine(
 #if(defined(USE_OLD_E_PLUGIN_API))
   return createEngine_beforeV2019R2(device, model);
 #else
-  return createEngine_V2019R2_plus(device, model);
+  return createEngine_V2022(device, model);
 #endif
 }
 
-std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2019R2_plus(
+std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2022(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
-  InferenceEngine::Core core;
-  auto executable_network = core.LoadNetwork(model->getNetReader(), device);
-  auto request = executable_network.CreateInferRequestPtr();
+  ov::Core core;
+  ov::CompiledModel executable_network = core.compile_model(model->getNetReader(), device);
+  ov::InferRequest infer_request = executable_network.create_infer_request();
 
-  return std::make_shared<Engines::Engine>(request);
+  return std::make_shared<Engines::Engine>(infer_request);
 }
 
 #if(defined(USE_OLD_E_PLUGIN_API))

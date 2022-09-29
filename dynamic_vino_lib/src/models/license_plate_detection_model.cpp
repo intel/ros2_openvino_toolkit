@@ -25,32 +25,36 @@ Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::LicensePlateDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
+  std::shared_ptr<ov::Model>& net_reader)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  InferenceEngine::InputsDataMap input_info_map(
-    net_reader.getInputsInfo());
+  auto input_info_map = net_reader->inputs();
   if (input_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
-  auto sequence_input = (++input_info_map.begin());
-  if (sequence_input->second->getTensorDesc().getDims()[0] != getMaxSequenceSize()) {
+
+  auto sequence_input = input_info_map[0];
+  if (sequence_input.get_shape()[0] != getMaxSequenceSize()) {
     throw std::logic_error("License plate detection max sequence size dismatch");
   }
-  InferenceEngine::OutputsDataMap output_info_map(
-    net_reader.getOutputsInfo());
+
+  auto output_info_map = net_reader->outputs();
   if (output_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs Network expects networks having one output");
   }
 
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  std::string input_tensor_name_ = input_info_map[1].get_any_name();
+  const ov::Layout tensor_layout{"NCHW"};
+  ppp.input(input_tensor_name_).
+    tensor().
+    set_element_type(ov::element::u8).
+    set_layout(tensor_layout);
+  net_reader = ppp.build();
 
-  // set input and output layer name
-  input_ = input_info_map.begin()->first;
-  seq_input_ = (++input_info_map.begin())->first;
-  output_ = output_info_map.begin()->first;
+  input_ = input_tensor_name_;
+  seq_input_ = sequence_input.get_any_name();
+  output_ = net_reader->output().get_any_name();
 
   return true;
 }
