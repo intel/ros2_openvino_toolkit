@@ -124,23 +124,9 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
   input_tensor_name_ = net_reader->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  input_shape_ = net_reader->input().get_shape();
+  //net_reader->reshape({{input_tensor_name_, input_shape_}});
 
-  std::vector<size_t> &in_size_vector = input_shape_;
-  slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
-  if (in_size_vector.size() != 4 || in_size_vector[1] != 3) {
-    //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
-    slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
-      << std::to_string(in_size_vector[1]) << " channels and "
-      << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
-    return false;
-  }
-  in_size_vector[0] = 1;
-
-  // network.reshape(inputShapes);
-  net_reader->reshape({{input_tensor_name_, input_shape_}});
-
-  const ov::Layout tensor_layout{"NHWC"};
+  const ov::Layout tensor_layout{"NCHW"};
   input_info.tensor().
     set_element_type(ov::element::u8).
     set_layout(tensor_layout);
@@ -162,7 +148,20 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
   output_info.tensor().set_element_type(ov::element::f32);
   net_reader = ppp.build();
-  ov::set_batch(net_reader, getMaxBatchSize());
+  //ov::set_batch(net_reader, getMaxBatchSize());
+
+  input_shape_ = net_reader->input().get_shape();
+
+  std::vector<size_t> &in_size_vector = input_shape_;
+  slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
+  if (in_size_vector.size() != 4 || in_size_vector[1] != 3) {
+    //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
+    slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
+      << std::to_string(in_size_vector[1]) << " channels and "
+      << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
+    return false;
+  }
+  //in_size_vector[0] = 1;
 
   auto& outSizeVector = data.get_shape();
   int outChannels, outHeight, outWidth;
@@ -191,7 +190,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   }
 
   slog::debug << "output width " << outWidth<< slog::endl;
-  slog::debug << "output hEIGHT " << outHeight<< slog::endl;
+  slog::debug << "output HEIGHT " << outHeight<< slog::endl;
   slog::debug << "output CHANNALS " << outChannels<< slog::endl;
   slog::debug << "output name " << output_tensor_name_<< slog::endl;
   addOutputInfo("masks", output_tensor_name_);

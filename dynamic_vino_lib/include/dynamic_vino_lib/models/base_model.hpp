@@ -29,7 +29,6 @@
 #include <iostream>
 #include <fstream>
 
-//#include "inference_engine.hpp"
 #include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/models/attributes/base_attribute.hpp"

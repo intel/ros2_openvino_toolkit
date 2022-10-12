@@ -47,8 +47,6 @@ void Models::BaseModel::modelInit()
   slog::info << "Loading network files" << model_loc_ << slog::endl;
   slog::info << label_loc_ << slog::endl;
   // Read network model
-  ///net_reader_->ReadNetwork(model_loc_);
-  //net_reader_ = engine.ReadNetwork(model_loc_);
   net_reader_ = engine.read_model(model_loc_);
   // Extract model name and load it's weights
   // remove extension

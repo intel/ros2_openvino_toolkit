@@ -25,7 +25,6 @@
 #include "dynamic_vino_lib/models/person_attribs_detection_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
-// #include "inference_engine.hpp"
 #include "openvino/openvino.hpp"
 #include "opencv2/opencv.hpp"
 // namespace

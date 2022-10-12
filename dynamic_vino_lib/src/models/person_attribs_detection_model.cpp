@@ -38,8 +38,8 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout tensor_layout{"NHWC"};
   input_info.tensor().
-              set_element_type(ov::element::u8).
-              set_layout(tensor_layout);
+    set_element_type(ov::element::u8).
+    set_layout(tensor_layout);
  
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   auto output_info_map = net_reader->outputs();

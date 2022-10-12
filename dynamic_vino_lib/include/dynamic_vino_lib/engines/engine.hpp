@@ -22,7 +22,6 @@
 #pragma once
 
 #include "dynamic_vino_lib/models/base_model.hpp"
-// #include "inference_engine.hpp"
 #include "openvino/openvino.hpp"
 
 namespace Engines
