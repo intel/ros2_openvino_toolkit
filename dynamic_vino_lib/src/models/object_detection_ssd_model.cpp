@@ -107,7 +107,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   slog::debug << "Fetching Detection Results ..." << slog::endl;
   ov::InferRequest request = engine->getRequest();
   std::string output = getOutputName();
-  float * detections = (float * )request.get_tensor(output).data();
+  const float * detections = (float * )request.get_tensor(output).data();
 
   slog::debug << "Analyzing Detection results..." << slog::endl;
   auto max_proposal_count = getMaxProposalCount();

@@ -128,14 +128,8 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   ov::Tensor output_tensor = infer_request.get_tensor(detection_output);
   const auto out_data = output_tensor.data<float>();
   ov::Shape out_shape = output_tensor.get_shape();
-  // const auto masks_blob = request->GetBlob(mask_output.c_str());
-  // const auto masks_data = masks_blob->buffer().as<float *>();
   ov::Tensor masks_tensor = infer_request.get_tensor(detection_output.c_str());
   const auto masks_data = masks_tensor.data<float>();
-  // const size_t output_w = masks_blob->getTensorDesc().getDims().at(3);
-  // const size_t output_h = masks_blob->getTensorDesc().getDims().at(2);
-  // const size_t output_des = masks_blob-> getTensorDesc().getDims().at(1);
-  // const size_t output_extra = masks_blob-> getTensorDesc().getDims().at(0);
   const size_t output_w = out_shape[2];
   const size_t output_h = out_shape[1];
   const size_t output_des = out_shape[0];

@@ -71,8 +71,8 @@ bool dynamic_vino_lib::VehicleAttribsDetection::fetchResults()
   ov::InferRequest infer_request = getEngine()->getRequest();
   std::string color_name = valid_model_->getOutputName("color_output_");
   std::string type_name = valid_model_->getOutputName("type_output_");
-  float * color_values = infer_request.get_tensor(color_name).data<float>();
-  float * type_values = infer_request.get_tensor(type_name).data<float>();
+  const float * color_values = infer_request.get_tensor(color_name).data<float>();
+  const float * type_values = infer_request.get_tensor(type_name).data<float>();
 
   for (int i = 0; i < getResultsLength(); i++) {
     auto color_id = std::max_element(color_values, color_values + 7) - color_values;

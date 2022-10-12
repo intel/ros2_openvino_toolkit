@@ -33,7 +33,7 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(
     throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
 
-  auto sequence_input = input_info_map[0];
+  auto sequence_input = input_info_map[1];
   if (sequence_input.get_shape()[0] != getMaxSequenceSize()) {
     throw std::logic_error("License plate detection max sequence size dismatch");
   }
@@ -44,7 +44,7 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(
   }
 
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  std::string input_tensor_name_ = input_info_map[1].get_any_name();
+  std::string input_tensor_name_ = input_info_map[0].get_any_name();
   const ov::Layout tensor_layout{"NCHW"};
   ppp.input(input_tensor_name_).
     tensor().

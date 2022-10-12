@@ -49,8 +49,8 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NHWC"};
   input_info.tensor().
-              set_element_type(ov::element::f32).
-              set_layout(input_tensor_layout);      
+    set_element_type(ov::element::f32).
+    set_layout(input_tensor_layout);
   addInputInfo("input", input_tensor_name_);
 
 
@@ -232,10 +232,8 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
 
     std::string output = getOutputName();
     std::vector<std::string> & labels = getLabels();
-    float * detections = (float * )request.get_tensor(output).data();
+    const float * detections = (float * )request.get_tensor(output).data();
 
-    // int input_height = input_info_->getTensorDesc().getDims()[2];
-    // int input_width = input_info_->getTensorDesc().getDims()[3];
     std::string input = getInputName();
     auto input_tensor = request.get_tensor(input);
     ov::Shape input_shape = input_tensor.get_shape();

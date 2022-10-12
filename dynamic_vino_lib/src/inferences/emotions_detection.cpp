@@ -83,9 +83,6 @@ bool dynamic_vino_lib::EmotionsDetection::fetchResults()
   /** emotions vector must have the same size as number of channels
       in model output. Default output format is NCHW so we check index 1 */
 
-  // int64 num_of_channels = emotions_blob->getTensorDesc().getDims().at(1);
-  // const ov::Shape int64 num_of_channels;
-  // ov::Shape int64 num_of_channels = emotions_blob.get_shape().at(1);
   ov::Shape shape = emotions_tensor.get_shape();
   int64 num_of_channels = shape[1];
   if (num_of_channels != label_length) {
