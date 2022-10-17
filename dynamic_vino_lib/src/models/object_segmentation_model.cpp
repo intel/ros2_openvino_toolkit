@@ -96,7 +96,7 @@ bool Models::ObjectSegmentationModel::matToBlob(
     return false;
   }
 
-  ov::Tensor input_tensor{ov::element::u8, input_shape_, orig_image.data};
+  ov::Tensor input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, orig_image.data);
   engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
 
   return true;
@@ -124,13 +124,24 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
   input_tensor_name_ = net_reader->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  //net_reader->reshape({{input_tensor_name_, input_shape_}});
 
-  const ov::Layout tensor_layout{"NCHW"};
+  ov::Layout tensor_layout = ov::Layout("NHWC");
+  ov::Layout expect_layout = ov::Layout("NCHW");
+  ov::Shape input_shape = net_reader->input().get_shape();
+  if (input_shape[1] == 3)
+    expect_layout = ov::Layout("NCHW");
+  else if (input_shape[3] == 3)
+    expect_layout = ov::Layout("NHWC");
+  else
+    slog::warn << "unexpect input shape " << input_shape << slog::endl;
+
   input_info.tensor().
     set_element_type(ov::element::u8).
-    set_layout(tensor_layout);
-  input_info.preprocess().resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
+    set_layout(tensor_layout).
+    set_spatial_dynamic_shape();
+  input_info.preprocess().
+    convert_layout(expect_layout).
+    resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
   addInputInfo("input", input_tensor_name_);
 
   auto outputs_info = net_reader->outputs();
@@ -150,18 +161,14 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   net_reader = ppp.build();
   //ov::set_batch(net_reader, getMaxBatchSize());
 
-  input_shape_ = net_reader->input().get_shape();
-
-  std::vector<size_t> &in_size_vector = input_shape_;
-  slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
-  if (in_size_vector.size() != 4 || in_size_vector[1] != 3) {
+  std::vector<size_t> &in_size_vector = input_shape;
+  slog::debug<<"dimensional"<<in_size_vector.size()<<slog::endl;
+  if (in_size_vector.size() != 4) {
     //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
     slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
-      << std::to_string(in_size_vector[1]) << " channels and "
       << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
     return false;
   }
-  //in_size_vector[0] = 1;
 
   auto& outSizeVector = data.get_shape();
   int outChannels, outHeight, outWidth;
