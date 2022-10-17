@@ -168,8 +168,23 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
 
   ov::Shape input_dims = input_info_map[0].get_shape();
 
+  ov::Layout tensor_layout = ov::Layout("NCHW");
+  ov::Layout expect_layout = ov::Layout("NHWC");
   setInputHeight(input_dims[2]);
   setInputWidth(input_dims[3]);
+  if (input_dims[1] == 3)
+    expect_layout = ov::Layout("NCHW");
+  else if (input_dims[3] == 3)
+    expect_layout = ov::Layout("NHWC");
+  else
+    slog::warn << "unexpect input shape " << input_dims << slog::endl;
+
+  input_info.tensor().
+    set_element_type(ov::element::u8).
+    set_layout(tensor_layout);
+  input_info.preprocess().
+    convert_layout(expect_layout).
+    resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   auto outputs_info = net_reader->outputs();

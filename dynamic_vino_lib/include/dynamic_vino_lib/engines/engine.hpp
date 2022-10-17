@@ -68,7 +68,7 @@ public:
   }
 
 private:
-  InferenceEngine::InferRequest::Ptr request_ = nullptr;
+  ov::InferRequest request_;
 };
 }  // namespace Engines
 
