@@ -35,11 +35,11 @@ add_definitions(-DLOG_LEVEL_DEBUG)
 
 # environment variable OpenVINO_DIR can be use instead of relaive path to specify location of configuration file
 
-message(STATUS "Looking for openvino configuration file at: ${CMAKE_PREFIX_PATH}")
 find_package(OpenVINO REQUIRED)
 if(NOT OpenVINO_FOUND)
     message(FATAL_ERROR "")
 endif()
+set(OpenVINO_LIBRARIES openvino::runtime)
 
 # Find OpenCV libray if exists
 find_package(OpenCV REQUIRED)
@@ -68,13 +68,6 @@ find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(vino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-
-###################
-#To be deleted
-#set(CpuExtension_lib $ENV{CPU_EXTENSION_LIB})
-#add_library(cpu_extension SHARED IMPORTED)
-#set_target_properties(cpu_extension PROPERTIES
-#  IMPORTED_LOCATION $ENV{CPU_EXTENSION_LIB})
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
@@ -169,10 +162,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 
 # Properties->C/C++->General->Additional Include Directories
 include_directories(
-    # ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${OpenVINO_INCLUDE_DIRS}
-    #${realsense2_INCLUDE_DIRS}
 )
 
 if(UNIX)

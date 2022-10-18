@@ -43,7 +43,7 @@
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 //#include "utility.hpp"
@@ -85,13 +85,11 @@ private:
     }
 
     std::shared_ptr<rclcpp::Node> node_handler(this);
-    // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, node_handler);
     }
 
     PipelineManager::getInstance().runAll();
-    //PipelineManager::getInstance().joinAll();
   }
 
   std::string getConfigPath()

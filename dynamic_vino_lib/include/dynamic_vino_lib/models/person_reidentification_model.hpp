@@ -40,8 +40,6 @@ public:
 
 protected:
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
-  //void setLayerProperty(InferenceEngine::CNNNetReader::Ptr) override;
   std::string input_;
   std::string output_;
 };

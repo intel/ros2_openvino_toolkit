@@ -45,7 +45,6 @@ bool Models::ObjectSegmentationModel::enqueue(
   for (const auto &inputInfoItem : inputs_info_)
   {
     // Fill first input tensor with images. First b channel, then g and r channels
-    // slog::debug<<"first tensor"<<inputInfoItem.second->getTensorDesc().getDims().size()<<slog::endl;
     auto dims = inputInfoItem.get_shape();
     if (dims.size()==4)
     {
@@ -115,7 +114,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   inputs_info_ = net_reader->inputs();
   slog::debug<<"input size"<<inputs_info_.size()<<slog::endl;
   if (inputs_info_.size() != 1) {
-    // throw std::runtime_error("Demo supports topologies only with 1 input");
     slog::warn << "This inference sample should have only one input, but we got"
       << std::to_string(inputs_info_.size()) << "inputs"
       << slog::endl;
@@ -146,7 +144,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
 
   auto outputs_info = net_reader->outputs();
   if (outputs_info.size() != 1) {
-    //throw std::runtime_error("Demo supports topologies only with 1 output");
     slog::warn << "This inference sample should have only one output, but we got"
       << std::to_string(outputs_info.size()) << "outputs"
       << slog::endl;
@@ -159,12 +156,9 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
   output_info.tensor().set_element_type(ov::element::f32);
   net_reader = ppp.build();
-  //ov::set_batch(net_reader, getMaxBatchSize());
-
   std::vector<size_t> &in_size_vector = input_shape;
   slog::debug<<"dimensional"<<in_size_vector.size()<<slog::endl;
   if (in_size_vector.size() != 4) {
-    //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
     slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
       << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
     return false;
@@ -192,7 +186,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   if(outHeight == 0 || outWidth == 0){
     slog::err << "output_height or output_width is not set, please check the MaskOutput Info "
               << "is set correctly." << slog::endl;
-    //throw std::runtime_error("output_height or output_width is not set, please check the MaskOutputInfo");
     return false;
   }
 

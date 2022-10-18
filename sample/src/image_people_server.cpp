@@ -25,7 +25,7 @@
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif

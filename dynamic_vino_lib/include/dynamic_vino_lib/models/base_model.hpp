@@ -107,10 +107,8 @@ namespace Models
      * @param[in] network_reader The reader of the network to be set.
      */
     virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
-
-    ///InferenceEngine::CNNNetReader::Ptr net_reader_;
     ov::Core engine;
-    std::shared_ptr<ov::Model> net_reader_; // = engine.ReadNetwork(model->getModelFileName());
+    std::shared_ptr<ov::Model> net_reader_; 
     void setFrameSize(const int &w, const int &h)
     {
       frame_size_.width = w;

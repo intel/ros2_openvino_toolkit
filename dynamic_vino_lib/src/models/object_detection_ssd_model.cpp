@@ -31,7 +31,6 @@ Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
 : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
   slog::debug << "TESTING: in ObjectDetectionSSDModel" << slog::endl;
-  //addCandidatedAttr(std::make_shared<Models::SSDModelAttr>());
 }
 
 const std::string Models::ObjectDetectionSSDModel::getModelCategory() const
@@ -117,7 +116,6 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {
-      //slog::info << "Found objects: " << i << "|" << results.size() << slog::endl;
       break;
     }
 
@@ -137,7 +135,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(
       std::string("label #") + std::to_string(label_num);
     result.setLabel(label);
     float confidence = detections[i * object_size + 2];
-    if (confidence <= confidence_thresh /* || r.x == 0 */) {   // why r.x needs to be checked?
+    if (confidence <= confidence_thresh ) {   
       continue;
     }
     result.setConfidence(confidence);
@@ -230,7 +228,6 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
   ///TODO: double check this part: END
 
   // last dimension of output layer should be 7
-  // const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
   auto outputsDataMap = net_reader->outputs();
   auto & data = outputsDataMap[0];
   ov::Shape output_dims = data.get_shape();

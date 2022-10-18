@@ -65,7 +65,6 @@ bool Models::SSDModelAttr::updateLayerProperty(
     << slog::endl;
 
   output_info.tensor().set_element_type(ov::element::f32);
-  // net_reader = ppp.build();
 
 ///TODO: double check this part: BEGIN
 #if(0) ///

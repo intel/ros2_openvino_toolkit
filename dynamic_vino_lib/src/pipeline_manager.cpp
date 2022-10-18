@@ -111,9 +111,6 @@ PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & pa
     pipeline->add(it->first, it->second);
   }
 
-  // slog::info << "Updateing filters ..." << slog::endl;
-  // pipeline->addFilters(params.filters);
-
   pipelines_.insert({params.name, data});
 
   pipeline->setCallback();

@@ -44,7 +44,7 @@
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
@@ -70,7 +70,7 @@ int main(int argc, char * argv[])
   //signal(SIGINT, signalHandler);
 
   try {
-    std::cout << "InferenceEngine: " << InferenceEngine::GetInferenceEngineVersion() << std::endl;
+    std::cout << "OpenVINO: " << ov::get_openvino_version() << std::endl;
 
     // ----- Parsing and validation of input args-----------------------
     std::string config = getConfigPath(argc, argv);
@@ -86,7 +86,6 @@ int main(int argc, char * argv[])
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
     }
-    // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, main_node);
     }

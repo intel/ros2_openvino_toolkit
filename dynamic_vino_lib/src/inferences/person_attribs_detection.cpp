@@ -74,9 +74,6 @@ bool dynamic_vino_lib::PersonAttribsDetection::fetchResults()
   std::string top_output = valid_model_->getOutputName("top_output_");
   std::string bottom_output = valid_model_->getOutputName("bottom_output_");
 
-  /*auto attri_values = request->GetBlob(attribute_output)->buffer().as<float*>();
-  auto top_values = request->GetBlob(top_output)->buffer().as<float*>();
-  auto bottom_values = request->GetBlob(bottom_output)->buffer().as<float*>();*/
   ov::Tensor attrib_tensor = request.get_tensor(attribute_output);
   ov::Tensor top_tensor = request.get_tensor(top_output);
   ov::Tensor bottom_tensor = request.get_tensor(bottom_output);
