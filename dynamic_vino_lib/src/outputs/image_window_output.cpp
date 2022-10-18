@@ -146,34 +146,6 @@ void Outputs::ImageWindowOutput::accept(
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<dynamic_vino_lib::ObjectSegmentationResult> & results)
 {
-  /*
-  std::map<std::string, int> class_color;
-  for (unsigned i = 0; i < results.size(); i++) {
-    std::string class_label = results[i].getLabel();
-    if (class_color.find(class_label) == class_color.end()) {
-      class_color[class_label] = class_color.size();
-    }
-    auto & color = colors_[class_color[class_label]];
-    const float alpha = 0.7f;
-    const float MASK_THRESHOLD = 0.5;
-
-    cv::Rect location = results[i].getLocation();
-    cv::Mat roi_img = frame_(location);
-    cv::Mat mask = results[i].getMask();
-    cv::Mat colored_mask(location.height, location.width, frame_.type());
-
-    for (int h = 0; h < mask.size().height; ++h) {
-      for (int w = 0; w < mask.size().width; ++w) {
-        for (int ch = 0; ch < colored_mask.channels(); ++ch) {
-          colored_mask.at<cv::Vec3b>(h, w)[ch] = mask.at<float>(h, w) > MASK_THRESHOLD ?
-            255 * color[ch] :
-            roi_img.at<cv::Vec3b>(h, w)[ch];
-        }
-      }
-    }
-    cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
-  }
-  */
   const float alpha = 0.5f;
   cv::Mat roi_img = frame_;
   cv::Mat colored_mask = results[0].getMask();

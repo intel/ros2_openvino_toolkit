@@ -94,7 +94,6 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
 #endif
 
   // last dimension of output layer should be 7
-  // const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
   auto outputsDataMap = net_reader->outputs();
   auto & data = outputsDataMap[0];
   ov::Shape output_dims = data.get_shape();
@@ -240,10 +239,6 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
     int input_height = input_shape[2];
     int input_width = input_shape[3];
 
-    // --------------------------- Validating output parameters --------------------------------
-    ///if (layer != nullptr && layer->type != "RegionYolo") {
-    ///  throw std::runtime_error("Invalid output type: " + layer->type + ". RegionYolo expected");
-    ///}
     // --------------------------- Extracting layer parameters --------------------------------
     const int num = 3; ///layer->GetParamAsInt("num");
     const int coords = 9; ///layer->GetParamAsInt("coords");

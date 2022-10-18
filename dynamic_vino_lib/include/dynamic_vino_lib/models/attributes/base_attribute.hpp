@@ -25,7 +25,6 @@
 #include <string>
 #include <fstream>
 
-// #include "inference_engine.hpp"
 #include "openvino/openvino.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
@@ -102,7 +101,6 @@ public:
 
   inline std::string getInputName(std::string name = "input") const
   {
-    // std::map<std::string, std::string>::iterator it;
     auto it = attr_.input_names.find(name);
     if(it == attr_.input_names.end()){
       slog::warn << "No input named: " << name << slog::endl;
@@ -114,7 +112,6 @@ public:
 
   inline std::string getOutputName(std::string name = "output") const
   {
-    //std::map<std::string, std::string>::iterator it;
     auto it = attr_.output_names.find(name);
     if(it == attr_.output_names.end()){
       slog::warn << "No output named: " << name << slog::endl;
@@ -191,8 +188,6 @@ public:
     const std::shared_ptr<ov::Model>&);
 
 };
-
-
 
 }  // namespace Models
 

@@ -35,7 +35,7 @@ class EngineManager
 {
 public:
   /**
-   * @brief Create InferenceEngine instance by given Engine Name and Network.
+   * @brief Create OpenVINO instance by given Engine Name and Network.
    * @return The shared pointer of created Engine instance.
    */
   std::shared_ptr<Engine> createEngine(

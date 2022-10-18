@@ -50,7 +50,6 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   net_reader = ppp.build();
   addInputInfo("input", input_tensor_name_);
   addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
-  //output_gender_ = gender_output_ptr->name;
   addOutputInfo("top_output_", output_info_map[1].get_any_name());
   addOutputInfo("bottom_output_", output_info_map[0].get_any_name());
 

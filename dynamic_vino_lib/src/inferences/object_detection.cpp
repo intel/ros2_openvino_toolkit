@@ -70,10 +70,6 @@ bool dynamic_vino_lib::ObjectDetection::enqueue(
     return false;
   }
 
-  // nonsense!!
-  // Result r(input_frame_loc);
-  // results_.clear();
-  // results_.emplace_back(r);
   enqueued_frames_ += 1;
   return true;
 }

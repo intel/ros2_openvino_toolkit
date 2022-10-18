@@ -9,6 +9,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+set(OpenVINO_LIBRARIES openvino::runtime)
 cmake_minimum_required(VERSION 3.5)
 project(dynamic_vino_sample)
 
@@ -30,14 +31,13 @@ else()
 endif()
 
 set(CMAKE_CXX_FLAGS "-fPIE -fPIC -D_FORTIFY_SOURCE=2 -fstack-protector -Wformat -Wformat-security -Wall ${CMAKE_CXX_FLAGS}")
-
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
-find_package(InferenceEngine REQUIRED)
+find_package(OpenVINO REQUIRED)
 find_package(dynamic_vino_lib REQUIRED)
 find_package(object_msgs REQUIRED)
 find_package(people_msgs REQUIRED)
@@ -99,19 +99,10 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${dynamic_vino_lib_INCLUDE_DIRS})
 include_directories(${vino_param_lib_INCLUDE_DIRS})
-include_directories(${InferenceEngine_INCLUDE_DIRS})
-include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples)
-include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/extension)
-include_directories(${InferenceEngine_INCLUDE_DIRS}/../src)
-#include_directories(${InferenceEngine_INCLUDE_DIRS}/../samples/build/thirdparty/gflags/include)
-#include_directories(${InferenceEngine_INCLUDE_DIRS}/../build/samples/thirdparty/gflags/include)
-
+include_directories(${OpenVINO_DIRS})
 include_directories(${realsense2_INCLUDE_DIRS})
-#include_directories (/opt/ros2_openvino/include)
 
 # Create library file from sources.
-#add_executable(${PROJECT_NAME} ${MAIN_SRC} ${MAIN_HEADERS})
-
 if(UNIX)
     set(LIB_DL dl)
 endif()
@@ -143,7 +134,7 @@ ament_target_dependencies(pipeline_with_params
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
@@ -167,7 +158,7 @@ ament_target_dependencies(composable_pipeline
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
@@ -176,9 +167,6 @@ ament_target_dependencies(composable_pipeline
   "realsense2"
 )
 rclcpp_components_register_nodes(composable_pipeline "ComposablePipeline")
-#set(node_plugins "")
-#set(node_plugins "${node_plugins}ComposablePipeline;$<TARGET_FILE:composable_pipeline>\n")
-
 
 add_executable(image_object_server
   src/image_object_server.cpp
@@ -194,7 +182,7 @@ ament_target_dependencies(image_object_server
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
@@ -215,7 +203,7 @@ ament_target_dependencies(image_people_server
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
@@ -236,7 +224,7 @@ ament_target_dependencies(image_object_client
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
@@ -257,7 +245,7 @@ ament_target_dependencies(image_people_client
   "ament_index_cpp"
   "class_loader"
   "dynamic_vino_lib"
-  "InferenceEngine"
+  "OpenVINO"
   "people_msgs"
   "pipeline_srv_msgs"
   "vino_param_lib"
