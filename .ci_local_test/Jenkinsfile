@@ -1,29 +1,48 @@
 pipeline {
-  agent any
-  stages {
-    stage('Test Ros2 Galatic') {
-      steps {
-        script {
-          def flag = sh script: "ssh intel@$Test_Server 'cd $WORKSPACE_PATH && docker images | grep ros2_openvino_test'", returnStatus: true
-          if (flag == 0) {
-            docker rmi -f ros2_openvino_test
-          }
-          def test_result = sh script: "ssh intel@$Test_Server 'cd $WORKSPACE_PATH && ./self_host_test_ros2_openvino.sh '", returnStatus: true
-          if (test_result == 0) {
-            echo "test pass"
-          } else {
-            echo "test fail"
+    agent any
+    environment {
+        // Test_Server is the local test machine.
+        Test_Server = "robotics-testNUC11"
+        Test_WORKSPACE = "/home/intel/ros2_openvino_toolkit_test"
+    }
+    stages {
+        stage('Get The env') {
+            steps {
+                script {
+                    // rm the old env
+                    sh script: "ssh intel@$Test_Server 'rm -rf $Test_WORKSPACE/env'", returnStatus: true
+                    // get new env
+                    sh script: "export | tee -a env", returnStatus: true
+                    sh script: "scp -r env intel@$Test_Server:$Test_WORKSPACE", returnStatus: true
+                }
+            }
+        }
+        stage('Moving The Code To Test Machine') {
+            steps {
+                script {
+                    sh script: "ssh intel@$Test_Server 'rm -rf $Test_WORKSPACE/ros2_openvino_toolkit'", returnStatus: true
+                    sh script: "scp -r $WORKSPACE intel@$Test_Server:$Test_WORKSPACE/ros2_openvino_toolkit", returnStatus: true
+                    // sh script: "ssh intel@$Test_Server 'docker cp $Test_WORKSPACE/ros2_openvino_toolkit:/root/catkin_ws/src'", returnStatus: true
+                }
+            }
+        }
+        stage('The Ros2_openvino container run') {
+            steps {
+                script {
+                    def test_result = sh script: "ssh intel@$Test_Server 'cd $Test_WORKSPACE && ./self_container_ros2_openvino_test.sh '", returnStatus: true
+                    if (test_result == 0) {
+                        echo "test pass"
+                    } else {
+                        echo "test fail"
+                        exit -1
+                    }
 
-            exit -1
-          }
+                }
+
+            }
         }
 
-      }
     }
 
-  }
-  environment {
-    Test_Server = 'robotics-testNUC11'
-    WORKSPACE_PATH = '/home/intel/ros2_openvino_toolkit'
-  }
 }
+
