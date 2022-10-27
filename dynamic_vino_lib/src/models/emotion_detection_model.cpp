@@ -65,7 +65,7 @@ bool Models::EmotionDetectionModel::updateLayerProperty
   }
 
   net_reader = ppp.build();
-  ov::set_batch(net_reader_, getMaxBatchSize());
+  ov::set_batch(net_reader, getMaxBatchSize());
   addOutputInfo("output", output_tensor_name_);
 
   printAttribute();

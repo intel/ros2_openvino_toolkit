@@ -39,7 +39,7 @@ bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
   }
 
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  input_tensor_name_ = net_reader->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout tensor_layout{"NCHW"};
   input_info.tensor().

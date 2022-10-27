@@ -45,7 +45,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   }
   // set input property
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  input_tensor_name_ = net_reader->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NHWC"};
   input_info.tensor().

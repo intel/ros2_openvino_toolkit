@@ -158,7 +158,7 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(
     return false;
   }
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  std::string input_tensor_name_ = net_reader->input().get_any_name();
+  input_tensor_name_ = net_reader->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   
   input_info.tensor().set_element_type(ov::element::u8);

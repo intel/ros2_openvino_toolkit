@@ -56,10 +56,6 @@ public:
 private:
   int max_proposal_count_;
   int object_size_;
-  std::string input_tensor_name_;
-  std::string output_tensor_name_;
-
-  std::vector<ov::Output<ov::Node>> inputs_info_;
 };
 }  // namespace Models
 #endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_SEGMENTATION_MODEL_HPP_

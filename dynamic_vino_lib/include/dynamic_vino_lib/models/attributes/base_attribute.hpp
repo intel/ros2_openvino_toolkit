@@ -176,7 +176,10 @@ public:
 
 protected:
   ModelAttr attr_;
-
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 };
 
 class SSDModelAttr : public ModelAttribute
