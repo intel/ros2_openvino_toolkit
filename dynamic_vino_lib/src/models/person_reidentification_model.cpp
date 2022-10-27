@@ -42,7 +42,7 @@ bool Models::PersonReidentificationModel::updateLayerProperty(
   output_ = output_info_map[0].get_any_name();
 
   net_reader = ppp.build();
-  ov::set_batch(net_reader_, getMaxBatchSize());
+  ov::set_batch(net_reader, getMaxBatchSize());
 
   return true;
 }

@@ -99,7 +99,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
     set_layout(tensor_layout);
 
   net_reader = ppp.build();
-  ov::set_batch(net_reader_, getMaxBatchSize());
+  ov::set_batch(net_reader, getMaxBatchSize());
 
   addOutputInfo("age", age_output_info.get_any_name());
   addOutputInfo("gender", gender_output_info.get_any_name());
