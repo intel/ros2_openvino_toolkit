@@ -27,7 +27,7 @@ def generate_launch_description():
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='dynamic_vino_sample', node_executable='pipeline_with_params',
+            package='dynamic_vino_sample', executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
                 ('/openvino_toolkit/object/detected_objects',
