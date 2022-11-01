@@ -29,7 +29,7 @@ Engines::Engine::Engine(
 #endif
 
 Engines::Engine::Engine(
-  InferenceEngine::InferRequest::Ptr & request)
+  ov::InferRequest & request)
 {
   request_ = request;
 }
