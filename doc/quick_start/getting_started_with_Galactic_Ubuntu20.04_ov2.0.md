@@ -96,7 +96,7 @@ omz_downloader --print_all
 
 * Download the optimized Intermediate Representation (IR) of model (execute once), for example:
 ```
-omz_downloader --name face-detection-adas-0001 -output_dir /opt/openvino_toolkit/models/face_detection/output
+omz_downloader --name face-detection-adas-0001 --output_dir /opt/openvino_toolkit/models/face_detection/output
 omz_downloader --name age-gender-recognition-retail-0013 --output_dir /opt/openvino_toolkit/models/age-gender-recognition/output
 omz_downloader --name emotions-recognition-retail-0003 --output_dir /opt/openvino_toolkit/models/emotions-recognition/output
 omz_downloader --name head-pose-estimation-adas-0001 --output_dir /opt/openvino_toolkit/models/head-pose-estimation/output
