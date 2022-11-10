@@ -34,18 +34,18 @@ Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
 }
 
 bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
-  std::shared_ptr<ov::Model>& net_reader)
+  std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like, which has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
     return false;
   }
   // set input property
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NHWC"};
   input_info.tensor().
@@ -55,7 +55,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
 
 
   // set output property
-  auto output_info_map = net_reader -> outputs();
+  auto output_info_map = model -> outputs();
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like! We got "
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
@@ -63,15 +63,15 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
     return false;
   }
   ov::preprocess::OutputInfo& output_info = ppp.output();
-  addOutputInfo("output", net_reader->output().get_any_name());
+  addOutputInfo("output", model->output().get_any_name());
   output_info.tensor().set_element_type(ov::element::f32);
-  slog::info << "Checking Object Detection output ... Name=" << net_reader->output().get_any_name()
+  slog::info << "Checking Object Detection output ... Name=" << model->output().get_any_name()
     << slog::endl;
-  net_reader = ppp.build();
+  model = ppp.build();
 
 #if(0) /// 
   const InferenceEngine::CNNLayerPtr output_layer =
-    net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
+    model->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
   if (output_layer == nullptr ||
@@ -94,7 +94,7 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
 #endif
 
   // last dimension of output layer should be 7
-  auto outputsDataMap = net_reader->outputs();
+  auto outputsDataMap = model->outputs();
   auto & data = outputsDataMap[0];
   ov::Shape output_dims = data.get_shape();
   setMaxProposalCount(static_cast<int>(output_dims[2]));

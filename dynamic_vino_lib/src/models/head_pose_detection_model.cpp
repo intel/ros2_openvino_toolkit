@@ -31,11 +31,11 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 }
 
 bool Models::HeadPoseDetectionModel::updateLayerProperty
-(std::shared_ptr<ov::Model>& net_reader)
+(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model should have only one input, but we got"
       << std::to_string(input_info_map.size()) << "inputs"
@@ -43,8 +43,8 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
     return false;
   }
 
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NCHW"};
   input_info.tensor().
@@ -53,7 +53,7 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
   addInputInfo("input", input_tensor_name_);
 
   // set output property
-  auto output_info_map = net_reader->outputs();
+  auto output_info_map = model->outputs();
   std::vector<std::string> outputs_name;
   for (auto & output_item : output_info_map) {
     std::string output_tensor_name_ = output_item.get_any_name();
@@ -65,8 +65,8 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
     outputs_name.push_back(output_tensor_name_);
   }
 
-  net_reader = ppp.build();
-  ov::set_batch(net_reader, getMaxBatchSize());
+  model = ppp.build();
+  ov::set_batch(model, getMaxBatchSize());
 
   for (const std::string& outName : {output_angle_r_, output_angle_p_, output_angle_y_}) {
     if (find(outputs_name.begin(), outputs_name.end(), outName) == outputs_name.end()) {

@@ -30,18 +30,18 @@ Models::SSDModelAttr::SSDModelAttr(
 }
 
 bool Models::SSDModelAttr::updateLayerProperty(
-  const std::shared_ptr<ov::Model>& net_reader)
+  const std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not SSDNet-like, SSDnet has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
     return false;
   }
   
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   input_info.tensor().set_element_type(ov::element::u8);
   addInputInfo("input", input_tensor_name_);
@@ -51,7 +51,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
   setInputWidth(input_dims[3]);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-   auto outputs_info = net_reader->outputs();
+   auto outputs_info = model->outputs();
   if (outputs_info.size() != 1) {
     slog::warn << "This model seems not SSDNet-like! We got " 
       << std::to_string(outputs_info.size()) << "outputs, but SSDnet has only one."
@@ -60,8 +60,8 @@ bool Models::SSDModelAttr::updateLayerProperty(
   }
 
   ov::preprocess::OutputInfo& output_info = ppp.output();
-  addOutputInfo("output", net_reader->output().get_any_name());
-  slog::info << "Checking Object Detection output ... Name=" << net_reader->output().get_any_name()
+  addOutputInfo("output", model->output().get_any_name());
+  slog::info << "Checking Object Detection output ... Name=" << model->output().get_any_name()
     << slog::endl;
 
   output_info.tensor().set_element_type(ov::element::f32);
@@ -69,7 +69,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
 ///TODO: double check this part: BEGIN
 #if(0) ///
   const InferenceEngine::CNNLayerPtr output_layer =
-    net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
+    model->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
   if (output_layer->params.find("num_classes") == output_layer->params.end()) {
@@ -94,7 +94,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
   ///TODO: double check this part: END
 
   // last dimension of output layer should be 7
-  auto outputsDataMap = net_reader->outputs();
+  auto outputsDataMap = model->outputs();
   auto & data = outputsDataMap[0];
   ov::Shape output_dims = data.get_shape();
   setMaxProposalCount(static_cast<int>(output_dims[2]));
