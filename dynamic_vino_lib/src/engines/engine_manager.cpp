@@ -41,7 +41,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_V2022(
   const std::string & device, const std::shared_ptr<Models::BaseModel> & model)
 {
   ov::Core core;
-  ov::CompiledModel executable_network = core.compile_model(model->getNetReader(), device);
+  ov::CompiledModel executable_network = core.compile_model(model->getModel(), device);
   ov::InferRequest infer_request = executable_network.create_infer_request();
 
   return std::make_shared<Engines::Engine>(infer_request);
@@ -59,7 +59,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
   }
 
   auto executeable_network = 
-  plugins_for_devices_[device].LoadNetwork(model->getNetReader()->getNetwork(), {});
+  plugins_for_devices_[device].LoadNetwork(model->getModel()->getNetwork(), {});
   auto request = executeable_network.CreateInferRequestPtr();
 
   return std::make_shared<Engines::Engine>(request);

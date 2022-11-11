@@ -95,7 +95,7 @@ namespace Models
     virtual const std::string getModelCategory() const = 0;
     inline ModelAttr getAttribute() { return attr_; }
 
-    inline std::shared_ptr<ov::Model> getNetReader() const
+    inline std::shared_ptr<ov::Model> getModel() const
     {
       return model_;
     }
