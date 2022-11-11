@@ -31,7 +31,6 @@ pipeline {
             steps {
                 script {
                     def test_result = sh script: "ssh intel@$Test_Server 'cd $Test_WORKSPACE && ./self_container_ros2_openvino_dashing_test.sh '", returnStatus: true
->>>>>>> origin/dashing
                     if (test_result == 0) {
                         echo "test pass"
                     } else {
