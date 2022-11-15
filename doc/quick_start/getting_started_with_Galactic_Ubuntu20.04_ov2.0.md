@@ -62,6 +62,18 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 ```
 
 * Copy the label file to model output_dir (execute once)
+  
+  **Note** Need to make label dirs if skip steps for set output dirs above.
+  ```
+  mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
+  mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
+  mkdir -p /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/
+  mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
+  mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
+  mkdir -p /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
+
+  ```
+
 ```
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
  sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
