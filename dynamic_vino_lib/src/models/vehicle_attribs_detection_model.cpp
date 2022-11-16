@@ -25,36 +25,33 @@ Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
+  std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-    // set input property
-  InferenceEngine::InputsDataMap input_info_map(
-    net_reader.getInputsInfo());
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs topology should have only one input");
   }
-  InferenceEngine::OutputsDataMap output_info_map(
-    net_reader.getOutputsInfo());
+
+  auto output_info_map = model->outputs();
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }
 
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+  const ov::Layout tensor_layout{"NCHW"};
+  input_info.tensor().
+    set_element_type(ov::element::u8).
+    set_layout(tensor_layout);
+  model = ppp.build();
+
+  addInputInfo("input", input_tensor_name_);
  
   // set input and output layer name
-  input_ = input_info_map.begin()->first;
-  auto output_iter = output_info_map.begin();
-  // color_output_ = (output_iter++)->second->name;
-  // type_output_ = (output_iter++)->second->name;
-  InferenceEngine::DataPtr color_output_ptr = (output_iter++)->second;
-  InferenceEngine::DataPtr type_output_ptr = (output_iter++)->second;
-    
-  addOutputInfo("color_output_", color_output_ptr->getName());
-  //output_gender_ = gender_output_ptr->name;
-  addOutputInfo("type_output_", type_output_ptr->getName());
+  addOutputInfo("color_output_", output_info_map[1].get_any_name());
+  addOutputInfo("type_output_", output_info_map[0].get_any_name());
 
   printAttribute();
   return true;

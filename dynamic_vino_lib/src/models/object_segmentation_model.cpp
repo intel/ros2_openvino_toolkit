@@ -18,7 +18,7 @@
  */
 #include <string>
 #include <vector>
-#include <inference_engine.hpp>
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/models/object_segmentation_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
@@ -42,25 +42,26 @@ bool Models::ObjectSegmentationModel::enqueue(
     return false;
   }
 
-  for (const auto &inputInfoItem : input_info_)
+  for (const auto &inputInfoItem : inputs_info_)
   {
     // Fill first input tensor with images. First b channel, then g and r channels
-    slog::debug<<"first tensor"<<inputInfoItem.second->getTensorDesc().getDims().size()<<slog::endl;
-    if (inputInfoItem.second->getTensorDesc().getDims().size()==4)
+    auto dims = inputInfoItem.get_shape();
+    if (dims.size()==4)
     {
       matToBlob(frame, input_frame_loc, 1.0, 0, engine);
     }
 
     // Fill second input tensor with image info
-    if (inputInfoItem.second->getTensorDesc().getDims().size() == 2)
+    if (dims.size() == 2)
     {
-      InferenceEngine::Blob::Ptr input = engine->getRequest()->GetBlob(inputInfoItem.first);
-      auto data = input->buffer().as<InferenceEngine::PrecisionTrait<InferenceEngine::Precision::FP32>::value_type *>();
+      ov::Tensor in_tensor = engine->getRequest().get_tensor(inputInfoItem);
+      auto data = in_tensor.data<float>();
       data[0] = static_cast<float>(frame.rows); // height
       data[1] = static_cast<float>(frame.cols);  // width
       data[2] = 1;
     }
   }
+
   return true;
 
 }
@@ -94,12 +95,8 @@ bool Models::ObjectSegmentationModel::matToBlob(
     return false;
   }
 
-  InferenceEngine::TensorDesc tDesc(InferenceEngine::Precision::U8,
-                                    {1, channels, height, width},
-                                    InferenceEngine::Layout::NHWC);
-
-  auto shared_blob = InferenceEngine::make_shared_blob<uint8_t>(tDesc, orig_image.data);
-  engine->getRequest()->SetBlob(getInputName(), shared_blob);
+  ov::Tensor input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, orig_image.data);
+  engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
 
   return true;
 }
@@ -110,57 +107,64 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    InferenceEngine::CNNNetwork& net_reader)
+    std::shared_ptr<ov::Model>& model)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
-  auto network = net_reader;
-  input_info_ = InferenceEngine::InputsDataMap(network.getInputsInfo());
-
-  InferenceEngine::ICNNNetwork:: InputShapes inputShapes = network.getInputShapes();
-  slog::debug<<"input size"<<inputShapes.size()<<slog::endl;
-  if (inputShapes.size() != 1) {
-    // throw std::runtime_error("Demo supports topologies only with 1 input");
+  inputs_info_ = model->inputs();
+  slog::debug<<"input size"<<inputs_info_.size()<<slog::endl;
+  if (inputs_info_.size() != 1) {
     slog::warn << "This inference sample should have only one input, but we got"
-      << std::to_string(inputShapes.size()) << "inputs"
+      << std::to_string(inputs_info_.size()) << "inputs"
+      << slog::endl;
+    return false;
+  }
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+
+  ov::Layout tensor_layout = ov::Layout("NHWC");
+  ov::Layout expect_layout = ov::Layout("NCHW");
+  ov::Shape input_shape = model->input().get_shape();
+  if (input_shape[1] == 3)
+    expect_layout = ov::Layout("NCHW");
+  else if (input_shape[3] == 3)
+    expect_layout = ov::Layout("NHWC");
+  else
+    slog::warn << "unexpect input shape " << input_shape << slog::endl;
+
+  input_info.tensor().
+    set_element_type(ov::element::u8).
+    set_layout(tensor_layout).
+    set_spatial_dynamic_shape();
+  input_info.preprocess().
+    convert_layout(expect_layout).
+    resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
+  addInputInfo("input", input_tensor_name_);
+
+  auto outputs_info = model->outputs();
+  if (outputs_info.size() != 1) {
+    slog::warn << "This inference sample should have only one output, but we got"
+      << std::to_string(outputs_info.size()) << "outputs"
       << slog::endl;
     return false;
   }
 
-  InferenceEngine::SizeVector &in_size_vector = inputShapes.begin()->second;
-  slog::debug<<"channel size"<<in_size_vector[1]<<"dimensional"<<in_size_vector.size()<<slog::endl;
-  if (in_size_vector.size() != 4 || in_size_vector[1] != 3) {
-    //throw std::runtime_error("3-channel 4-dimensional model's input is expected");
+  output_tensor_name_ = model->output().get_any_name();
+  auto data = model->output();
+
+  ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
+  output_info.tensor().set_element_type(ov::element::f32);
+  model = ppp.build();
+  std::vector<size_t> &in_size_vector = input_shape;
+  slog::debug<<"dimensional"<<in_size_vector.size()<<slog::endl;
+  if (in_size_vector.size() != 4) {
     slog::warn << "3-channel 4-dimensional model's input is expected, but we got "
-      << std::to_string(in_size_vector[1]) << " channels and "
       << std::to_string(in_size_vector.size()) << " dimensions." << slog::endl;
     return false;
   }
-  in_size_vector[0] = 1;
-  network.reshape(inputShapes);
 
-  InferenceEngine:: InputInfo &inputInfo = *network.getInputsInfo().begin()->second;
-  inputInfo.getPreProcess().setResizeAlgorithm(InferenceEngine::ResizeAlgorithm::RESIZE_BILINEAR);
-  inputInfo.setLayout(InferenceEngine::Layout::NHWC);
-  inputInfo.setPrecision(InferenceEngine::Precision::U8);
-
-  //InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  //addInputInfo("input", input_info_map.begin()->first.c_str());
-  addInputInfo("input", inputShapes.begin()->first);
-
-  InferenceEngine::OutputsDataMap outputsDataMap = network.getOutputsInfo();
-  if (outputsDataMap.size() != 1) {
-    //throw std::runtime_error("Demo supports topologies only with 1 output");
-    slog::warn << "This inference sample should have only one output, but we got"
-      << std::to_string(outputsDataMap.size()) << "outputs"
-      << slog::endl;
-    return false;
-  }
-
-  InferenceEngine::Data & data = *outputsDataMap.begin()->second;
-  data.setPrecision(InferenceEngine::Precision::FP32);
-
-  const InferenceEngine::SizeVector& outSizeVector = data.getTensorDesc().getDims();
+  auto& outSizeVector = data.get_shape();
   int outChannels, outHeight, outWidth;
   slog::debug << "output size vector " << outSizeVector.size() << slog::endl;
   switch(outSizeVector.size()){
@@ -182,44 +186,16 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   if(outHeight == 0 || outWidth == 0){
     slog::err << "output_height or output_width is not set, please check the MaskOutput Info "
               << "is set correctly." << slog::endl;
-    //throw std::runtime_error("output_height or output_width is not set, please check the MaskOutputInfo");
     return false;
   }
 
-  slog::debug << "output width " << outWidth<< slog::endl;
-  slog::debug << "output hEIGHT " << outHeight<< slog::endl;
-  slog::debug << "output CHANNALS " << outChannels<< slog::endl;
-  addOutputInfo("masks", (outputsDataMap.begin()++)->first);
-  addOutputInfo("detection", outputsDataMap.begin()->first);
+  slog::debug << "output WIDTH " << outWidth<< slog::endl;
+  slog::debug << "output HEIGHT " << outHeight<< slog::endl;
+  slog::debug << "output CHANNELS " << outChannels<< slog::endl;
+  slog::debug << "output NAME " << output_tensor_name_<< slog::endl;
+  addOutputInfo("masks", output_tensor_name_);
+  addOutputInfo("detection", output_tensor_name_);
 
-  //const InferenceEngine::CNNLayerPtr output_layer =
-  //network.getLayerByName(outputsDataMap.begin()->first.c_str());
-  ///const InferenceEngine::CNNLayerPtr output_layer =
-  ///    network.getLayerByName(getOutputName("detection").c_str());
-  //const int num_classes = output_layer->GetParamAsInt("num_classes");
-  //slog::info << "Checking Object Segmentation output ... num_classes=" << num_classes << slog::endl;
-
-#if 0
-  if (getLabels().size() != num_classes)
-  {
-    if (getLabels().size() == (num_classes - 1))
-    {
-      getLabels().insert(getLabels().begin(), "fake");
-    }
-    else
-    {
-      getLabels().clear();
-    }
-  }
-#endif
-/*
-  const InferenceEngine::SizeVector output_dims = data.getTensorDesc().getDims();
-  setMaxProposalCount(static_cast<int>(output_dims[2]));
-  slog::info << "max proposal count is: " << getMaxProposalCount() << slog::endl;
-  auto object_size = static_cast<int>(output_dims[3]);
-  setObjectSize(object_size);
-
-  slog::debug << "model size" << output_dims.size() << slog::endl;*/
   printAttribute();
   slog::info << "This model is SSDNet-like, Layer Property updated!" << slog::endl;
   return true;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/**
+/** 
  * @brief a header file with declaration of ObjectDetectionModel class
  * @file object_detection_yolov2_model.cpp
  */
@@ -34,40 +34,44 @@ Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
 }
 
 bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
+  std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-
-  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like, which has only one input, but we got "
       << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
     return false;
   }
+  // set input property
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+  const ov::Layout input_tensor_layout{"NHWC"};
+  input_info.tensor().
+    set_element_type(ov::element::f32).
+    set_layout(input_tensor_layout);
+  addInputInfo("input", input_tensor_name_);
 
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::FP32);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  input_info_ = input_info;
-  addInputInfo("input", input_info_map.begin()->first);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
+  auto output_info_map = model -> outputs();
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like! We got "
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
       << slog::endl;
     return false;
   }
-  InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
-  output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
-  addOutputInfo("output", output_info_map.begin()->first);
-  slog::info << "Checking Object Detection output ... Name=" << output_info_map.begin()->first
+  ov::preprocess::OutputInfo& output_info = ppp.output();
+  addOutputInfo("output", model->output().get_any_name());
+  output_info.tensor().set_element_type(ov::element::f32);
+  slog::info << "Checking Object Detection output ... Name=" << model->output().get_any_name()
     << slog::endl;
+  model = ppp.build();
 
 #if(0) /// 
   const InferenceEngine::CNNLayerPtr output_layer =
-    net_reader->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
+    model->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
   // output layer should have attribute called num_classes
   slog::info << "Checking Object Detection num_classes" << slog::endl;
   if (output_layer == nullptr ||
@@ -90,7 +94,9 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
 #endif
 
   // last dimension of output layer should be 7
-  const InferenceEngine::SizeVector output_dims = output_data_ptr->getTensorDesc().getDims();
+  auto outputsDataMap = model->outputs();
+  auto & data = outputsDataMap[0];
+  ov::Shape output_dims = data.get_shape();
   setMaxProposalCount(static_cast<int>(output_dims[2]));
   slog::info << "max proposal count is: " << getMaxProposalCount() << slog::endl;
 
@@ -142,14 +148,14 @@ bool Models::ObjectDetectionYolov2Model::matToBlob(
   }
 
   std::string input_name = getInputName();
-  InferenceEngine::Blob::Ptr input_blob =
-    engine->getRequest()->GetBlob(input_name);
+  ov::Tensor input_tensor =
+    engine->getRequest().get_tensor(input_name);
 
-  InferenceEngine::SizeVector blob_size = input_blob->getTensorDesc().getDims();
+  ov::Shape blob_size = input_tensor.get_shape();
   const int width = blob_size[3];
   const int height = blob_size[2];
   const int channels = blob_size[1];
-  float * blob_data = input_blob->buffer().as<float *>();
+  float * blob_data = input_tensor.data<float>();
 
 
   int dx = 0;
@@ -221,28 +227,26 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
       return false;
     }
 
-    InferenceEngine::InferRequest::Ptr request = engine->getRequest();
+    ov::InferRequest request = engine->getRequest();
 
     std::string output = getOutputName();
     std::vector<std::string> & labels = getLabels();
-    const float * detections =
-      request->GetBlob(output)->buffer().as<InferenceEngine::PrecisionTrait
-        <InferenceEngine::Precision::FP32>::value_type *>();
-    ///InferenceEngine::CNNLayerPtr layer =
-    ///  getNetReader()->getNetwork().getLayerByName(output.c_str());
-    int input_height = input_info_->getTensorDesc().getDims()[2];
-    int input_width = input_info_->getTensorDesc().getDims()[3];
+    const float * detections = (float * )request.get_tensor(output).data();
 
-    // --------------------------- Validating output parameters --------------------------------
-    ///if (layer != nullptr && layer->type != "RegionYolo") {
-    ///  throw std::runtime_error("Invalid output type: " + layer->type + ". RegionYolo expected");
-    ///}
+    std::string input = getInputName();
+    auto input_tensor = request.get_tensor(input);
+    ov::Shape input_shape = input_tensor.get_shape();
+    int input_height = input_shape[2];
+    int input_width = input_shape[3];
+
     // --------------------------- Extracting layer parameters --------------------------------
     const int num = 3; ///layer->GetParamAsInt("num");
     const int coords = 9; ///layer->GetParamAsInt("coords");
     const int classes = 21; ///layer->GetParamAsInt("classes");
-    auto blob = request->GetBlob(output);
-    const int out_blob_h = static_cast<int>(blob->getTensorDesc().getDims()[2]);;
+
+    auto output_tensor = request.get_tensor(output);
+    ov::Shape output_shape = output_tensor.get_shape();
+    const int out_tensor_h = static_cast<int>(output_shape[2]);;
 
     std::vector<float> anchors = {
       0.572730, 0.677385,
@@ -251,7 +255,7 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
       7.882820, 3.527780,
       9.770520, 9.168280
     };
-    auto side = out_blob_h;
+    auto side = out_tensor_h;
 
     auto side_square = side * side;
     // --------------------------- Parsing YOLO Region output -------------------------------------

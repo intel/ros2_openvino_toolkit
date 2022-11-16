@@ -25,7 +25,7 @@
 #include <string>
 #include <fstream>
 
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
 namespace Models
@@ -86,7 +86,7 @@ public:
   }
 
   virtual bool updateLayerProperty(
-    const InferenceEngine::CNNNetwork&)
+    const std::shared_ptr<ov::Model>&)
   { return false; }
 
   inline std::string getModelName() const
@@ -101,7 +101,6 @@ public:
 
   inline std::string getInputName(std::string name = "input") const
   {
-    // std::map<std::string, std::string>::iterator it;
     auto it = attr_.input_names.find(name);
     if(it == attr_.input_names.end()){
       slog::warn << "No input named: " << name << slog::endl;
@@ -113,7 +112,6 @@ public:
 
   inline std::string getOutputName(std::string name = "output") const
   {
-    //std::map<std::string, std::string>::iterator it;
     auto it = attr_.output_names.find(name);
     if(it == attr_.output_names.end()){
       slog::warn << "No output named: " << name << slog::endl;
@@ -178,7 +176,10 @@ public:
 
 protected:
   ModelAttr attr_;
-
+  std::string input_tensor_name_;
+  std::string output_tensor_name_;
+  std::vector<ov::Output<ov::Node>> inputs_info_;
+  std::vector<ov::Output<ov::Node>> outputs_info_;
 };
 
 class SSDModelAttr : public ModelAttribute
@@ -187,11 +188,9 @@ public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
   bool updateLayerProperty(
-    const InferenceEngine::CNNNetwork&);
+    const std::shared_ptr<ov::Model>&);
 
 };
-
-
 
 }  // namespace Models
 

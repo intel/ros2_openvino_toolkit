@@ -40,7 +40,7 @@ void dynamic_vino_lib::BaseInference::loadEngine(const std::shared_ptr<Engines::
 
 bool dynamic_vino_lib::BaseInference::submitRequest()
 {
-  if (engine_->getRequest() == nullptr) {
+  if (!engine_->getRequest()) {
     return false;
   }
   if (!enqueued_frames_) {
@@ -48,14 +48,14 @@ bool dynamic_vino_lib::BaseInference::submitRequest()
   }
   enqueued_frames_ = 0;
   results_fetched_ = false;
-  engine_->getRequest()->StartAsync();
+  engine_->getRequest().start_async();
   slog::debug << "Async Inference started!" << slog::endl;
   return true;
 }
 
 bool dynamic_vino_lib::BaseInference::SynchronousRequest()
 {
-  if (engine_->getRequest() == nullptr) {
+  if (!engine_->getRequest()) {
     return false;
   }
   if (!enqueued_frames_) {
@@ -63,7 +63,7 @@ bool dynamic_vino_lib::BaseInference::SynchronousRequest()
   }
   enqueued_frames_ = 0;
   results_fetched_ = false;
-  engine_->getRequest()->Infer();
+  engine_->getRequest().infer();
   return true;
 }
 

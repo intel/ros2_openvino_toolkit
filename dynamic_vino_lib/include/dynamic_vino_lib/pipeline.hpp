@@ -31,7 +31,6 @@
 #include "dynamic_vino_lib/inputs/standard_camera.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/pipeline_params.hpp"
-// #include "dynamic_vino_lib/pipeline_filters.hpp"
 #include "opencv2/opencv.hpp"
 
 /**
@@ -151,7 +150,6 @@ private:
   const int kCatagoryOrder_Output = 3;
 
   std::shared_ptr<PipelineParams> params_;
-  // PipelineFilters filters_;
 
   std::shared_ptr<Input::BaseInputDevice> input_device_;
   std::string input_device_name_;

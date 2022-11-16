@@ -29,7 +29,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "inference_engine.hpp"
+#include <openvino/openvino.hpp>
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/models/attributes/base_attribute.hpp"
 
@@ -95,9 +95,9 @@ namespace Models
     virtual const std::string getModelCategory() const = 0;
     inline ModelAttr getAttribute() { return attr_; }
 
-    inline InferenceEngine::CNNNetwork getNetReader() const
+    inline std::shared_ptr<ov::Model> getModel() const
     {
-      return net_reader_;
+      return model_;
     }
 
   protected:
@@ -106,11 +106,9 @@ namespace Models
      * @brief Set the layer property (layer layout, layer precision, etc.).
      * @param[in] network_reader The reader of the network to be set.
      */
-    virtual bool updateLayerProperty(InferenceEngine::CNNNetwork& network_reader) = 0;
-
-    ///InferenceEngine::CNNNetReader::Ptr net_reader_;
-    InferenceEngine::Core engine;
-    InferenceEngine::CNNNetwork net_reader_; // = engine.ReadNetwork(model->getModelFileName());
+    virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
+    ov::Core engine;
+    std::shared_ptr<ov::Model> model_; 
     void setFrameSize(const int &w, const int &h)
     {
       frame_size_.width = w;

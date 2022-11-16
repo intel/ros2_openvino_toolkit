@@ -29,10 +29,6 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
   const rclcpp::Node::SharedPtr node)
 : BaseOutput(output_name)
 {
-  // rmw_qos_profile_t qos = rmw_qos_profile_default;
-  // qos.depth = 10;
-  // qos.reliability = RMW_QOS_POLICY_RELIABILITY_RELIABLE;
-  // qos.history = RMW_QOS_POLICY_HISTORY_KEEP_ALL;
   if(node != nullptr){
     node_ = node;
   } else {
@@ -90,7 +86,6 @@ void Outputs::RosTopicOutput::accept(
   vehicle_attribs_topic_ = std::make_shared<people_msgs::msg::VehicleAttribsStamped>();
   people_msgs::msg::VehicleAttribs attribs;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     attribs.roi.x_offset = loc.x;
     attribs.roi.y_offset = loc.y;
@@ -108,7 +103,6 @@ void Outputs::RosTopicOutput::accept(
   license_plate_topic_ = std::make_shared<people_msgs::msg::LicensePlateStamped>();
   people_msgs::msg::LicensePlate plate;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     plate.roi.x_offset = loc.x;
     plate.roi.y_offset = loc.y;
@@ -125,7 +119,6 @@ void Outputs::RosTopicOutput::accept(
   face_reid_topic_ = std::make_shared<people_msgs::msg::ReidentificationStamped>();
   people_msgs::msg::Reidentification face;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     face.roi.x_offset = loc.x;
     face.roi.y_offset = loc.y;
@@ -142,7 +135,6 @@ void Outputs::RosTopicOutput::accept(
   landmarks_topic_ = std::make_shared<people_msgs::msg::LandmarkStamped>();
   people_msgs::msg::Landmark landmark;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     landmark.roi.x_offset = loc.x;
     landmark.roi.y_offset = loc.y;
@@ -165,7 +157,6 @@ void Outputs::RosTopicOutput::accept(
   person_attribs_topic_ = std::make_shared<people_msgs::msg::PersonAttributeStamped>();
   people_msgs::msg::PersonAttribute person_attrib;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     person_attrib.roi.x_offset = loc.x;
     person_attrib.roi.y_offset = loc.y;
@@ -182,7 +173,6 @@ void Outputs::RosTopicOutput::accept(
   person_reid_topic_ = std::make_shared<people_msgs::msg::ReidentificationStamped>();
   people_msgs::msg::Reidentification person;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     person.roi.x_offset = loc.x;
     person.roi.y_offset = loc.y;
@@ -199,7 +189,6 @@ void Outputs::RosTopicOutput::accept(
   segmented_objects_topic_ = std::make_shared<people_msgs::msg::ObjectsInMasks>();
   people_msgs::msg::ObjectInMask object;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -223,7 +212,6 @@ void Outputs::RosTopicOutput::accept(
   detected_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
   object_msgs::msg::ObjectInBox object;
   for (auto & r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -242,7 +230,6 @@ void Outputs::RosTopicOutput::accept(
 
   object_msgs::msg::ObjectInBox face;
   for (auto r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     face.roi.x_offset = loc.x;
     face.roi.y_offset = loc.y;
@@ -261,7 +248,6 @@ void Outputs::RosTopicOutput::accept(const std::vector<dynamic_vino_lib::Emotion
 
   people_msgs::msg::Emotion emotion;
   for (auto r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     emotion.roi.x_offset = loc.x;
     emotion.roi.y_offset = loc.y;
@@ -278,7 +264,6 @@ void Outputs::RosTopicOutput::accept(const std::vector<dynamic_vino_lib::AgeGend
 
   people_msgs::msg::AgeGender ag;
   for (auto r : results) {
-    // slog::info << ">";
     auto loc = r.getLocation();
     ag.roi.x_offset = loc.x;
     ag.roi.y_offset = loc.y;
@@ -319,67 +304,56 @@ void Outputs::RosTopicOutput::handleOutput()
 {
   auto header = getPipeline()->getInputDevice()->getLockedHeader();
   if (vehicle_attribs_topic_ != nullptr) {
-    // slog::info << "publishing landmarks detection outputs." << slog::endl;
     vehicle_attribs_topic_->header = header;
     pub_vehicle_attribs_->publish(*vehicle_attribs_topic_);
     vehicle_attribs_topic_ = nullptr;
   }
   if (license_plate_topic_ != nullptr) {
-    // slog::info << "publishing face reidentification outputs." << slog::endl;
     license_plate_topic_->header = header;
     pub_license_plate_->publish(*license_plate_topic_);
     license_plate_topic_ = nullptr;
   }
   if (landmarks_topic_ != nullptr) {
-    // slog::info << "publishing landmarks detection outputs." << slog::endl;
     landmarks_topic_->header = header;
     pub_landmarks_->publish(*landmarks_topic_);
     landmarks_topic_ = nullptr;
   }
   if (face_reid_topic_ != nullptr) {
-    // slog::info << "publishing face reidentification outputs." << slog::endl;
     face_reid_topic_->header = header;
     pub_face_reid_->publish(*face_reid_topic_);
     face_reid_topic_ = nullptr;
   }
   if (person_attribs_topic_ != nullptr) {
-    // slog::info << "publishing person attributes outputs." << slog::endl;
     person_attribs_topic_->header = header;
     pub_person_attribs_->publish(*person_attribs_topic_);
     person_attribs_topic_ = nullptr;
   }
   if (person_reid_topic_ != nullptr) {
-    // slog::info << "publishing preson reidentification outputs." << slog::endl;
     person_reid_topic_->header = header;
     pub_person_reid_->publish(*person_reid_topic_);
     person_reid_topic_ = nullptr;
   }
   if (segmented_objects_topic_ != nullptr) {
-    // slog::info << "publishing segmented objects outputs." << slog::endl;
     segmented_objects_topic_->header = header;
     pub_segmented_object_->publish(*segmented_objects_topic_);
     segmented_objects_topic_ = nullptr;
   }
   if (detected_objects_topic_ != nullptr) {
-    // slog::info << "publishing detected objects outputs." << slog::endl;
     detected_objects_topic_->header = header;
     pub_detected_object_->publish(*detected_objects_topic_);
     detected_objects_topic_ = nullptr;
   }
   if (faces_topic_ != nullptr) {
-    // slog::info << "publishing faces outputs." << slog::endl;
     faces_topic_->header = header;
     pub_face_->publish(*faces_topic_);
     faces_topic_ = nullptr;
   }
   if (emotions_topic_ != nullptr) {
-    // slog::info << "publishing emotions outputs." << slog::endl;
     emotions_topic_->header = header;
     pub_emotion_->publish(*emotions_topic_);
     emotions_topic_ = nullptr;
   }
   if (age_gender_topic_ != nullptr) {
-    // slog::info << "publishing age gender outputs." << slog::endl;
     age_gender_topic_->header = header;
     pub_age_gender_->publish(*age_gender_topic_);
     age_gender_topic_ = nullptr;

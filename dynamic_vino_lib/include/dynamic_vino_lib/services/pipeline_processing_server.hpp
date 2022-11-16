@@ -37,7 +37,6 @@ public:
 private:
   void initPipelineService();
 
-  // bool cbService(ros::ServiceEvent<typename T::Request,typename T::Response>& event);
   void cbService(
     const std::shared_ptr<typename T::Request> request,
     std::shared_ptr<typename T::Response> response);

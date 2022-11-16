@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <openvino/openvino.hpp>
 
 #include "dynamic_vino_lib/inputs/base_input.hpp"
 #include "dynamic_vino_lib/inputs/image_input.hpp"
@@ -187,14 +188,12 @@ void Pipeline::runOnce()
   initInferenceCounter();
 
   if (!input_device_->read(&frame_)) {
-    // throw std::logic_error("Failed to get frame from cv::VideoCapture");
-    // slog::warn << "Failed to get frame from input_device." << slog::endl;
     return; //do nothing if now frame read out
   }
   width_ = frame_.cols;
   height_ = frame_.rows;
   slog::debug << "DEBUG: in Pipeline run process..." << slog::endl;
-  // auto t0 = std::chrono::high_resolution_clock::now();
+
   for (auto pos = next_.equal_range(input_device_name_); pos.first != pos.second; ++pos.first) {
     std::string detection_name = pos.first->second;
     slog::debug << "DEBUG: Enqueue for detection: " << detection_name << slog::endl;
@@ -215,12 +214,8 @@ void Pipeline::runOnce()
   std::unique_lock<std::mutex> lock(counter_mutex_);
   cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
 
-  //auto t1 = std::chrono::high_resolution_clock::now();
-  //typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
-
   slog::debug << "DEBUG: in Pipeline run process...handleOutput" << slog::endl;
   for (auto & pair : name_to_output_map_) {
-    // slog::info << "Handling Output ..." << pair.first << slog::endl;
     pair.second->handleOutput();
   }
 }
@@ -236,14 +231,17 @@ void Pipeline::setCallback()
 {
   for (auto & pair : name_to_detection_map_) {
     std::string detection_name = pair.first;
-    std::function<void(void)> callb;
-    callb = [detection_name, self = this]()
+    std::function<void(std::__exception_ptr::exception_ptr)> callb;
+    callb = [detection_name, self = this](std::exception_ptr ex)
       {
+        if (ex)
+          throw ex;
+
         self->callback(detection_name);
         return;
       };
-    pair.second->getEngine()->getRequest()->SetCompletionCallback(callb);
-  }
+    pair.second->getEngine()->getRequest().set_callback(callb);
+   }
 }
 
 void Pipeline::callback(const std::string & detection_name)
@@ -274,7 +272,7 @@ void Pipeline::callback(const std::string & detection_name)
             increaseInferenceCounter();
             next_detection_ptr->submitRequest();
             auto request = next_detection_ptr->getEngine()->getRequest();
-            request->Wait(InferenceEngine::IInferRequest::WaitMode::RESULT_READY);
+            request.wait();
           }
         }
       }
@@ -296,14 +294,12 @@ void Pipeline::increaseInferenceCounter()
 {
   std::lock_guard<std::mutex> lk(counter_mutex_);
   ++counter_;
-  // slog::info << "counter = " << counter_ << slog::endl;
 }
 
 void Pipeline::decreaseInferenceCounter()
 {
   std::lock_guard<std::mutex> lk(counter_mutex_);
   --counter_;
-  // slog::info << "counter = " << counter_ << slog::endl;
 }
 
 void Pipeline::countFPS()

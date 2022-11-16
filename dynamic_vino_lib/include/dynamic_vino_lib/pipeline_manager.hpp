@@ -85,7 +85,6 @@ public:
   struct ServiceData
   {
     std::shared_ptr<std::thread> thread;
-    // std::shared_ptr<rclcpp::Node> node;
     PipelineState state;
   };
 

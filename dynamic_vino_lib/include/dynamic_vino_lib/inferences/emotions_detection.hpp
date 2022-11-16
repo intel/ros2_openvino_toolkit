@@ -24,7 +24,7 @@
 
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/base_inference.hpp"
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "opencv2/opencv.hpp"
 #include "dynamic_vino_lib/models/emotion_detection_model.hpp"
 

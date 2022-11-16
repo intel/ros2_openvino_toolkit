@@ -31,31 +31,45 @@ Models::HeadPoseDetectionModel::HeadPoseDetectionModel(
 }
 
 bool Models::HeadPoseDetectionModel::updateLayerProperty
-(InferenceEngine::CNNNetwork& net_reader)
+(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  InferenceEngine::InputsDataMap input_info_map(net_reader.getInputsInfo());
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     slog::warn << "This model should have only one input, but we got"
       << std::to_string(input_info_map.size()) << "inputs"
-      << slog::endl;
+      << slog::endl; 
     return false;
   }
-  InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
-  input_info->setPrecision(InferenceEngine::Precision::U8);
-  input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
-  addInputInfo("input", input_info_map.begin()->first);
+
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
+  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
+  const ov::Layout input_tensor_layout{"NCHW"};
+  input_info.tensor().
+    set_element_type(ov::element::u8).
+    set_layout(input_tensor_layout);
+  addInputInfo("input", input_tensor_name_);
 
   // set output property
-  InferenceEngine::OutputsDataMap output_info_map(net_reader.getOutputsInfo());
-  for (auto & output : output_info_map) {
-    output.second->setPrecision(InferenceEngine::Precision::FP32);
-    output.second->setLayout(InferenceEngine::Layout::NC);
+  auto output_info_map = model->outputs();
+  std::vector<std::string> outputs_name;
+  for (auto & output_item : output_info_map) {
+    std::string output_tensor_name_ = output_item.get_any_name();
+    const ov::Layout output_tensor_layout{"NC"};
+    ppp.output(output_tensor_name_).
+      tensor().
+      set_element_type(ov::element::f32).
+      set_layout(output_tensor_layout);
+    outputs_name.push_back(output_tensor_name_);
   }
 
+  model = ppp.build();
+  ov::set_batch(model, getMaxBatchSize());
+
   for (const std::string& outName : {output_angle_r_, output_angle_p_, output_angle_y_}) {
-    if (output_info_map.find(outName) == output_info_map.end()) {
+    if (find(outputs_name.begin(), outputs_name.end(), outName) == outputs_name.end()) {
       throw std::logic_error("There is no " + outName + " output in Head Pose Estimation network");
     } else {
       addOutputInfo(outName, outName);
