@@ -10,22 +10,21 @@ Below steps have been tested on **Ubuntu 20.04**.
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_VERSION=<EXPECT_ROS_BASE_IMAGE> --build-arg VERSION=<EXPECT_ROS_VERSION> -t ros2_openvino_202201 .
+docker build --build-arg ROS_VERSION=<EXPECT_ROS_BASE_IMAGE> --build-arg VERSION=<EXPECT_ROS_VERSION> --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_openvino_202201 .
 ```
 For example:
 * Build image for ros_galactic
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_VERSION=galactic-desktop --build-arg VERSION=galactic -t ros2_galactic_openvino_202201 .
+docker build --build-arg ROS_VERSION=galactic-desktop --build-arg VERSION=galactic --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_galactic_openvino_202201 .
 ```
 * Build image for ros_foxy
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_VERSION=foxy-desktop --build-arg VERSION=foxy -t ros2_foxy_openvino_202201 .
+docker build --build-arg ROS_VERSION=foxy-desktop --build-arg VERSION=foxy --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_foxy_openvino_202201 .
 ```
-**Note**:Proxy may need to set, please check dockerfile before building.
 
 ## 3. Download and load docker image
 * Download docker image
