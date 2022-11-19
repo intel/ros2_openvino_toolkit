@@ -38,7 +38,7 @@ docker build --build-arg ROS_VERSION=foxy-desktop --build-arg VERSION=foxy --bui
 cd ~/Downloads/
 docker load -i <DOCKER_IMAGE>
 docker images
-/// (show <DOCKER_IMAGE> in the list)
+// (show <DOCKER_IMAGE> in the list)
 ```
 
 ## 4. Running the Demos
@@ -47,7 +47,7 @@ docker images
   sudo apt install x11-xserver-utils
   xhost +
 ```
-* run docker image
+* Run docker image
 ```
   docker images
   docker run -itd  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/dev  --privileged=true --name <your_image_name> <IMAGE_ID>
@@ -71,49 +71,25 @@ omz_downloader --print_all
 
 * Download the optimized Intermediate Representation (IR) of model (execute once), for example:
 ```
-omz_downloader --name face-detection-adas-0001 --output_dir /opt/openvino_toolkit/models/face_detection/output
-omz_downloader --name age-gender-recognition-retail-0013 --output_dir /opt/openvino_toolkit/models/age-gender-recognition/output
-omz_downloader --name emotions-recognition-retail-0003 --output_dir /opt/openvino_toolkit/models/emotions-recognition/output
-omz_downloader --name head-pose-estimation-adas-0001 --output_dir /opt/openvino_toolkit/models/head-pose-estimation/output
-omz_downloader --name person-detection-retail-0013 --output_dir /opt/openvino_toolkit/models/person-detection/output
-omz_downloader --name person-reidentification-retail-0277 --output_dir /opt/openvino_toolkit/models/person-reidentification/output
-omz_downloader --name landmarks-regression-retail-0009 --output_dir /opt/openvino_toolkit/models/landmarks-regression/output
-omz_downloader --name semantic-segmentation-adas-0001 --output_dir /opt/openvino_toolkit/models/semantic-segmentation/output
-omz_downloader --name vehicle-license-plate-detection-barrier-0106 --output_dir /opt/openvino_toolkit/models/vehicle-license-plate-detection/output
-omz_downloader --name vehicle-attributes-recognition-barrier-0039 --output_dir /opt/openvino_toolkit/models/vehicle-attributes-recognition/output
-omz_downloader --name license-plate-recognition-barrier-0001 --output_dir /opt/openvino_toolkit/models/license-plate-recognition/output
-omz_downloader --name person-attributes-recognition-crossroad-0230 --output_dir /opt/openvino_toolkit/models/person-attributes/output
-```
-* Copy label files (execute once)
-**Note**:Need to make label dirs if skip steps for set output dirs above.
-```
-mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
-mkdir -p /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
-mkdir -p /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/
-mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
-mkdir -p /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
-mkdir -p /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
-```
-```
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/emotions-recognition/output/intel/emotions-recognition-retail-0003/FP32/
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP32/
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/semantic-segmentation/output/FP16/
- sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
+cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
+omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 ```
 
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to intermediate representation (such as the model for object detection):
-  * mobilenet-ssd
-    ```
-    omz_downloader --name mobilenet-ssd --output_dir /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/output
-    omz_converter --name mobilenet-ssd -d /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/output -o /opt/openvino_toolkit/models/object_detection/mobilenet_ssd/output/convert
-    ```
-  * deeplabv3
-    ```
-    omz_downloader --name deeplabv3 --output_dir /opt/openvino_toolkit/models/deeplabv3/output
-    omz_converter --name deeplabv3 -d /opt/openvino_toolkit/models/deeplabv3/output -o /opt/openvino_toolkit/models/deeplabv3/output/convert
-    ```
+```
+cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
+omz_converter --list convert_model.lst -o /opt/openvino_toolkit/models/convert
+```
+* Copy label files (execute once)
+**Note**:Need to make label_dirs if skip steps for set output_dirs above.
+```
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP32/
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
+sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
+```
 
 * Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
