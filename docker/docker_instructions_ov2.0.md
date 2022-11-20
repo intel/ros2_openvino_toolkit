@@ -2,6 +2,7 @@
 
 **NOTE:**
 Below steps have been tested on **Ubuntu 20.04**.
+Supported ROS2 versions include foxy and galactic.
 
 ## 1. Environment Setup
 * Install docker ([guide](https://docs.docker.com/engine/install/ubuntu/))

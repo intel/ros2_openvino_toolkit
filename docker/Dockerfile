@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install --assume-yes apt-utils
 # https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_apt.html
 RUN apt update && apt install --assume-yes curl gnupg2 lsb-release
 RUN curl -s https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB |apt-key add -
-RUN echo "deb https://apt.repos.intel.com/openvino/2022 bionic main" |tee /etc/apt/sources.list.d/intel-openvino-2022.list
+RUN echo "deb https://apt.repos.intel.com/openvino/2022 $(lsb_release -cs) main" |tee /etc/apt/sources.list.d/intel-openvino-2022.list
 RUN apt update && apt-cache search openvino-2022.1.0
 RUN apt install --assume-yes openvino-2022.1.0
 RUN apt install --assume-yes openvino-opencv
@@ -37,7 +37,7 @@ software-properties-common
 # Make sure you set http-proxy in below commands if your environment needs.
 # RUN apt-key adv --keyserver-options http-proxy=your_proxy --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || apt-key adv --keyserver-options http-proxy=your_proxy --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
-RUN add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo bionic main" -u \ 
+RUN add-apt-repository "deb https://librealsense.intel.com/Debian/apt-repo $(lsb_release -cs) main" -u \ 
 && apt-get install -y --no-install-recommends \
 librealsense2-dkms \
 librealsense2-utils \
@@ -68,3 +68,4 @@ RUN git clone -b ros2-development https://github.com/IntelRealSense/realsense-ro
 RUN apt-get install ros-${VERSION}-diagnostic-updater
 WORKDIR /root/catkin_ws
 RUN source /opt/ros/${VERSION}/setup.bash && source /opt/intel/openvino_2022/setupvars.sh && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+
