@@ -25,10 +25,10 @@ Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::LicensePlateDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& net_reader)
+  std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs topology should have only two inputs");
   }
@@ -38,23 +38,23 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(
     throw std::logic_error("License plate detection max sequence size dismatch");
   }
 
-  auto output_info_map = net_reader->outputs();
+  auto output_info_map = model->outputs();
   if (output_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs Network expects networks having one output");
   }
 
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = input_info_map[0].get_any_name();
   const ov::Layout tensor_layout{"NCHW"};
   ppp.input(input_tensor_name_).
     tensor().
     set_element_type(ov::element::u8).
     set_layout(tensor_layout);
-  net_reader = ppp.build();
+  model = ppp.build();
 
   input_ = input_tensor_name_;
   seq_input_ = sequence_input.get_any_name();
-  output_ = net_reader->output().get_any_name();
+  output_ = model->output().get_any_name();
 
   return true;
 }

@@ -24,7 +24,7 @@ Engines::Engine::Engine(
   InferenceEngine::InferencePlugin plg,
   const Models::BaseModel::Ptr base_model)
 {
-  request_ = (plg.LoadNetwork(base_model->getNetReader()->getNetwork(), {})).CreateInferRequestPtr();
+  request_ = (plg.LoadNetwork(base_model->getNetReader()->getModel(), {})).CreateInferRequestPtr();
 }
 #endif
 

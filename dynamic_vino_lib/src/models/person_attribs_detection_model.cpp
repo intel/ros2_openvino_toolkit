@@ -26,15 +26,15 @@ Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::PersonAttribsDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& net_reader)
+  std::shared_ptr<ov::Model>& model)
 { 
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     throw std::logic_error("Person Attribs topology should have only one input");
   }
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout tensor_layout{"NHWC"};
   input_info.tensor().
@@ -42,12 +42,12 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
     set_layout(tensor_layout);
  
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
-  auto output_info_map = net_reader->outputs();
+  auto output_info_map = model->outputs();
   if (output_info_map.size() != 3) {
     throw std::logic_error("Person Attribs Network expects networks having 3 output");
   }
 
-  net_reader = ppp.build();
+  model = ppp.build();
   addInputInfo("input", input_tensor_name_);
   addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
   addOutputInfo("top_output_", output_info_map[1].get_any_name());

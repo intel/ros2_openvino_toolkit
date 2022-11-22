@@ -59,7 +59,7 @@ std::shared_ptr<Engines::Engine> Engines::EngineManager::createEngine_beforeV201
   }
 
   auto executeable_network = 
-  plugins_for_devices_[device].LoadNetwork(model->getNetReader()->getNetwork(), {});
+  plugins_for_devices_[device].LoadNetwork(model->getNetReader()->getModel(), {});
   auto request = executeable_network.CreateInferRequestPtr();
 
   return std::make_shared<Engines::Engine>(request);

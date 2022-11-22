@@ -30,16 +30,16 @@ Models::EmotionDetectionModel::EmotionDetectionModel(
 }
 
 bool Models::EmotionDetectionModel::updateLayerProperty
-(std::shared_ptr<ov::Model>& net_reader)
+(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   // set input property
-  inputs_info_ = net_reader->inputs();
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  inputs_info_ = model->inputs();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
 
-  ov::Shape input_tensor_shape = net_reader->input().get_shape();
+  ov::Shape input_tensor_shape = model->input().get_shape();
   if (inputs_info_.size() != 1) {
     slog::warn << "This model seems not Emotion-detection-model-like, which should have only one input, but we got"
       << std::to_string(input_tensor_shape.size()) << "inputs"
@@ -54,8 +54,8 @@ bool Models::EmotionDetectionModel::updateLayerProperty
     set_layout(tensor_layout);
 
   // set output property
-  outputs_info_ = net_reader->outputs();
-  output_tensor_name_ = net_reader->output().get_any_name();
+  outputs_info_ = model->outputs();
+  output_tensor_name_ = model->output().get_any_name();
   ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
   if (outputs_info_.size() != 1) {
     slog::warn << "This model should have and only have 1 output, but we got "
@@ -64,8 +64,8 @@ bool Models::EmotionDetectionModel::updateLayerProperty
     return false;
   }
 
-  net_reader = ppp.build();
-  ov::set_batch(net_reader, getMaxBatchSize());
+  model = ppp.build();
+  ov::set_batch(model, getMaxBatchSize());
   addOutputInfo("output", output_tensor_name_);
 
   printAttribute();

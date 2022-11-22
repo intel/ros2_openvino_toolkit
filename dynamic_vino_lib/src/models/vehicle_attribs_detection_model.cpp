@@ -25,27 +25,27 @@ Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& net_reader)
+  std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = net_reader->inputs();
+  auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
     throw std::logic_error("Vehicle Attribs topology should have only one input");
   }
 
-  auto output_info_map = net_reader->outputs();
+  auto output_info_map = model->outputs();
   if (output_info_map.size() != 2) {
     throw std::logic_error("Vehicle Attribs Network expects networks having two outputs");
   }
 
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout tensor_layout{"NCHW"};
   input_info.tensor().
     set_element_type(ov::element::u8).
     set_layout(tensor_layout);
-  net_reader = ppp.build();
+  model = ppp.build();
 
   addInputInfo("input", input_tensor_name_);
  

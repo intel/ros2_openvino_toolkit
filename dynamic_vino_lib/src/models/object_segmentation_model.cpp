@@ -107,11 +107,11 @@ const std::string Models::ObjectSegmentationModel::getModelCategory() const
 }
 
 bool Models::ObjectSegmentationModel::updateLayerProperty(
-    std::shared_ptr<ov::Model>& net_reader)
+    std::shared_ptr<ov::Model>& model)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
 
-  inputs_info_ = net_reader->inputs();
+  inputs_info_ = model->inputs();
   slog::debug<<"input size"<<inputs_info_.size()<<slog::endl;
   if (inputs_info_.size() != 1) {
     slog::warn << "This inference sample should have only one input, but we got"
@@ -119,13 +119,13 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
       << slog::endl;
     return false;
   }
-  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(net_reader);
-  input_tensor_name_ = net_reader->input().get_any_name();
+  ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
+  input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
 
   ov::Layout tensor_layout = ov::Layout("NHWC");
   ov::Layout expect_layout = ov::Layout("NCHW");
-  ov::Shape input_shape = net_reader->input().get_shape();
+  ov::Shape input_shape = model->input().get_shape();
   if (input_shape[1] == 3)
     expect_layout = ov::Layout("NCHW");
   else if (input_shape[3] == 3)
@@ -142,7 +142,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
     resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
   addInputInfo("input", input_tensor_name_);
 
-  auto outputs_info = net_reader->outputs();
+  auto outputs_info = model->outputs();
   if (outputs_info.size() != 1) {
     slog::warn << "This inference sample should have only one output, but we got"
       << std::to_string(outputs_info.size()) << "outputs"
@@ -150,12 +150,12 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
     return false;
   }
 
-  output_tensor_name_ = net_reader->output().get_any_name();
-  auto data = net_reader->output();
+  output_tensor_name_ = model->output().get_any_name();
+  auto data = model->output();
 
   ov::preprocess::OutputInfo& output_info = ppp.output(output_tensor_name_);
   output_info.tensor().set_element_type(ov::element::f32);
-  net_reader = ppp.build();
+  model = ppp.build();
   std::vector<size_t> &in_size_vector = input_shape;
   slog::debug<<"dimensional"<<in_size_vector.size()<<slog::endl;
   if (in_size_vector.size() != 4) {

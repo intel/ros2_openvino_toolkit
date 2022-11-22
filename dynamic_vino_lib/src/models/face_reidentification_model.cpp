@@ -25,17 +25,17 @@ Models::FaceReidentificationModel::FaceReidentificationModel(
 : BaseModel(label_loc, model_loc, max_batch_size) {}
 
 void Models::FaceReidentificationModel::setLayerProperty(
-  InferenceEngine::CNNNetwork& net_reader)
+  InferenceEngine::CNNNetwork& model)
 {
   // set input property
   InferenceEngine::InputsDataMap input_info_map(
-    net_reader.getInputsInfo());
+    model.getInputsInfo());
   InferenceEngine::InputInfo::Ptr input_info = input_info_map.begin()->second;
   input_info->setPrecision(InferenceEngine::Precision::U8);
   input_info->getInputData()->setLayout(InferenceEngine::Layout::NCHW);
   // set output property
   InferenceEngine::OutputsDataMap output_info_map(
-    net_reader.getOutputsInfo());
+    model.getOutputsInfo());
   InferenceEngine::DataPtr & output_data_ptr = output_info_map.begin()->second;
   output_data_ptr->setPrecision(InferenceEngine::Precision::FP32);
   output_data_ptr->setLayout(InferenceEngine::Layout::NCHW);
@@ -45,7 +45,7 @@ void Models::FaceReidentificationModel::setLayerProperty(
 }
 
 void Models::FaceReidentificationModel::checkLayerProperty(
-  const InferenceEngine::CNNNetwork & net_reader) {}
+  const InferenceEngine::CNNNetwork & model) {}
 
 const std::string Models::FaceReidentificationModel::getModelCategory() const
 {
