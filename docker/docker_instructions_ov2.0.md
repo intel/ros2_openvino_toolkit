@@ -1,47 +1,58 @@
-# ROS2_OpenVINO_Toolkit
+# Run Docker Images For ROS2_OpenVINO_Toolkit
 
-**NOTE:** 
+**NOTE:**
 Below steps have been tested on **Ubuntu 18.04**.
-Supported ROS2 version: dashing.
+Supported ROS2 versions: dashing.
 
 ## 1. Environment Setup
-* For ROS2 dashing on ubuntu 18.04:
-  * Install ROS2. ([dashing_guide](https://docs.ros.org/en/dashing/Installation/Ubuntu-Install-Debians.html))
+* Install docker ([guide](https://docs.docker.com/engine/install/ubuntu/))
 
-  * Install Intel® OpenVINO™ Toolkit Version: 2022.1. ([guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html)) 
-    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool. ([guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)) 
+## 2. Build docker image by dockerfile
+```
+cd ~/ros2_openvino_toolkit/docker/Dockerfile
+vi ~/ros2_openvino_toolkit/docker/Dockerfile
+docker build -t ros2_openvino_dashing_202201 .
+```
 
-  * Install Intel® RealSense™ SDK. ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
+## 3. Download and load docker image
+* Download docker image
+```
+ # ros2_openvino_202201 for demo
+ cd ~/Downloads/
+ wget <DOCKER_IMAGE_PATH>
+```
+* Load docker image
+```
+cd ~/Downloads/
+docker load -i <DOCKER_IMAGE>
+docker images
+// (show <DOCKER_IMAGE> in the list)
+```
 
-## 2. Building and Installation
-* Install ROS2_OpenVINO_Toolkit packages
+## 4. Running the Demos
+* Install dependency
 ```
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone https://github.com/intel/ros2_openvino_toolkit -b dashing
-git clone https://github.com/intel/ros2_object_msgs
-git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2-development
-git clone https://github.com/ros-perception/vision_opencv.git -b dashing
+  sudo apt install x11-xserver-utils
+  xhost +
 ```
-* Install dependencies
+* Run docker image
 ```
-sudo apt-get install ros-dashing-diagnostic-updater
-sudo apt install python3-colcon-common-extensions
+  docker images
+  docker run -itd  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/dev  --privileged=true --name <your_image_name> <IMAGE_ID>
 ```
-* Build package
+* In Docker Container
+
+* Preparation
 ```
-source /opt/ros/dashing/setup.bash 
-source <OpenVINO_INSTALL_DIR>/setupvars.sh
+source /opt/intel/openvino_2022/setupvars.sh
+source /opt/ros/dashing/setup.bash
 cd ~/catkin_ws
-colcon build --symlink-install
 source ./install/local_setup.bash
 ```
 
-## 3. Running the Demo
-### Install OpenVINO 2022.1 by PIP
-* OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.([guide](https://pypi.org/project/openvino-dev/))
-
 * See all available models
+OMZ tools are provided for downloading and converting OMZ models in ov2022.([guide](https://pypi.org/project/openvino-dev/))
+
 ```
 omz_downloader --print_all
 ```
@@ -57,25 +68,6 @@ omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
 omz_converter --list convert_model.lst -o /opt/openvino_toolkit/models/convert
 ```
-### Install OpenVINO 2022.1 by source code
-* See all available models
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --print_all
-```
-
-* Download the optimized Intermediate Representation (IR) of models (execute once), for example:
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --list ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list/download_model.lst -o /opt/openvino_toolkit/models/
-```
-
-* If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to Intermediate Representation (such as the model for object detection):
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 converter.py --list ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list/convert_model.lst -o /opt/openvino_toolkit/models/convert
-```
-
 * Copy label files (execute once)
 **Note**:Need to make label_dirs if skip steps for set output_dirs above.
 ```
@@ -86,8 +78,8 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
-* Please check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly.
 
+* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py
@@ -108,6 +100,10 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
   ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
   ```
+  * run object segmentation sample code input from Image.
+  ```
+  ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
+  ``` 
   * run vehicle detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
