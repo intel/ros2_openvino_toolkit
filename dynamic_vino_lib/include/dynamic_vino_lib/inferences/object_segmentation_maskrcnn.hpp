@@ -16,8 +16,8 @@
  * @brief A header file with declaration for ObjectSegmentation Class
  * @file object_detection.hpp
  */
-#ifndef DYNAMIC_VINO_LIB__INFERENCES__OBJECT_SEGMENTATION_HPP_
-#define DYNAMIC_VINO_LIB__INFERENCES__OBJECT_SEGMENTATION_HPP_
+#ifndef DYNAMIC_VINO_LIB__INFERENCES__OBJECT_SEGMENTATION_MASKRCNN_HPP_
+#define DYNAMIC_VINO_LIB__INFERENCES__OBJECT_SEGMENTATION_MASKRCNN_HPP_
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
@@ -34,7 +34,7 @@
 namespace dynamic_vino_lib
 {
 /**
- * @class ObjectSegmentationResult
+ * @class ObjectSegmentationMaskrcnnResult
  * @brief Class for storing and processing object segmentation result.
  */
 class ObjectSegmentationMaskrcnnResult : public Result

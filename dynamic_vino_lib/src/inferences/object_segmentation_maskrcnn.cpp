@@ -29,18 +29,18 @@
 #include "dynamic_vino_lib/slog.hpp"
 
 // ObjectSegmentationResult
-dynamic_vino_lib::ObjectSegmentationMaskrcnnResult::ObjectSegmentationResult(const cv::Rect &location)
+dynamic_vino_lib::ObjectSegmentationMaskrcnnResult::ObjectSegmentationMaskrcnnResult(const cv::Rect &location)
     : Result(location)
 {
 }
 
 // ObjectSegmentation
-dynamic_vino_lib::ObjectSegmentationMaskrcnn::ObjectSegmentation(double show_output_thresh)
+dynamic_vino_lib::ObjectSegmentationMaskrcnn::ObjectSegmentationMaskrcnn(double show_output_thresh)
     : show_output_thresh_(show_output_thresh), dynamic_vino_lib::BaseInference()
 {
 }
 
-dynamic_vino_lib::ObjectSegmentationMaskrcnn::~ObjectSegmentation() = default;
+dynamic_vino_lib::ObjectSegmentationMaskrcnn::~ObjectSegmentationMaskrcnn() = default;
 
 void dynamic_vino_lib::ObjectSegmentationMaskrcnn::loadNetwork(
     const std::shared_ptr<Models::ObjectSegmentationMaskrcnnModel> network)
