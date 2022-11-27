@@ -85,6 +85,12 @@ void Outputs::RvizOutput::accept(
   image_window_output_->accept(results);
 }
 
+void Outputs::RvizOutput::accept(
+  const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> & results)
+{
+  image_window_output_->accept(results);
+}
+
 void Outputs::RvizOutput::accept(const std::vector<dynamic_vino_lib::EmotionsResult> & results)
 {
   image_window_output_->accept(results);

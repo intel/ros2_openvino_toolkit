@@ -24,26 +24,26 @@
 #include <random>
 
 #include <openvino/openvino.hpp>
-#include "dynamic_vino_lib/inferences/object_segmentation.hpp"
+#include "dynamic_vino_lib/inferences/object_segmentation_maskrcnn.hpp"
 #include "dynamic_vino_lib/outputs/base_output.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 
 // ObjectSegmentationResult
-dynamic_vino_lib::ObjectSegmentationResult::ObjectSegmentationResult(const cv::Rect &location)
+dynamic_vino_lib::ObjectSegmentationMaskrcnnResult::ObjectSegmentationResult(const cv::Rect &location)
     : Result(location)
 {
 }
 
 // ObjectSegmentation
-dynamic_vino_lib::ObjectSegmentation::ObjectSegmentation(double show_output_thresh)
+dynamic_vino_lib::ObjectSegmentationMaskrcnn::ObjectSegmentation(double show_output_thresh)
     : show_output_thresh_(show_output_thresh), dynamic_vino_lib::BaseInference()
 {
 }
 
-dynamic_vino_lib::ObjectSegmentation::~ObjectSegmentation() = default;
+dynamic_vino_lib::ObjectSegmentationMaskrcnn::~ObjectSegmentation() = default;
 
-void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
-    const std::shared_ptr<Models::ObjectSegmentationModel> network)
+void dynamic_vino_lib::ObjectSegmentationMaskrcnn::loadNetwork(
+    const std::shared_ptr<Models::ObjectSegmentationMaskrcnnModel> network)
 {
   slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
   valid_model_ = network;
@@ -54,7 +54,7 @@ void dynamic_vino_lib::ObjectSegmentation::loadNetwork(
  * Deprecated!
  * This function only support OpenVINO version <=2018R5
  */
-bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
+bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::enqueue_for_one_input(
     const cv::Mat &frame,
     const cv::Rect &input_frame_loc)
 {
@@ -74,7 +74,7 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue_for_one_input(
   return true;
 }
 
-bool dynamic_vino_lib::ObjectSegmentation::enqueue(
+bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::enqueue(
     const cv::Mat &frame,
     const cv::Rect &input_frame_loc)
 {
@@ -106,12 +106,12 @@ bool dynamic_vino_lib::ObjectSegmentation::enqueue(
   return true;
 }
 
-bool dynamic_vino_lib::ObjectSegmentation::submitRequest()
+bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::submitRequest()
 {
   return dynamic_vino_lib::BaseInference::submitRequest();
 }
 
-bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
+bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::fetchResults()
 {
 
   bool can_fetch = dynamic_vino_lib::BaseInference::fetchResults();
@@ -198,23 +198,23 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   return true;
 }
 
-int dynamic_vino_lib::ObjectSegmentation::getResultsLength() const
+int dynamic_vino_lib::ObjectSegmentationMaskrcnn::getResultsLength() const
 {
   return static_cast<int>(results_.size());
 }
 
 const dynamic_vino_lib::Result *
-dynamic_vino_lib::ObjectSegmentation::getLocationResult(int idx) const
+dynamic_vino_lib::ObjectSegmentationMaskrcnn::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
 
-const std::string dynamic_vino_lib::ObjectSegmentation::getName() const
+const std::string dynamic_vino_lib::ObjectSegmentationMaskrcnn::getName() const
 {
   return valid_model_->getModelCategory();
 }
 
-void dynamic_vino_lib::ObjectSegmentation::observeOutput(
+void dynamic_vino_lib::ObjectSegmentationMaskrcnn::observeOutput(
     const std::shared_ptr<Outputs::BaseOutput> &output)
 {
   if (output != nullptr)
@@ -223,7 +223,7 @@ void dynamic_vino_lib::ObjectSegmentation::observeOutput(
   }
 }
 
-const std::vector<cv::Rect> dynamic_vino_lib::ObjectSegmentation::getFilteredROIs(
+const std::vector<cv::Rect> dynamic_vino_lib::ObjectSegmentationMaskrcnn::getFilteredROIs(
     const std::string filter_conditions) const
 {
   if (!filter_conditions.empty())

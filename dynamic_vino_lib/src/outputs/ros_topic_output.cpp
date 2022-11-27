@@ -207,6 +207,29 @@ void Outputs::RosTopicOutput::accept(
 }
 
 void Outputs::RosTopicOutput::accept(
+  const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> & results)
+{
+  segmented_objects_topic_ = std::make_shared<people_msgs::msg::ObjectsInMasks>();
+  people_msgs::msg::ObjectInMask object;
+  for (auto & r : results) {
+    auto loc = r.getLocation();
+    object.roi.x_offset = loc.x;
+    object.roi.y_offset = loc.y;
+    object.roi.width = loc.width;
+    object.roi.height = loc.height;
+    object.object_name = r.getLabel();
+    object.probability = r.getConfidence();
+    cv::Mat mask = r.getMask();
+    for (int h = 0; h < mask.size().height; ++h) {
+      for (int w = 0; w < mask.size().width; ++w) {
+        object.mask_array.push_back(mask.at<float>(h, w));
+      }
+    }
+    segmented_objects_topic_->objects_vector.push_back(object);
+  }
+}
+
+void Outputs::RosTopicOutput::accept(
   const std::vector<dynamic_vino_lib::ObjectDetectionResult> & results)
 {
   detected_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();

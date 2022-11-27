@@ -189,6 +189,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/object_detection.cpp
         src/inferences/head_pose_detection.cpp
         src/inferences/object_segmentation.cpp
+        src/inferences/object_segmentation_maskrcnn.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp

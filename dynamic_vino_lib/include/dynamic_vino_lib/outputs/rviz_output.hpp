@@ -92,6 +92,12 @@ public:
  */
   void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &) override;
   /**
+ * @brief Generate rviz output content according to
+ * the object segmentation result.
+ * @param[in] results A bundle of object segmentation maskrcnn results.
+ */
+  void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> &) override;
+  /**
    * @brief Generate rviz output content according to
    * the emotion detection result.
    * @param[in] A emotion detection result objetc.

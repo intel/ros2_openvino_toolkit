@@ -64,7 +64,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::enqueue(
       data[2] = 1;
     }
   }
-
+ 
   return true;
 }
 
