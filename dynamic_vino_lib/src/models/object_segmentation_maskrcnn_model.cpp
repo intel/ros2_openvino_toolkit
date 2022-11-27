@@ -19,12 +19,12 @@
 #include <string>
 #include <vector>
 #include <openvino/openvino.hpp>
-#include "dynamic_vino_lib/models/object_segmentation_model.hpp"
+#include "dynamic_vino_lib/models/object_segmentation_maskrcnn_model.hpp"
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 
 // Validated Object Segmentation Network
-Models::ObjectSegmentationModel::ObjectSegmentationModel(
+Models::ObjectSegmentationMaskrcnnModel::ObjectSegmentationMaskrcnnModel(
     const std::string & label_loc, 
     const std::string & model_loc,
     int max_batch_size)
@@ -32,7 +32,7 @@ Models::ObjectSegmentationModel::ObjectSegmentationModel(
 {
 }
 
-bool Models::ObjectSegmentationModel::enqueue(
+bool Models::ObjectSegmentationMaskrcnnModel::enqueue(
     const std::shared_ptr<Engines::Engine> &engine,
     const cv::Mat &frame,
     const cv::Rect &input_frame_loc)
@@ -68,7 +68,7 @@ bool Models::ObjectSegmentationModel::enqueue(
   return true;
 }
 
-bool Models::ObjectSegmentationModel::matToBlob(
+bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(
     const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
     int batch_index, const std::shared_ptr<Engines::Engine> &engine)
 {
@@ -131,12 +131,12 @@ bool Models::ObjectSegmentationModel::matToBlob(
   return true;
 }
 
-const std::string Models::ObjectSegmentationModel::getModelCategory() const
+const std::string Models::ObjectSegmentationMaskrcnnModel::getModelCategory() const
 {
   return "Object Segmentation";
 }
 
-bool Models::ObjectSegmentationModel::updateLayerProperty(
+bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(
     std::shared_ptr<ov::Model>& model)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
