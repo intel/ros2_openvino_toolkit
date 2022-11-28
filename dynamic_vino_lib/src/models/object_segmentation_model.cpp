@@ -110,7 +110,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
     std::shared_ptr<ov::Model>& model)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
-
+ 
   inputs_info_ = model->inputs();
   slog::debug<<"input size"<<inputs_info_.size()<<slog::endl;
   if (inputs_info_.size() != 1) {

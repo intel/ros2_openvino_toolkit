@@ -197,6 +197,54 @@ void Outputs::ImageWindowOutput::accept(
   mergeMask(results);
 }
 
+
+
+
+
+void Outputs::ImageWindowOutput::mergeMask(
+  const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> & results)
+{
+  std::map<std::string, int> class_color;
+  for (unsigned i = 0; i < results.size(); i++) {
+    std::string class_label = results[i].getLabel();
+    if (class_color.find(class_label) == class_color.end()) {
+      class_color[class_label] = class_color.size();
+    }
+    auto & color = colors_[class_color[class_label] % colors_.size() ];
+    const float alpha = 0.7f;
+    const float MASK_THRESHOLD = 0.5;
+
+    cv::Rect location = results[i].getLocation();
+    cv::Mat roi_img = frame_(location);
+    cv::Mat mask = results[i].getMask();
+    cv::Mat colored_mask(location.height, location.width, frame_.type(),
+		   cv::Scalar(color[2], color[1], color[0]) );
+    roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
+    cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
+  }
+}
+void Outputs::ImageWindowOutput::accept(
+  const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    outputs_[target_index].rect = result_rect;
+    auto fd_conf = results[i].getConfidence();
+    if (fd_conf >= 0) {
+      std::ostringstream ostream;
+      ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
+      outputs_[target_index].desc += ostream.str();
+    }
+    auto label = results[i].getLabel();
+    outputs_[target_index].desc += "[" + label + "]";
+  }
+  mergeMask(results);
+}
+
+
+
+
 void Outputs::ImageWindowOutput::accept(
   const std::vector<dynamic_vino_lib::FaceDetectionResult> & results)
 {

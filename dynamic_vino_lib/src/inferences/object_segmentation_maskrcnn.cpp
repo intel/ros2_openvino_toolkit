@@ -130,7 +130,6 @@ bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::fetchResults()
   //get detection data
   ov::Tensor do_tensor = infer_request.get_tensor(detection_output.c_str());
   const auto do_data = do_tensor.data<float>();
-  slog::debug << "11111111111" << do_data << slog::endl;
   ov::Shape do_shape = do_tensor.get_shape();
   slog::debug << "Detection Blob getDims = " <<do_shape.size() << "[Should be 2]" << slog::endl;
   // get mask data
@@ -155,7 +154,6 @@ bool dynamic_vino_lib::ObjectSegmentationMaskrcnn::fetchResults()
   for (size_t box = 0; box < box_num; ++box) {
     // box description: batch, label, prob, x1, y1, x2, y2
     float * box_info = do_data + box * box_description_size;
-    slog::debug << "box_info is:" << box_info << slog::endl;
     auto batch = static_cast<int>(box_info[0]);
     slog::debug << "batch =" << batch << slog::endl;
     if (batch < 0) {
