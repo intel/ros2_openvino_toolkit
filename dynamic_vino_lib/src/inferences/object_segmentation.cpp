@@ -123,13 +123,10 @@ bool dynamic_vino_lib::ObjectSegmentation::fetchResults()
   ov::InferRequest infer_request = getEngine()->getRequest();
   slog::debug << "Analyzing Detection results..." << slog::endl;
   std::string detection_output = valid_model_->getOutputName("detection");
-  std::string mask_output = valid_model_->getOutputName("masks");
 
   ov::Tensor output_tensor = infer_request.get_tensor(detection_output);
   const auto out_data = output_tensor.data<float>();
   ov::Shape out_shape = output_tensor.get_shape();
-  ov::Tensor masks_tensor = infer_request.get_tensor(detection_output.c_str());
-  const auto masks_data = masks_tensor.data<float>();
   size_t output_w, output_h, output_des, output_extra = 0;
   if (out_shape.size() == 3) {
     output_w = out_shape[2];
@@ -236,9 +233,5 @@ const std::vector<cv::Rect> dynamic_vino_lib::ObjectSegmentation::getFilteredROI
               << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
-  for (auto res : results_)
-  {
-    filtered_rois.push_back(res.getLocation());
-  }
   return filtered_rois;
 }

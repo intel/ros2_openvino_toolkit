@@ -193,7 +193,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   slog::debug << "output HEIGHT " << outHeight<< slog::endl;
   slog::debug << "output CHANNELS " << outChannels<< slog::endl;
   slog::debug << "output NAME " << output_tensor_name_<< slog::endl;
-  addOutputInfo("masks", output_tensor_name_);
   addOutputInfo("detection", output_tensor_name_);
 
   printAttribute();
