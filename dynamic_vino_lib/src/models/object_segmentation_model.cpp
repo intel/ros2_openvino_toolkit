@@ -110,7 +110,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
     std::shared_ptr<ov::Model>& model)
 {
   slog::info<< "Checking INPUTS for Model" <<getModelName()<<slog::endl;
-
+ 
   inputs_info_ = model->inputs();
   slog::debug<<"input size"<<inputs_info_.size()<<slog::endl;
   if (inputs_info_.size() != 1) {
@@ -193,7 +193,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   slog::debug << "output HEIGHT " << outHeight<< slog::endl;
   slog::debug << "output CHANNELS " << outChannels<< slog::endl;
   slog::debug << "output NAME " << output_tensor_name_<< slog::endl;
-  addOutputInfo("masks", output_tensor_name_);
   addOutputInfo("detection", output_tensor_name_);
 
   printAttribute();

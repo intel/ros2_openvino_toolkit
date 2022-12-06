@@ -209,6 +209,8 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createObjectDetection(infer);
     } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
+    } else if (infer.name == kInferTpye_ObjectSegmentationMaskrcnn) {
+      object = createObjectSegmentationMaskrcnn(infer);
     } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
     } else if (infer.name == kInferTpye_PersonAttribsDetection) {
@@ -322,6 +324,24 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceR
   auto engine = engine_manager_.createEngine(infer.engine, model);
   slog::info << "Segmentation Engine initialized." << slog::endl;
   auto segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentation>(
+    infer.confidence_threshold);
+    slog::info << "Segmentation Inference instanced." << slog::endl;
+  segmentation_inference_ptr->loadNetwork(model);
+  segmentation_inference_ptr->loadEngine(engine);
+
+  return segmentation_inference_ptr;
+}
+
+std::shared_ptr<dynamic_vino_lib::BaseInference>
+PipelineManager::createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer)
+{
+  auto model =
+    std::make_shared<Models::ObjectSegmentationMaskrcnnModel>(infer.label, infer.model, infer.batch);
+  model->modelInit();
+  slog::info << "Segmentation model initialized." << slog::endl;
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  slog::info << "Segmentation Engine initialized." << slog::endl;
+  auto segmentation_inference_ptr = std::make_shared<dynamic_vino_lib::ObjectSegmentationMaskrcnn>(
     infer.confidence_threshold);
     slog::info << "Segmentation Inference instanced." << slog::endl;
   segmentation_inference_ptr->loadNetwork(model);

@@ -100,6 +100,12 @@ public:
   void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &) override;
   /**
    * @brief Generate image window output content according to
+   * the object segmentation maskrcnn result.
+   * @param[in] An obejct segmentation result objetc.
+   */
+  void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> &) override;
+  /**
+   * @brief Generate image window output content according to
    * the face detection result.
    * @param[in] A face detection result objetc.
    */
@@ -145,6 +151,7 @@ private:
   cv::Mat getRotationTransform(double yaw, double pitch, double roll);
 
   void mergeMask(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &);
+  void mergeMask(const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> &);
 
   struct OutputData
   {
