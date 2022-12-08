@@ -30,7 +30,7 @@ class VehicleAttribsDetectionModel : public BaseModel
 {
 public:
   VehicleAttribsDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
-  inline const std::string getInputName() {return input_;}
+  inline const std::string getInputName() {return input_tensor_name_;}
   inline const std::string getColorOutputName() {return color_output_;}
   inline const std::string getTypeOutputName() {return type_output_;}
   /**
@@ -41,7 +41,6 @@ public:
 
 protected:
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  std::string input_;
   std::string color_output_;
   std::string type_output_;
 };
