@@ -50,6 +50,7 @@
 #include "dynamic_vino_lib/inferences/face_reidentification.hpp"
 #include "dynamic_vino_lib/inferences/vehicle_attribs_detection.hpp"
 #include "dynamic_vino_lib/inferences/license_plate_detection.hpp"
+#include "dynamic_vino_lib/inferences/object_segmentation_maskrcnn.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -106,6 +107,12 @@ public:
    * @brief Generate output content according to the object segmentation result.
    */
   virtual void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationResult> &)
+  {
+  }
+  /**
+   * @brief Generate output content according to the object segmentation maskrcnn result.
+   */
+  virtual void accept(const std::vector<dynamic_vino_lib::ObjectSegmentationMaskrcnnResult> &)
   {
   }
   /**
