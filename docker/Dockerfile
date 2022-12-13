@@ -24,7 +24,6 @@ RUN curl -s https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PROD
 RUN echo "deb https://apt.repos.intel.com/openvino/2022 bionic main" |tee /etc/apt/sources.list.d/intel-openvino-2022.list
 RUN apt update && apt-cache search openvino-2022.1.0
 RUN apt install --assume-yes openvino-2022.1.0
-RUN apt install --assume-yes openvino-opencv
 RUN ls -lh /opt/intel/openvino_2022
 RUN source /opt/intel/openvino_2022/setupvars.sh 
 
