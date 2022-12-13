@@ -62,7 +62,7 @@ omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to intermediate representation (such as the model for object detection):
 ```
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
-omz_converter --list convert_model.lst -o /opt/openvino_toolkit/models/convert
+omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 ```
 ### Install OpenVINO 2022.1 by source code
 * See all available models
