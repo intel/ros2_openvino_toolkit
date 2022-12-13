@@ -3,7 +3,7 @@ Pipelines:
   inputs: [StandardCamera, Image, video]
   infers:
     - name: Objectdetection
-      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      model: /opt/openvino_toolkit/models/convert/public/mobilenet-ssd/FP16/mobilenet-ssd.xml
       engine: GPU
       label: to/be/set/xxx.labels
       batch: 16
@@ -21,7 +21,7 @@ Pipelines:
   inputs: [StandardCamera, Image, video]
   infers:
     - name:
-      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      model: /opt/openvino_toolkit/models/convert/public/mobilenet-ssd/FP16/mobilenet-ssd.xml
       engine: GPU
       label: to/be/set/xxx.labels
       batch: 16
@@ -37,4 +37,5 @@ Pipelines:
       right: [imageWindow]
 
 OpenvinoCommon:
+
 
