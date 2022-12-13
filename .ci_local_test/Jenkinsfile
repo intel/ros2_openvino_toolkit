@@ -26,6 +26,16 @@ pipeline {
                 }
             }
         }
+        stage('Klocwork Code check') {
+            steps {
+                script {
+                    echo 'klocwork code check'
+                    sh script: "sudo docker cp $WORKSPACE klocwork_test:/home/intel/catkin_ws/src/ros2_openvino_toolkit", returnStatus: true
+                    sh script: "sudo docker exec -i klocwork_test bash -c 'source ~/.bashrc && cd catkin_ws && ./klocwork_scan.sh'", returnStatus: true
+                }
+
+            }
+        }
         stage('The Ros2_openvino container run') {
             steps {
                 script {
