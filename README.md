@@ -1,12 +1,27 @@
 # ros2_openvino_toolkit
 
+# Table of Contents
+* [➤ Introduction](#-introduction)
+	* [ROS2 Version Supported](#-ros2-version-supported)
+	* [Inference Features Supported](#-inference-features-supported)
+	* [Prerequisite](#-prerequisite)
+	* [Design Architecture](#-design-architecture)
+	* [Logic Flow](#-logic-flow)
+* [➤ Supported Features](#-supported-features)
+	* [Multiple Input Components](#-multiple-input-components)
+	* [Inference Implementations](#-inference-implementations)
+	* [ROS interfaces and outputs](#-ros-interfaces-and-outputs)
+	* [Demo result Snapshots](#-demo-result-snapshots)
+* [➤ Installation & Launching](#-installation-and-launching)
+* [➤ Reference](#-reference)
+
 # Introduction
-## ROS2 Version supported
+## ROS2 Version Supported
 * [x] ROS2 Galactic
 * [x] ROS2 Foxy
 * [x] ROS2 Humble
 
-## Inference Features supported
+## Inference Features Supported
 * [x] Object Detection
 * [x] Face Detection
 * [x] Age Gender Recognition
@@ -36,7 +51,7 @@ From the view of hirarchical architecture design, the package is divided into di
    - Unleash convolutional neural network (CNN)-based deep learning inference using a common API.
    - Speed development using optimized OpenCV* and OpenVX* functions.
 See more from [here](https://github.com/openvinotoolkit/openvino) for Intel OpenVINO™ introduction.
-- **ros OpenVINO Runtime Framework** is the main body of this repo. it provides key logic implementation for pipeline lifecycle management, resource management and ROS system adapter, which extends Intel OpenVINO toolkit and libraries. Furthermore, this runtime framework provides ways to ease launching, configuration and data analytics and re-use.
+- **ROS OpenVINO Runtime Framework** is the main body of this repo. it provides key logic implementation for pipeline lifecycle management, resource management and ROS system adapter, which extends Intel OpenVINO toolkit and libraries. Furthermore, this runtime framework provides ways to ease launching, configuration and data analytics and re-use.
 - **Diversal Input resources** are the data resources to be infered and analyzed with the OpenVINO framework.
 - **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inferrence results.
 - **Optimized Models** provides by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization.It also supports graph freeze and graph summarize along with dynamic input freezing.
@@ -83,10 +98,10 @@ Currently, the inference feature list is supported:
 
 ## ROS interfaces and outputs
 ### Topic
-* #### Subscribed Topic
+#### Subscribed Topic
 - Image topic:
 ```/camera/color/image_raw```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
-* #### Published Topic
+#### Published Topic
 - Face Detection:
 ```/ros2_openvino_toolkit/face_detection```([object_msgs::ObjectsInBoxes](https://github.com/intel/object_msgs/blob/master/msg/ObjectsInBoxes.msg))
 - Emotion Recognition:
@@ -143,7 +158,7 @@ See below pictures for the demo result snapshots.
 * Person Reidentification input from standard camera
 ![person_reidentification_demo_video](./data/images/person-reidentification.gif "person reidentification demo video")
 
-# Installation & Launching
+# Installation and Launching
 * Refer to the quick start document for [ROS2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 

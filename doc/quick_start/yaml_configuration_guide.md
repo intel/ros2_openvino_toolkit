@@ -3,7 +3,7 @@
 The contents in .yaml config file should be well structured and follow the supported rules and entity names.
 
 # Sample
-## [pipeline_people.yaml](https://github.com/intel/ros2_openvino_toolkit/blob/ros2/sample/param/pipeline_people.yaml)
+## [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
 ```bash
 Pipelines:
 - name: people
@@ -85,7 +85,7 @@ The name of inference engine need to be specified here. Currently, the inference
 
 * #### model
 The path of model need to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
-![trained deep learning model](https://github.com/intel/ros2_openvino_toolkit/blob/ros2/data/images/CVSDK_Flow.png "trained deep learning model")
+![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
 **Note**:Currently, only CPU and GPU are supported.</br>

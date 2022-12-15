@@ -80,7 +80,7 @@ sudo python3 downloader.py --list download_model.lst -o /opt/openvino_toolkit/mo
 * If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to Intermediate Representation (such as the model for object detection):
 ```
 cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 converter.py --list convert_model.lst -o /opt/openvino_toolkit/models/convert
+sudo python3 converter.py --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 ```
 
 * Copy label files (execute once)
@@ -94,7 +94,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* Please check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Refer to the quick start document for [Yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
+* Please check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py
