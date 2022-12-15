@@ -5,20 +5,20 @@ Below steps have been tested on **Ubuntu 20.04** and **Ubuntu 22.04**.
 Supported ROS2 versions include foxy,galactic and humble.
 
 ## 1. Environment Setup
-* For ROS2 foxy and galactic on ubuntu 20.04:
-  * Install ROS2. ([foxy_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)) & ([galactic_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html))
+For ROS2 foxy and galactic on ubuntu 20.04:
+  * Install ROS2. [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
 
-  * Install Intel® OpenVINO™ Toolkit Version: 2022.1. ([guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html)) 
-    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool. ([guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)) 
+  * Install Intel® OpenVINO™ Toolkit Version: 2022.1. [OpenVINO_install_guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html))
+    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool. [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html))
 
-  * Install Intel® RealSense™ SDK. ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md))
+  * Install Intel® RealSense™ SDK. [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
-* For ROS2 humble on ubuntu 22.04:
-  * Install ROS2. ([humble_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html))
+For ROS2 humble on ubuntu 22.04:
+  * Install ROS2. [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
-  * Install Intel® OpenVINO™ Toolkit Latest Version by Source. ([guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode))
+  * Install Intel® OpenVINO™ Toolkit Latest Version by Source. [OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
 
-  * Install Intel®  RealSense™ SDK by Source. ([guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md))
+  * Install Intel®  RealSense™ SDK by Source. [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 
 ## 2. Building and Installation
 * Install ROS2_OpenVINO_Toolkit packages
@@ -46,7 +46,7 @@ source ./install/local_setup.bash
 
 ## 3. Running the Demo
 ### Install OpenVINO 2022.1 by PIP
-* OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.([guide](https://pypi.org/project/openvino-dev/))
+OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.[OMZtool_guide](https://pypi.org/project/openvino-dev/)
 
 * See all available models
 ```
@@ -94,7 +94,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* Please check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
+* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py

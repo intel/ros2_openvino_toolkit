@@ -48,10 +48,10 @@ Common:
 ```
 ## Interface Description
 
-### name
+### Specify pipeline name
 The name value of this pipeline can be anyone other than null.
 
-### inputs
+### Specify inputs
 **Note**:The input parameter can only have one value.</br>
 Currently, options for inputs are:
 
@@ -64,10 +64,10 @@ Currently, options for inputs are:
 |Video| Any video file which can be parsed by openCV.|
 |IpCamera| Any RTSP server which can push video stream.|
 
-### input_path
+### Specify input_path
 The **input_path** need to be specified when input is an image or video file. 
 
-### infers
+### Specify infers
 The Inference Engine is a set of C++ classes to provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
 
 * #### name
@@ -104,7 +104,7 @@ Currently, this parameter does not work.
 * #### batch
 Enable dynamic batch size for the inference engine net. 
 
-### outputs
+### Specify outputs
 **Note**:The output parameter can be one or more.</br>
 Currently, the output options are:
 
@@ -114,8 +114,8 @@ Currently, the output options are:
 |RosTopic| Output the topic|
 |RViz| Display the result in rviz|
 
-### confidence_threshold
+### Specify confidence_threshold
 Set the threshold of detection probability.
 
-### connects
+### Specify connects
 The topology of a pipe can only have one value on the left and multiple values on the right. The value of the first left node should be the same as the specified **inputs**.

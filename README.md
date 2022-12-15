@@ -10,8 +10,8 @@
 * [➤ Supported Features](#supported-features)
 	* [Multiple Input Components](#multiple-input-components)
 	* [Inference Implementations](#inference-implementations)
-	* [ROS interfaces and outputs](#ros-interfaces-and-outputs)
-	* [Demo result Snapshots](#demo-result-snapshots)
+	* [ROS Interfaces and Outputs](#ros-interfaces-and-outputs)
+	* [Demo Result Snapshots](#demo-result-snapshots)
 * [➤ Installation & Launching](#installation-and-launching)
 * [➤ Reference](#reference)
 
@@ -146,25 +146,25 @@ To enable window, Image Window output should be added into the output choices in
 
 ## Demo Result Snapshots
 See below pictures for the demo result snapshots.
-* face detection input from standard camera
+* Face detection input from standard camera
 ![face_detection_demo_image](./data/images/face_detection.png "face detection demo image")
 
-* object detection input from realsense camera
+* Object detection input from realsense camera
 ![object_detection_demo_realsense](./data/images/object_detection.gif "object detection demo realsense")
 
-* object segmentation input from video
+* Object segmentation input from video
 ![object_segmentation_demo_video](./data/images/object_segmentation.gif "object segmentation demo video")
 
 * Person Reidentification input from standard camera
 ![person_reidentification_demo_video](./data/images/person-reidentification.gif "person reidentification demo video")
 
 # Installation and Launching
-* Refer to the quick start document for [ROS2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
+* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 # Reference
 * Open_model_zoo: Refer to the OpenVINO document for [open_model_zoo](https://github.com/openvinotoolkit/open_model_zoo/tree/master) for detailed model structure and demo samples.
-* OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO api 2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
+* OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
