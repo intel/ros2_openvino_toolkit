@@ -1,19 +1,19 @@
 # ros2_openvino_toolkit
 
 # Table of Contents
-* [➤ Introduction](#-introduction)
-	* [ROS2 Version Supported](#-ros2-version-supported)
-	* [Inference Features Supported](#-inference-features-supported)
-	* [Prerequisite](#-prerequisite)
-	* [Design Architecture](#-design-architecture)
-	* [Logic Flow](#-logic-flow)
-* [➤ Supported Features](#-supported-features)
-	* [Multiple Input Components](#-multiple-input-components)
-	* [Inference Implementations](#-inference-implementations)
-	* [ROS interfaces and outputs](#-ros-interfaces-and-outputs)
-	* [Demo result Snapshots](#-demo-result-snapshots)
-* [➤ Installation & Launching](#-installation-and-launching)
-* [➤ Reference](#-reference)
+* [➤ Introduction](#introduction)
+	* [ROS2 Version Supported](#ros2-version-supported)
+	* [Inference Features Supported](#inference-features-supported)
+	* [Prerequisite](#prerequisite)
+	* [Design Architecture](#design-architecture)
+	* [Logic Flow](#logic-flow)
+* [➤ Supported Features](#supported-features)
+	* [Multiple Input Components](#multiple-input-components)
+	* [Inference Implementations](#inference-implementations)
+	* [ROS interfaces and outputs](#ros-interfaces-and-outputs)
+	* [Demo result Snapshots](#demo-result-snapshots)
+* [➤ Installation & Launching](#installation-and-launching)
+* [➤ Reference](#reference)
 
 # Introduction
 ## ROS2 Version Supported
