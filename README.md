@@ -85,16 +85,16 @@ Currently, the package support several kinds of input resources of gaining image
 ## Inference Implementations
 Currently, the inference feature list is supported:
 
-|Inference|Description|
-|-----------------------|------------------------------------------------------------------|
-|Face Detection|Object Detection task applied to face recognition using a sequence of neural networks.|
-|Emotion Recognition| Emotion recognition based on detected face image.|
-|Age & Gender Recognition| Age and gender recognition based on detected face image.|
-|Head Pose Estimation| Head pose estimation based on detected face image.|
-|Object Detection| Object detection based on SSD-based trained models.|
-|Vehicle and License Detection| Vehicle and license detection based on Intel models.|
-|Object Segmentation| object segmentation.|
-|Person Reidentification| Person Reidentification based on object detection.|
+|Inference|Description|YAML Configuration|Model Used|
+|-----------------------|------------------------------------------------------------------|----------------------|----------------------|
+|Face Detection| Object Detection task applied to face recognition using a sequence of neural networks.|[Face Detection YAML](./sample/param/pipeline_image.yaml)|[face-detection-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/face-detection-adas-0001)  [age-gender-recognition-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/age-gender-recognition-retail-0013)  [emotions-recognition-retail-0003](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/emotions-recognition-retail-0003)  [head-pose-estimation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/head-pose-estimation-adas-0001)|
+|Emotion Recognition| Emotion recognition based on detected face image.|[Emotion Detection YAML](./sample/param/pipeline_image.yaml)|[emotions-recognition-retail-0003](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/emotions-recognition-retail-0003)|
+|Age & Gender Recognition| Age and gender recognition based on detected face image.|[Age Gender Detection YAML](./sample/param/pipeline_image.yaml)|[age-gender-recognition-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/age-gender-recognition-retail-0013)|
+|Head Pose Estimation| Head pose estimation based on detected face image.|[Head Pose Detection YAML](./sample/param/pipeline_image.yaml)|[head-pose-estimation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/head-pose-estimation-adas-0001)|
+|Object Detection| Object detection based on SSD-based trained models.|[Object Detection YAML](./sample/param/pipeline_object.yaml)|[mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/public/mobilenet-ssd)|
+|Vehicle and License Detection| Vehicle and license detection based on Intel models.|[Vehicle & License Detection YAML](./sample/param/pipeline_vehicle_detection.yaml)|[vehicle-license-plate-detection-barrier-0106](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/vehicle-license-plate-detection-barrier-0106)|
+|Object Segmentation| Object segmentation.|[Object Segmentation YAML](./sample/param/pipeline_segmentation.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/semantic-segmentation-adas-0001)|
+|Person Reidentification| Person Reidentification based on object detection.|[Person Reidentification YAML](./sample/param/pipeline_person_attributes.yaml)|[person-attributes-recognition-crossroad-0230](https://github.com/openvinotoolkit/open_model_zoo/tree/master/models/intel/person-attributes-recognition-crossroad-0230)|
 
 ## ROS interfaces and outputs
 ### Topic
