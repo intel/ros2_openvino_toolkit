@@ -109,10 +109,20 @@ Currently, the inference feature list is supported:
 
 ## ROS interfaces and outputs
 ### Topic
-#### Subscribed Topic
+
+<p>
+<details>
+<summary>Subscribed Topic</summary>
+
 - Image topic:
 ```/camera/color/image_raw```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
-#### Published Topic
+</details>
+</p>
+
+<p>
+<details>
+<summary>Published Topic</summary>
+
 - Face Detection:
 ```/ros2_openvino_toolkit/face_detection```([object_msgs::ObjectsInBoxes](https://github.com/intel/object_msgs/blob/master/msg/ObjectsInBoxes.msg))
 - Emotion Recognition:
@@ -133,6 +143,8 @@ Currently, the inference feature list is supported:
 ```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::LicensePlateStamped](./people_msgs/msg/LicensePlateStamped.msg)
 - Rviz Output:
 ```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
+</details>
+</p>
 
 ### Service
 - Object Detection Service:
