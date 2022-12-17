@@ -13,6 +13,8 @@
 	* [ROS Interfaces and Outputs](#ros-interfaces-and-outputs)
 	* [Demo Result Snapshots](#demo-result-snapshots)
 * [➤ Installation & Launching](#installation-and-launching)
+	* [Deploy in Local Environment](#deploy-in-local-environment)
+	* [Deploy in Docker](#deploy-in-docker)
 * [➤ Reference](#reference)
 * [➤ More Information](#more-information)
 
@@ -25,10 +27,10 @@
 
 |Branch Name|ROS2 Version Supported|Openvino Version|Corresponding Branch Link|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|----------------------|
-|Dashing|Dashing|V2022.1, V2022.2|[dashing branch](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Ubuntu 18.04|
+|dashing|Dashing|V2022.1, V2022.2|[dashing branch](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Ubuntu 18.04|
 |ros2|Galactic, Foxy, Humble|V2022.1, V2022.2|[ros2 branch](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Ubuntu 20.04, Ubuntu 22.04|
-|foxy|foxy|V2021.4|[foxy branch](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Ubuntu 20.04|
-|galactic-ov2021.4|galactic|V2021.4|[galactic branch](https://github.com/intel/ros2_openvino_toolkit/tree/galactic-ov2021.4)|Ubuntu 20.04|
+|foxy|Foxy|V2021.4|[foxy branch](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Ubuntu 20.04|
+|galactic-ov2021.4|Galactic|V2021.4|[galactic branch](https://github.com/intel/ros2_openvino_toolkit/tree/galactic-ov2021.4)|Ubuntu 20.04|
 
 ## Inference Features Supported
 * [x] Object Detection
@@ -168,7 +170,12 @@ See below pictures for the demo result snapshots.
 ![person_reidentification_demo_video](./data/images/person-reidentification.gif "person reidentification demo video")
 
 # Installation and Launching
+## Deploy in local environment
 * Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
+* Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
+
+## Deploy in docker
+* Refer to the docker instruction for [docker_instructions](./docker/docker_instructions_ov2.0.md) for detailed information about building docker image and launching.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 # Reference

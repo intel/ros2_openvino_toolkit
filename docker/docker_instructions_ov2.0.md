@@ -5,7 +5,8 @@ Below steps have been tested on **Ubuntu 20.04**.
 Supported ROS2 versions include foxy and galactic.
 
 ## 1. Environment Setup
-* Install docker ([guide](https://docs.docker.com/engine/install/ubuntu/))
+* Install docker. </br>
+Refer to: [Docker_install_guide](https://docs.docker.com/engine/install/ubuntu/)
 
 ## 2. Build docker image by dockerfile
 ```
@@ -64,7 +65,8 @@ source ./install/local_setup.bash
 ```
 
 * See all available models
-OMZ tools are provided for downloading and converting OMZ models in ov2022.([guide](https://pypi.org/project/openvino-dev/))
+OMZ tools are provided for downloading and converting OMZ models in ov2022.</br>
+Refer to: [OMZtool_guide](https://pypi.org/project/openvino-dev/)
 
 ```
 omz_downloader --print_all
@@ -92,7 +94,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
+* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](../doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py
