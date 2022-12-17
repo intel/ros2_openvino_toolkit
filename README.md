@@ -57,15 +57,42 @@ From the view of hirarchical architecture design, the package is divided into di
 
 ![OpenVINO_Architecture](./data/images/design_arch.PNG "OpenVINO RunTime Architecture")
 
+<p>
+<details>
+<summary>Intel® OpenVINO™ toolkit</summary>
+
 - **Intel® OpenVINO™ toolkit** provides a ROS-adapted runtime framework of neural network which quickly deploys applications and solutions for vision inference. By leveraging Intel® OpenVINO™ toolkit and corresponding libraries, this ROS2 runtime framework extends  workloads across Intel® hardware (including accelerators) and maximizes performance.
    - Increase deep learning workload performance up to 19x1 with computer vision accelerators from Intel.
    - Unleash convolutional neural network (CNN)-based deep learning inference using a common API.
    - Speed development using optimized OpenCV* and OpenVX* functions.
 See more from [here](https://github.com/openvinotoolkit/openvino) for Intel OpenVINO™ introduction.
+</details>
+</p>
+
+<p>
+<details>
+<summary>ROS OpenVINO Runtime Framework</summary>
+
 - **ROS OpenVINO Runtime Framework** is the main body of this repo. it provides key logic implementation for pipeline lifecycle management, resource management and ROS system adapter, which extends Intel OpenVINO toolkit and libraries. Furthermore, this runtime framework provides ways to ease launching, configuration and data analytics and re-use.
+</details>
+</p>
+
+<p>
+<details>
+<summary>ROS Input & Output</summary>
+
 - **Diversal Input resources** are the data resources to be infered and analyzed with the OpenVINO framework.
 - **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inferrence results.
+</details>
+</p>
+
+<p>
+<details>
+<summary>Optimized Models</summary>
+
 - **Optimized Models** provides by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization.It also supports graph freeze and graph summarize along with dynamic input freezing.
+</details>
+</p>
 
 ## Logic Flow
 From the view of logic implementation, the package introduces the definitions of parameter manager, pipeline and pipeline manager. The below picture depicts how these entities co-work together when the corresponding program is launched.
@@ -76,9 +103,21 @@ Once a corresponding program is launched with a specified .yaml config file pass
 
 The contents in **.yaml config file** should be well structured and follow the supported rules and entity names. Please see [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for how to create or edit the config files.
 
+<p>
+<details>
+<summary>Pipeline</summary>
+
 **Pipeline** fulfills the whole data handling process: initiliazing Input Component for image data gathering and formating; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
+</details>
+</p>
+
+<p>
+<details>
+<summary>Pipeline manager</summary>
 
 **Pipeline manager** manages all the created pipelines according to the inference requests or external demands (say, system exception, resource limitation, or end user's operation). Because of co-working with resource management and being aware of the whole framework, it covers the ability of performance optimization by sharing system resource between pipelines and reducing the burden of data copy.
+</details>
+</p>
 
 # Supported Features
 ## Multiple Input Components
