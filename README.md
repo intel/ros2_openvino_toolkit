@@ -1,10 +1,11 @@
 # ros2_openvino_toolkit
 
 # Table of Contents
-* [➤ Introduction](#introduction)
+* [➤ Overview](#overview)
 	* [ROS2 Version Supported](#ros2-version-supported)
 	* [Inference Features Supported](#inference-features-supported)
-	* [Prerequisite](#prerequisite)
+* [➤ Prerequisite](#prerequisite-for-ros2-branch)	
+* [➤ Introduction](#introduction)
 	* [Design Architecture](#design-architecture)
 	* [Logic Flow](#logic-flow)
 * [➤ Supported Features](#supported-features)
@@ -19,7 +20,7 @@
 * [➤ FAQ](#faq)
 * [➤ More Information](#more-information)
 
-# Introduction
+# Overview
 ## ROS2 Version Supported
 * [x] ROS2 Dashing
 * [x] ROS2 Galactic
@@ -44,7 +45,7 @@
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
 
-## Prerequisite
+# Prerequisite for ros2 Branch
 * Processor: A platform with Intel processors assembled. (see [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
 * OS: Ubuntu 20.04, Ubuntu 22.04
 * ROS2: Foxy, Galactic, Humble
@@ -53,6 +54,7 @@
 * [Optional] RealSense D400 Series Camera
 * [Optional] Intel NCS2 Stick
 
+# Introduction
 ## Design Architecture
 From the view of hirarchical architecture design, the package is divided into different functional components, as shown in below picture. 
 
@@ -62,7 +64,7 @@ From the view of hirarchical architecture design, the package is divided into di
 <details>
 <summary>Intel® OpenVINO™ toolkit</summary>
 
-- **Intel® OpenVINO™ toolkit** provides a ROS-adapted runtime framework of neural network which quickly deploys applications and solutions for vision inference. By leveraging Intel® OpenVINO™ toolkit and corresponding libraries, this ROS2 runtime framework extends  workloads across Intel® hardware (including accelerators) and maximizes performance.
+- **Intel® OpenVINO™ toolkit** provides a ROS-adapted runtime framework of neural network which quickly deploys applications and solutions for vision inference. By leveraging Intel® OpenVINO™ toolkit and corresponding libraries, this ROS2 runtime framework extends workloads across Intel® hardware (including accelerators) and maximizes performance.
    - Increase deep learning workload performance up to 19x1 with computer vision accelerators from Intel.
    - Unleash convolutional neural network (CNN)-based deep learning inference using a common API.
    - Speed development using optimized OpenCV* and OpenVX* functions.
