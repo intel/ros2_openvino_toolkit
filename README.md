@@ -16,6 +16,7 @@
 	* [Deploy in Local Environment](#deploy-in-local-environment)
 	* [Deploy in Docker](#deploy-in-docker)
 * [➤ Reference](#reference)
+* [➤ FAQ](#faq)
 * [➤ More Information](#more-information)
 
 # Introduction
@@ -232,6 +233,12 @@ See below pictures for the demo result snapshots.
 # Reference
 * Open_model_zoo: Refer to the OpenVINO document for [open_model_zoo](https://github.com/openvinotoolkit/open_model_zoo/tree/master) for detailed model structure and demo samples.
 * OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
+
+# FAQ
+* [How to build OpenVINO by source?](https://github.com/openvinotoolkit/openvino/wiki#how-to-build)
+* [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+* [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)
+* [What is the canonical C++ API for interacting with ROS?](https://docs.ros2.org/latest/api/rclcpp/)
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
