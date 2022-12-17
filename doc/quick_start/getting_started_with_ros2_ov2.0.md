@@ -7,25 +7,25 @@ Supported ROS2 versions include foxy,galactic and humble.
 ## 1. Environment Setup
 For ROS2 foxy and galactic on ubuntu 20.04:
   * Install ROS2.</br>
-  Refer to:[ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
+  Refer to: [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
 
   * Install Intel® OpenVINO™ Toolkit Version: 2022.1.</br>
-  Refer to:[OpenVINO_install_guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html)
+  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_linux.html)
     * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool.</br>
-    Refer to:[OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
+    Refer to: [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
 
   * Install Intel® RealSense™ SDK.</br>
-  Refer to:[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
+  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
 For ROS2 humble on ubuntu 22.04:
   * Install ROS2.</br>
-  Refer to:[ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
+  Refer to: [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
   * Install Intel® OpenVINO™ Toolkit Latest Version by Source.</br>
-  Refer to:[OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
+  Refer to: [OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
 
   * Install Intel®  RealSense™ SDK by Source.</br>
-  Refer to:[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 
 ## 2. Building and Installation
 * Install ROS2_OpenVINO_Toolkit packages
@@ -54,7 +54,7 @@ source ./install/local_setup.bash
 ## 3. Running the Demo
 ### Install OpenVINO 2022.1 by PIP
 OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.</br>
-Refer to:[OMZtool_guide](https://pypi.org/project/openvino-dev/)
+Refer to: [OMZtool_guide](https://pypi.org/project/openvino-dev/)
 
 * See all available models
 ```

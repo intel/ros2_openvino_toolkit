@@ -14,12 +14,21 @@
 	* [Demo Result Snapshots](#demo-result-snapshots)
 * [➤ Installation & Launching](#installation-and-launching)
 * [➤ Reference](#reference)
+* [➤ More Information](#more-information)
 
 # Introduction
 ## ROS2 Version Supported
+* [x] ROS2 Dashing
 * [x] ROS2 Galactic
 * [x] ROS2 Foxy
 * [x] ROS2 Humble
+
+|Branch Name|ROS2 Version Supported|Openvino Version|Corresponding Branch Link|OS Version|
+|-----------------------|-----------------------|--------------------------------|----------------------|----------------------|
+|Dashing|Dashing|V2022.1, V2022.2|[dashing branch](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Ubuntu 18.04|
+|ros2|Galactic, Foxy, Humble|V2022.1, V2022.2|[ros2 branch](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Ubuntu 20.04, Ubuntu 22.04|
+|foxy|foxy|V2021.4|[foxy branch](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Ubuntu 20.04|
+|galactic-ov2021.4|galactic|V2021.4|[galactic branch](https://github.com/intel/ros2_openvino_toolkit/tree/galactic-ov2021.4)|Ubuntu 20.04|
 
 ## Inference Features Supported
 * [x] Object Detection
