@@ -52,11 +52,11 @@ Common:
 The name value of this pipeline can be anyone other than null.
 
 ### Specify inputs
-**Note** The input parameter can only have one value.</br>
+**Note:** The input parameter can only have one value.</br>
 Currently, options for inputs are:
 
 |Input Option|Description|Configuration|
-|--------------------|------------------------------------------------------------------|-----------------------|
+|--------------------|------------------------------------------------------------------|-----------------------------------------|
 |StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|```inputs: [StandardCamera]```|
 |RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
 |RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
@@ -64,7 +64,7 @@ Currently, options for inputs are:
 |Video| Any video file which can be parsed by openCV.|```inputs: [Video]```|
 |IpCamera| Any RTSP server which can push video stream.|```inputs: [IpCamera]```|
 
-**Note** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IpCamera input.
+**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IpCamera input.
 
 ### Specify input_path
 The input_path need to be specified when input is Image, Video and Ipcamera. 
@@ -97,7 +97,7 @@ The path of model need to be specified here. The scheme below illustrates the ty
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
-**Note** Currently, only CPU and GPU are supported.</br>
+**Note:** Currently, only CPU and GPU are supported.</br>
 Target device options are:
 
 |Target Device|
@@ -114,14 +114,14 @@ Currently, this parameter does not work.
 Enable dynamic batch size for the inference engine net. 
 
 ### Specify outputs
-**Note** The output parameter can be one or more.</br>
+**Note:** The output parameter can be one or more.</br>
 Currently, the output options are:
 
-|Option|Description|
-|--------------------|------------------------------------------------------------------|
-|ImageWindow| Window showing results|
-|RosTopic| Output the topic|
-|RViz| Display the result in rviz|
+|Option|Description|Configuration|
+|--------------------|-----------------------------------------------------|---------------------------------------------|
+|ImageWindow| Window showing results|```outputs: [ImageWindow, RosTopic, RViz]```|
+|RosTopic| Output the topic|```outputs: [ImageWindow, RosTopic, RViz]```|
+|RViz| Display the result in rviz|```outputs: [ImageWindow, RosTopic, RViz]```|
 
 ### Specify confidence_threshold
 Set the threshold of detection probability.
