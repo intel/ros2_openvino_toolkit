@@ -126,6 +126,10 @@ The contents in **.yaml config file** should be well structured and follow the s
 ## Multiple Input Components
 Currently, the package support several kinds of input resources of gaining image data:
 
+<p>
+<details>
+<summary>Input Resource Table</summary>
+
 |Input Resource|Description|
 |--------------------|------------------------------------------------------------------|
 |StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|
@@ -134,13 +138,15 @@ Currently, the package support several kinds of input resources of gaining image
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|
 |Video| Any video file which can be parsed by openCV.|
 |IpCamera| Any RTSP server which can push video stream.|
+</details>
+</p>
 
 ## Inference Implementations
 Currently, the inference feature list is supported:
 
 <p>
 <details>
-<summary>Inference feature correspondence table</summary>
+<summary>Inference Feature Correspondence Table</summary>
 
 |Inference|Description|YAML Configuration|Model Used|
 |-----------------------|------------------------------------------------------------------|----------------------|----------------------|
@@ -158,55 +164,45 @@ Currently, the inference feature list is supported:
 </p>
 
 ## ROS interfaces and outputs
+The inference results can be output in several types. One or more types can be enabled for any inference pipeline.
 ### Topic
+Specific topic(s) can be generated and published according to the given inference functionalities.
 
 <p>
 <details>
-<summary>Subscribed Topic</summary>
+<summary>Published Topic Correspondence Table</summary>
 
-- Image topic:
-```/camera/color/image_raw```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
-</details>
-</p>
-
-<p>
-<details>
-<summary>Published Topic</summary>
-
-- Face Detection:
-```/ros2_openvino_toolkit/face_detection```([object_msgs::ObjectsInBoxes](https://github.com/intel/object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Emotion Recognition:
-```/ros2_openvino_toolkit/emotion_detection```([people_msgs::EmotionsStamped](./people_msgs/msg/EmotionsStamped.msg))
-- Age and Gender Recognition:
-```/ros2_openvino_toolkit/age_gender_detection```([people_msgs::AgeGenderStamped](./people_msgs/msg/AgeGenderStamped.msg))
-- Head Pose Estimation:
-```/ros2_openvino_toolkit/head_pose_detection```([people_msgs::HeadPoseStamped](./people_msgs/msg/HeadPoseStamped.msg))
-- Object Detection:
-```/ros2_openvino_toolkit/detected_objects```([object_msgs::ObjectsInBoxes](https://github.com/intel/object_msgs/blob/master/msg/ObjectsInBoxes.msg))
-- Object Segmentation:
-```/ros2_openvino_toolkit/segmented_objects```([people_msgs::ObjectsInMasks](./people_msgs/msg/ObjectsInMasks.msg))
-- Person Reidentification:
-```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::ReidentificationStamped](./people_msgs/msg/ReidentificationStamped.msg))
-- Vehicle Detection:
-```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::VehicleAttribsStamped](./people_msgs/msg/VehicleAttribsStamped.msg)
-- Vehicle License Detection:
-```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::LicensePlateStamped](./people_msgs/msg/LicensePlateStamped.msg)
-- Rviz Output:
-```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
+|Inference|Published Topic|
+|---|---|
+|People Detection|```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
+|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([people_msgs:msg:EmotionsStamped](../../../people_msgs/msg/EmotionsStamped.msg))|
+|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([people_msgs:msg:AgeGenderStamped](../../../people_msgs/msg/AgeGenderStamped.msg))|
+|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([people_msgs:msg:HeadPoseStamped](../../../people_msgs/msg/HeadPoseStamped.msg))|
+|Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](../../../people_msgs/msg/ObjectsInMasks.msg))|
+|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
+|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::VehicleAttribsStamped](../../../people_msgs/msg/PersonAttributeStamped.msg))|
+|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped](../../../people_msgs/msg/LicensePlateStamped.msg))|
 </details>
 </p>
 
 ### Service
-- Object Detection Service:
-```/detect_object``` ([object_msgs::DetectObject](https://github.com/intel/object_msgs/blob/master/srv/DetectObject.srv))
-- Face Detection Service:
-```/detect_face``` ([object_msgs::DetectObject](https://github.com/intel/object_msgs/blob/master/srv/DetectObject.srv))
-- Age & Gender Detection Service:
-```/detect_age_gender``` ([people_msgs::AgeGender](./people_msgs/srv/AgeGenderSrv.srv))
-- Headpose Detection Service:
-```/detect_head_pose``` ([people_msgs::HeadPose](./people_msgs/srv/HeadPoseSrv.srv))
-- Emotion Detection Service:
-```/detect_emotion``` ([people_msgs::Emotion](./people_msgs/srv/EmotionSrv.srv))
+Several ROS2 Services are created, expecting to be used in client/server mode, especially when synchronously getting inference results for a given image frame or when managing inference pipeline's lifecycle.</br>
+
+<p>
+<details>
+<summary>Service Correspondence Table</summary>
+
+|Inference|Service|
+|---|---|
+|Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
+|Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
+|Age Gender Detection Service|```/detect_age_gender```([people_msgs::srv::AgeGender](./people_msgs/srv/AgeGenderSrv.srv))|
+|Headpose Detection Service|```/detect_head_pose```([people_msgs::srv::HeadPose](./people_msgs/srv/HeadPoseSrv.srv))|
+|Emotion Detection Service|```/detect_emotion```([people_msgs::srv::Emotion](./people_msgs/srv/EmotionSrv.srv))|
+</details>
+</p>
 
 ### RViz
 RViz dispaly is also supported by the composited topic of original image frame with inference result.
