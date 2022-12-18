@@ -18,6 +18,7 @@
 	* [Deploy in Docker](#deploy-in-docker)
 * [➤ Reference](#reference)
 * [➤ FAQ](#faq)
+* [➤ Feedback](#feedback)
 * [➤ More Information](#more-information)
 
 # Overview
@@ -245,6 +246,9 @@ See below pictures for the demo result snapshots.
 * [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 * [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)
 * [What is the canonical C++ API for interacting with ROS?](https://docs.ros2.org/latest/api/rclcpp/)
+
+# Feedback
+* Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
