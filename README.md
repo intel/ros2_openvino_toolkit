@@ -33,7 +33,7 @@
 |dashing|Dashing|V2022.1, V2022.2|[dashing branch](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Ubuntu 18.04|
 |ros2|Galactic, Foxy, Humble|V2022.1, V2022.2|[ros2 branch](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Ubuntu 20.04, Ubuntu 22.04|
 |foxy|Foxy|V2021.4|[foxy branch](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Ubuntu 20.04|
-|galactic-ov2021.4|Galactic|V2021.4|[galactic branch](https://github.com/intel/ros2_openvino_toolkit/tree/galactic-ov2021.4)|Ubuntu 20.04|
+|galactic-ov2021.4|Galactic|V2021.4|[galactic-ov2021.4 branch](https://github.com/intel/ros2_openvino_toolkit/tree/galactic-ov2021.4)|Ubuntu 20.04|
 
 ## Inference Features Supported
 * [x] Object Detection
@@ -47,7 +47,7 @@
 * [x] Vehicle License Plate Detection
 
 # Prerequisite for ros2 Branch
-* Processor: A platform with Intel processors assembled. (see [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
+* Processor: A platform with Intel processors assembled. (Refer to [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)
 * OS: Ubuntu 20.04, Ubuntu 22.04
 * ROS2: Foxy, Galactic, Humble
 * OpenVINO: V2022.1, V2022.2
@@ -77,7 +77,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>ROS OpenVINO Runtime Framework</summary>
 
-- **ROS OpenVINO Runtime Framework** is the main body of this repo. it provides key logic implementation for pipeline lifecycle management, resource management and ROS system adapter, which extends Intel OpenVINO toolkit and libraries. Furthermore, this runtime framework provides ways to ease launching, configuration and data analytics and re-use.
+- **ROS OpenVINO Runtime Framework** is the main body of this repo. It provides key logic implementation for pipeline lifecycle management, resource management and ROS system adapter, which extends Intel OpenVINO toolkit and libraries. Furthermore, this runtime framework provides ways to simplify launching, configuration, data analysis and re-use.
 </details>
 </p>
 
@@ -85,7 +85,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>ROS Input & Output</summary>
 
-- **Diversal Input resources** are the data resources to be infered and analyzed with the OpenVINO framework.
+- **Diversal Input resources** are data resources to be infered and analyzed with the OpenVINO framework.
 - **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inferrence results.
 </details>
 </p>
@@ -94,12 +94,12 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>Optimized Models</summary>
 
-- **Optimized Models** provides by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization.It also supports graph freeze and graph summarize along with dynamic input freezing.
+- **Optimized Models** provided by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization. It also supports graph freeze and graph summarize along with dynamic input freezing.
 </details>
 </p>
 
 ## Logic Flow
-From the view of logic implementation, the package introduces the definitions of parameter manager, pipeline and pipeline manager. The below picture depicts how these entities co-work together when the corresponding program is launched.
+From the view of logic implementation, the package introduces the definitions of parameter manager, pipeline and pipeline manager. The following picture depicts how these entities co-work together when the corresponding program is launched.
 
 ![Logic_Flow](./data/images/impletation_logic.PNG "OpenVINO RunTime Logic Flow")
 
@@ -125,7 +125,7 @@ The contents in **.yaml config file** should be well structured and follow the s
 
 # Supported Features
 ## Multiple Input Components
-Currently, the package support several kinds of input resources of gaining image data:
+Currently, the package supports several input resources for acquiring image data. The following tables are listed:
 
 <p>
 <details>
@@ -143,7 +143,7 @@ Currently, the package support several kinds of input resources of gaining image
 </p>
 
 ## Inference Implementations
-Currently, the inference feature list is supported:
+Currently, the corresponding relation of supported inference features, models used and yaml configurations are listed as follows:
 
 <p>
 <details>
@@ -206,16 +206,17 @@ Several ROS2 Services are created, expecting to be used in client/server mode, e
 </p>
 
 ### RViz
-RViz dispaly is also supported by the composited topic of original image frame with inference result.
+RViz display is also supported by the composited topic of original image frame with inference result.
 To show in RViz tool, add an image marker with the composited topic:
 ```/ros2_openvino_toolkit/image_rviz```([sensor_msgs::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))
 
 ### Image Window
 OpenCV based image window is natively supported by the package.
-To enable window, Image Window output should be added into the output choices in .yaml config file. see [the config file guidance](./doc/quick_start/yaml_configuration_guide.md) for checking/adding this feature in your launching.
+To enable window, Image Window output should be added into the output choices in .yaml config file. Refer to [the config file guidance](./doc/quick_start/yaml_configuration_guide.md) for more information about checking/adding this feature in your launching.
 
 ## Demo Result Snapshots
-See below pictures for the demo result snapshots.
+For the snapshot of demo results, refer to the following picture.
+
 * Face detection input from standard camera
 ![face_detection_demo_image](./data/images/face_detection.png "face detection demo image")
 
@@ -225,15 +226,15 @@ See below pictures for the demo result snapshots.
 * Object segmentation input from video
 ![object_segmentation_demo_video](./data/images/object_segmentation.gif "object segmentation demo video")
 
-* Person Reidentification input from standard camera
+* Person reidentification input from standard camera
 ![person_reidentification_demo_video](./data/images/person-reidentification.gif "person reidentification demo video")
 
 # Installation and Launching
-## Deploy in local environment
+## Deploy in Local Environment
 * Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
-## Deploy in docker
+## Deploy in Docker
 * Refer to the docker instruction for [docker_instructions](./docker/docker_instructions_ov2.0.md) for detailed information about building docker image and launching.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
@@ -251,7 +252,7 @@ See below pictures for the demo result snapshots.
 * Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+* ROS2 OpenVINO discription written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
