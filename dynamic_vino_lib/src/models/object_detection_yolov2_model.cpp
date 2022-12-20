@@ -26,6 +26,7 @@
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
 
+
 // Validated Object Detection Network
 Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
   const std::string & label_loc, const std::string & model_loc, int max_batch_size)
@@ -44,15 +45,22 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
     return false;
   }
   // set input property
+  ov::Shape input_dims = input_info_map[0].get_shape();
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NHWC"};
+  setInputHeight(input_dims[2]);
+  setInputWidth(input_dims[3]);
   input_info.tensor().
-    set_element_type(ov::element::f32).
-    set_layout(input_tensor_layout);
+    set_element_type(ov::element::u8).
+    set_layout(input_tensor_layout).
+    set_color_format(ov::preprocess::ColorFormat::BGR);
+  input_info.preprocess().
+    convert_element_type(ov::element::f32).
+    convert_color(ov::preprocess::ColorFormat::RGB).scale({255., 255., 255.});
+  ppp.input().model().set_layout("NCHW");
   addInputInfo("input", input_tensor_name_);
-
 
   // set output property
   auto output_info_map = model -> outputs();
@@ -69,51 +77,13 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
     << slog::endl;
   model = ppp.build();
 
-#if(0) /// 
-  const InferenceEngine::CNNLayerPtr output_layer =
-    model->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
-  // output layer should have attribute called num_classes
-  slog::info << "Checking Object Detection num_classes" << slog::endl;
-  if (output_layer == nullptr ||
-    output_layer->params.find("classes") == output_layer->params.end()) {
-    slog::warn << "This model's output layer (" << output_info_map.begin()->first
-      << ") should have num_classes integer attribute" << slog::endl;
-    return false;
-  }
-  // class number should be equal to size of label vector
-  // if network has default "background" class, fake is used
-  const int num_classes = output_layer->GetParamAsInt("classes");
-  slog::info << "Checking Object Detection output ... num_classes=" << num_classes << slog::endl;
-  if (getLabels().size() != num_classes) {
-    if (getLabels().size() == (num_classes - 1)) {
-      getLabels().insert(getLabels().begin(), "fake");
-    } else {
-      getLabels().clear();
-    }
-  }
-#endif
-
-  // last dimension of output layer should be 7
   auto outputsDataMap = model->outputs();
   auto & data = outputsDataMap[0];
   ov::Shape output_dims = data.get_shape();
-  setMaxProposalCount(static_cast<int>(output_dims[2]));
-  slog::info << "max proposal count is: " << getMaxProposalCount() << slog::endl;
+  setMaxProposalCount(static_cast<int>(output_dims[1]));
 
-  auto object_size = static_cast<int>(output_dims[3]);
-  if (object_size != 33) {
-    slog::warn << "This model is NOT Yolo-like, whose output data for each detected object"
-      << "should have 7 dimensions, but was " << std::to_string(object_size)
-      << slog::endl;
-    return false;
-  }
+  auto object_size = static_cast<int>(output_dims[2]);
   setObjectSize(object_size);
-
-  if (output_dims.size() != 2) {
-    slog::warn << "This model is not Yolo-like, output dimensions shoulld be 2, but was"
-      << std::to_string(output_dims.size()) << slog::endl;
-    return false;
-  }
 
   printAttribute();
   slog::info << "This model is Yolo-like, Layer Property updated!" << slog::endl;
@@ -138,80 +108,25 @@ bool Models::ObjectDetectionYolov2Model::enqueue(
   return true;
 }
 
+
 bool Models::ObjectDetectionYolov2Model::matToBlob(
   const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
   int batch_index, const std::shared_ptr<Engines::Engine> & engine)
 {
-  if (engine == nullptr) {
-    slog::err << "A frame is trying to be enqueued in a NULL Engine." << slog::endl;
-    return false;
-  }
+  resize_img = pre_process_ov(orig_image);
+  input_image = orig_image;
 
-  std::string input_name = getInputName();
-  ov::Tensor input_tensor =
-    engine->getRequest().get_tensor(input_name);
+  size_t srcw = orig_image.size().width;
+  size_t srch = orig_image.size().height;
+  size_t height = resize_img.resized_image.rows;
+  size_t width = resize_img.resized_image.cols;
+  size_t channels = orig_image.channels();
+  auto *input_data = (float *) resize_img.resized_image.data;
 
-  ov::Shape blob_size = input_tensor.get_shape();
-  const int width = blob_size[3];
-  const int height = blob_size[2];
-  const int channels = blob_size[1];
-  float * blob_data = input_tensor.data<float>();
+  ov::Tensor input_tensor;
+  input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, input_data);
+  engine->getRequest().set_input_tensor(input_tensor);
 
-
-  int dx = 0;
-  int dy = 0;
-  int srcw = 0;
-  int srch = 0;
-
-  int IH = height;
-  int IW = width;
-
-  cv::Mat image = orig_image.clone();
-  cv::cvtColor(image, image, cv::COLOR_BGR2RGB);
-
-  image.convertTo(image, CV_32F, 1.0 / 255.0, 0);
-  srcw = image.size().width;
-  srch = image.size().height;
-
-  cv::Mat resizedImg(IH, IW, CV_32FC3);
-  resizedImg = cv::Scalar(0.5, 0.5, 0.5);
-  int imw = image.size().width;
-  int imh = image.size().height;
-  float resize_ratio = static_cast<float>(IH) / static_cast<float>(std::max(imw, imh));
-  cv::resize(image, image, cv::Size(imw * resize_ratio, imh * resize_ratio));
-
-  int new_w = imw;
-  int new_h = imh;
-  if ((static_cast<float>(IW) / imw) < (static_cast<float>(IH) / imh)) {
-    new_w = IW;
-    new_h = (imh * IW) / imw;
-  } else {
-    new_h = IH;
-    new_w = (imw * IW) / imh;
-  }
-  dx = (IW - new_w) / 2;
-  dy = (IH - new_h) / 2;
-
-  imh = image.size().height;
-  imw = image.size().width;
-
-  for (int row = 0; row < imh; row++) {
-    for (int col = 0; col < imw; col++) {
-      for (int ch = 0; ch < 3; ch++) {
-        resizedImg.at<cv::Vec3f>(dy + row, dx + col)[ch] = image.at<cv::Vec3f>(row, col)[ch];
-      }
-    }
-  }
-
-  for (int c = 0; c < channels; c++) {
-    for (int h = 0; h < height; h++) {
-      for (int w = 0; w < width; w++) {
-        blob_data[c * width * height + h * width + w] = resizedImg.at<cv::Vec3f>(h, w)[c];
-      }
-    }
-  }
-
-  setFrameSize(srcw, srch);
   return true;
 }
 
@@ -221,129 +136,70 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
   const float & confidence_thresh,
   const bool & enable_roi_constraint)
 {
-  try {
-    if (engine == nullptr) {
-      slog::err << "Trying to fetch results from <null> Engines." << slog::endl;
-      return false;
+  const float NMS_THRESHOLD = 0.45;   //  remove overlapping bounding boxes
+  const float CONFIDENCE_THRESHOLD = 0.45;  //  filters low probability detections
+
+  ov::InferRequest request = engine->getRequest();
+  std::string output = getOutputName();
+  const ov::Tensor &output_tensor = request.get_output_tensor();
+  ov::Shape output_shape = output_tensor.get_shape();
+  auto *detections = output_tensor.data<float>();
+  std::vector<cv::Rect> boxes;
+  std::vector<int> class_ids;
+  std::vector<float> confidences;
+  std::vector<std::string> & labels = getLabels();
+
+  for (size_t i = 0; i < output_shape.at(1); i++) {
+    float *detection = &detections[i * output_shape.at(2)];
+    float confidence = detection[4];
+    if (confidence < confidence_thresh)
+      continue;
+
+    float *classes_scores = &detection[5];
+    int col = static_cast<int>(output_shape.at(2) - 5);
+
+    cv::Mat scores(1, col, CV_32FC1, classes_scores);
+    cv::Point class_id;
+    double max_class_score;
+    cv::minMaxLoc(scores, nullptr, &max_class_score, nullptr, &class_id);
+
+    if (max_class_score > confidence_thresh) {
+        confidences.emplace_back(confidence);
+        class_ids.emplace_back(class_id.x);
+
+        float x = detection[0];
+        float y = detection[1];
+        float w = detection[2];
+        float h = detection[3];
+        auto x_min = x - (w / 2);
+        auto y_min = y - (h / 2);
+
+        boxes.emplace_back(x_min, y_min, w, h);
     }
-
-    ov::InferRequest request = engine->getRequest();
-
-    std::string output = getOutputName();
-    std::vector<std::string> & labels = getLabels();
-    const float * detections = (float * )request.get_tensor(output).data();
-
-    std::string input = getInputName();
-    auto input_tensor = request.get_tensor(input);
-    ov::Shape input_shape = input_tensor.get_shape();
-    int input_height = input_shape[2];
-    int input_width = input_shape[3];
-
-    // --------------------------- Extracting layer parameters --------------------------------
-    const int num = 3; ///layer->GetParamAsInt("num");
-    const int coords = 9; ///layer->GetParamAsInt("coords");
-    const int classes = 21; ///layer->GetParamAsInt("classes");
-
-    auto output_tensor = request.get_tensor(output);
-    ov::Shape output_shape = output_tensor.get_shape();
-    const int out_tensor_h = static_cast<int>(output_shape[2]);;
-
-    std::vector<float> anchors = {
-      0.572730, 0.677385,
-      1.874460, 2.062530,
-      3.338430, 5.474340,
-      7.882820, 3.527780,
-      9.770520, 9.168280
-    };
-    auto side = out_tensor_h;
-
-    auto side_square = side * side;
-    // --------------------------- Parsing YOLO Region output -------------------------------------
-    std::vector<Result> raw_results;
-    for (int i = 0; i < side_square; ++i) {
-      int row = i / side;
-      int col = i % side;
-
-      for (int n = 0; n < num; ++n) {
-        int obj_index = getEntryIndex(side, coords, classes, n * side * side + i, coords);
-        int box_index = getEntryIndex(side, coords, classes, n * side * side + i, 0);
-
-        float scale = detections[obj_index];
-
-        if (scale < confidence_thresh) {
-          continue;
-        }
-
-        float x = (col + detections[box_index + 0 * side_square]) / side * input_width;
-        float y = (row + detections[box_index + 1 * side_square]) / side * input_height;
-        float height = std::exp(detections[box_index + 3 * side_square]) * anchors[2 * n + 1] /
-          side * input_height;
-        float width = std::exp(detections[box_index + 2 * side_square]) * anchors[2 * n] / side *
-          input_width;
-
-        for (int j = 0; j < classes; ++j) {
-          int class_index =
-            getEntryIndex(side, coords, classes, n * side_square + i, coords + 1 + j);
-
-          float prob = scale * detections[class_index];
-          if (prob < confidence_thresh) {
-            continue;
-          }
-
-          float x_min = x - width / 2;
-          float y_min = y - height / 2;
-
-          auto frame_size = getFrameSize();
-          float x_min_resized = x_min / input_width * frame_size.width;
-          float y_min_resized = y_min / input_height * frame_size.height;
-          float width_resized = width / input_width * frame_size.width;
-          float height_resized = height / input_height * frame_size.height;
-
-          cv::Rect r(x_min_resized, y_min_resized, width_resized, height_resized);
-          Result result(r);
-          // result.label_ = j;
-          std::string label = j <
-            labels.size() ? labels[j] : std::string("label #") + std::to_string(j);
-          result.setLabel(label);
-
-          result.setConfidence(prob);
-          raw_results.emplace_back(result);
-        }
-      }
-    }
-
-    std::sort(raw_results.begin(), raw_results.end());
-    for (unsigned int i = 0; i < raw_results.size(); ++i) {
-      if (raw_results[i].getConfidence() == 0) {
-        continue;
-      }
-      for (unsigned int j = i + 1; j < raw_results.size(); ++j) {
-        auto iou = dynamic_vino_lib::ObjectDetection::calcIoU(
-          raw_results[i].getLocation(), raw_results[j].getLocation());
-        if (iou >= 0.45) {
-          raw_results[j].setConfidence(0);
-        }
-      }
-    }
-
-    for (auto & raw_result : raw_results) {
-      if (raw_result.getConfidence() < confidence_thresh) {
-        continue;
-      }
-
-      results.push_back(raw_result);
-    }
-
-    raw_results.clear();
-
-    return true;
-  } catch (const std::exception & error) {
-    slog::err << error.what() << slog::endl;
-    return false;
-  } catch (...) {
-    slog::err << "Unknown/internal exception happened." << slog::endl;
-    return false;
   }
+
+  std::vector<int> nms_result;
+  cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, confidence_thresh-0.05, nms_result);
+  for (int idx: nms_result) {
+      if (class_ids[idx] != 0)
+        continue;  //  only person class
+
+      double rx = (double) input_image.cols / (resize_img.resized_image.cols - resize_img.dw);
+      double ry = (double) input_image.rows / (resize_img.resized_image.rows - resize_img.dh);
+      double vx = rx * boxes[idx].x;
+      double vy = ry * boxes[idx].y;
+      double vw = rx * boxes[idx].width;
+      double vh = ry * boxes[idx].height;
+      cv::Rect rec(vx, vy, vw, vh);
+      Result result(rec);
+      result.setConfidence(confidences[idx]);
+      std::string label = class_ids[idx] < labels.size() ?
+        labels[class_ids[idx]] : std::string("label #") + std::to_string(class_ids[idx]);
+      result.setLabel(label);
+      results.push_back(result);
+  }
+
+  return true;
 }
 
 int Models::ObjectDetectionYolov2Model::getEntryIndex(
@@ -353,4 +209,32 @@ int Models::ObjectDetectionYolov2Model::getEntryIndex(
   int n = location / (side * side);
   int loc = location % (side * side);
   return n * side * side * (lcoords + lclasses + 1) + entry * side * side + loc;
+}
+
+Models::Resize_t Models::ObjectDetectionYolov2Model::pre_process_ov(const cv::Mat &input_image) {
+    const float INPUT_WIDTH = 640.f;
+    const float INPUT_HEIGHT = 640.f;
+    auto width = (float) input_image.cols;
+    auto height = (float) input_image.rows;
+    auto r = float(INPUT_WIDTH / std::max(width, height));
+    int new_unpadW = int(round(width * r));
+    int new_unpadH = int(round(height * r));
+    Resize_t resize_img{};
+
+    cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
+               0, 0, cv::INTER_AREA);
+
+    resize_img.dw = (int) INPUT_WIDTH - new_unpadW;
+    resize_img.dh = (int) INPUT_HEIGHT - new_unpadH;
+    cv::Scalar color = cv::Scalar(100, 100, 100);
+    cv::copyMakeBorder(resize_img.resized_image,
+                       resize_img.resized_image,
+                       0,
+                       resize_img.dh,
+                       0,
+                       resize_img.dw,
+                       cv::BORDER_CONSTANT,
+                       color);
+
+    return resize_img;
 }

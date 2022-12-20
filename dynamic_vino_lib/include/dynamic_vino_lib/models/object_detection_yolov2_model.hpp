@@ -27,6 +27,14 @@ namespace Models
  * @class ObjectDetectionModel
  * @brief This class generates the face detection model.
  */
+#pragma pack(1)
+    typedef struct Resize {
+        cv::Mat resized_image;
+        int dw{};
+        int dh{};
+    } Resize_t;
+#pragma pack()
+
 class ObjectDetectionYolov2Model : public ObjectDetectionModel
 {
   using Result = dynamic_vino_lib::ObjectDetectionResult;
@@ -55,7 +63,10 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+  static Resize_t pre_process_ov(const cv::Mat &input_image);
 
+  cv::Mat input_image;
+  Resize_t resize_img;
 protected:
 
   int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
