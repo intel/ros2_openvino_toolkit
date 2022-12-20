@@ -15,8 +15,8 @@
  * @brief A header file with declaration for ObjectDetectionModel Class
  * @file face_detection_model.h
  */
-#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
-#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
+#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
+#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
 #include <string>
 #include <memory>
 #include <vector>
@@ -35,12 +35,12 @@ namespace Models
     } Resize_t;
 #pragma pack()
 
-class ObjectDetectionYolov2Model : public ObjectDetectionModel
+class ObjectDetectionYolov5Model : public ObjectDetectionModel
 {
   using Result = dynamic_vino_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov2Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
@@ -67,9 +67,7 @@ public:
 
   cv::Mat input_image;
   Resize_t resize_img;
-protected:
 
-  int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
 };
 }  // namespace Models
-#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
+#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_

@@ -14,10 +14,10 @@
 
 /** 
  * @brief a header file with declaration of ObjectDetectionModel class
- * @file object_detection_yolov2_model.cpp
+ * @file object_detection_yolov5_model.cpp
  */
 
-#include "dynamic_vino_lib/models/object_detection_yolov2_model.hpp"
+#include "dynamic_vino_lib/models/object_detection_yolov5_model.hpp"
 #include <string>
 #include <memory>
 #include <vector>
@@ -28,13 +28,13 @@
 
 
 // Validated Object Detection Network
-Models::ObjectDetectionYolov2Model::ObjectDetectionYolov2Model(
+Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
   const std::string & label_loc, const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
 }
 
-bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
+bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
@@ -63,23 +63,22 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   addInputInfo("input", input_tensor_name_);
 
   // set output property
-  auto output_info_map = model -> outputs();
+  auto output_info_map = model->outputs();
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like! We got "
       << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
       << slog::endl;
     return false;
   }
+  output_tensor_name_ = model->output().get_any_name();
   ov::preprocess::OutputInfo& output_info = ppp.output();
-  addOutputInfo("output", model->output().get_any_name());
+  addOutputInfo("output", output_tensor_name_);
   output_info.tensor().set_element_type(ov::element::f32);
-  slog::info << "Checking Object Detection output ... Name=" << model->output().get_any_name()
+  slog::info << "Checking Object Detection output ... Name=" << output_tensor_name_
     << slog::endl;
   model = ppp.build();
 
-  auto outputsDataMap = model->outputs();
-  auto & data = outputsDataMap[0];
-  ov::Shape output_dims = data.get_shape();
+  ov::Shape output_dims = output_info_map[0].get_shape();
   setMaxProposalCount(static_cast<int>(output_dims[1]));
 
   auto object_size = static_cast<int>(output_dims[2]);
@@ -90,12 +89,12 @@ bool Models::ObjectDetectionYolov2Model::updateLayerProperty(
   return true;
 }
 
-const std::string Models::ObjectDetectionYolov2Model::getModelCategory() const
+const std::string Models::ObjectDetectionYolov5Model::getModelCategory() const
 {
-  return "Object Detection Yolo v2";
+  return "Object Detection Yolo v5";
 }
 
-bool Models::ObjectDetectionYolov2Model::enqueue(
+bool Models::ObjectDetectionYolov5Model::enqueue(
   const std::shared_ptr<Engines::Engine> & engine,
   const cv::Mat & frame,
   const cv::Rect & input_frame_loc)
@@ -109,7 +108,7 @@ bool Models::ObjectDetectionYolov2Model::enqueue(
 }
 
 
-bool Models::ObjectDetectionYolov2Model::matToBlob(
+bool Models::ObjectDetectionYolov5Model::matToBlob(
   const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
   int batch_index, const std::shared_ptr<Engines::Engine> & engine)
 {
@@ -130,14 +129,13 @@ bool Models::ObjectDetectionYolov2Model::matToBlob(
   return true;
 }
 
-bool Models::ObjectDetectionYolov2Model::fetchResults(
+bool Models::ObjectDetectionYolov5Model::fetchResults(
   const std::shared_ptr<Engines::Engine> & engine,
   std::vector<dynamic_vino_lib::ObjectDetectionResult> & results,
   const float & confidence_thresh,
   const bool & enable_roi_constraint)
 {
   const float NMS_THRESHOLD = 0.45;   //  remove overlapping bounding boxes
-  const float CONFIDENCE_THRESHOLD = 0.45;  //  filters low probability detections
 
   ov::InferRequest request = engine->getRequest();
   std::string output = getOutputName();
@@ -179,7 +177,7 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
   }
 
   std::vector<int> nms_result;
-  cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, confidence_thresh-0.05, nms_result);
+  cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
   for (int idx: nms_result) {
       if (class_ids[idx] != 0)
         continue;  //  only person class
@@ -202,16 +200,7 @@ bool Models::ObjectDetectionYolov2Model::fetchResults(
   return true;
 }
 
-int Models::ObjectDetectionYolov2Model::getEntryIndex(
-  int side, int lcoords, int lclasses,
-  int location, int entry)
-{
-  int n = location / (side * side);
-  int loc = location % (side * side);
-  return n * side * side * (lcoords + lclasses + 1) + entry * side * side + loc;
-}
-
-Models::Resize_t Models::ObjectDetectionYolov2Model::pre_process_ov(const cv::Mat &input_image) {
+Models::Resize_t Models::ObjectDetectionYolov5Model::pre_process_ov(const cv::Mat &input_image) {
     const float INPUT_WIDTH = 640.f;
     const float INPUT_HEIGHT = 640.f;
     auto width = (float) input_image.cols;
