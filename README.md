@@ -185,7 +185,7 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](../../../people_msgs/msg/ObjectsInMasks.msg))|
 |Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
 |Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
-|Vehicle Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::VehicleAttribsStamped](../../../people_msgs/msg/PersonAttributeStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([people_msgs::msg::VehicleAttribsStamped](../../../people_msgs/msg/PersonAttributeStamped.msg))|
 |Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped](../../../people_msgs/msg/LicensePlateStamped.msg))|
 </details>
 </p>
