@@ -52,20 +52,28 @@ Common:
 The name value of this pipeline can be anyone other than null.
 
 ### Specify inputs
-**Note**:The input parameter can only have one value.</br>
+**Note:** The input parameter can only have one value.</br>
 Currently, options for inputs are:
 
-|Option|Description|
-|--------------------|------------------------------------------------------------------|
-|StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|
-|RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|
-|RealSenseCameraTopic| Any ROS topic which is structured in image message.|
-|Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|
-|Video| Any video file which can be parsed by openCV.|
-|IpCamera| Any RTSP server which can push video stream.|
+|Input Option|Description|Configuration|
+|--------------------|------------------------------------------------------------------|-----------------------------------------|
+|StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|```inputs: [StandardCamera]```|
+|RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
+|RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
+|Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|```inputs: [Image]```|
+|Video| Any video file which can be parsed by openCV.|```inputs: [Video]```|
+|IpCamera| Any RTSP server which can push video stream.|```inputs: [IpCamera]```|
+
+**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IpCamera input.
 
 ### Specify input_path
-The **input_path** need to be specified when input is an image or video file. 
+The input_path need to be specified when input is Image, Video and Ipcamera. 
+
+|Input Option|Configuration|
+|--------------------|------------------------------------------------------------------|
+|Image|```input_path: to/be/set/image_path```|
+|Video|```input_path: to/be/set/video_path```|
+|IpCamera|```input_path: "rtsp://localhost/test"```|
 
 ### Specify infers
 The Inference Engine is a set of C++ classes to provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
@@ -82,13 +90,14 @@ The name of inference engine need to be specified here. Currently, the inference
 |ObjectDetection| object detection based on SSD-based trained models.|
 |VehicleDetection| Vehicle and passenger detection based on Intel models.|
 |ObjectSegmentation| object detection and segmentation.|
+|ObjectSegmentationMaskrcnn| object segmentation based on Maskrcnn model.|
 
 * #### model
 The path of model need to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
-**Note**:Currently, only CPU and GPU are supported.</br>
+**Note:** Currently, only CPU and GPU are supported.</br>
 Target device options are:
 
 |Target Device|
@@ -105,14 +114,14 @@ Currently, this parameter does not work.
 Enable dynamic batch size for the inference engine net. 
 
 ### Specify outputs
-**Note**:The output parameter can be one or more.</br>
+**Note:** The output parameter can be one or more.</br>
 Currently, the output options are:
 
-|Option|Description|
-|--------------------|------------------------------------------------------------------|
-|ImageWindow| Window showing results|
-|RosTopic| Output the topic|
-|RViz| Display the result in rviz|
+|Option|Description|Configuration|
+|--------------------|-----------------------------------------------------|---------------------------------------------|
+|ImageWindow| Window showing results|```outputs: [ImageWindow, RosTopic, RViz]```|
+|RosTopic| Output the topic|```outputs: [ImageWindow, RosTopic, RViz]```|
+|RViz| Display the result in rviz|```outputs: [ImageWindow, RosTopic, RViz]```|
 
 ### Specify confidence_threshold
 Set the threshold of detection probability.
