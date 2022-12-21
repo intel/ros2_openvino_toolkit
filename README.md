@@ -23,10 +23,6 @@
 
 # Overview
 ## ROS2 Version Supported
-* [x] ROS2 Dashing
-* [x] ROS2 Galactic
-* [x] ROS2 Foxy
-* [x] ROS2 Humble
 
 |Branch Name|ROS2 Version Supported|Openvino Version|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|
@@ -52,8 +48,8 @@
 |-----------------------|-----------------------|--------------------------------|
 |**Processor**|Mandatory|A platform with Intel processors assembled. (Refer to [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)|
 |**OS**|Mandatory|We only tested this project under Ubuntu distros. It is recommended to install the corresponding Ubuntu Distro according to the ROS distro that you select to use. **For example: Ubuntu 18.04 for dashing, Ubuntu 20.04 for Foxy and Galactic, Ubuntu 22.04 for Humble.**|
-|**ROS2**|Mandatory|We have already supported active ROS distros (Humble, Galactic, Foxy and Dashing (deprecated)). Choose the one matching your needs. You may find the corresponding branch from the table above in section **ROS2 Version Supported**.|
-|**OpenVINO**|Mandatory|The version of OpenVINO toolkit is decided by the OS and ROS2 distros you use. See the table above in Section **ROS2 Version Supported**.|
+|**ROS2**|Mandatory|We have already supported active ROS distros (Humble, Galactic, Foxy and Dashing (deprecated)). Choose the one matching your needs. You may find the corresponding branch from the table above in section [**ROS2 Version Supported**](#ros2-version-supported).|
+|**OpenVINO**|Mandatory|The version of OpenVINO toolkit is decided by the OS and ROS2 distros you use. See the table above in Section [**ROS2 Version Supported**](#ros2-version-supported).|
 |**Realsense Camera**|Optional|Realsense Camera is optional, you may choose these alternatives as the input: Standard Camera, ROS Image Topic, Video/Image File or RTSP camera.|
 
 # Introduction
