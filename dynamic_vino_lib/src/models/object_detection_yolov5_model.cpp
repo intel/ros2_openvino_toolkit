@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
  * @brief a header file with declaration of ObjectDetectionModel class
  * @file object_detection_yolov5_model.cpp
  */
-
-#include "dynamic_vino_lib/models/object_detection_yolov5_model.hpp"
 #include <string>
 #include <memory>
 #include <vector>
@@ -25,6 +23,7 @@
 #include "dynamic_vino_lib/slog.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
 #include "dynamic_vino_lib/inferences/object_detection.hpp"
+#include "dynamic_vino_lib/models/object_detection_yolov5_model.hpp"
 
 
 // Validated Object Detection Network
@@ -66,7 +65,7 @@ bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
   auto output_info_map = model->outputs();
   if (output_info_map.size() != 1) {
     slog::warn << "This model seems not Yolo-like! We got "
-      << std::to_string(output_info_map.size()) << "outputs, but SSDnet has only one."
+      << std::to_string(output_info_map.size()) << "outputs, but Yolov5 has only one."
       << slog::endl;
     return false;
   }
@@ -76,6 +75,7 @@ bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
   output_info.tensor().set_element_type(ov::element::f32);
   slog::info << "Checking Object Detection output ... Name=" << output_tensor_name_
     << slog::endl;
+
   model = ppp.build();
 
   ov::Shape output_dims = output_info_map[0].get_shape();
@@ -112,18 +112,37 @@ bool Models::ObjectDetectionYolov5Model::matToBlob(
   const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
   int batch_index, const std::shared_ptr<Engines::Engine> & engine)
 {
-  resize_img = pre_process_ov(orig_image);
   input_image = orig_image;
+  const float INPUT_WIDTH = attr_.input_height;
+  const float INPUT_HEIGHT = attr_.input_width;
+  auto width = (float) orig_image.cols;
+  auto height = (float) orig_image.rows;
+  auto r = float(INPUT_WIDTH / std::max(width, height));
+  int new_unpadW = int(round(width * r));
+  int new_unpadH = int(round(height * r));
 
-  size_t srcw = orig_image.size().width;
-  size_t srch = orig_image.size().height;
-  size_t height = resize_img.resized_image.rows;
-  size_t width = resize_img.resized_image.cols;
-  size_t channels = orig_image.channels();
+  cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
+              0, 0, cv::INTER_AREA);
+
+  resize_img.dw = (int) INPUT_WIDTH - new_unpadW;
+  resize_img.dh = (int) INPUT_HEIGHT - new_unpadH;
+  cv::Scalar color = cv::Scalar(100, 100, 100);
+  cv::copyMakeBorder(resize_img.resized_image,
+                      resize_img.resized_image,
+                      0,
+                      resize_img.dh,
+                      0,
+                      resize_img.dw,
+                      cv::BORDER_CONSTANT,
+                      color);
+
+  size_t resize_height = resize_img.resized_image.rows;
+  size_t resize_width = resize_img.resized_image.cols;
+  size_t channels = input_image.channels();
   auto *input_data = (float *) resize_img.resized_image.data;
 
   ov::Tensor input_tensor;
-  input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, input_data);
+  input_tensor = ov::Tensor(ov::element::u8, {1, resize_height, resize_width, channels}, input_data);
   engine->getRequest().set_input_tensor(input_tensor);
 
   return true;
@@ -179,9 +198,6 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   std::vector<int> nms_result;
   cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
   for (int idx: nms_result) {
-      if (class_ids[idx] != 0)
-        continue;  //  only person class
-
       double rx = (double) input_image.cols / (resize_img.resized_image.cols - resize_img.dw);
       double ry = (double) input_image.rows / (resize_img.resized_image.rows - resize_img.dh);
       double vx = rx * boxes[idx].x;
@@ -198,32 +214,4 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   }
 
   return true;
-}
-
-Models::Resize_t Models::ObjectDetectionYolov5Model::pre_process_ov(const cv::Mat &input_image) {
-    const float INPUT_WIDTH = 640.f;
-    const float INPUT_HEIGHT = 640.f;
-    auto width = (float) input_image.cols;
-    auto height = (float) input_image.rows;
-    auto r = float(INPUT_WIDTH / std::max(width, height));
-    int new_unpadW = int(round(width * r));
-    int new_unpadH = int(round(height * r));
-    Resize_t resize_img{};
-
-    cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
-               0, 0, cv::INTER_AREA);
-
-    resize_img.dw = (int) INPUT_WIDTH - new_unpadW;
-    resize_img.dh = (int) INPUT_HEIGHT - new_unpadH;
-    cv::Scalar color = cv::Scalar(100, 100, 100);
-    cv::copyMakeBorder(resize_img.resized_image,
-                       resize_img.resized_image,
-                       0,
-                       resize_img.dh,
-                       0,
-                       resize_img.dw,
-                       cv::BORDER_CONSTANT,
-                       color);
-
-    return resize_img;
 }

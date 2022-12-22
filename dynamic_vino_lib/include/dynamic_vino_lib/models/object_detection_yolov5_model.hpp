@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -63,7 +63,6 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  static Resize_t pre_process_ov(const cv::Mat &input_image);
 
   cv::Mat input_image;
   Resize_t resize_img;
