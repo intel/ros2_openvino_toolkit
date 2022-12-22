@@ -1,18 +1,16 @@
 Pipelines:
 - name: segmentation
-  inputs: [Video]
-  # input_path: /home/jiawei/test-seg-2022/src/ros2_openvino_toolkit/data/images/road-segmentation.png
-  input_path: /home/jiawei/openvino_test_video/sample-videos/car-detection.mp4
+  inputs: [StandardCamera]
   infers:
     - name: ObjectSegmentationMaskrcnn
-      model: /home/jiawei/mask_rcnn_inception_v2_coco_2018_01_28/OUT/frozen_inference_graph.xml
+      model: /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_v2_coco_2018_01_28/OUT/frozen_inference_graph.xml
       engine: CPU #"HETERO:CPU,GPU,MYRIAD"
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
-    - left: Video
+    - left: StandardCamera
       right: [ObjectSegmentationMaskrcnn]
     - left: ObjectSegmentationMaskrcnn
       right: [ImageWindow]

@@ -55,15 +55,17 @@ requests \
 && apt-get install -y --no-install-recommends libboost-all-dev
 WORKDIR /usr/lib/x86_64-linux-gnu
 RUN ln -sf libboost_python-py36.so libboost_python37.so
+RUN pip install --upgrade pip
+RUN pip install openvino-dev[tensorflow2]==2022.1
 
 # build ros2 openvino toolkit
 WORKDIR /root
 RUN mkdir -p catkin_ws/src
 WORKDIR /root/catkin_ws/src
-RUN git clone https://github.com/intel/ros2_object_msgs.git 
-RUN git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git 
-RUN git clone -b ${VERSION} https://github.com/ros-perception/vision_opencv.git
-RUN git clone -b ros2-development https://github.com/IntelRealSense/realsense-ros.git 
+RUN git init && git clone https://github.com/intel/ros2_object_msgs.git \
+&& git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git \ 
+&& git clone -b ${VERSION} https://github.com/ros-perception/vision_opencv.git \
+&& git clone -b ros2-development https://github.com/IntelRealSense/realsense-ros.git 
 RUN apt-get install ros-${VERSION}-diagnostic-updater
 WORKDIR /root/catkin_ws
 RUN source /opt/ros/${VERSION}/setup.bash && source /opt/intel/openvino_2022/setupvars.sh && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
