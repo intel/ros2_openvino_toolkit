@@ -24,6 +24,7 @@
 #include <map>
 #include <string>
 #include <fstream>
+#include <iterator>
 
 #include "openvino/openvino.hpp"
 #include "dynamic_vino_lib/slog.hpp"
