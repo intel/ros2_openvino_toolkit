@@ -6,6 +6,14 @@ pipeline {
         Test_WORKSPACE = "/home/intel/ros2_openvino_toolkit_test"
     }
     stages {
+       stage('Check The Conflict') {
+            steps {
+                script {
+                    sh script: "ssh intel@$Test_Server 'cd $Test_WORKSPACE && ./check_conflict.sh'", returnStatus: true
+                    echo "no conflict, the task continue"
+                }
+            }
+        }
         stage('Get The env') {
             steps {
                 script {
