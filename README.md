@@ -4,7 +4,7 @@
 * [➤ Overview](#overview)
 	* [ROS2 Version Supported](#ros2-version-supported)
 	* [Inference Features Supported](#inference-features-supported)
-* [➤ Prerequisite](#prerequisite-for-ros2-branch)	
+* [➤ Prerequisite](#prerequisite)	
 * [➤ Introduction](#introduction)
 	* [Design Architecture](#design-architecture)
 	* [Logic Flow](#logic-flow)
