@@ -1,7 +1,7 @@
 Pipelines:
 - name: segmentation
   inputs: [Video]
-  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/sample/param/testParam/data/segmentation.mp4
+  input_path: to/be/set/video_path
   infers:
     - name: ObjectSegmentation
       model: /opt/openvino_toolkit/models/segmentation/output/FP16/frozen_inference_graph.xml

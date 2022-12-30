@@ -74,14 +74,14 @@ bool dynamic_vino_lib::HeadPoseDetection::fetchResults()
     return false;
   }
   auto request = getEngine()->getRequest();
-  InferenceEngine::Blob::Ptr angle_r = request->GetBlob(valid_model_->getOutputOutputAngleR());
-  InferenceEngine::Blob::Ptr angle_p = request->GetBlob(valid_model_->getOutputOutputAngleP());
-  InferenceEngine::Blob::Ptr angle_y = request->GetBlob(valid_model_->getOutputOutputAngleY());
+  ov::Tensor angle_r = request.get_tensor(valid_model_->getOutputOutputAngleR());
+  ov::Tensor angle_p = request.get_tensor(valid_model_->getOutputOutputAngleP());
+  ov::Tensor angle_y = request.get_tensor(valid_model_->getOutputOutputAngleY());
 
   for (int i = 0; i < getResultsLength(); ++i) {
-    results_[i].angle_r_ = angle_r->buffer().as<float *>()[i];
-    results_[i].angle_p_ = angle_p->buffer().as<float *>()[i];
-    results_[i].angle_y_ = angle_y->buffer().as<float *>()[i];
+    results_[i].angle_r_ = angle_r.data<float>()[i];
+    results_[i].angle_p_ = angle_p.data<float>()[i];
+    results_[i].angle_y_ = angle_y.data<float>()[i];
   }
   return true;
 }

@@ -23,7 +23,7 @@
 
 #include "dynamic_vino_lib/models/base_model.hpp"
 #include "dynamic_vino_lib/engines/engine.hpp"
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 
 namespace Engines
 {
@@ -35,7 +35,7 @@ class EngineManager
 {
 public:
   /**
-   * @brief Create InferenceEngine instance by given Engine Name and Network.
+   * @brief Create OpenVINO instance by given Engine Name and Network.
    * @return The shared pointer of created Engine instance.
    */
   std::shared_ptr<Engine> createEngine(
@@ -52,7 +52,7 @@ private:
     const std::string &, const std::shared_ptr<Models::BaseModel> &);
 #endif
 
-  std::shared_ptr<Engine> createEngine_V2019R2_plus(
+  std::shared_ptr<Engine> createEngine_V2022(
     const std::string &, const std::shared_ptr<Models::BaseModel> &);
 
 };

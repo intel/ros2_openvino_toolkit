@@ -25,11 +25,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
 ####################################
 
-message(STATUS "Looking for inference engine configuration file at: ${CMAKE_PREFIX_PATH}")
-find_package(InferenceEngine)
-if(NOT InferenceEngine_FOUND)
+find_package(OpenVINO)
+if(NOT OpenVINO_FOUND)
     message(FATAL_ERROR "")
 endif()
+set(OpenVINO_LIBRARIES openvino::runtime)
 
 # Find OpenCV libray if exists
 find_package(OpenCV REQUIRED)
@@ -119,10 +119,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${InferenceEngine_INCLUDE_DIRS}
-    ${InferenceEngine_INCLUDE_DIRS}/../samples
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../src
+    ${OpenVINO_DIRS}
     ${realsense2_INCLUDE_DIRS}
 )
 
@@ -151,13 +148,13 @@ if(BUILD_TESTING)
         "object_msgs"
         "people_msgs"
         "pipeline_srv_msgs"
-	"InferenceEngine"
-	"OpenCV"
-	"realsense2"
+	      "OpenVINO"
+	      "OpenCV"
+	      "realsense2"
         "ament_index_cpp"
         "yaml_cpp_vendor"
         "class_loader"
-	"dynamic_vino_lib")
+	      "dynamic_vino_lib")
     endif()
   endmacro()
 

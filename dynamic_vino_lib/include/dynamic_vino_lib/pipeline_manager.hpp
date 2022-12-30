@@ -85,7 +85,6 @@ public:
   struct ServiceData
   {
     std::shared_ptr<std::thread> thread;
-    // std::shared_ptr<rclcpp::Node> node;
     PipelineState state;
   };
 
@@ -125,6 +124,8 @@ private:
   createObjectDetection(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<dynamic_vino_lib::BaseInference>
   createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer);
+  std::shared_ptr<dynamic_vino_lib::BaseInference>
+  createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<dynamic_vino_lib::BaseInference>
   createPersonReidentification(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<dynamic_vino_lib::BaseInference>

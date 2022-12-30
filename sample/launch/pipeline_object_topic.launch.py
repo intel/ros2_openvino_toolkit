@@ -34,15 +34,11 @@ def generate_launch_description():
         # Realsense
         # NOTE: Split realsense_node launching from OpenVINO package, which
 		# will be launched by RDK launching file or manually.
-        #launch_ros.actions.Node(
-        #    package='realsense_ros2_camera', node_executable='realsense_ros2_camera',
-        #    output='screen'),
 
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample',
-            executable='pipeline_with_params',
-            #arguments=['-config', default_yaml],
+            node_executable='pipeline_with_params',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/object/detected_objects',
@@ -53,6 +49,6 @@ def generate_launch_description():
         # Rviz
         launch_ros.actions.Node(
             package='rviz2',
-            executable='rviz2', output='screen',
+            node_executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]),
     ])

@@ -1,16 +1,16 @@
 Pipelines:
 - name: segmentation
-  inputs: [RealSenseCamera]
+  inputs: [RealSenseCameraTopic]
   infers:
     - name: ObjectSegmentation
-      model: /opt/openvino_toolkit/models/semantic-segmentation/output/intel/semantic-segmentation-adas-0001/FP16/semantic-segmentation-adas-0001.xml
+      model: /opt/openvino_toolkit/models/convert/public/deeplabv3/FP16/deeplabv3.xml
       engine: CPU #"HETERO:CPU,GPU,MYRIAD"
       label: to/be/set/xxx.labels
       batch: 1
       confidence_threshold: 0.5
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
-    - left: RealSenseCamera
+    - left: RealSenseCameraTopic
       right: [ObjectSegmentation]
     - left: ObjectSegmentation
       right: [ImageWindow]

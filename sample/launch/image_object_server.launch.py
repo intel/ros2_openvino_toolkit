@@ -27,7 +27,7 @@ def generate_launch_description():
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='dynamic_vino_sample', node_executable='image_object_server',
+            package='dynamic_vino_sample', executable='image_object_server',
             arguments=['-config', default_yaml],
             output='screen'),
     ])

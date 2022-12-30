@@ -34,8 +34,7 @@ def generate_launch_description():
         # Openvino detection
         launch_ros.actions.Node(
             package='dynamic_vino_sample',
-            executable='pipeline_with_params',
-            #arguments=['-config', default_yaml],
+            node_executable='pipeline_with_params',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/object/detected_license_plates',
@@ -48,6 +47,6 @@ def generate_launch_description():
         # Rviz
         launch_ros.actions.Node(
             package='rviz2',
-            executable='rviz2', output='screen',
+            node_executable='rviz2', output='screen',
             arguments=['--display-config', default_rviz]),
     ])
