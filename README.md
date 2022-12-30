@@ -241,6 +241,7 @@ For the snapshot of demo results, refer to the following picture.
 * OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
 
 # FAQ
+* [How to get the IR file for yolov5?](./doc/quick_start/tutorial_for_yolov5_converted.md)
 * [How to build OpenVINO by source?](https://github.com/openvinotoolkit/openvino/wiki#how-to-build)
 * [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 * [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)
