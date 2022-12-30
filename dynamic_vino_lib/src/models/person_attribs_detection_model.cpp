@@ -36,7 +36,7 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  const ov::Layout tensor_layout{"NHWC"};
+  const ov::Layout tensor_layout{"NCHW"};
   input_info.tensor().
     set_element_type(ov::element::u8).
     set_layout(tensor_layout);
@@ -49,9 +49,9 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
 
   model = ppp.build();
   addInputInfo("input", input_tensor_name_);
-  addOutputInfo("attributes_output_",output_info_map[2].get_any_name());
+  addOutputInfo("attributes_output_",output_info_map[0].get_any_name());
   addOutputInfo("top_output_", output_info_map[1].get_any_name());
-  addOutputInfo("bottom_output_", output_info_map[0].get_any_name());
+  addOutputInfo("bottom_output_", output_info_map[2].get_any_name());
 
   printAttribute();
   return true;
