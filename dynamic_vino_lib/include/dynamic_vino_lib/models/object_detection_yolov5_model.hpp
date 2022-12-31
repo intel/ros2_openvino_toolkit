@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  * @brief A header file with declaration for ObjectDetectionModel Class
  * @file face_detection_model.h
  */
-#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
-#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
+#ifndef DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
+#define DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
 #include <string>
 #include <memory>
 #include <vector>
@@ -27,12 +27,20 @@ namespace Models
  * @class ObjectDetectionModel
  * @brief This class generates the face detection model.
  */
-class ObjectDetectionYolov2Model : public ObjectDetectionModel
+#pragma pack(1)
+    typedef struct Resize {
+        cv::Mat resized_image;
+        int dw{};
+        int dh{};
+    } Resize_t;
+#pragma pack()
+
+class ObjectDetectionYolov5Model : public ObjectDetectionModel
 {
   using Result = dynamic_vino_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov2Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
@@ -55,10 +63,11 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+  static Resize_t pre_process_ov(const cv::Mat &input_image);
 
-protected:
+  cv::Mat input_image;
+  Resize_t resize_img;
 
-  int getEntryIndex(int side, int lcoords, int lclasses, int location, int entry);
 };
 }  // namespace Models
-#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV2_MODEL_HPP_
+#endif  // DYNAMIC_VINO_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_

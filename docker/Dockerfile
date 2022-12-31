@@ -1,7 +1,7 @@
 # ros2 openvino toolkit env master f1b1ca4d914186a1881b87f103be9c6e910c9d80
 
-ARG ROS_VERSION
-FROM osrf/ros:${ROS_VERSION}
+ARG ROS_PRE_INSTALLED_PKG
+FROM osrf/ros:${ROS_PRE_INSTALLED_PKG}
 ARG VERSION
 
 # setting proxy env --option 
@@ -10,8 +10,10 @@ ARG VERSION
 # ENV HTTPS_PROXY="your_proxy"
 # ENV FTP_PROXY="your_proxy"
 
-LABEL maintainer="Jiawei Wu <jiawei.wu@intel.com>"
+# author information
+LABEL author="Jiawei Wu <jiawei.wu@intel.com>"
 
+# default shell type
 SHELL ["/bin/bash", "-c"]
 
 # ignore the warning
@@ -54,7 +56,6 @@ pyyaml \
 requests \
 && apt-get install -y --no-install-recommends libboost-all-dev
 WORKDIR /usr/lib/x86_64-linux-gnu
-RUN ln -sf libboost_python-py36.so libboost_python37.so
 RUN pip install --upgrade pip
 RUN pip install openvino-dev[tensorflow2]==2022.1
 
@@ -63,9 +64,7 @@ WORKDIR /root
 RUN mkdir -p catkin_ws/src
 WORKDIR /root/catkin_ws/src
 RUN git init && git clone https://github.com/intel/ros2_object_msgs.git \
-&& git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git \ 
-&& git clone -b ${VERSION} https://github.com/ros-perception/vision_opencv.git \
-&& git clone -b ros2-development https://github.com/IntelRealSense/realsense-ros.git 
+&& git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git
 RUN apt-get install ros-${VERSION}-diagnostic-updater
 WORKDIR /root/catkin_ws
 RUN source /opt/ros/${VERSION}/setup.bash && source /opt/intel/openvino_2022/setupvars.sh && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

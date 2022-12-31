@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2020 Intel Corporation
+# Copyright (c) 2018-2022 Intel Corporation
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -217,7 +217,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/vehicle_attribs_detection_model.cpp
         src/models/license_plate_detection_model.cpp
         src/models/object_detection_ssd_model.cpp
-        src/models/object_detection_yolov2_model.cpp
+        src/models/object_detection_yolov5_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp
