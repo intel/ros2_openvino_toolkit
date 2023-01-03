@@ -15,7 +15,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 
 #include <unistd.h>
 #include <algorithm>
@@ -32,16 +32,16 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/slog.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
 
 std::string getConfigPath(std::string config_file)
 {
   std::string content;
   std::string prefix_path;
-  ament_index_cpp::get_resource("packages", "dynamic_vino_test", content, &prefix_path);
-  return prefix_path + "/share/dynamic_vino_test/param/" + config_file;
+  ament_index_cpp::get_resource("packages", "openvino_test", content, &prefix_path);
+  return prefix_path + "/share/openvino_test/param/" + config_file;
 }
 
 TEST(UnitTestCheckPipeline, testCreatePipeline)

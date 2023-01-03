@@ -20,7 +20,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
@@ -37,9 +37,9 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/slog.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif

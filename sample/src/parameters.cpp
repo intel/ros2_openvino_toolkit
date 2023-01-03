@@ -19,8 +19,8 @@
 * \file sample/parameters.cpp
 */
 
-#include <vino_param_lib/param_manager.hpp>
-#include <dynamic_vino_lib/slog.hpp>
+#include <openvino_param_lib/param_manager.hpp>
+#include <openvino_wrapper_lib/slog.hpp>
 #include <fstream>
 #include <functional>
 #include <iostream>

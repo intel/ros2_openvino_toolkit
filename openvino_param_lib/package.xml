@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<!--
+Copyright (c) 2017-2022 Intel Corporation
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<package format="2">
+  <name>openvino_param_lib</name>
+  <version>0.9.0</version>
+  <description>Library for ROS2 OpenVINO parameter management</description>
+  <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
+  <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
+  <maintainer email="hongkun.chen@intel.com">Hongkun Chen</maintainer>
+
+  <license>Apache 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <build_depend>yaml_cpp_vendor</build_depend>
+
+  <exec_depend>yaml_cpp_vendor</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>

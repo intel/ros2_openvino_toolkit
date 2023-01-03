@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
 #include <fstream>
@@ -22,7 +22,7 @@
 #include <functional>
 #include <string>
 
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
 std::string generate_file_path(std::string path)
 {
@@ -79,7 +79,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);
   auto offset = std::chrono::seconds(20);
-  system("ros2 launch dynamic_vino_test image_object_service_test.launch.py &");
+  system("ros2 launch openvino_test image_object_service_test.launch.py &");
   rclcpp::sleep_for(offset);
   int ret = RUN_ALL_TESTS();
   system("killall -s SIGINT image_object_server &");
