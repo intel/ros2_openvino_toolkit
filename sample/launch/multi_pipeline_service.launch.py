@@ -22,14 +22,14 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('openvino_sample'), 'param',
+    default_yaml = os.path.join(get_package_share_directory('openvino_node'), 'param',
                                 'multi_pipleine_service.yaml')
-    default_rviz = os.path.join(get_package_share_directory('openvino_sample'), 'launch',
+    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch',
                                 'rviz/default2.rviz')
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='openvino_sample', node_executable='pipeline_with_params',
+            package='openvino_node', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
                 ('/openvino_toolkit/object1/detected_objects',

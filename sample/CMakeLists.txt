@@ -11,7 +11,7 @@
 
 set(OpenVINO_LIBRARIES openvino::runtime)
 cmake_minimum_required(VERSION 3.5)
-project(openvino_sample)
+project(openvino_node)
 
 # Default to C++17
 if(NOT CMAKE_CXX_STANDARD)

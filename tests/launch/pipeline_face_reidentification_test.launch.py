@@ -27,7 +27,7 @@ def generate_launch_description():
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='openvino_sample', node_executable='pipeline_with_params',
+            package='openvino_node', node_executable='pipeline_with_params',
             arguments=['-config', default_yaml],
             remappings=[
                 ('/openvino_toolkit/people/detected_objects', '/ros2_openvino_toolkit/face_detection'),
