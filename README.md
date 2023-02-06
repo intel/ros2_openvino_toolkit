@@ -180,7 +180,6 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([openvino_people_msgs::msg::ObjectsInMasks](../../../openvino_people_msgs/msg/ObjectsInMasks.msg))|
 |Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_obejcts```([openvino_people_msgs::msg::ObjectsInMasks](../../../openvino_people_msgs/msg/ObjectsInMasks.msg))|
 |Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([openvino_people_msgs::msg::ReidentificationStamped](../../../openvino_people_msgs/msg/ReidentificationStamped.msg))|
-|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([openvino_people_msgs::msg::ReidentificationStamped](../../../openvino_people_msgs/msg/ReidentificationStamped.msg))|
 |Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([openvino_people_msgs::msg::VehicleAttribsStamped](../../../openvino_people_msgs/msg/PersonAttributeStamped.msg))|
 |Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([openvino_people_msgs::msg::LicensePlateStamped](../../../openvino_people_msgs/msg/LicensePlateStamped.msg))|
 </details>

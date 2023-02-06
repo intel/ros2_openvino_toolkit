@@ -103,10 +103,6 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
   ros2 launch openvino_node pipeline_reidentification.launch.py
   ```
-  * run person face reidentification sample code input from RealSenseCamera.
-  ```
-  ros2 launch openvino_node pipeline_face_reidentification.launch.py
-  ```
   * run face detection sample code input from Image.
   ```
   ros2 launch openvino_node pipeline_image.launch.py
