@@ -11,7 +11,7 @@
 
 set(OpenVINO_LIBRARIES openvino::runtime)
 cmake_minimum_required(VERSION 3.5)
-project(dynamic_vino_sample)
+project(openvino_node)
 
 # Default to C++17
 if(NOT CMAKE_CXX_STANDARD)
@@ -38,11 +38,11 @@ find_package(rcutils)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenVINO REQUIRED)
-find_package(dynamic_vino_lib REQUIRED)
+find_package(openvino_wrapper_lib REQUIRED)
 find_package(object_msgs REQUIRED)
-find_package(people_msgs REQUIRED)
-find_package(pipeline_srv_msgs REQUIRED)
-find_package(vino_param_lib REQUIRED)
+find_package(openvino_people_msgs REQUIRED)
+find_package(openvino_msgs REQUIRED)
+find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(realsense2 REQUIRED)
 find_package(rclcpp_components)
@@ -97,8 +97,8 @@ source_group("include" FILES ${MAIN_HEADERS})
 
 include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${dynamic_vino_lib_INCLUDE_DIRS})
-include_directories(${vino_param_lib_INCLUDE_DIRS})
+include_directories(${openvino_wrapper_lib_INCLUDE_DIRS})
+include_directories(${openvino_param_lib_INCLUDE_DIRS})
 include_directories(${OpenVINO_DIRS})
 include_directories(${realsense2_INCLUDE_DIRS})
 
@@ -115,8 +115,8 @@ target_link_libraries(vino_param_sample
   )
 
 ament_target_dependencies(vino_param_sample
-  "vino_param_lib"
-  "dynamic_vino_lib"
+  "openvino_param_lib"
+  "openvino_wrapper_lib"
   "yaml_cpp_vendor"
 )
 
@@ -133,11 +133,11 @@ ament_target_dependencies(pipeline_with_params
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
   "yaml_cpp_vendor"
   "realsense2"
@@ -157,11 +157,11 @@ ament_target_dependencies(composable_pipeline
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
   "yaml_cpp_vendor"
   "realsense2"
@@ -181,11 +181,11 @@ ament_target_dependencies(image_object_server
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
 )
 
@@ -202,11 +202,11 @@ ament_target_dependencies(image_people_server
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
 )
 
@@ -223,11 +223,11 @@ ament_target_dependencies(image_object_client
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
 )
 
@@ -244,11 +244,11 @@ ament_target_dependencies(image_people_client
   "object_msgs"
   "ament_index_cpp"
   "class_loader"
-  "dynamic_vino_lib"
+  "openvino_wrapper_lib"
   "OpenVINO"
-  "people_msgs"
-  "pipeline_srv_msgs"
-  "vino_param_lib"
+  "openvino_people_msgs"
+  "openvino_msgs"
+  "openvino_param_lib"
   "OpenCV"
 )
 

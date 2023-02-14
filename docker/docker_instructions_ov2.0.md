@@ -97,35 +97,35 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
 * Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](../doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
-  ros2 launch dynamic_vino_sample pipeline_people.launch.py
+  ros2 launch openvino_node pipeline_people.launch.py
   ```
   * run person reidentification sample code input from StandardCamera.
   ```
-  ros2 launch dynamic_vino_sample pipeline_reidentification.launch.py
+  ros2 launch openvino_node pipeline_reidentification.launch.py
   ```
   * run person face reidentification sample code input from RealSenseCamera.
   ```
-  ros2 launch dynamic_vino_sample pipeline_face_reidentification.launch.py
+  ros2 launch openvino_node pipeline_face_reidentification.launch.py
   ```
   * run face detection sample code input from Image.
   ```
-  ros2 launch dynamic_vino_sample pipeline_image.launch.py
+  ros2 launch openvino_node pipeline_image.launch.py
   ```
   * run object segmentation sample code input from RealSenseCameraTopic.
   ```
-  ros2 launch dynamic_vino_sample pipeline_segmentation.launch.py
+  ros2 launch openvino_node pipeline_segmentation.launch.py
   ```
   * run object segmentation sample code input from Image.
   ```
-  ros2 launch dynamic_vino_sample pipeline_segmentation_image.launch.py
+  ros2 launch openvino_node pipeline_segmentation_image.launch.py
   ``` 
   * run vehicle detection sample code input from StandardCamera.
   ```
-  ros2 launch dynamic_vino_sample pipeline_vehicle_detection.launch.py
+  ros2 launch openvino_node pipeline_vehicle_detection.launch.py
   ```
   * run person attributes sample code input from StandardCamera.
   ```
-  ros2 launch dynamic_vino_sample pipeline_person_attributes.launch.py
+  ros2 launch openvino_node pipeline_person_attributes.launch.py
   ```
 
 # More Information

@@ -14,13 +14,13 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
-#include <people_msgs/msg/emotion.hpp>
-#include <people_msgs/msg/emotions_stamped.hpp>
+#include <openvino_people_msgs/msg/emotion.hpp>
+#include <openvino_people_msgs/msg/emotions_stamped.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
-#include <people_msgs/msg/head_pose_stamped.hpp>
-#include <people_msgs/msg/age_gender_stamped.hpp>
+#include <openvino_people_msgs/msg/head_pose_stamped.hpp>
+#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 
 #include <unistd.h>
 #include <algorithm>
@@ -37,9 +37,9 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/slog.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
 #include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
@@ -102,7 +102,7 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_emotionRecognition_callback =
-    [&sub_called](const people_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
+    [&sub_called](const openvino_people_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
       emotion_test_pass = true;
       sub_called.set_value(true);
     };
@@ -111,7 +111,7 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
   executor.add_node(node);
 
   {
-    auto sub2 = node->create_subscription<people_msgs::msg::EmotionsStamped>(
+    auto sub2 = node->create_subscription<openvino_people_msgs::msg::EmotionsStamped>(
       "/ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -130,7 +130,7 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_ageGender_callback =
-    [&sub_called](const people_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
+    [&sub_called](const openvino_people_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
       ageGender_test_pass = true;
       sub_called.set_value(true);
     };
@@ -139,7 +139,7 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
   executor.add_node(node);
 
   {
-    auto sub3 = node->create_subscription<people_msgs::msg::AgeGenderStamped>(
+    auto sub3 = node->create_subscription<openvino_people_msgs::msg::AgeGenderStamped>(
       "/ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -158,7 +158,7 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_headPose_callback =
-    [&sub_called](const people_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
+    [&sub_called](const openvino_people_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
       headPose_test_pass = true;
       sub_called.set_value(true);
     };
@@ -167,7 +167,7 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
   executor.add_node(node);
 
   {
-    auto sub4 = node->create_subscription<people_msgs::msg::HeadPoseStamped>(
+    auto sub4 = node->create_subscription<openvino_people_msgs::msg::HeadPoseStamped>(
       "/ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -183,7 +183,7 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_test pipeline_face_test.launch.py &");
+  system("ros2 launch openvino_test pipeline_face_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   rclcpp::sleep_for(offset);
   system("killall -s SIGINT pipeline_with_params &");

@@ -25,17 +25,17 @@ import launch
 
 
 def generate_launch_description():
-    #default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
+    #default_yaml = os.path.join(get_package_share_directory('openvino_node'), 'param',
                                 #'pipeline_people.yaml')
 
-    default_rviz = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'launch',
+    default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
         launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
-                                             os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param','pipeline_people.yaml')),
+                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_people.yaml')),
         # Openvino detection
         launch_ros.actions.Node(
-            package='dynamic_vino_sample', 
+            package='openvino_node', 
             executable='pipeline_with_params',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[

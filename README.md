@@ -173,16 +173,16 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Inference|Published Topic|
 |---|---|
 |People Detection|```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([people_msgs:msg:EmotionsStamped](../../../people_msgs/msg/EmotionsStamped.msg))|
-|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([people_msgs:msg:AgeGenderStamped](../../../people_msgs/msg/AgeGenderStamped.msg))|
-|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([people_msgs:msg:HeadPoseStamped](../../../people_msgs/msg/HeadPoseStamped.msg))|
+|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([openvino_people_msgs:msg:EmotionsStamped](../../../openvino_people_msgs/msg/EmotionsStamped.msg))|
+|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([openvino_people_msgs:msg:AgeGenderStamped](../../../openvino_people_msgs/msg/AgeGenderStamped.msg))|
+|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([openvino_people_msgs:msg:HeadPoseStamped](../../../openvino_people_msgs/msg/HeadPoseStamped.msg))|
 |Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](../../../people_msgs/msg/ObjectsInMasks.msg))|
-|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_obejcts```([people_msgs::msg::ObjectsInMasks](../../../people_msgs/msg/ObjectsInMasks.msg))|
-|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
-|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([people_msgs::msg::ReidentificationStamped](../../../people_msgs/msg/ReidentificationStamped.msg))|
-|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([people_msgs::msg::VehicleAttribsStamped](../../../people_msgs/msg/PersonAttributeStamped.msg))|
-|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([people_msgs::msg::LicensePlateStamped](../../../people_msgs/msg/LicensePlateStamped.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([openvino_people_msgs::msg::ObjectsInMasks](../../../openvino_people_msgs/msg/ObjectsInMasks.msg))|
+|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_obejcts```([openvino_people_msgs::msg::ObjectsInMasks](../../../openvino_people_msgs/msg/ObjectsInMasks.msg))|
+|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([openvino_people_msgs::msg::ReidentificationStamped](../../../openvino_people_msgs/msg/ReidentificationStamped.msg))|
+|Face Reidenfication|```/ros2_openvino_toolkit/reidentified_faces```([openvino_people_msgs::msg::ReidentificationStamped](../../../openvino_people_msgs/msg/ReidentificationStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([openvino_people_msgs::msg::VehicleAttribsStamped](../../../openvino_people_msgs/msg/PersonAttributeStamped.msg))|
+|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([openvino_people_msgs::msg::LicensePlateStamped](../../../openvino_people_msgs/msg/LicensePlateStamped.msg))|
 </details>
 </p>
 
@@ -197,9 +197,9 @@ Several ROS2 Services are created, expecting to be used in client/server mode, e
 |---|---|
 |Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
 |Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
-|Age Gender Detection Service|```/detect_age_gender```([people_msgs::srv::AgeGender](./people_msgs/srv/AgeGenderSrv.srv))|
-|Headpose Detection Service|```/detect_head_pose```([people_msgs::srv::HeadPose](./people_msgs/srv/HeadPoseSrv.srv))|
-|Emotion Detection Service|```/detect_emotion```([people_msgs::srv::Emotion](./people_msgs/srv/EmotionSrv.srv))|
+|Age Gender Detection Service|```/detect_age_gender```([openvino_people_msgs::srv::AgeGender](./openvino_people_msgs/srv/AgeGenderSrv.srv))|
+|Headpose Detection Service|```/detect_head_pose```([openvino_people_msgs::srv::HeadPose](./openvino_people_msgs/srv/HeadPoseSrv.srv))|
+|Emotion Detection Service|```/detect_emotion```([openvino_people_msgs::srv::Emotion](./openvino_people_msgs/srv/EmotionSrv.srv))|
 </details>
 </p>
 

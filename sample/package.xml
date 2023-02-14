@@ -14,7 +14,7 @@ limitations under the License.
 -->
 
 <package format="2">
-  <name>dynamic_vino_sample</name>
+  <name>openvino_node</name>
   <version>0.9.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
@@ -33,8 +33,8 @@ limitations under the License.
   <build_depend>gflags</build_depend>
   <build_depend>yaml_cpp_vendor</build_depend>
   <build_depend>ament_index_cpp</build_depend>
-  <build_depend>dynamic_vino_lib</build_depend>
-  <build_depend>vino_param_lib</build_depend>
+  <build_depend>openvino_wrapper_lib</build_depend>
+  <build_depend>openvino_param_lib</build_depend>
   <build_depend>cv_bridge</build_depend>
   <build_depend>object_msgs</build_depend>
   <build_depend>realsense2</build_depend>
@@ -49,8 +49,8 @@ limitations under the License.
   <exec_depend>ament_index_cpp</exec_depend>
   <exec_depend>class_loader</exec_depend>
   <exec_depend>cv_bridge</exec_depend>
-  <exec_depend>dynamic_vino_lib</exec_depend>
-  <exec_depend>vino_param_lib</exec_depend>
+  <exec_depend>openvino_wrapper_lib</exec_depend>
+  <exec_depend>openvino_param_lib</exec_depend>
   <exec_depend>object_msgs</exec_depend>
   <exec_depend>realsense2</exec_depend>
 

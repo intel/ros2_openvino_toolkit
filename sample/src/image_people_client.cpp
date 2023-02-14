@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <people_msgs/srv/people.hpp>
-#include <people_msgs/msg/persons_stamped.hpp>
+#include <openvino_people_msgs/srv/people.hpp>
+#include <openvino_people_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <opencv2/opencv.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <memory>
 #include <iomanip>
 
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
 int main(int argc, char ** argv)
 {
@@ -30,15 +30,15 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("service_example_for_face");
   if (argc != 2) {
-    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run dynamic_vino_sample image_object_client"
+    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run openvino_node image_object_client"
       "<image_path>");
     return -1;
   }
 
   std::string image_path = argv[1];
 
-  auto client = node->create_client<people_msgs::srv::People>("/openvino_toolkit/service");
-  auto request = std::make_shared<people_msgs::srv::People::Request>();
+  auto client = node->create_client<openvino_people_msgs::srv::People>("/openvino_toolkit/service");
+  auto request = std::make_shared<openvino_people_msgs::srv::People::Request>();
   request->image_path = image_path;
 
   while (!client->wait_for_service(std::chrono::seconds(1))) {

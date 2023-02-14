@@ -13,17 +13,17 @@
 // limitations under the License.
 
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <memory>
 #include <string>
 
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/slog.hpp"
-#include "dynamic_vino_lib/inputs/base_input.hpp"
-#include "dynamic_vino_lib/inputs/image_input.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/services/frame_processing_server.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
+#include "openvino_wrapper_lib/inputs/base_input.hpp"
+#include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino/openvino.hpp"
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>

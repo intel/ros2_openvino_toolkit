@@ -14,7 +14,7 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(dynamic_vino_test)
+project(openvino_test)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
@@ -51,12 +51,12 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
-find_package(people_msgs REQUIRED)
-find_package(pipeline_srv_msgs REQUIRED)
+find_package(openvino_people_msgs REQUIRED)
+find_package(openvino_msgs REQUIRED)
 find_package(class_loader REQUIRED)
-find_package(vino_param_lib REQUIRED)
+find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(dynamic_vino_lib REQUIRED)
+find_package(openvino_wrapper_lib REQUIRED)
 
 set(CMAKE_BUILD_TYPE "Release")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
@@ -144,17 +144,17 @@ if(BUILD_TESTING)
     if(TARGET ${target})
       ament_target_dependencies(${target}
         "rclcpp"
-        "vino_param_lib"
+        "openvino_param_lib"
         "object_msgs"
-        "people_msgs"
-        "pipeline_srv_msgs"
+        "openvino_people_msgs"
+        "openvino_msgs"
 	      "OpenVINO"
 	      "OpenCV"
 	      "realsense2"
         "ament_index_cpp"
         "yaml_cpp_vendor"
         "class_loader"
-	      "dynamic_vino_lib")
+	      "openvino_wrapper_lib")
     endif()
   endmacro()
 
