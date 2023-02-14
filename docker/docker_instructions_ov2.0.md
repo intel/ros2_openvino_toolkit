@@ -12,26 +12,26 @@ Refer to: [Docker_install_guide](https://docs.docker.com/engine/install/ubuntu/)
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_PRE_INSTALLED_PKG=<EXPECT_ROS_PRE_INSTALLED_PKG> --build-arg VERSION=<EXPECT_ROS_VERSION> --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_openvino_202201 .
+docker build --build-arg ROS_PRE_INSTALLED_PKG=<EXPECT_ROS_PRE_INSTALLED_PKG> --build-arg VERSION=<EXPECT_ROS_VERSION> --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_openvino_202203 .
 ```
 For example:
 * Build image for ros_galactic
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_galactic_openvino_202201 .
+docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_galactic_openvino_202203 .
 ```
 * Build image for ros_foxy
 ```
 cd ~/ros2_openvino_toolkit/docker/Dockerfile
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
-docker build --build-arg ROS_PRE_INSTALLED_PKG=foxy-desktop --build-arg VERSION=foxy --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_foxy_openvino_202201 .
+docker build --build-arg ROS_PRE_INSTALLED_PKG=foxy-desktop --build-arg VERSION=foxy --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_foxy_openvino_202203 .
 ```
 
 ## 3. Download and load docker image
 * Download docker image
 ```
- # ros2_openvino_202201 for demo
+ # ros2_openvino_202203 for demo
  cd ~/Downloads/
  wget <DOCKER_IMAGE_PATH>
 ```
@@ -58,7 +58,6 @@ docker images
 
 * Preparation
 ```
-source /opt/intel/openvino_2022/setupvars.sh
 source /opt/ros/<ROS_VERSION>/setup.bash
 cd ~/catkin_ws
 source ./install/local_setup.bash
