@@ -42,7 +42,7 @@ void Outputs::RosServiceOutput::setResponseForFace(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<openvino_people_msgs::srv::AgeGenderSrv::Response> response)
+  std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response)
 {
   if (age_gender_topic_ != nullptr) {
     response->age_gender.objects = age_gender_topic_->objects;
@@ -50,7 +50,7 @@ void Outputs::RosServiceOutput::setServiceResponse(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<openvino_people_msgs::srv::EmotionSrv::Response> response)
+  std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response)
 {
   if (emotions_topic_ != nullptr) {
     response->emotion.emotions = emotions_topic_->emotions;
@@ -58,7 +58,7 @@ void Outputs::RosServiceOutput::setServiceResponse(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<openvino_people_msgs::srv::HeadPoseSrv::Response> response)
+  std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response)
 {
   if (headpose_topic_ != nullptr) {
     response->headpose.headposes = headpose_topic_->headposes;
@@ -66,7 +66,7 @@ void Outputs::RosServiceOutput::setServiceResponse(
 }
 
 void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<openvino_people_msgs::srv::People::Response> response)
+  std::shared_ptr<object_msgs::srv::People::Response> response)
 {
   slog::info << "in People::Response ...";
   if (faces_topic_ != nullptr) {

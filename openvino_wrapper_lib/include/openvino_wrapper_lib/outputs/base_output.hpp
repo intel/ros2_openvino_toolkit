@@ -22,16 +22,16 @@
 
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
-#include <openvino_people_msgs/msg/emotion.hpp>
-#include <openvino_people_msgs/msg/emotions_stamped.hpp>
-#include <openvino_people_msgs/msg/age_gender.hpp>
-#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
-#include <openvino_people_msgs/msg/head_pose.hpp>
-#include <openvino_people_msgs/msg/head_pose_stamped.hpp>
-#include <openvino_people_msgs/srv/age_gender_srv.hpp>
-#include <openvino_people_msgs/srv/emotion_srv.hpp>
-#include <openvino_people_msgs/srv/people.hpp>
-#include <openvino_people_msgs/srv/head_pose_srv.hpp>
+#include <object_msgs/msg/emotion.hpp>
+#include <object_msgs/msg/emotions_stamped.hpp>
+#include <object_msgs/msg/age_gender.hpp>
+#include <object_msgs/msg/age_gender_stamped.hpp>
+#include <object_msgs/msg/head_pose.hpp>
+#include <object_msgs/msg/head_pose_stamped.hpp>
+#include <object_msgs/srv/age_gender_srv.hpp>
+#include <object_msgs/srv/emotion_srv.hpp>
+#include <object_msgs/srv/people.hpp>
+#include <object_msgs/srv/head_pose_srv.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 #include <string>
 #include <vector>
@@ -164,13 +164,13 @@ public:
   virtual void setServiceResponseForFace(
     std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<openvino_people_msgs::srv::AgeGenderSrv::Response> response) {}
+    std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<openvino_people_msgs::srv::EmotionSrv::Response> response) {}
+    std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<openvino_people_msgs::srv::HeadPoseSrv::Response> response) {}
+    std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response) {}
   virtual void setServiceResponse(
-    std::shared_ptr<openvino_people_msgs::srv::People::Response> response) {}
+    std::shared_ptr<object_msgs::srv::People::Response> response) {}
   Pipeline * getPipeline() const;
   cv::Mat getFrame() const;
   virtual void clearData() {}

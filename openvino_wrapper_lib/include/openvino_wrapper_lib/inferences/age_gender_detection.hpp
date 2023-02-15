@@ -19,8 +19,8 @@
 #ifndef OPENVINO_WRAPPER_LIB__INFERENCES__AGE_GENDER_DETECTION_HPP_
 #define OPENVINO_WRAPPER_LIB__INFERENCES__AGE_GENDER_DETECTION_HPP_
 
-#include <openvino_people_msgs/msg/age_gender.hpp>
-#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
+#include <object_msgs/msg/age_gender.hpp>
+#include <object_msgs/msg/age_gender_stamped.hpp>
 #include <memory>
 #include <string>
 #include <vector>

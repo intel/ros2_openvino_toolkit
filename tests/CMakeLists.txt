@@ -51,7 +51,6 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
-find_package(openvino_people_msgs REQUIRED)
 find_package(openvino_msgs REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(openvino_param_lib REQUIRED)
@@ -146,7 +145,6 @@ if(BUILD_TESTING)
         "rclcpp"
         "openvino_param_lib"
         "object_msgs"
-        "openvino_people_msgs"
         "openvino_msgs"
 	      "OpenVINO"
 	      "OpenCV"

@@ -23,24 +23,24 @@
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
-#include <openvino_people_msgs/msg/emotion.hpp>
-#include <openvino_people_msgs/msg/emotions_stamped.hpp>
-#include <openvino_people_msgs/msg/age_gender.hpp>
-#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
-#include <openvino_people_msgs/msg/head_pose.hpp>
-#include <openvino_people_msgs/msg/head_pose_stamped.hpp>
-#include <openvino_people_msgs/msg/object_in_mask.hpp>
-#include <openvino_people_msgs/msg/objects_in_masks.hpp>
-#include <openvino_people_msgs/msg/reidentification.hpp>
-#include <openvino_people_msgs/msg/reidentification_stamped.hpp>
-#include <openvino_people_msgs/msg/person_attribute.hpp>
-#include <openvino_people_msgs/msg/person_attribute_stamped.hpp>
-#include <openvino_people_msgs/msg/landmark.hpp>
-#include <openvino_people_msgs/msg/landmark_stamped.hpp>
-#include <openvino_people_msgs/msg/vehicle_attribs.hpp>
-#include <openvino_people_msgs/msg/vehicle_attribs_stamped.hpp>
-#include <openvino_people_msgs/msg/license_plate.hpp>
-#include <openvino_people_msgs/msg/license_plate_stamped.hpp>
+#include <object_msgs/msg/emotion.hpp>
+#include <object_msgs/msg/emotions_stamped.hpp>
+#include <object_msgs/msg/age_gender.hpp>
+#include <object_msgs/msg/age_gender_stamped.hpp>
+#include <object_msgs/msg/head_pose.hpp>
+#include <object_msgs/msg/head_pose_stamped.hpp>
+#include <object_msgs/msg/object_in_mask.hpp>
+#include <object_msgs/msg/objects_in_masks.hpp>
+#include <object_msgs/msg/reidentification.hpp>
+#include <object_msgs/msg/reidentification_stamped.hpp>
+#include <object_msgs/msg/person_attribute.hpp>
+#include <object_msgs/msg/person_attribute_stamped.hpp>
+#include <object_msgs/msg/landmark.hpp>
+#include <object_msgs/msg/landmark_stamped.hpp>
+#include <object_msgs/msg/vehicle_attribs.hpp>
+#include <object_msgs/msg/vehicle_attribs_stamped.hpp>
+#include <object_msgs/msg/license_plate.hpp>
+#include <object_msgs/msg/license_plate_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -154,30 +154,30 @@ public:
 protected:
   const std::string topic_name_;
   std::shared_ptr<rclcpp::Node> node_;
-  rclcpp::Publisher<openvino_people_msgs::msg::LicensePlateStamped>::SharedPtr pub_license_plate_;
-  std::shared_ptr<openvino_people_msgs::msg::LicensePlateStamped> license_plate_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::VehicleAttribsStamped>::SharedPtr pub_vehicle_attribs_;
-  std::shared_ptr<openvino_people_msgs::msg::VehicleAttribsStamped> vehicle_attribs_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::LandmarkStamped>::SharedPtr pub_landmarks_;
-  std::shared_ptr<openvino_people_msgs::msg::LandmarkStamped> landmarks_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::ReidentificationStamped>::SharedPtr pub_face_reid_;
-  std::shared_ptr<openvino_people_msgs::msg::ReidentificationStamped> face_reid_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::PersonAttributeStamped>::SharedPtr pub_person_attribs_;
-  std::shared_ptr<openvino_people_msgs::msg::PersonAttributeStamped> person_attribs_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::ReidentificationStamped>::SharedPtr pub_person_reid_;
-  std::shared_ptr<openvino_people_msgs::msg::ReidentificationStamped> person_reid_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::ObjectsInMasks>::SharedPtr pub_segmented_object_;
-  std::shared_ptr<openvino_people_msgs::msg::ObjectsInMasks> segmented_objects_topic_;
+  rclcpp::Publisher<object_msgs::msg::LicensePlateStamped>::SharedPtr pub_license_plate_;
+  std::shared_ptr<object_msgs::msg::LicensePlateStamped> license_plate_topic_;
+  rclcpp::Publisher<object_msgs::msg::VehicleAttribsStamped>::SharedPtr pub_vehicle_attribs_;
+  std::shared_ptr<object_msgs::msg::VehicleAttribsStamped> vehicle_attribs_topic_;
+  rclcpp::Publisher<object_msgs::msg::LandmarkStamped>::SharedPtr pub_landmarks_;
+  std::shared_ptr<object_msgs::msg::LandmarkStamped> landmarks_topic_;
+  rclcpp::Publisher<object_msgs::msg::ReidentificationStamped>::SharedPtr pub_face_reid_;
+  std::shared_ptr<object_msgs::msg::ReidentificationStamped> face_reid_topic_;
+  rclcpp::Publisher<object_msgs::msg::PersonAttributeStamped>::SharedPtr pub_person_attribs_;
+  std::shared_ptr<object_msgs::msg::PersonAttributeStamped> person_attribs_topic_;
+  rclcpp::Publisher<object_msgs::msg::ReidentificationStamped>::SharedPtr pub_person_reid_;
+  std::shared_ptr<object_msgs::msg::ReidentificationStamped> person_reid_topic_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsInMasks>::SharedPtr pub_segmented_object_;
+  std::shared_ptr<object_msgs::msg::ObjectsInMasks> segmented_objects_topic_;
   rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_detected_object_;
   std::shared_ptr<object_msgs::msg::ObjectsInBoxes> detected_objects_topic_;
   rclcpp::Publisher<object_msgs::msg::ObjectsInBoxes>::SharedPtr pub_face_;
   std::shared_ptr<object_msgs::msg::ObjectsInBoxes> faces_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::EmotionsStamped>::SharedPtr pub_emotion_;
-  std::shared_ptr<openvino_people_msgs::msg::EmotionsStamped> emotions_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::AgeGenderStamped>::SharedPtr pub_age_gender_;
-  std::shared_ptr<openvino_people_msgs::msg::AgeGenderStamped> age_gender_topic_;
-  rclcpp::Publisher<openvino_people_msgs::msg::HeadPoseStamped>::SharedPtr pub_headpose_;
-  std::shared_ptr<openvino_people_msgs::msg::HeadPoseStamped> headpose_topic_;
+  rclcpp::Publisher<object_msgs::msg::EmotionsStamped>::SharedPtr pub_emotion_;
+  std::shared_ptr<object_msgs::msg::EmotionsStamped> emotions_topic_;
+  rclcpp::Publisher<object_msgs::msg::AgeGenderStamped>::SharedPtr pub_age_gender_;
+  std::shared_ptr<object_msgs::msg::AgeGenderStamped> age_gender_topic_;
+  rclcpp::Publisher<object_msgs::msg::HeadPoseStamped>::SharedPtr pub_headpose_;
+  std::shared_ptr<object_msgs::msg::HeadPoseStamped> headpose_topic_;
 };
 }  // namespace Outputs
 #endif  // OPENVINO_WRAPPER_LIB__OUTPUTS__ROS_TOPIC_OUTPUT_HPP_

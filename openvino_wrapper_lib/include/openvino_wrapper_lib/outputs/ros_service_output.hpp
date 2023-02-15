@@ -23,12 +23,12 @@
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
-#include <openvino_people_msgs/msg/emotion.hpp>
-#include <openvino_people_msgs/msg/emotions_stamped.hpp>
-#include <openvino_people_msgs/msg/age_gender.hpp>
-#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
-#include <openvino_people_msgs/msg/head_pose.hpp>
-#include <openvino_people_msgs/msg/head_pose_stamped.hpp>
+#include <object_msgs/msg/emotion.hpp>
+#include <object_msgs/msg/emotions_stamped.hpp>
+#include <object_msgs/msg/age_gender.hpp>
+#include <object_msgs/msg/age_gender_stamped.hpp>
+#include <object_msgs/msg/head_pose.hpp>
+#include <object_msgs/msg/head_pose_stamped.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/header.hpp>
 
@@ -60,10 +60,10 @@ public:
 
   void setServiceResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
   void setResponseForFace(std::shared_ptr<object_msgs::srv::DetectObject::Response> response);
-  void setServiceResponse(std::shared_ptr<openvino_people_msgs::srv::AgeGenderSrv::Response> response);
-  void setServiceResponse(std::shared_ptr<openvino_people_msgs::srv::EmotionSrv::Response> response);
-  void setServiceResponse(std::shared_ptr<openvino_people_msgs::srv::HeadPoseSrv::Response> response);
-  void setServiceResponse(std::shared_ptr<openvino_people_msgs::srv::People::Response> response);
+  void setServiceResponse(std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response);
+  void setServiceResponse(std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response);
+  void setServiceResponse(std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response);
+  void setServiceResponse(std::shared_ptr<object_msgs::srv::People::Response> response);
 
 private:
   const std::string service_name_;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openvino_people_msgs/srv/people.hpp>
+#include <object_msgs/srv/people.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <openvino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -39,7 +39,7 @@ int main(int argc, char ** argv)
 
   try {
     auto node = std::make_shared<vino_service::FrameProcessingServer
-        <openvino_people_msgs::srv::People>>("service_people_detection", config_path);
+        <object_msgs::srv::People>>("service_people_detection", config_path);
     rclcpp::spin(node);
   } catch (std::exception & e) {
     std::cout << e.what() << std::endl;

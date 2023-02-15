@@ -40,7 +40,6 @@ find_package(cv_bridge REQUIRED)
 find_package(OpenVINO REQUIRED)
 find_package(openvino_wrapper_lib REQUIRED)
 find_package(object_msgs REQUIRED)
-find_package(openvino_people_msgs REQUIRED)
 find_package(openvino_msgs REQUIRED)
 find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
@@ -135,7 +134,6 @@ ament_target_dependencies(pipeline_with_params
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
@@ -159,7 +157,6 @@ ament_target_dependencies(composable_pipeline
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
@@ -183,7 +180,6 @@ ament_target_dependencies(image_object_server
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
@@ -204,7 +200,6 @@ ament_target_dependencies(image_people_server
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
@@ -225,7 +220,6 @@ ament_target_dependencies(image_object_client
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
@@ -246,7 +240,6 @@ ament_target_dependencies(image_people_client
   "class_loader"
   "openvino_wrapper_lib"
   "OpenVINO"
-  "openvino_people_msgs"
   "openvino_msgs"
   "openvino_param_lib"
   "OpenCV"
