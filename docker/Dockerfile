@@ -21,15 +21,12 @@ ARG DEBIAN_FRONTEND=noninteractive
 ARG APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1
 RUN apt-get update && apt-get install --assume-yes apt-utils
 
-# install openvino 2022.1
-# https://docs.openvino.ai/2022.1/openvino_docs_install_guides_installing_openvino_apt.html
-RUN apt update && apt install --assume-yes curl gnupg2 lsb-release
-RUN curl -s https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB |apt-key add -
-RUN echo "deb https://apt.repos.intel.com/openvino/2022 $(lsb_release -cs) main" |tee /etc/apt/sources.list.d/intel-openvino-2022.list
-RUN apt update && apt-cache search openvino-2022.1.0
-RUN apt install --assume-yes openvino-2022.1.0
-RUN ls -lh /opt/intel/openvino_2022
-RUN source /opt/intel/openvino_2022/setupvars.sh 
+# install openvino 2022.3
+# https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html
+RUN apt update && apt install --assume-yes curl wget gnupg2 lsb-release
+RUN wget https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB && \
+apt-key add GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB && echo "deb https://apt.repos.intel.com/openvino/2022 focal main" | tee /etc/apt/sources.list.d/intel-openvino-2022.list
+RUN apt update && apt-cache search openvino && apt install -y openvino-2022.3.0
 
 # install librealsense2
 RUN apt-get install -y --no-install-recommends \
@@ -67,5 +64,5 @@ RUN git init && git clone https://github.com/intel/ros2_object_msgs.git \
 && git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git
 RUN apt-get install ros-${VERSION}-diagnostic-updater
 WORKDIR /root/catkin_ws
-RUN source /opt/ros/${VERSION}/setup.bash && source /opt/intel/openvino_2022/setupvars.sh && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+RUN source /opt/ros/${VERSION}/setup.bash && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 
