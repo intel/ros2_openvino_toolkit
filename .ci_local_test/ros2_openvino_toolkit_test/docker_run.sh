@@ -27,7 +27,6 @@ function run_container() {
 
 }
 
-
 run_container
 if [ $? -ne 0 ]
 then

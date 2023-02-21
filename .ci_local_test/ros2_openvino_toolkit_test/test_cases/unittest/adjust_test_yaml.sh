@@ -55,3 +55,4 @@ sed -i '/# Rviz/,+4 s/^/#/' $dynamic_vino_sample/launch/pipeline_vehicle_detecti
 sed -i '4 i input_path: /root/jpg/car.jpg' $dynamic_vino_sample/param/pipeline_vehicle_detection.yaml && sed -i 's#input_path#  input_path#g' $dynamic_vino_sample/param/pipeline_vehicle_detection.yaml
 sed -i 's#StandardCamera#Image#g' $dynamic_vino_sample/param/pipeline_vehicle_detection.yaml
 
+

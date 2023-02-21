@@ -22,16 +22,8 @@ cd /root/test_cases && ./ros2_openvino_tool_model_download.sh
 
 cd /root/test_cases/unittest && ./adjust_test_yaml.sh
 echo "===cat pipeline_people.yaml"
-cat /root/catkin_ws/install/dynamic_vino_sample/share/dynamic_vino_sample/param/pipeline_people.yaml
-
-echo "===cat pipeline_image.yaml"
-cat /root/catkin_ws/install/dynamic_vino_sample/share/dynamic_vino_sample/param/pipeline_image.yaml
-
-echo "===cat pipeline_person_attributes.yaml"
-cat /root/catkin_ws/install/dynamic_vino_sample/share/dynamic_vino_sample/param/pipeline_person_attributes.yaml
-
-echo "===cat pipeline_reidentification.yaml"
-cat /root/catkin_ws/install/dynamic_vino_sample/share/dynamic_vino_sample/param/pipeline_reidentification.yaml
+cat /root/catkin_ws/install/openvino_node/share/openvino_node/param/pipeline_people.yaml
+cat /root/catkin_ws/install/openvino_node/share/openvino_node/param/pipeline_people_ci.yaml
 
 
 cd /root/test_cases/unittest && python3 run_all.py

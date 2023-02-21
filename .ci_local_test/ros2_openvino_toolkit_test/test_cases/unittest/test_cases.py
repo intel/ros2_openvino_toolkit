@@ -88,6 +88,66 @@ class Test_Cases(unittest.TestCase):
         log_file = f"pipeline_object_yolo_test.log"
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
 
+
+    def test_1_pipeline_people_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/age_genders_Recognition", \
+                    "/ros2_openvino_toolkit/headposes_estimation", \
+                    "/ros2_openvino_toolkit/face_detection", \
+                    "/ros2_openvino_toolkit/emotions_recognition"]
+        launch_file = f"pipeline_people_ci_test.py"
+        log_file = f"pipeline_people_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_2_pipeline_reidentification_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/reidentified_persons",]
+        launch_file = f"pipeline_reidentification_ci_test.py"
+        log_file = f"pipeline_reidentification_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_3_pipeline_image_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/emotions_recognition", \
+                    "/ros2_openvino_toolkit/headposes_estimation", \
+                    "/ros2_openvino_toolkit/people/age_genders_Recognition"]
+        launch_file = f"pipeline_image_ci_test.py"
+        log_file = f"pipeline_image_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_4_pipeline_segmentation_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        launch_file = f"pipeline_segmentation_ci_test.py"
+        log_file = f"pipeline_segmentation_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_5_pipeline_segmentation_image_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        launch_file = f"pipeline_segmentation_image_ci_test.py"
+        log_file = f"pipeline_segmentation_image_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_6_pipeline_vehicle_detection_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/detected_license_plates",
+                    "/ros2_openvino_toolkit/detected_vehicles_attribs"]
+        launch_file = f"pipeline_vehicle_detection_ci_test.py"
+        log_file = f"pipeline_vehicle_detection_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_7_pipeline_person_attributes_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/detected_objects", \
+                   "/ros2_openvino_toolkit/person_attributes"]
+        launch_file = f"pipeline_person_attributes_ci_test.py"
+        log_file = f"pipeline_person_attributes_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+    def test_8_pipeline_object_yolo_ci(self):
+        topic_ls = ["/ros2_openvino_toolkit/detected_objects"]
+        launch_file = f"pipeline_object_yolo_ci_test.py"
+        log_file = f"pipeline_object_yolo_test_ci.log"
+        self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
+
+
+
+
+
 def kill_ros2_process():
     sleep(30)
     process_result = subprocess.Popen(["ps -ef | grep ros2 | grep -v 'grep' | awk '{print $2}'"],stdout=subprocess.PIPE,shell=True).communicate()
