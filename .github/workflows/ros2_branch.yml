@@ -6,9 +6,9 @@ name: ros2_branch_CI
 on:
   # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
-    branches: [ "ros2_2023" ]
+    branches: [ "ros2" ]
   pull_request:
-    branches: [ "ros2_2023" ]
+    branches: [ "ros2" ]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
