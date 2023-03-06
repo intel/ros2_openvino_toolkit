@@ -19,10 +19,8 @@ apt-get install -y python3-pip
 pip3 install XTestRunner
 
 cd /root/test_cases && ./ros2_openvino_tool_model_download.sh
-
-cd /root/test_cases/unittest && ./adjust_test_yaml.sh
-echo "===cat pipeline_people.yaml"
-cat /root/catkin_ws/install/openvino_node/share/openvino_node/param/pipeline_people.yaml
+mkdir -p /root/test_cases/log
+echo "===cat pipeline_people_ci.yaml"
 cat /root/catkin_ws/install/openvino_node/share/openvino_node/param/pipeline_people_ci.yaml
 
 
