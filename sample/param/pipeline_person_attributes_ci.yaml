@@ -1,0 +1,28 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  input_path: /root/catkin_ws/src/ros2_openvino_toolkit/data/images/sample_faces.jpg
+  infers:
+    - name: ObjectDetection
+      model: /opt/openvino_toolkit/models/intel/person-detection-retail-0013/FP32/person-detection-retail-0013.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+    - name: PersonAttribsDetection
+      model: /opt/openvino_toolkit/models/intel/person-attributes-recognition-crossroad-0230/FP32/person-attributes-recognition-crossroad-0230.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [PersonAttribsDetection, RosTopic]
+    - left: PersonAttribsDetection
+      right: [RosTopic]
+
+OpenvinoCommon:
