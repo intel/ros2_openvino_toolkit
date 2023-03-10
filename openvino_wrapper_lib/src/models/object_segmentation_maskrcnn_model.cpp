@@ -86,10 +86,10 @@ bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(
   ov::Shape input_shape = input_tensor.get_shape();
 
   OPENVINO_ASSERT(input_shape.size() == 4);
-  // For frozen graph model:
-  const size_t width = input_shape[3];
-  const size_t height = input_shape[2];
-  const size_t channels = input_shape[1];
+  // For frozen graph model: layout= "NHWC"
+  const size_t width = input_shape[2];
+  const size_t height = input_shape[1];
+  const size_t channels = input_shape[3];
 
   slog::debug <<"width is:"<< width << slog::endl;
   slog::debug <<"height is:"<< height << slog::endl;
@@ -101,6 +101,14 @@ bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(
      throw std::runtime_error("The number of channels for net input and image must match");
   }
   
+#if 1
+  //input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, resized_image.data);
+  //engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
+  unsigned char* data = input_tensor.data<unsigned char>();
+  cv::Size size = {(int)width, (int)height};
+  cv::Mat resized_image(size, CV_8UC3, data);
+  cv::resize(orig_image, resized_image, size);
+#else
   const auto input_data = input_tensor.data<unsigned char>();
   cv::Mat resized_image(orig_image);
   if (static_cast<int>(width) != orig_image.size().width ||
@@ -127,6 +135,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(
   } else {
       throw std::runtime_error("Unsupported number of channels");
   }
+#endif
 
   return true;
 }
