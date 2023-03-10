@@ -16,7 +16,7 @@ apt-get update
 # apt-get install -y ros-$ros2_branch-diagnostic-updater
 apt-get install python3-defusedxml
 apt-get install -y python3-pip
-pip3 install XTestRunner
+pip3 install XTestRunner==1.5.0
 
 cd /root/test_cases && ./ros2_openvino_tool_model_download.sh
 mkdir -p /root/test_cases/log
