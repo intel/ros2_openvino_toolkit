@@ -160,9 +160,19 @@ public:
     attr_.input_height = height;
   }
 
+  inline int getInputHeight() const
+  {
+    return attr_.input_height;
+  }
+
   inline void setInputWidth(const int width)
   {
     attr_.input_width = width;
+  }
+
+  inline int getInputWidth() const
+  {
+    return attr_.input_width;
   }
 
   inline void setMaxProposalCount(const int max)
