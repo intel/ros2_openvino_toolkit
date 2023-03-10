@@ -143,18 +143,21 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
+
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> & results)
 {
     const float alpha = 0.7f;
     //const float MASK_THRESHOLD = 0.5;
-
-    cv::Rect location = results[i].getLocation();
-    slog::debug << "Rect:" << location << slog::endl;
-    slog::debug << " Frame Size: " << frame_.size() << slog::endl;
-    cv::Mat mask = results[i].getMask();
-    cv::resize(mask, mask, frame_.size());
-    cv::addWeighted(mask, alpha, frame_, 1.0f - alpha, 0.0f, frame_);
+    //only for merged mask mat got from modles::fetchResults()
+    for (unsigned i=0; i<results.size(); i++){
+      cv::Rect location = results[i].getLocation();
+      slog::debug << "Rect:" << location << slog::endl;
+      slog::debug << " Frame Size: " << frame_.size() << slog::endl;
+      cv::Mat mask = results[i].getMask();
+      cv::resize(mask, mask, frame_.size());
+      cv::addWeighted(mask, alpha, frame_, 1.0f - alpha, 0.0f, frame_);
+    }
 }
 
 void Outputs::ImageWindowOutput::accept(
