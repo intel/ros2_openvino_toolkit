@@ -78,26 +78,49 @@ bool Models::ObjectSegmentationModel::matToBlob(
     slog::err << "A frame is trying to be enqueued in a NULL Engine." << slog::endl;
     return false;
   }
+#if 1
+  const size_t width = getInputWidth();
+  const size_t height = getInputHeight();
+  const size_t channels = 3;
+  slog::debug <<"width is:"<< width << slog::endl;
+  slog::debug <<"height is:"<< height << slog::endl;
 
-  size_t channels = orig_image.channels();
-  size_t height = orig_image.size().height;
-  size_t width = orig_image.size().width;
-
-  size_t strideH = orig_image.step.buf[0];
-  size_t strideW = orig_image.step.buf[1];
-
-  bool is_dense =
-      strideW == channels &&
-      strideH == channels * width;
-
-  if (!is_dense){
-    slog::err << "Doesn't support conversion from not dense cv::Mat." << slog::endl;
-    return false;
+  if (orig_image.cols != width || orig_image.rows != height){
+    cv::Size size = {(int)width, (int)height};
+    cv::Mat resized_image(size, CV_8UC3);
+    cv::resize(orig_image, resized_image, size);
+    ov::Tensor input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, resized_image.data);
+    engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
+  } else {
+    ov::Tensor input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, orig_image.data);
+    engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
   }
+#else
+  ov::InferRequest infer_request = engine->getRequest();
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Shape input_shape = input_tensor.get_shape();
 
-  ov::Tensor input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, orig_image.data);
-  engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
+  OPENVINO_ASSERT(input_shape.size() == 4);
+  // For frozen graph model:
+  const size_t width = input_shape[2];
+  const size_t height = input_shape[1];
+  const size_t channels = input_shape[3];
 
+  slog::debug <<"width is:"<< width << slog::endl;
+  slog::debug <<"height is:"<< height << slog::endl;
+  slog::debug <<"channels is:"<< channels << slog::endl;
+  slog::debug <<"origin channels is:"<< orig_image.channels() << slog::endl;
+  slog::debug <<"input shape is:"<< input_shape << slog::endl;
+
+  if (static_cast<size_t>(orig_image.channels()) != channels) {
+     throw std::runtime_error("The number of channels for net input and image must match");
+  }
+  
+  unsigned char* data = input_tensor.data<unsigned char>();
+  cv::Size size = {(int)width, (int)height};
+  cv::Mat resized_image(size, CV_8UC3, data);
+  cv::resize(orig_image, resized_image, size);
+#endif
   return true;
 }
 
@@ -126,11 +149,15 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   ov::Layout tensor_layout = ov::Layout("NHWC");
   ov::Layout expect_layout = ov::Layout("NCHW");
   ov::Shape input_shape = model->input().get_shape();
-  if (input_shape[1] == 3)
+  if (input_shape[1] == 3){
     expect_layout = ov::Layout("NCHW");
-  else if (input_shape[3] == 3)
+    setInputWidth(input_shape[3]);
+    setInputHeight(input_shape[2]);
+  } else if (input_shape[3] == 3){
     expect_layout = ov::Layout("NHWC");
-  else
+    setInputWidth(input_shape[2]);
+    setInputHeight(input_shape[1]);
+  } else
     slog::warn << "unexpect input shape " << input_shape << slog::endl;
 
   input_info.tensor().
@@ -167,16 +194,22 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   auto& outSizeVector = data.get_shape();
   int outChannels, outHeight, outWidth;
   slog::debug << "output size vector " << outSizeVector.size() << slog::endl;
+  ov::Layout outputLayout("");
   switch(outSizeVector.size()){
     case 3:
-      outChannels = 0;
-      outHeight = outSizeVector[1];
-      outWidth = outSizeVector[2];
+      outputLayout = "CHW";
+      outChannels = 1;
+      outHeight = static_cast<int>(outSizeVector[ov::layout::height_idx(outputLayout)]);
+      outWidth = static_cast<int>(outSizeVector[ov::layout::width_idx(outputLayout)]);
       break;
     case 4:
-      outChannels = outSizeVector[1];
-      outHeight = outSizeVector[2];
-      outWidth = outSizeVector[3];
+      //outChannels = outSizeVector[1];
+      //outHeight = outSizeVector[2];
+      //outWidth = outSizeVector[3];
+      outputLayout = "NCHW";
+      outChannels = static_cast<int>(outSizeVector[ov::layout::channels_idx(outputLayout)]);
+      outHeight = static_cast<int>(outSizeVector[ov::layout::height_idx(outputLayout)]);
+      outWidth = static_cast<int>(outSizeVector[ov::layout::width_idx(outputLayout)]);
       break;
     default:
       throw std::runtime_error("Unexpected output blob shape. Only 4D and 3D output blobs are"

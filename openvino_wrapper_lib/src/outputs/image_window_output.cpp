@@ -143,39 +143,21 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
+
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> & results)
 {
-  std::map<std::string, int> class_color;
-  for (unsigned i = 0; i < results.size(); i++) {
-    std::string class_label = results[i].getLabel();
-    if (class_color.find(class_label) == class_color.end()) {
-      class_color[class_label] = class_color.size();
-    }
-    auto & color = colors_[class_color[class_label] % colors_.size() ];
     const float alpha = 0.7f;
-    const float MASK_THRESHOLD = 0.5;
-
-    cv::Rect location = results[i].getLocation();
-    cv::Mat roi_img = frame_(location);
-    cv::Mat mask = results[i].getMask();
-    cv::Mat colored_mask(location.height, location.width, frame_.type(),
-		   cv::Scalar(color[2], color[1], color[0]) );
-    roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
-
-/**
-    for (int h = 0; h < mask.size().height; ++h) {
-      for (int w = 0; w < mask.size().width; ++w) {
-        for (int ch = 0; ch < colored_mask.channels(); ++ch) {
-          colored_mask.at<cv::Vec3b>(h, w)[ch] = mask.at<float>(h, w) > MASK_THRESHOLD ?
-            255 * color[ch] :
-            roi_img.at<cv::Vec3b>(h, w)[ch];
-        }
-      }
+    //const float MASK_THRESHOLD = 0.5;
+    //only for merged mask mat got from modles::fetchResults()
+    for (unsigned i=0; i<results.size(); i++){
+      cv::Rect location = results[i].getLocation();
+      slog::debug << "Rect:" << location << slog::endl;
+      slog::debug << " Frame Size: " << frame_.size() << slog::endl;
+      cv::Mat mask = results[i].getMask();
+      cv::resize(mask, mask, frame_.size());
+      cv::addWeighted(mask, alpha, frame_, 1.0f - alpha, 0.0f, frame_);
     }
-*/
-    cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
-  }
 }
 
 void Outputs::ImageWindowOutput::accept(
@@ -184,22 +166,19 @@ void Outputs::ImageWindowOutput::accept(
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
-    outputs_[target_index].rect = result_rect;
+    
     auto fd_conf = results[i].getConfidence();
-    if (fd_conf >= 0) {
+    if (fd_conf > 0) {
+      outputs_[target_index].rect = result_rect;
       std::ostringstream ostream;
       ostream << "[" << std::fixed << std::setprecision(3) << fd_conf << "]";
       outputs_[target_index].desc += ostream.str();
+      auto label = results[i].getLabel();
+      outputs_[target_index].desc += "[" + label + "]";
     }
-    auto label = results[i].getLabel();
-    outputs_[target_index].desc += "[" + label + "]";
   }
   mergeMask(results);
 }
-
-
-
-
 
 void Outputs::ImageWindowOutput::mergeMask(
   const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> & results)
