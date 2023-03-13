@@ -6,11 +6,14 @@ from XTestRunner import HTMLTestRunner
 def main():
 
     suite = unittest.TestSuite()
-    suite.addTest(Test_Cases('test_1_pipeline_people_ci'))
-    suite.addTest(Test_Cases('test_2_pipeline_reidentification_ci'))
-    suite.addTest(Test_Cases('test_3_pipeline_image_ci'))
-    suite.addTest(Test_Cases('test_6_pipeline_vehicle_detection_ci'))
-    suite.addTest(Test_Cases('test_7_pipeline_person_attributes_ci'))
+    #suite.addTest(Test_Cases('test_1_pipeline_people_ci'))
+    #suite.addTest(Test_Cases('test_2_pipeline_reidentification_ci'))
+    #suite.addTest(Test_Cases('test_3_pipeline_image_ci'))
+    #suite.addTest(Test_Cases('test_4_pipeline_vehicle_detection_ci'))
+    #suite.addTest(Test_Cases('test_5_pipeline_person_attributes_ci'))
+    suite.addTest(Test_Cases('test_6_pipeline_segmentation_ci'))
+    suite.addTest(Test_Cases('test_7_pipeline_segmentation_image_ci'))
+    suite.addTest(Test_Cases('test_8_pipeline_segmentation_maskrcnn_ci'))
 
     with (open('./result.html', 'wb')) as fp:
         runner = HTMLTestRunner(

@@ -25,7 +25,14 @@ cat /root/catkin_ws/install/openvino_node/share/openvino_node/param/pipeline_peo
 
 
 cd /root/test_cases/unittest && python3 run_all.py
-if [ $? -ne 0 ]
+result=$?
+echo "cat segmentation_test"
+cat /root/test_cases/log/pipeline_segmentation_test_ci.log
+echo "cat segmentation image test"
+cat /root/test_cases/log/pipeline_segmentation_image_test_ci.log
+echo "cat segmentation maskrcnn"
+cat /root/test_cases/log/pipeline_segmentation_maskrcnn_test_ci.log
+if [ $result -ne 0 ]
 then
         exit -1
 fi

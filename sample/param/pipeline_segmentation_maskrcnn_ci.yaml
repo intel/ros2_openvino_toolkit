@@ -1,0 +1,19 @@
+Pipelines:
+- name: segmentation
+  inputs: [Image]
+  input_path: /root/catkin_ws/src/ros2_openvino_toolkit/data/images/sample_car.png
+  infers:
+    - name: ObjectSegmentationMaskrcnn
+      model: /opt/openvino_toolkit/models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/mask_rcnn_inception_resnet_v2_atrous_coco.xml
+      engine: CPU #"HETERO:CPU,GPU,MYRIAD"
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentationMaskrcnn]
+    - left: ObjectSegmentationMaskrcnn
+      right: [RosTopic]
+
+OpenvinoCommon:

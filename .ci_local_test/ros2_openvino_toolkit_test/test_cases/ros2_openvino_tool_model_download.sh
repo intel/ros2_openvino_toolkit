@@ -15,6 +15,13 @@ cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list && sed -i 's/mask_rcnn_
 
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list && omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 
+omz_downloader --name mask_rcnn_inception_resnet_v2_atrous_coco  -o /opt/openvino_toolkit/models/
+omz_converter --name mask_rcnn_inception_resnet_v2_atrous_coco  -d /opt/openvino_toolkit/models/  -o /opt/openvino_toolkit/models/convert
+omz_downloader --name deeplabv3  -o /opt/openvino_toolkit/models/
+omz_converter --name deeplabv3  -d /opt/openvino_toolkit/models/  -o /opt/openvino_toolkit/models/convert
+omz_downloader --name semantic-segmentation-adas-0001  -o /opt/openvino_toolkit/models/
+#omz_converter --name semantic-segmentation-adas-0001  -d /opt/openvino_toolkit/models/  -o /opt/openvino_toolkit/models/convert
+
 #Copy label files (execute once)
 cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
 cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/
@@ -23,5 +30,6 @@ cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_
 cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
 cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 
-mkdir -p /opt/openvino_toolkit/models/convert/
-#cp -r /root/public/ /opt/openvino_toolkit/models/convert/
+mkdir -p /opt/openvino_toolkit/models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/
+cp /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/* /opt/openvino_toolkit/models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/
+
