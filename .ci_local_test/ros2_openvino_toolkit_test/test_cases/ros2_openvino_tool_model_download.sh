@@ -33,3 +33,4 @@ cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-li
 mkdir -p /opt/openvino_toolkit/models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/
 cp /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/* /opt/openvino_toolkit/models/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP16/
 
+cd /root/test_cases/ && ./yolov5_model_download.sh
