@@ -6,6 +6,7 @@ from XTestRunner import HTMLTestRunner
 def main():
 
     suite = unittest.TestSuite()
+
     all_cases = [Test_Cases('test_1_pipeline_people_ci'),
                  Test_Cases('test_2_pipeline_reidentification_ci'),
                  Test_Cases('test_3_pipeline_image_ci'),
