@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openvino_people_msgs/srv/people.hpp>
-#include <openvino_people_msgs/msg/persons_stamped.hpp>
+#include <object_msgs/srv/people.hpp>
+#include <object_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <openvino_param_lib/param_manager.hpp>
 #include <opencv2/opencv.hpp>
@@ -37,8 +37,8 @@ int main(int argc, char ** argv)
 
   std::string image_path = argv[1];
 
-  auto client = node->create_client<openvino_people_msgs::srv::People>("/openvino_toolkit/service");
-  auto request = std::make_shared<openvino_people_msgs::srv::People::Request>();
+  auto client = node->create_client<object_msgs::srv::People>("/openvino_toolkit/service");
+  auto request = std::make_shared<object_msgs::srv::People::Request>();
   request->image_path = image_path;
 
   while (!client->wait_for_service(std::chrono::seconds(1))) {

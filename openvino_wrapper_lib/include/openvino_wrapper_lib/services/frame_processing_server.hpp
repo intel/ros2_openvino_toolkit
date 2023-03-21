@@ -17,16 +17,16 @@
 #include <object_msgs/msg/object.hpp>
 #include <object_msgs/msg/object_in_box.hpp>
 #include <object_msgs/msg/objects_in_boxes.hpp>
-#include <openvino_people_msgs/msg/emotion.hpp>
-#include <openvino_people_msgs/msg/emotions_stamped.hpp>
-#include <openvino_people_msgs/msg/age_gender.hpp>
-#include <openvino_people_msgs/msg/age_gender_stamped.hpp>
-#include <openvino_people_msgs/msg/head_pose.hpp>
-#include <openvino_people_msgs/msg/head_pose_stamped.hpp>
+#include <object_msgs/msg/emotion.hpp>
+#include <object_msgs/msg/emotions_stamped.hpp>
+#include <object_msgs/msg/age_gender.hpp>
+#include <object_msgs/msg/age_gender_stamped.hpp>
+#include <object_msgs/msg/head_pose.hpp>
+#include <object_msgs/msg/head_pose_stamped.hpp>
 
-#include <openvino_people_msgs/srv/age_gender_srv.hpp>
-#include <openvino_people_msgs/srv/emotion_srv.hpp>
-#include <openvino_people_msgs/srv/head_pose_srv.hpp>
+#include <object_msgs/srv/age_gender_srv.hpp>
+#include <object_msgs/srv/emotion_srv.hpp>
+#include <object_msgs/srv/head_pose_srv.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 
 #include <rclcpp/rclcpp.hpp>

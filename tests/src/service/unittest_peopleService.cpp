@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <openvino_people_msgs/srv/people.hpp>
-#include <openvino_people_msgs/msg/persons_stamped.hpp>
+#include <object_msgs/srv/people.hpp>
+#include <object_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <openvino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
@@ -38,11 +38,11 @@ TEST(UnitTestPeople, testPeople)
 {
   auto node = rclcpp::Node::make_shared("openvino_people_service_test");
 
-  auto client = node->create_client<openvino_people_msgs::srv::People>("/openvino_toolkit/service");
+  auto client = node->create_client<object_msgs::srv::People>("/openvino_toolkit/service");
   
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
   
-  auto request = std::make_shared<openvino_people_msgs::srv::People::Request>();
+  auto request = std::make_shared<object_msgs::srv::People::Request>();
 
   std::string buffer = generate_file_path("data/images/team.jpg");
   std::cout << buffer << std::endl;

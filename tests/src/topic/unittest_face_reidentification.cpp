@@ -14,10 +14,10 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
-#include <openvino_people_msgs/msg/reidentification.hpp>
-#include <openvino_people_msgs/msg/reidentification_stamped.hpp>
-#include <openvino_people_msgs/msg/landmark.hpp>
-#include <openvino_people_msgs/msg/landmark_stamped.hpp>
+#include <object_msgs/msg/reidentification.hpp>
+#include <object_msgs/msg/reidentification_stamped.hpp>
+#include <object_msgs/msg/landmark.hpp>
+#include <object_msgs/msg/landmark_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <openvino_param_lib/param_manager.hpp>
 
@@ -100,7 +100,7 @@ TEST(UnitTestFaceReidentification, testLandmarkDetection)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_landmark_detection_callback =
-    [&sub_called](const openvino_people_msgs::msg::LandmarkStamped::SharedPtr msg) -> void {
+    [&sub_called](const object_msgs::msg::LandmarkStamped::SharedPtr msg) -> void {
       if(msg->landmarks.size() > 0)
         landmark_detection = true;
       sub_called.set_value(true);
@@ -110,7 +110,7 @@ TEST(UnitTestFaceReidentification, testLandmarkDetection)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<openvino_people_msgs::msg::LandmarkStamped>(
+    auto sub1 = node->create_subscription<object_msgs::msg::LandmarkStamped>(
       "/ros2_openvino_toolkit/detected_landmarks", qos, openvino_landmark_detection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -128,7 +128,7 @@ TEST(UnitTestFaceReidentification, testReidentification)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_face_reidentification_callback =
-    [&sub_called](const openvino_people_msgs::msg::ReidentificationStamped::SharedPtr msg) -> void {
+    [&sub_called](const object_msgs::msg::ReidentificationStamped::SharedPtr msg) -> void {
       if(msg->reidentified_vector.size() > 0)
         test_pass = true;
       sub_called.set_value(true);
@@ -138,7 +138,7 @@ TEST(UnitTestFaceReidentification, testReidentification)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<openvino_people_msgs::msg::ReidentificationStamped>(
+    auto sub1 = node->create_subscription<object_msgs::msg::ReidentificationStamped>(
       "/ros2_openvino_toolkit/reidentified_faces", qos, openvino_face_reidentification_callback);
 
     executor.spin_once(std::chrono::seconds(0));

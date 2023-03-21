@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "openvino_wrapper_lib/services/frame_processing_server.hpp"
-#include <openvino_people_msgs/srv/people.hpp>
+#include <object_msgs/srv/people.hpp>
 #include <object_msgs/srv/detect_object.hpp>
 
 #include <ament_index_cpp/get_resource.hpp>
@@ -93,5 +93,5 @@ void FrameProcessingServer<T>::cbService(
 }
 
 template class FrameProcessingServer<object_msgs::srv::DetectObject>;
-template class FrameProcessingServer<openvino_people_msgs::srv::People>;
+template class FrameProcessingServer<object_msgs::srv::People>;
 }  // namespace vino_service
