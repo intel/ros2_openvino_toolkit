@@ -54,8 +54,8 @@ To use the model optimizer, you need to run the following command to install som
 python3 -m venv ov_env                      // Create openVINO virtual environment
 source ov_env/bin/activate                  // Activate environment
 python -m pip install --upgrade pip         // Upgrade pip
-pip install openvino[onnx]==2022.1.0        // Install OpenVINO for ONNX
-pip install openvino-dev[onnx]==2022.1.0    // Install OpenVINO Dev Tool for ONNX
+pip install openvino[onnx]==2022.3.0        // Install OpenVINO for ONNX
+pip install openvino-dev[onnx]==2022.3.0    // Install OpenVINO Dev Tool for ONNX
 ```
 
 * Generate IR file
