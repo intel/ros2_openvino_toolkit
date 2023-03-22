@@ -14,4 +14,5 @@ human-pose-estimation-0001
 semantic-segmentation-adas-0001
 mobilenet-ssd
 deeplabv3
+mask_rcnn_inception_resnet_v2_atrous_coco
 

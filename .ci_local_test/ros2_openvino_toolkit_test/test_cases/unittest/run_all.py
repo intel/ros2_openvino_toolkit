@@ -6,11 +6,16 @@ from XTestRunner import HTMLTestRunner
 def main():
 
     suite = unittest.TestSuite()
-    suite.addTest(Test_Cases('test_1_pipeline_people_ci'))
-    suite.addTest(Test_Cases('test_2_pipeline_reidentification_ci'))
-    suite.addTest(Test_Cases('test_3_pipeline_image_ci'))
-    suite.addTest(Test_Cases('test_6_pipeline_vehicle_detection_ci'))
-    suite.addTest(Test_Cases('test_7_pipeline_person_attributes_ci'))
+
+    all_cases = [Test_Cases('test_1_pipeline_people_ci'),
+                 Test_Cases('test_2_pipeline_reidentification_ci'),
+                 Test_Cases('test_3_pipeline_image_ci'),
+                 Test_Cases('test_4_pipeline_segmentation_ci'),
+                 Test_Cases('test_5_pipeline_vehicle_detection_ci'),
+                 Test_Cases('test_6_pipeline_person_attributes_ci'),
+                 Test_Cases('test_7_pipeline_segmentation_image_ci'),
+                 Test_Cases('test_8_pipeline_object_yolo_ci')]
+    suite.addTests(all_cases)
 
     with (open('./result.html', 'wb')) as fp:
         runner = HTMLTestRunner(
@@ -21,14 +26,15 @@ def main():
         )
         result = runner.run(
             testlist=suite,
-            rerun=0,
+            rerun=1,
             save_last_run=False
         )
 
+    failure_count = len(all_cases) - result.success_count
+    print(f"all count: {len(all_cases)}")
     print(f"success count: {result.success_count}")
-    print(f"failure count: {result.failure_count}")
-    print(f"runtime:", result.case_end_time - result.case_start_time)
-    if result.failure_count == 0 and result.error_count == 0:
+    print(f"failure count: {failure_count}")
+    if result.success_count == len(all_cases) and failure_count == 0:
         print(f"Test ALL PASS")
     else:
         print(f"Test FAIL")
