@@ -21,8 +21,11 @@ function run_container() {
         docker rm -f ros2_openvino_container
     fi
     # Using jenkins server ros2_openvino_toolkit code instead of git clone code.
-    cd $work_dir && sed -i 's/RUN git clone -b ros2 https/#/g' Dockerfile
-    cd $work_dir && docker build --build-arg ROS_VERSION=galactic-desktop --build-arg VERSION=galactic  -t ros2_openvino_docker:01 .
+    cd $work_dir && sed -i '/ros2_openvino_toolkit.git/d' Dockerfile
+    # realsense-ros.git isn't used in CI tests.
+    cd $work_dir && sed -i '/realsense-ros.git/d' Dockerfile
+
+    cd $work_dir && docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic  -t ros2_openvino_docker:01 .
     docker run -i --privileged=true --device=/dev/dri -v $work_dir/ros2_openvino_toolkit:/root/catkin_ws/src/ros2_openvino_toolkit -v /tmp/.X11-unix:/tmp/.X11-unix  -v $HOME/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v $work_dir/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh galactic"
 
 }
