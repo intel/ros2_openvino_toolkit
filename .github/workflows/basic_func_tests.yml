@@ -31,6 +31,6 @@ jobs:
             pwd
             mkdir -p ../workspace_ci
             cp -r ${GITHUB_WORKSPACE}/.ci_local_test/ros2_openvino_toolkit_test ../workspace_ci
-            cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace_ci
+            \cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace_ci/ros2_openvino_toolkit_test/Dockerfile
             cp -r ${GITHUB_WORKSPACE} ../workspace_ci/ros2_openvino_toolkit_test
             cd ../workspace_ci/ros2_openvino_toolkit_test && ./docker_run.sh
