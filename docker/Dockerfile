@@ -54,7 +54,6 @@ requests \
 && apt-get install -y --no-install-recommends libboost-all-dev
 WORKDIR /usr/lib/x86_64-linux-gnu
 RUN pip install --upgrade pip
-RUN pip install openvino-dev[tensorflow2]==2022.3
 
 # build ros2 openvino toolkit
 WORKDIR /root
