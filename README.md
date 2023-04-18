@@ -41,7 +41,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
   - [How to create multiple pipelines in a process?](./doc/tables_of_contents/tutorials/Multiple_Pipelines.md)
 
 ## Installation & Launching
-See Getting Start Pages for [ROS2 Dashing](./doc/getting_started_with_Dashing.md) or [ROS2 Foxy](./doc/getting_started_with_Foxy_Ubuntu20.04.md) or [ROS2 Galactic](./doc/getting_started_with_Galactic_Ubuntu20.04.md) for detailed installation & lauching instructions.
+See Getting Start Pages for [ROS2 Dashing](./doc/quick_start/getting_started_with_Dashing_Ubuntu18.04.md) or [ROS2 Foxy](./doc/quick_start/getting_started_with_Foxy_Ubuntu20.04.md) or [ROS2 Galactic](./doc/quick_start/getting_started_with_Galactic_Ubuntu20.04.md) for detailed installation & lauching instructions.
 
 # More Information
 * ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
