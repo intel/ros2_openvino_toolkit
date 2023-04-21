@@ -1,10 +1,10 @@
 Pipelines:
 - name: object
   inputs: [Image]
-  input_path: "/opt/openvino_toolkit/ros2_overlay_ws/src/ros2_openvino_toolkit/data/images/car_vihecle.png"
+  input_path: to/be/set/image_path
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/object_detection/mobilenet-ssd/caffe/output/FP16/mobilenet-ssd.xml
+      model: /opt/openvino_toolkit/models/convert/public/mobilenet-ssd/FP16/mobilenet-ssd.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16

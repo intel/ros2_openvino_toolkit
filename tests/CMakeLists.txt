@@ -1,4 +1,4 @@
-# Copyright (c) 2018 Intel Corporation
+# Copyright (c) 2018-2022 Intel Corporation
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,22 +14,22 @@
 
 cmake_minimum_required(VERSION 3.5)
 
-project(dynamic_vino_test)
+project(openvino_test)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 ####################################
-## to use C++14
-set(CMAKE_CXX_STANDARD 14)
+## to use C++17
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "-std=c++14 ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 ####################################
 
-message(STATUS "Looking for inference engine configuration file at: ${CMAKE_PREFIX_PATH}")
-find_package(InferenceEngine)
-if(NOT InferenceEngine_FOUND)
+find_package(OpenVINO)
+if(NOT OpenVINO_FOUND)
     message(FATAL_ERROR "")
 endif()
+set(OpenVINO_LIBRARIES openvino::runtime)
 
 # Find OpenCV libray if exists
 find_package(OpenCV REQUIRED)
@@ -51,12 +51,11 @@ find_package(rmw REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
-find_package(people_msgs REQUIRED)
-find_package(pipeline_srv_msgs REQUIRED)
+find_package(openvino_msgs REQUIRED)
 find_package(class_loader REQUIRED)
-find_package(vino_param_lib REQUIRED)
+find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(dynamic_vino_lib REQUIRED)
+find_package(openvino_wrapper_lib REQUIRED)
 
 set(CMAKE_BUILD_TYPE "Release")
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
@@ -119,10 +118,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${InferenceEngine_INCLUDE_DIRS}
-    ${InferenceEngine_INCLUDE_DIRS}/../samples
-    ${InferenceEngine_INCLUDE_DIRS}/../samples/extention
-    ${InferenceEngine_INCLUDE_DIRS}/../src
+    ${OpenVINO_DIRS}
     ${realsense2_INCLUDE_DIRS}
 )
 
@@ -147,17 +143,16 @@ if(BUILD_TESTING)
     if(TARGET ${target})
       ament_target_dependencies(${target}
         "rclcpp"
-        "vino_param_lib"
+        "openvino_param_lib"
         "object_msgs"
-        "people_msgs"
-        "pipeline_srv_msgs"
-	"InferenceEngine"
-	"OpenCV"
-	"realsense2"
+        "openvino_msgs"
+	      "OpenVINO"
+	      "OpenCV"
+	      "realsense2"
         "ament_index_cpp"
         "yaml_cpp_vendor"
         "class_loader"
-	"dynamic_vino_lib")
+	      "openvino_wrapper_lib")
     endif()
   endmacro()
 

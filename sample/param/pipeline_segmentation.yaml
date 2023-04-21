@@ -3,7 +3,7 @@ Pipelines:
   inputs: [RealSenseCameraTopic]
   infers:
     - name: ObjectSegmentation
-      model: /opt/openvino_toolkit/models/public/deeplabv3/FP16/deeplabv3.xml
+      model: /opt/openvino_toolkit/models/convert/public/deeplabv3/FP16/deeplabv3.xml
       engine: CPU #"HETERO:CPU,GPU,MYRIAD"
       label: to/be/set/xxx.labels
       batch: 1

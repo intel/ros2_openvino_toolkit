@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QDesktopWidget, QApplication,QPushButton,QL
 from PyQt5.QtGui import QPainter,QPen,QBrush,QColor
 from PyQt5.QtCore import QRect
 from service import reqPipelineService,getTree
-from pipeline_srv_msgs.srv import *
+from openvino_msgs.srv import *
 from pipeTree import TreeNode
 
 

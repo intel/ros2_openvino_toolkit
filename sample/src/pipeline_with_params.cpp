@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 Intel Corporation
+// Copyright (c) 2018-2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
@@ -37,14 +37,14 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/services/pipeline_processing_server.hpp"
-#include "dynamic_vino_lib/slog.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/services/pipeline_processing_server.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
@@ -65,12 +65,12 @@ int main(int argc, char * argv[])
   rclcpp::executors::SingleThreadedExecutor exec;
   rclcpp::Node::SharedPtr main_node = rclcpp::Node::make_shared("openvino_pipeline");
   rclcpp::Node::SharedPtr service_node = std::make_shared<vino_service::PipelineProcessingServer
-      <pipeline_srv_msgs::srv::PipelineSrv>>("pipeline_service");
+      <openvino_msgs::srv::PipelineSrv>>("pipeline_service");
   // register signal SIGINT and signal handler
   //signal(SIGINT, signalHandler);
 
   try {
-    std::cout << "InferenceEngine: " << InferenceEngine::GetInferenceEngineVersion() << std::endl;
+    std::cout << "OpenVINO: " << ov::get_openvino_version() << std::endl;
 
     // ----- Parsing and validation of input args-----------------------
     std::string config = getConfigPath(argc, argv);
@@ -86,7 +86,6 @@ int main(int argc, char * argv[])
     if (pipelines.size() < 1) {
       throw std::logic_error("Pipeline parameters should be set!");
     }
-    // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, main_node);
     }

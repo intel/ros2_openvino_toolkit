@@ -5,7 +5,7 @@ from ament_index_python.packages import get_package_share_directory
 import os
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_sample'), 'param',
+    default_yaml = os.path.join(get_package_share_directory('openvino_node'), 'param',
                                 'pipeline_composite_object_topic.yaml')
     container = ComposableNodeContainer(
         node_name='vision_pipeline',
@@ -20,7 +20,7 @@ def generate_launch_description():
                 parameters=[get_package_share_directory('realsense_examples')+'/config/d435i.yaml'],
                 extra_arguments=[{'use_intra_process_comms':'true'}]),
             ComposableNode(
-                package='dynamic_vino_sample',
+                package='openvino_node',
                 node_plugin='ComposablePipeline',
                 node_name='composable_pipeline',
                 parameters=[{"config":default_yaml}],

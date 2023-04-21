@@ -1,4 +1,4 @@
-// Copyright (c) 2017 Intel Corporation. All Rights Reserved
+// Copyright (c) 2017-2022 Intel Corporation. All Rights Reserved
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <people_msgs/srv/people.hpp>
-#include <people_msgs/msg/persons_stamped.hpp>
+#include <object_msgs/srv/people.hpp>
+#include <object_msgs/msg/persons_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
 #include <fstream>
@@ -24,7 +24,7 @@
 #include <functional>
 #include <string>
 
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
 std::string generate_file_path(std::string path)
 {
@@ -38,11 +38,11 @@ TEST(UnitTestPeople, testPeople)
 {
   auto node = rclcpp::Node::make_shared("openvino_people_service_test");
 
-  auto client = node->create_client<people_msgs::srv::People>("/openvino_toolkit/service");
+  auto client = node->create_client<object_msgs::srv::People>("/openvino_toolkit/service");
   
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
   
-  auto request = std::make_shared<people_msgs::srv::People::Request>();
+  auto request = std::make_shared<object_msgs::srv::People::Request>();
 
   std::string buffer = generate_file_path("data/images/team.jpg");
   std::cout << buffer << std::endl;
@@ -71,7 +71,7 @@ int main(int argc, char ** argv)
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);
   auto offset = std::chrono::seconds(20);
-  system("ros2 launch dynamic_vino_test image_people_service_test.launch.py &");
+  system("ros2 launch openvino_test image_people_service_test.launch.py &");
   rclcpp::sleep_for(offset);
   int ret = RUN_ALL_TESTS();
   system("killall -s SIGINT image_people_server &");

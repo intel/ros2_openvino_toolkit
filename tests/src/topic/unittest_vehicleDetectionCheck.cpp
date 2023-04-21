@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2018-2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,12 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
-#include <people_msgs/msg/vehicle_attribs.hpp>
-#include <people_msgs/msg/vehicle_attribs_stamped.hpp>
-#include <people_msgs/msg/license_plate.hpp>
-#include <people_msgs/msg/license_plate_stamped.hpp>
+#include <object_msgs/msg/vehicle_attribs.hpp>
+#include <object_msgs/msg/vehicle_attribs_stamped.hpp>
+#include <object_msgs/msg/license_plate.hpp>
+#include <object_msgs/msg/license_plate_stamped.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 
 #include <unistd.h>
 #include <algorithm>
@@ -36,10 +36,10 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/slog.hpp"
-#include "inference_engine.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
+#include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 
@@ -71,7 +71,7 @@ TEST(UnitTestPersonReidentification, testReidentification)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_vehicle_callback =
-    [&sub_called](const people_msgs::msg::LicensePlateStamped::SharedPtr msg) -> void {
+    [&sub_called](const object_msgs::msg::LicensePlateStamped::SharedPtr msg) -> void {
       test_pass = true;
       sub_called.set_value(true);
     };
@@ -80,7 +80,7 @@ TEST(UnitTestPersonReidentification, testReidentification)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<people_msgs::msg::LicensePlateStamped>(
+    auto sub1 = node->create_subscription<object_msgs::msg::LicensePlateStamped>(
       "/ros2_openvino_toolkit/detected_license_plates", qos, openvino_vehicle_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -96,7 +96,7 @@ int main(int argc, char * argv[])
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
   auto offset = std::chrono::seconds(30);
-  system("ros2 launch dynamic_vino_test pipeline_vehicle_detection_test.launch.py &");
+  system("ros2 launch openvino_test pipeline_vehicle_detection_test.launch.py &");
   int ret = RUN_ALL_TESTS();
   system("killall -s SIGINT pipeline_with_params &");
   rclcpp::shutdown();

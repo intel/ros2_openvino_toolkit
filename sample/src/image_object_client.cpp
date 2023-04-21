@@ -1,4 +1,4 @@
-// Copyright (c) 2018 Intel Corporation
+// Copyright (c) 2018-2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <opencv2/opencv.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <string>
 #include <memory>
 
-#include "dynamic_vino_lib/services/frame_processing_server.hpp"
+#include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
 int main(int argc, char ** argv)
 {
@@ -27,7 +27,7 @@ int main(int argc, char ** argv)
 
   auto node = rclcpp::Node::make_shared("service_example_for_object");
   if (argc != 2) {
-    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run dynamic_vino_sample image_object_client"
+    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run openvino_node image_object_client"
       "<image_path>");
     return -1;
   }

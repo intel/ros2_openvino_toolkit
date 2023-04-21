@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format2.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<!--
+Copyright (c) 2018-2022 Intel Corporation
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<package format="2">
+  <name>openvino_wrapper_lib</name>
+  <version>0.9.0</version>
+  <description>a ROS2 wrapper package for Intel OpenVINO</description>
+  <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
+  <author email="chao1.li@intel.com">Chao Li</author>
+  <author email="hongkun.chen@intel.com">Hongkun Chen</author>
+  <author email="yang1.lu@intel.com">Yang Lu</author>
+  <author email="xuyang.chen@intel.com">Xuyang Chen</author>
+  <author email="zhenzhenx.ren@intel.com">Rachel Ren</author>
+  <license>Apache License 2.0</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+  <buildtool_depend>rosidl_default_generators</buildtool_depend>
+  <build_depend>builtin_interfaces</build_depend>
+  <build_depend>rclcpp</build_depend>
+  <build_depend>rmw_implementation</build_depend>
+  <build_depend>std_msgs</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>yaml_cpp_vendor</build_depend>
+  <build_depend>ament_index_cpp</build_depend>
+  <build_depend>class_loader</build_depend>
+  <build_depend>cv_bridge</build_depend>
+  <build_depend>object_msgs</build_depend>
+  <build_depend>openvino_msgs</build_depend>
+  <build_depend>openvino_param_lib</build_depend>
+  <build_depend>realsense2</build_depend>
+  <build_depend>openvino_common</build_depend>
+
+  <exec_depend>rosidl_default_runtime</exec_depend>
+  <exec_depend>builtin_interfaces</exec_depend>
+  <exec_depend>rclcpp</exec_depend>
+  <exec_depend>rmw_implementation</exec_depend>
+  <exec_depend>std_msgs</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>yaml_cpp_vendor</exec_depend>
+  <exec_depend>ament_index_cpp</exec_depend>
+  <exec_depend>class_loader</exec_depend>
+  <exec_depend>cv_bridge</exec_depend>
+  <exec_depend>object_msgs</exec_depend>
+  <exec_depend>openvino_msgs</exec_depend>
+  <exec_depend>openvino_param_lib</exec_depend>
+  <exec_depend>realsense2</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
