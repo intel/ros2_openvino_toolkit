@@ -41,6 +41,7 @@
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
+* [x] Human Pose Estimation
 
 # Prerequisite
 
@@ -158,6 +159,7 @@ Currently, the corresponding relation of supported inference features, models us
 |Person Attributes| Person attributes based on object detection.|[pipeline_person_attributes.yaml](./sample/param/pipeline_person_attributes.yaml)|[person-attributes-recognition-crossroad-0230](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-attributes-recognition-crossroad-0230)<br>[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)|
 |Person Reidentification|Person reidentification based on object detection.|[pipeline_person_reidentification.yaml](./sample/param/pipeline_reidentification.yaml)|[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)<br>[person-reidentification-retail-0277](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-reidentification-retail-0277)|
 |Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+|Human Pose Estimation| Human Pose Estimation based on Intel models.|[pipeline_human_pose.yaml](./sample/param/pipeline_human_pose.yaml)|[human-pose-estimation-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/human-pose-estimation-0001)|
 </details>
 </p>
 

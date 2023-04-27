@@ -50,6 +50,8 @@
 #include "openvino_wrapper_lib/models/object_detection_ssd_model.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_model.hpp"
+#include "openvino_wrapper_lib/inferences/human_pose_estimation.hpp"
+#include "openvino_wrapper_lib/models/human_pose_estimation_model.hpp"
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/inputs/realsense_camera.hpp"
@@ -223,6 +225,8 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createVehicleAttribsDetection(infer);
     } else if (infer.name == kInferTpye_LicensePlateDetection) {
       object = createLicensePlateDetection(infer);
+    } else if (infer.name == kInferTpye_HumanPoseEstimation) {
+      object = createHumanPoseEstimation(infer);
     }else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -420,6 +424,23 @@ PipelineManager::createPersonAttribsDetection(
 
   return attribs_inference_ptr;
 }
+
+std::shared_ptr<openvino_wrapper_lib::BaseInference>
+PipelineManager::createHumanPoseEstimation(
+  const Params::ParamManager::InferenceRawData & infer)
+{
+  auto model =
+    std::make_shared<Models::HumanPoseEstimationModel>(infer.label, infer.model, infer.batch);
+  model->modelInit();
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  auto human_pose_ptr =
+    std::make_shared<openvino_wrapper_lib::HumanPoseEstimation>();
+  human_pose_ptr->loadNetwork(model);
+  human_pose_ptr->loadEngine(engine);
+
+  return human_pose_ptr;
+}
+
 
 #if 0
 std::shared_ptr<openvino_wrapper_lib::BaseInference>

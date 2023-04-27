@@ -195,6 +195,8 @@ add_library(${PROJECT_NAME} SHARED
         #src/inferences/face_reidentification.cpp
         src/inferences/vehicle_attribs_detection.cpp
         src/inferences/license_plate_detection.cpp
+        src/inferences/openpose_decoder.cpp
+        src/inferences/human_pose_estimation.cpp
         src/inputs/realsense_camera.cpp
         src/inputs/image_topic.cpp
         src/inputs/standard_camera.cpp
@@ -217,6 +219,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/license_plate_detection_model.cpp
         src/models/object_detection_ssd_model.cpp
         src/models/object_detection_yolov5_model.cpp
+        src/models/human_pose_estimation_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp

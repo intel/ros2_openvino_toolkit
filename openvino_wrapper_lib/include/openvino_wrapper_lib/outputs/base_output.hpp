@@ -51,6 +51,7 @@
 #include "openvino_wrapper_lib/inferences/vehicle_attribs_detection.hpp"
 #include "openvino_wrapper_lib/inferences/license_plate_detection.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation_maskrcnn.hpp"
+#include "openvino_wrapper_lib/inferences/human_pose_estimation.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -146,6 +147,13 @@ public:
   virtual void accept(const std::vector<openvino_wrapper_lib::HeadPoseResult> &)
   {
   }
+  /**
+   * @brief Generate output content according to the human pose estimation result.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::HumanPoseEstimationResult> &)
+  {
+  }
+
   /**
    * @brief Calculate the camera matrix of a frame for image window output, no
          implementation for ros topic output.
