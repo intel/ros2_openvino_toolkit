@@ -45,6 +45,14 @@ namespace openvino_wrapper_lib
 
 namespace Models
 {
+  #pragma pack(1)
+    typedef struct Resize {
+        cv::Mat resized_image;
+        int dw{};
+        int dh{};
+    } Resize_t;
+  #pragma pack()
+
   /**
    * @class BaseModel
    * @brief This class represents the network given by .xml and .bin file

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /** 
- * @brief a header file with declaration of ObjectDetectionModel class
+ * @brief a header file with declaration of ObjectDetectionYolov5Model class
  * @file object_detection_yolov5_model.cpp
  */
 #include <string>
@@ -24,7 +24,6 @@
 #include "openvino_wrapper_lib/engines/engine.hpp"
 #include "openvino_wrapper_lib/inferences/object_detection.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov5_model.hpp"
-
 
 // Validated Object Detection Network
 Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
@@ -106,7 +105,6 @@ bool Models::ObjectDetectionYolov5Model::enqueue(
   }
   return true;
 }
-
 
 bool Models::ObjectDetectionYolov5Model::matToBlob(
   const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
