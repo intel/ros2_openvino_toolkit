@@ -94,7 +94,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=yolo-v2-tf --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
   ```
 
-* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
+* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the parameters like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py
@@ -129,7 +129,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
