@@ -63,7 +63,7 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  static Resize_t pre_process_ov(const cv::Mat &input_image);
+  bool pre_process_ov(const cv::Mat &input_image);
 
   cv::Mat input_image;
   Resize_t resize_img;

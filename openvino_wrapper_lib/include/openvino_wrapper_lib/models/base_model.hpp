@@ -138,6 +138,14 @@ namespace Models
     virtual bool matToBlob(
         const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
         int batch_index, const std::shared_ptr<Engines::Engine> &engine) = 0;
+
+    cv::Mat resizeImage(const cv::Mat &orig_image, const int resized_width, const int resized_height,
+                        double fx = 0, double fy = 0, int interpolation = cv::INTER_LINEAR,
+                        int border_dt = 0, int border_db = 0, int border_dl = 0, int border_dr = 0,
+                        cv::Scalar border_color = cv::Scalar(0, 0, 0));
+
+    void dataToBlob(cv::Mat& resize_img, float scale_factor, int batch_index,
+                const std::shared_ptr<Engines::Engine> & engine, bool mat_steps = true);
   };
 
 } // namespace Models
