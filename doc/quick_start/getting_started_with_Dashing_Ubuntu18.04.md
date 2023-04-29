@@ -129,7 +129,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 

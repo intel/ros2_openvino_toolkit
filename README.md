@@ -228,7 +228,7 @@ For the snapshot of demo results, refer to the following picture.
 
 # Installation and Launching
 ## Deploy in Local Environment
-* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
+* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 ## Deploy in Docker
@@ -250,7 +250,7 @@ For the snapshot of demo results, refer to the following picture.
 * Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
 
 # More Information
-* ROS2 OpenVINO discription written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
