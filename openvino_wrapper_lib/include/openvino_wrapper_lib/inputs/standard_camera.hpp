@@ -40,6 +40,7 @@ namespace Input
 class StandardCamera : public BaseInputDevice
 {
 public:
+  explicit StandardCamera(const std::string &);
   /**
    * @brief Initialize the input device,
    * for cameras, it will turn the camera on and get ready to read frames,

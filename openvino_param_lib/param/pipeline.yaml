@@ -71,6 +71,7 @@ Pipelines:
 Common:
   camera_topic: /any/foloder/image_raw/
   input_path: /file
+  input_dev: /dev
   custom_cpu_library: okok
   enable_performance_count: true
 
