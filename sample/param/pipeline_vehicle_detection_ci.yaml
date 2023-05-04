@@ -1,0 +1,35 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  input_path: /root/jpg/car.jpg
+  infers:
+    - name: ObjectDetection
+      model: /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
+      engine: CPU
+      label: /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.labels
+      batch: 1
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+    - name: VehicleAttribsDetection
+      model: /opt/openvino_toolkit/models/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+    - name: LicensePlateDetection
+      model: /opt/openvino_toolkit/models/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
+    - left: ObjectDetection
+      right: [RosTopic] 
+    - left: VehicleAttribsDetection
+      right: [RosTopic]
+    - left: LicensePlateDetection
+      right: [RosTopic]
+
+OpenvinoCommon:

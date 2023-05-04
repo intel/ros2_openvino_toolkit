@@ -22,12 +22,12 @@ import launch_ros.actions
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('dynamic_vino_test'), 'param',
+    default_yaml = os.path.join(get_package_share_directory('openvino_test'), 'param',
                                 'image_people_service_test.yaml')
     return LaunchDescription([
         # Openvino detection
         launch_ros.actions.Node(
-            package='dynamic_vino_sample', node_executable='image_people_server',
+            package='openvino_node', node_executable='image_people_server',
             arguments=['-config', default_yaml],
             output='screen'),
     ])

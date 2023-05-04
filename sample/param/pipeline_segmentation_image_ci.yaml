@@ -1,0 +1,19 @@
+Pipelines:
+- name: segmentation
+  inputs: [Image]
+  input_path: /root/catkin_ws/src/ros2_openvino_toolkit/data/images/sample_car.png
+  infers:
+    - name: ObjectSegmentation
+      model: /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/semantic-segmentation-adas-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+
+OpenvinoCommon:

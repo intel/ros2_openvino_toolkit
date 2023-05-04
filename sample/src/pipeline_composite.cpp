@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019 Intel Corporation
+// Copyright (c) 2018-2022 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <ament_index_cpp/get_resource.hpp>
-#include <vino_param_lib/param_manager.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include <unistd.h>
 #include <algorithm>
 #include <chrono>
@@ -37,13 +37,13 @@
 #include <utility>
 #include <vector>
 
-#include "dynamic_vino_lib/pipeline.hpp"
-#include "dynamic_vino_lib/pipeline_manager.hpp"
-#include "dynamic_vino_lib/slog.hpp"
+#include "openvino_wrapper_lib/pipeline.hpp"
+#include "openvino_wrapper_lib/pipeline_manager.hpp"
+#include "openvino_wrapper_lib/slog.hpp"
 #if(defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
-#include "inference_engine.hpp"
+#include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 //#include "utility.hpp"
@@ -85,18 +85,18 @@ private:
     }
 
     std::shared_ptr<rclcpp::Node> node_handler(this);
-    // auto createPipeline = PipelineManager::getInstance().createPipeline;
     for (auto & p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, node_handler);
     }
 
     PipelineManager::getInstance().runAll();
-    //PipelineManager::getInstance().joinAll();
   }
 
   std::string getConfigPath()
   {
-    return rclcpp::Node::declare_parameter<const std::string>("config");
+    // TODO: Fix api for humble
+    // return declare_parameter("config").get<rclcpp::PARAMETER_STRING>();
+    return "";
   }
 
 };

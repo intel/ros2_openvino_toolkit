@@ -1,11 +1,11 @@
 Pipelines:
 - name: object
-  inputs: [RealSenseCamera]
+  inputs: [Image]
+  input_path: to/be/set/image_path
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/public/yolo-v2-tf/FP16/yolo-v2-tf.xml
-      #model: /opt/openvino_toolkit/darkflow/output/fp16/yolov2-voc.xml 
-      model_type: yolov2
+      model: /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/yolov5n.xml
+      model_type: yolov5
       engine: CPU #MYRIAD
       label: to/be/set/xxx.labels
       batch: 1
@@ -13,7 +13,7 @@ Pipelines:
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
-    - left: RealSenseCamera
+    - left: Image
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [ImageWindow]

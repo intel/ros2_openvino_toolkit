@@ -1,22 +1,22 @@
 Pipelines:
 - name: people
   inputs: [Video]
-  input_path: /opt/openvino_toolkit/ros2_openvino_toolkit/tests/data/face_reid.mp4
+  input_path: to/be/set/video_path
   infers:
     - name: FaceDetection
-      model: /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      model: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
       engine: CPU
-      label: /opt/openvino_toolkit/open_model_zoo/model_downloader/Transportation/object_detection/face/pruned_mobilenet_reduced_ssd_shared_weights/dldt/face-detection-adas-0001.labels
+      label: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: LandmarksDetection
-      model: /opt/openvino_toolkit/models/landmarks-regression/output/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009.xml
+      model: /opt/openvino_toolkit/models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
     - name: FaceReidentification
-      model: /opt/openvino_toolkit/models/face-reidentification/output/intel/face-reidentification-retail-0095/FP32/face-reidentification-retail-0095.xml
+      model: /opt/openvino_toolkit/models/intel/face-reidentification-retail-0095/FP32/face-reidentification-retail-0095.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 1
