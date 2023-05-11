@@ -54,8 +54,8 @@ class LicensePlateDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::LicensePlateDetectionResult;
-  LicensePlateDetection();
-  ~LicensePlateDetection() override;
+  LicensePlateDetection() {};
+  ~LicensePlateDetection() override {};
   /**
    * @brief Load the license plate detection model.
    */

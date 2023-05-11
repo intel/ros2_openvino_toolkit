@@ -27,10 +27,6 @@
 #include <mutex>
 #include <set>
 #include <string>
-
-#include "openvino_wrapper_lib/inferences/base_inference.hpp"
-#include "openvino_wrapper_lib/inputs/standard_camera.hpp"
-#include "openvino_wrapper_lib/outputs/base_output.hpp"
 #include "opencv2/opencv.hpp"
 
 const char kInputType_Image[] = "Image";

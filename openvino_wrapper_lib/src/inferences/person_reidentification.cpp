@@ -30,13 +30,12 @@ openvino_wrapper_lib::PersonReidentificationResult::PersonReidentificationResult
 : Result(location) {}
 
 // PersonReidentification
-openvino_wrapper_lib::PersonReidentification::PersonReidentification(double match_thresh)
-: openvino_wrapper_lib::BaseInference()
+void openvino_wrapper_lib::PersonReidentification::init(
+  const Params::ParamManager::InferenceRawData &val)
 {
-  person_tracker_ = std::make_shared<openvino_wrapper_lib::Tracker>(1000, match_thresh, 0.3);
+  person_tracker_ = std::make_shared<openvino_wrapper_lib::Tracker>(1000, val.confidence_threshold, 0.3);
 }
 
-openvino_wrapper_lib::PersonReidentification::~PersonReidentification() = default;
 void openvino_wrapper_lib::PersonReidentification::loadNetwork(
   const std::shared_ptr<Models::PersonReidentificationModel> network)
 {

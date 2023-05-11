@@ -54,8 +54,14 @@ class FaceReidentification : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::FaceReidentificationResult;
-  explicit FaceReidentification(double);
-  ~FaceReidentification() override;
+  FaceReidentification() {};
+  ~FaceReidentification() override {};
+
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
+
   /**
    * @brief Load the face reidentification model.
    */

@@ -30,10 +30,6 @@ openvino_wrapper_lib::LandmarksDetectionResult::LandmarksDetectionResult(
 : Result(location) {}
 
 // LandmarksDetection
-openvino_wrapper_lib::LandmarksDetection::LandmarksDetection()
-: openvino_wrapper_lib::BaseInference() {}
-
-openvino_wrapper_lib::LandmarksDetection::~LandmarksDetection() = default;
 void openvino_wrapper_lib::LandmarksDetection::loadNetwork(
   const std::shared_ptr<Models::LandmarksDetectionModel> network)
 {

@@ -72,8 +72,13 @@ class ObjectSegmentation : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::ObjectSegmentationResult;
-  explicit ObjectSegmentation(double);
-  ~ObjectSegmentation() override;
+  ObjectSegmentation() {};
+  ~ObjectSegmentation() override {};
+
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
   /**
    * @brief Load the object segmentation model.
    */

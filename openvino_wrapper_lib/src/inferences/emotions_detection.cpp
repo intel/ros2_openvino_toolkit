@@ -32,14 +32,6 @@ openvino_wrapper_lib::EmotionsResult::EmotionsResult(const cv::Rect & location)
 {
 }
 
-// Emotions Detection
-openvino_wrapper_lib::EmotionsDetection::EmotionsDetection()
-: openvino_wrapper_lib::BaseInference()
-{
-}
-
-openvino_wrapper_lib::EmotionsDetection::~EmotionsDetection() = default;
-
 void openvino_wrapper_lib::EmotionsDetection::loadNetwork(
   const std::shared_ptr<Models::EmotionDetectionModel> network)
 {

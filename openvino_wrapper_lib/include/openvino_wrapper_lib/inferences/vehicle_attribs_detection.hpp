@@ -59,8 +59,8 @@ class VehicleAttribsDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::VehicleAttribsDetectionResult;
-  VehicleAttribsDetection();
-  ~VehicleAttribsDetection() override;
+  VehicleAttribsDetection() {};
+  ~VehicleAttribsDetection() override {};
   /**
    * @brief Load the vehicle attributes detection model.
    */

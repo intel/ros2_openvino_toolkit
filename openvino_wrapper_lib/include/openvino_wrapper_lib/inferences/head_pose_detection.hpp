@@ -79,8 +79,9 @@ class HeadPoseDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::HeadPoseResult;
-  HeadPoseDetection();
-  ~HeadPoseDetection() override;
+  HeadPoseDetection() {};
+  ~HeadPoseDetection() override {};
+
   /**
    * @brief Load the headpose detection model.
    */

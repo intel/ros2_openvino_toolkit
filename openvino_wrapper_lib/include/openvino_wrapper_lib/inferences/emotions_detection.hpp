@@ -65,8 +65,8 @@ class EmotionsDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::EmotionsResult;
-  EmotionsDetection();
-  ~EmotionsDetection() override;
+  EmotionsDetection() {};
+  ~EmotionsDetection() override {};
   /**
    * @brief Load the emotin detection model.
    */

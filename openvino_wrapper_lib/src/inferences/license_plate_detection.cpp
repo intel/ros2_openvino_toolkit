@@ -30,10 +30,6 @@ openvino_wrapper_lib::LicensePlateDetectionResult::LicensePlateDetectionResult(
 : Result(location) {}
 
 // LicensePlateDetection
-openvino_wrapper_lib::LicensePlateDetection::LicensePlateDetection()
-: openvino_wrapper_lib::BaseInference() {}
-
-openvino_wrapper_lib::LicensePlateDetection::~LicensePlateDetection() = default;
 void openvino_wrapper_lib::LicensePlateDetection::loadNetwork(
   const std::shared_ptr<Models::LicensePlateDetectionModel> network)
 {

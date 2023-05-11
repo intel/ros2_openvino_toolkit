@@ -30,13 +30,12 @@ openvino_wrapper_lib::FaceReidentificationResult::FaceReidentificationResult(
 : Result(location) {}
 
 // FaceReidentification
-openvino_wrapper_lib::FaceReidentification::FaceReidentification(double match_thresh)
-: openvino_wrapper_lib::BaseInference()
-{
-  face_tracker_ = std::make_shared<openvino_wrapper_lib::Tracker>(1000, match_thresh, 0.3);
+void openvino_wrapper_lib::FaceReidentification::init(
+  const Params::ParamManager::InferenceRawData &val)
+{    
+  face_tracker_ = std::make_shared<openvino_wrapper_lib::Tracker>(1000, val.confidence_threshold, 0.3);
 }
 
-openvino_wrapper_lib::FaceReidentification::~FaceReidentification() = default;
 void openvino_wrapper_lib::FaceReidentification::loadNetwork(
   const std::shared_ptr<Models::FaceReidentificationModel> network)
 {

@@ -72,7 +72,7 @@ public:
     return this->confidence_ > s2.confidence_;
   }
 
-private:
+protected:
   std::string label_ = "";
   float confidence_ = -1;
 };
@@ -103,7 +103,7 @@ public:
    */
   std::vector<cv::Rect> getFilteredLocations() override;
 
-private:
+protected:
   /**
    * @brief Decide whether a result is valid for label filter condition.
    * @param[in] Result to be decided, filter operator, target label value.
@@ -142,8 +142,13 @@ class ObjectDetection : public BaseInference
 public:
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
   using Filter = openvino_wrapper_lib::ObjectDetectionResultFilter;
-  explicit ObjectDetection(bool, double);
-  ~ObjectDetection() override;
+  ObjectDetection() {};
+  ~ObjectDetection() override {};
+
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
   /**
    * @brief Load the face detection model.
    */
@@ -195,7 +200,7 @@ public:
    */
   static double calcIoU(const cv::Rect & box_1, const cv::Rect & box_2);
 
-private:
+protected:
   std::shared_ptr<Models::ObjectDetectionModel> valid_model_;
   std::shared_ptr<Filter> result_filter_;
   std::vector<Result> results_;

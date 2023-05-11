@@ -31,13 +31,6 @@ openvino_wrapper_lib::HeadPoseResult::HeadPoseResult(const cv::Rect & location)
 }
 
 // Head Pose Detection
-openvino_wrapper_lib::HeadPoseDetection::HeadPoseDetection()
-: openvino_wrapper_lib::BaseInference()
-{
-}
-
-openvino_wrapper_lib::HeadPoseDetection::~HeadPoseDetection() = default;
-
 void openvino_wrapper_lib::HeadPoseDetection::loadNetwork(
   std::shared_ptr<Models::HeadPoseDetectionModel> network)
 {

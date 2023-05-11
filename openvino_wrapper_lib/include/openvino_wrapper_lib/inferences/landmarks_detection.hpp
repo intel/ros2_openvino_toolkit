@@ -54,8 +54,8 @@ class LandmarksDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::LandmarksDetectionResult;
-  LandmarksDetection();
-  ~LandmarksDetection() override;
+  LandmarksDetection() {};
+  ~LandmarksDetection() override {};
   /**
    * @brief Load the landmarks detection model.
    */

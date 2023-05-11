@@ -75,8 +75,9 @@ class AgeGenderDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::AgeGenderResult;
-  AgeGenderDetection();
-  ~AgeGenderDetection() override;
+  AgeGenderDetection() {};
+  ~AgeGenderDetection() override {};
+
   /**
    * @brief Load the age gender detection model.
    */

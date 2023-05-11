@@ -53,7 +53,8 @@ public:
 class FaceDetection : public ObjectDetection
 {
 public:
-  explicit FaceDetection(bool, double);
+  FaceDetection() : ObjectDetection() {};
+  ~FaceDetection() override {};
 };
 }  // namespace openvino_wrapper_lib
 #endif  // OPENVINO_WRAPPER_LIB__INFERENCES__FACE_DETECTION_HPP_

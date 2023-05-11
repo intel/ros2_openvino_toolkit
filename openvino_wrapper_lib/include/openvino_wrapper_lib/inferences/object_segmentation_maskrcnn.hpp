@@ -72,8 +72,13 @@ class ObjectSegmentationMaskrcnn : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult;
-  explicit ObjectSegmentationMaskrcnn(double);
-  ~ObjectSegmentationMaskrcnn() override;
+  ObjectSegmentationMaskrcnn() {};
+  ~ObjectSegmentationMaskrcnn() override {};
+
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
   /**
    * @brief Load the object segmentation model.
    */
