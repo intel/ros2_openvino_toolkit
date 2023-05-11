@@ -20,10 +20,6 @@
 #include "openvino_wrapper_lib/models/person_reidentification_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Person Reidentification Network
-Models::PersonReidentificationModel::PersonReidentificationModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 bool Models::PersonReidentificationModel::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {

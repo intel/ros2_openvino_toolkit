@@ -29,7 +29,7 @@ namespace Models
 class PersonAttribsDetectionModel : public BaseModel
 {
 public:
-  PersonAttribsDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  PersonAttribsDetectionModel() {};
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.

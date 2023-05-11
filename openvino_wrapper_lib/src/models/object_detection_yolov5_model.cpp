@@ -27,12 +27,6 @@
 
 
 // Validated Object Detection Network
-Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: ObjectDetectionModel(label_loc, model_loc, max_batch_size)
-{
-}
-
 bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {

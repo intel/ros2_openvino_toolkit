@@ -28,21 +28,17 @@
 #include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 
 // Validated Base Network
-Models::BaseModel::BaseModel(
-  const std::string& label_loc, const std::string& model_loc, int max_batch_size)
-: label_loc_(label_loc),
-  model_loc_(model_loc),
-  max_batch_size_(max_batch_size),
-  ModelAttribute(model_loc)
+void Models::BaseModel::modelInit(const Params::ParamManager::InferenceRawData & param, bool use_def_batch, int batch_size)
 {
-  if (model_loc.empty()) {
+  if (param.model.empty()) {
     throw std::logic_error("model file name is empty!");
   }
 
-}
+  label_loc_ = param.label;
+  model_loc_ = param.model;
+  attr_.model_name = param.model;
+  max_batch_size_ = use_def_batch ? batch_size : param.batch;
 
-void Models::BaseModel::modelInit()
-{
   slog::info << "Loading network files" << model_loc_ << slog::endl;
   slog::info << label_loc_ << slog::endl;
   
@@ -83,9 +79,3 @@ bool Models::BaseModel::updateLayerProperty(
   return true;
 }
 #endif
-
-Models::ObjectDetectionModel::ObjectDetectionModel(
-  const std::string& label_loc, 
-  const std::string& model_loc,
-  int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
