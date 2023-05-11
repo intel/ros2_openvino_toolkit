@@ -167,17 +167,18 @@ PipelineManager::parseOutput(const PipelineData & pdata)
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
     if (name == kOutputTpye_RosTopic) {
-      object = std::make_shared<Outputs::RosTopicOutput>(pdata.params.name, pdata.parent_node);
+      object = std::make_shared<Outputs::RosTopicOutput>();
     } else if (name == kOutputTpye_ImageWindow) {
-      object = std::make_shared<Outputs::ImageWindowOutput>(pdata.params.name);
+      object = std::make_shared<Outputs::ImageWindowOutput>();
     } else if (name == kOutputTpye_RViz) {
-      object = std::make_shared<Outputs::RvizOutput>(pdata.params.name, pdata.parent_node);
+      object = std::make_shared<Outputs::RvizOutput>();
     } else if (name == kOutputTpye_RosService) {
-      object = std::make_shared<Outputs::RosServiceOutput>(pdata.params.name);
+      object = std::make_shared<Outputs::RosServiceOutput>();
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
     }
     if (object != nullptr) {
+      object->initialize(pdata.params.name, pdata.parent_node);
       outputs.insert({name, object});
       slog::info << " ... Adding one Output: " << name << slog::endl;
     }
