@@ -132,24 +132,24 @@ PipelineManager::parseInputDevice(const PipelineData & pdata)
       device = std::make_shared<Input::StandardCamera>();
     } else if (name == kInputType_IpCamera) {
       if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::IpCamera>(pdata.params.input_meta);
+        device = std::make_shared<Input::IpCamera>();
       }
     } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
       device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
     } else if (name == kInputType_Video) {
       if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::Video>(pdata.params.input_meta);
+        device = std::make_shared<Input::Video>();
       }
     } else if (name == kInputType_Image) {
       if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::Image>(pdata.params.input_meta);
+        device = std::make_shared<Input::Image>();
       }
     } else {
       slog::err << "Invalid input device name: " << name << slog::endl;
     }
 
     if (device != nullptr) {
-      device->initialize();
+      device->initialize(pdata.params.input_meta);
       inputs.insert({name, device});
       slog::info << " ... Adding one Input device: " << name << slog::endl;
     }

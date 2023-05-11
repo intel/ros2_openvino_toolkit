@@ -33,12 +33,20 @@ namespace Input
 class RealSenseCamera : public BaseInputDevice
 {
 public:
+  RealSenseCamera() {};
   /**
    * @brief Initialize the input device, turn the
    * camera on and get ready to read frames.
    * @return Whether the input device is successfully turned on.
    */
   bool initialize() override;
+  /**
+   * @brief Initialize the input device,
+   * @brief Initialize the input device, turn the
+   * camera on and get ready to read frames.
+   * @return Whether the input device is successfully setup.
+   */
+  bool initialize(const std::string &ip_uri) override { return initialize();};
   /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.
