@@ -37,7 +37,6 @@ class ImageTopic : public BaseInputDevice
 {
 public:
   ImageTopic() {};
-  ImageTopic(rclcpp::Node::SharedPtr node = nullptr);
   bool initialize() override;
   bool initialize(const std::string &file) override { return initialize();};
   bool initialize(size_t width, size_t height) override;

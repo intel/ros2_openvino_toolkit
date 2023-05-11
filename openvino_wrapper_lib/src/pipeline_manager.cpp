@@ -66,6 +66,49 @@
 #include "openvino_wrapper_lib/pipeline_params.hpp"
 #include "openvino_wrapper_lib/services/pipeline_processing_server.hpp"
 #include "openvino_wrapper_lib/engines/engine_manager.hpp"
+
+
+REG_INPUT(Image, "Image", Image);
+REG_INPUT(Video, "Video", Video);
+REG_INPUT(IpCamera, "IpCamera", IpCamera);
+REG_INPUT(StandardCamera, "StandardCamera", StandardCamera);
+REG_INPUT(RealSenseCameraTopic, "RealSenseCameraTopic", RealSenseCameraTopic);
+REG_INPUT(ImageTopic, "ImageTopic", ImageTopic);
+REG_INPUT(RealSenseCamera, "RealSenseCamera", RealSenseCamera);
+
+REG_MODEL(AgeGenderDetectionModel,        "AgeGenderRecognition", AgeGenderDetection);
+REG_MODEL(EmotionDetectionModel,          "EmotionRecognition",   EmotionDetection);
+REG_MODEL(HeadPoseDetectionModel,         "HeadPoseEstimation",   HeadPoseEstimation);
+REG_MODEL(ObjectSegmentationModel,        "ObjectSegmentation",   ObjectSegmentation);
+REG_MODEL(ObjectSegmentationMaskrcnnModel,"ObjectSegmentationMaskrcnn", ObjectSegmentationMaskrcnn);
+REG_MODEL(PersonReidentificationModel,    "PersonReidentification", PersonReidentification);
+REG_MODEL(VehicleAttribsDetectionModel,   "VehicleAttribsDetection", VehicleAttribsDetection);
+REG_MODEL(LicensePlateDetectionModel,     "LicensePlateDetection", LicensePlateDetection);
+REG_MODEL(PersonAttribsDetectionModel,    "PersonAttribsDetection", PersonAttribsDetection);
+// REG_MODEL(LandmarksDetectionModel,        "LandmarksDetection", LandmarksDetection);
+// REG_MODEL(FaceReidentificationModel,      "FaceReidentification", FaceReidentification);
+REG_MODEL(ObjectDetectionSSDModel,        "FaceDetection", FaceDetection);
+REG_MODEL(ObjectDetectionSSDModel,        "ObjectDetectionSSD", ObjectDetectionSSD);
+REG_MODEL(ObjectDetectionYolov5Model,     "ObjectDetectionyolov5", ObjectDetectionYolov5);
+
+REG_INFERENCE(AgeGenderDetection,         "AgeGenderRecognition", AgeGenderDetection);
+REG_INFERENCE(EmotionsDetection,          "EmotionRecognition", EmotionsDetection);
+REG_INFERENCE(HeadPoseDetection,          "HeadPoseEstimation", HeadPoseDetection);
+REG_INFERENCE(ObjectDetection,            "ObjectDetection", ObjectDetection);
+REG_INFERENCE(ObjectSegmentation,         "ObjectSegmentation", ObjectSegmentation);
+REG_INFERENCE(ObjectSegmentationMaskrcnn, "ObjectSegmentationMaskrcnn", ObjectSegmentationMaskrcnn);
+REG_INFERENCE(PersonReidentification,     "PersonReidentification", PersonReidentification);
+REG_INFERENCE(VehicleAttribsDetection,    "VehicleAttribsDetection", VehicleAttribsDetection);
+REG_INFERENCE(LicensePlateDetection,      "LicensePlateDetection", LicensePlateDetection);
+REG_INFERENCE(PersonAttribsDetection,     "PersonAttribsDetection", PersonAttribsDetection);
+// REG_INFERENCE(LandmarksDetection,         "LandmarksDetection", LandmarksDetection);
+// REG_INFERENCE(FaceReidentification,       "FaceReidentification", FaceReidentification);
+
+REG_OUTPUT(RvizOutput,       "RViz",        RViz);
+REG_OUTPUT(ImageWindowOutput,"ImageWindow", ImageWindow);
+REG_OUTPUT(RosTopicOutput,   "RosTopic",    RosTopic);
+REG_OUTPUT(RosServiceOutput, "RosService",  RosService);
+
 std::shared_ptr<Pipeline>
 PipelineManager::createPipeline(const Params::ParamManager::PipelineRawData & params,
   rclcpp::Node::SharedPtr node)
@@ -135,7 +178,7 @@ PipelineManager::parseInputDevice(const PipelineData & pdata)
         device = std::make_shared<Input::IpCamera>();
       }
     } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
-      device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
+      device = std::make_shared<Input::RealSenseCameraTopic>();
     } else if (name == kInputType_Video) {
       if (pdata.params.input_meta != "") {
         device = std::make_shared<Input::Video>();

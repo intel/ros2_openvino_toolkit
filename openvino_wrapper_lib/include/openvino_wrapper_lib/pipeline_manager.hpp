@@ -30,6 +30,36 @@
 #include <vector>
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/engines/engine_manager.hpp"
+#include "openvino_wrapper_lib/vino_factory.hpp"
+
+
+#define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
+#define REG_INPUT(BASE, key, name)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+
+#define REG_MODEL_FACTORY         VinoFactory<std::string, Models::BaseModel>
+#define REG_MODEL(BASE, key, name)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key)
+#define REG_MODEL_type(BASE, key, suffix, name)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key##suffix)
+
+#define REG_INFERENCE_FACTORY  VinoFactory<std::string, openvino_wrapper_lib::BaseInference>
+#define REG_INFERENCE(T, key, name)  static REG_INFERENCE_FACTORY::TReg<openvino_wrapper_lib::T> gs_inference_##name(key)
+
+#define REG_OUTPUT_FACTORY    VinoFactory<std::string, Outputs::BaseOutput>
+#define REG_OUTPUT(BASE, key, name) static REG_OUTPUT_FACTORY::TReg<Outputs::BASE> gs_output_##name(key)
+
+// REG_INPUT(class name,         search key(in this case is string type),             expand variable suffix)
+// eg: 
+// #define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
+// #define REG_INPUT(BASE, key, name)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+
+// REG_INPUT(ImageClass, "JPG", jpg)
+// REG_INPUT(ImageClass, "PNG", png)
+//         VinoFactory<std::string, Input::BaseInputDevice>::TReg<Input::BASE> gs_input_IMG
+//              
+//         Viriable type:      VinoFactory<std::string, Input::BaseInputDevice>::TReg<Input::ImageClass>
+//         Viriable name:      gs_input_jpg,    gs_input_png
+//         search keys:       "JPG",            "PNG"
+
+
 
 /**
  * @class PipelineManager
