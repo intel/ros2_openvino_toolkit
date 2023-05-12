@@ -42,10 +42,10 @@ void openvino_wrapper_lib::ObjectSegmentationMaskrcnn::init(
 }
 
 void openvino_wrapper_lib::ObjectSegmentationMaskrcnn::loadNetwork(
-    const std::shared_ptr<Models::ObjectSegmentationMaskrcnnModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::ObjectSegmentationMaskrcnnModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

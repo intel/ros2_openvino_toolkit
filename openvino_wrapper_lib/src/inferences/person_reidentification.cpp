@@ -37,9 +37,10 @@ void openvino_wrapper_lib::PersonReidentification::init(
 }
 
 void openvino_wrapper_lib::PersonReidentification::loadNetwork(
-  const std::shared_ptr<Models::PersonReidentificationModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::PersonReidentificationModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

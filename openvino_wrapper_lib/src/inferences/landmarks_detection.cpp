@@ -31,9 +31,10 @@ openvino_wrapper_lib::LandmarksDetectionResult::LandmarksDetectionResult(
 
 // LandmarksDetection
 void openvino_wrapper_lib::LandmarksDetection::loadNetwork(
-  const std::shared_ptr<Models::LandmarksDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::LandmarksDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

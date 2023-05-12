@@ -70,7 +70,7 @@ public:
   /**
    * @brief Load the emotin detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::EmotionDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

@@ -142,32 +142,6 @@ private:
   parseOutput(const PipelineData & pdata);
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>
   parseInference(const Params::ParamManager::PipelineRawData & params);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createEmotionRecognition(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonReidentification(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLandmarksDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceReidentification(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
   Engines::EngineManager engine_manager_;

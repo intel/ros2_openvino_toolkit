@@ -44,9 +44,9 @@ void openvino_wrapper_lib::ObjectDetection::init(
 }
 
 void openvino_wrapper_lib::ObjectDetection::loadNetwork(
-  std::shared_ptr<Models::ObjectDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::ObjectDetectionModel>(network);
 
   setMaxBatchSize(network->getMaxBatchSize());
 }

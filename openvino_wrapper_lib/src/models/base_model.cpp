@@ -39,8 +39,7 @@ void Models::BaseModel::modelInit(const Params::ParamManager::InferenceRawData &
   attr_.model_name = param.model;
   max_batch_size_ = use_def_batch ? batch_size : param.batch;
 
-  slog::info << "Loading network files" << model_loc_ << slog::endl;
-  slog::info << label_loc_ << slog::endl;
+  slog::info << "Loading network files: " << model_loc_ << slog::endl;
   
   // Read network model
   model_ = engine.read_model(model_loc_);

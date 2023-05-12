@@ -37,9 +37,10 @@ void openvino_wrapper_lib::FaceReidentification::init(
 }
 
 void openvino_wrapper_lib::FaceReidentification::loadNetwork(
-  const std::shared_ptr<Models::FaceReidentificationModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::FaceReidentificationModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

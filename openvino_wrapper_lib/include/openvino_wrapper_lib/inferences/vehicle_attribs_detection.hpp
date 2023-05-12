@@ -64,7 +64,7 @@ public:
   /**
    * @brief Load the vehicle attributes detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::VehicleAttribsDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

@@ -30,11 +30,11 @@ openvino_wrapper_lib::AgeGenderResult::AgeGenderResult(const cv::Rect & location
 {
 }
 
-
 void openvino_wrapper_lib::AgeGenderDetection::loadNetwork(
-  std::shared_ptr<Models::AgeGenderDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::AgeGenderDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

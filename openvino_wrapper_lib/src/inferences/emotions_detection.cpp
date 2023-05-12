@@ -33,9 +33,10 @@ openvino_wrapper_lib::EmotionsResult::EmotionsResult(const cv::Rect & location)
 }
 
 void openvino_wrapper_lib::EmotionsDetection::loadNetwork(
-  const std::shared_ptr<Models::EmotionDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::EmotionDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

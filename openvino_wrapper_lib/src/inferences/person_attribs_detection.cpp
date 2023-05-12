@@ -38,9 +38,10 @@ void openvino_wrapper_lib::PersonAttribsDetection::init(
 }
 
 void openvino_wrapper_lib::PersonAttribsDetection::loadNetwork(
-  const std::shared_ptr<Models::PersonAttribsDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::PersonAttribsDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

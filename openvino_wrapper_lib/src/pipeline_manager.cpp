@@ -76,7 +76,7 @@ REG_INPUT(RealSenseCameraTopic, "RealSenseCameraTopic", RealSenseCameraTopic);
 REG_INPUT(ImageTopic, "ImageTopic", ImageTopic);
 REG_INPUT(RealSenseCamera, "RealSenseCamera", RealSenseCamera);
 
-REG_MODEL(AgeGenderDetectionModel,        "AgeGenderRecognition", AgeGenderDetection);
+REG_MODEL(AgeGenderDetectionModel,        "AgeGenderRecognition", AgeGenderRecognition);
 REG_MODEL(EmotionDetectionModel,          "EmotionRecognition",   EmotionDetection);
 REG_MODEL(HeadPoseDetectionModel,         "HeadPoseEstimation",   HeadPoseEstimation);
 REG_MODEL(ObjectSegmentationModel,        "ObjectSegmentation",   ObjectSegmentation);
@@ -88,12 +88,13 @@ REG_MODEL(PersonAttribsDetectionModel,    "PersonAttribsDetection", PersonAttrib
 // REG_MODEL(LandmarksDetectionModel,        "LandmarksDetection", LandmarksDetection);
 // REG_MODEL(FaceReidentificationModel,      "FaceReidentification", FaceReidentification);
 REG_MODEL(ObjectDetectionSSDModel,        "FaceDetection", FaceDetection);
-REG_MODEL(ObjectDetectionSSDModel,        "ObjectDetectionSSD", ObjectDetectionSSD);
+REG_MODEL(ObjectDetectionSSDModel,        "ObjectDetection", ObjectDetection);
 REG_MODEL(ObjectDetectionYolov5Model,     "ObjectDetectionyolov5", ObjectDetectionYolov5);
 
 REG_INFERENCE(AgeGenderDetection,         "AgeGenderRecognition", AgeGenderDetection);
 REG_INFERENCE(EmotionsDetection,          "EmotionRecognition", EmotionsDetection);
 REG_INFERENCE(HeadPoseDetection,          "HeadPoseEstimation", HeadPoseDetection);
+REG_INFERENCE(FaceDetection,              "FaceDetection", FaceDetection);
 REG_INFERENCE(ObjectDetection,            "ObjectDetection", ObjectDetection);
 REG_INFERENCE(ObjectSegmentation,         "ObjectSegmentation", ObjectSegmentation);
 REG_INFERENCE(ObjectSegmentationMaskrcnn, "ObjectSegmentationMaskrcnn", ObjectSegmentationMaskrcnn);
@@ -168,39 +169,22 @@ PipelineManager::parseInputDevice(const PipelineData & pdata)
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> inputs;
   for (auto & name : pdata.params.inputs) {
     slog::info << "Parsing InputDvice: " << name << slog::endl;
-    std::shared_ptr<Input::BaseInputDevice> device = nullptr;
-    if (name == kInputType_RealSenseCamera) {
-      device = std::make_shared<Input::RealSenseCamera>();
-    } else if (name == kInputType_StandardCamera) {
-      device = std::make_shared<Input::StandardCamera>();
-    } else if (name == kInputType_IpCamera) {
-      if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::IpCamera>();
-      }
-    } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
-      device = std::make_shared<Input::RealSenseCameraTopic>();
-    } else if (name == kInputType_Video) {
-      if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::Video>();
-      }
-    } else if (name == kInputType_Image) {
-      if (pdata.params.input_meta != "") {
-        device = std::make_shared<Input::Image>();
-      }
-    } else {
-      slog::err << "Invalid input device name: " << name << slog::endl;
-    }
+    std::shared_ptr<Input::BaseInputDevice> device = REG_INPUT_FACTORY::produce_shared(name);
 
-    if (device != nullptr) {
+    if (device != nullptr)
+    {
       device->initialize(pdata.params.input_meta);
-      inputs.insert({name, device});
+      inputs.insert({ name, device });
       slog::info << " ... Adding one Input device: " << name << slog::endl;
+    }
+    else
+    {
+      slog::err << "Invalid input device input_name: " << name << slog::endl;
     }
   }
 
   return inputs;
 }
-
 
 std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
 PipelineManager::parseOutput(const PipelineData & pdata)
@@ -208,22 +192,17 @@ PipelineManager::parseOutput(const PipelineData & pdata)
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> outputs;
   for (auto & name : pdata.params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
-    std::shared_ptr<Outputs::BaseOutput> object = nullptr;
-    if (name == kOutputTpye_RosTopic) {
-      object = std::make_shared<Outputs::RosTopicOutput>();
-    } else if (name == kOutputTpye_ImageWindow) {
-      object = std::make_shared<Outputs::ImageWindowOutput>();
-    } else if (name == kOutputTpye_RViz) {
-      object = std::make_shared<Outputs::RvizOutput>();
-    } else if (name == kOutputTpye_RosService) {
-      object = std::make_shared<Outputs::RosServiceOutput>();
-    } else {
-      slog::err << "Invalid output name: " << name << slog::endl;
-    }
-    if (object != nullptr) {
+    std::shared_ptr<Outputs::BaseOutput> object = REG_OUTPUT_FACTORY::produce_shared(name);
+
+    if (object != nullptr)
+    {
       object->initialize(pdata.params.name, pdata.parent_node);
-      outputs.insert({name, object});
+      outputs.insert({name, object });
       slog::info << " ... Adding one Output: " << name << slog::endl;
+    }
+    else
+    {
+      slog::err << "Invalid output name: " << name << slog::endl;
     }
   }
 
@@ -238,319 +217,41 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
     if (infer.name.empty() || infer.model.empty()) {
       continue;
     }
-    slog::info << "Parsing Inference: " << infer.name << slog::endl;
-    std::shared_ptr<openvino_wrapper_lib::BaseInference> object = nullptr;
+    slog::info << "Parsing Model: " << infer.name << slog::endl;
 
-    if (infer.name == kInferTpye_FaceDetection) {
-      object = createFaceDetection(infer);
-    } else if (infer.name == kInferTpye_AgeGenderRecognition) {
-      object = createAgeGenderRecognition(infer);
-    } else if (infer.name == kInferTpye_EmotionRecognition) {
-      object = createEmotionRecognition(infer);
-    } else if (infer.name == kInferTpye_HeadPoseEstimation) {
-      object = createHeadPoseEstimation(infer);
-    } else if (infer.name == kInferTpye_ObjectDetection) {
-      object = createObjectDetection(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentation) {
-      object = createObjectSegmentation(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentationMaskrcnn) {
-      object = createObjectSegmentationMaskrcnn(infer);
-    } else if (infer.name == kInferTpye_PersonReidentification) {
-      object = createPersonReidentification(infer);
-    } else if (infer.name == kInferTpye_PersonAttribsDetection) {
-      object = createPersonAttribsDetection(infer);
-    } /*else if (infer.name == kInferTpye_LandmarksDetection) {
-      object = createLandmarksDetection(infer);
-    } else if (infer.name == kInferTpye_FaceReidentification) {
-      object = createFaceReidentification(infer);
-    } */ else if (infer.name == kInferTpye_VehicleAttribsDetection) {
-      object = createVehicleAttribsDetection(infer);
-    } else if (infer.name == kInferTpye_LicensePlateDetection) {
-      object = createLicensePlateDetection(infer);
-    }else {
-      slog::err << "Invalid inference name: " << infer.name << slog::endl;
+    auto model_name = infer.name + infer.model_type;
+    std::shared_ptr<Models::BaseModel> model = 
+      REG_MODEL_FACTORY::produce_shared(model_name);
+
+    if (model != nullptr) {
+      model->modelInit(infer);
+      slog::info << " ... Loading Model: " << model_name << slog::endl;
+    } else {
+      slog::err << "Invalid Model name: " << model_name << slog::endl;
     }
 
+    slog::info << "createEngine..." << infer.engine << slog::endl;
+    auto engine = engine_manager_.createEngine(infer.engine, model);
+
+    slog::info << "Parsing Inference: " << infer.name << slog::endl;
+
+    std::shared_ptr<openvino_wrapper_lib::BaseInference> object = 
+      REG_INFERENCE_FACTORY::produce_shared(infer.name);
+
     if (object != nullptr) {
+      object->init(infer);
+      object->loadNetwork(model); 
+      object->loadEngine(engine);
       inferences.insert({infer.name, object});
       slog::info << " ... Adding one Inference: " << infer.name << slog::endl;
+    } else {
+      slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
   }
 
   return inferences;
 }
 
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createFaceDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  return createObjectDetection(infer);
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::AgeGenderDetectionModel>();
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::AgeGenderDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createEmotionRecognition(const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::EmotionDetectionModel>();
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::EmotionsDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::HeadPoseDetectionModel>();
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::HeadPoseDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createObjectDetection(
-  const Params::ParamManager::InferenceRawData & param)
-{
-  std::shared_ptr<Models::ObjectDetectionModel> model;
-  std::shared_ptr<openvino_wrapper_lib::ObjectDetection> infer;
-  slog::debug << "for test in createObjectDetection()" << slog::endl;
-  if (param.model_type == kInferTpye_ObjectDetectionTypeSSD) {
-    model = std::make_shared<Models::ObjectDetectionSSDModel>();
-  }
-  if (param.model_type == kInferTpye_ObjectDetectionTypeYolov5) {
-    model = std::make_shared<Models::ObjectDetectionYolov5Model>();
-  }
-
-  slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
-  infer = std::make_shared<openvino_wrapper_lib::ObjectDetection>();  // To-do theshold configuration
-
-  slog::debug << "for test in createObjectDetection(), before modelInit(param)" << slog::endl;
-  model->modelInit(param);
-  auto object_detection_engine = engine_manager_.createEngine(param.engine, model);
-  slog::debug << "for test in createObjectDetection(), before loadNetwork" << slog::endl;
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(object_detection_engine);
-  slog::debug << "for test in createObjectDetection(), OK" << slog::endl;
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::ObjectSegmentationModel>();
-  model->modelInit(param);
-  slog::info << "Segmentation model initialized." << slog::endl;
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  slog::info << "Segmentation Engine initialized." << slog::endl;
-  auto infer = std::make_shared<openvino_wrapper_lib::ObjectSegmentation>();
-  slog::info << "Segmentation Inference instanced." << slog::endl;
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::ObjectSegmentationMaskrcnnModel>();
-  model->modelInit(param);
-  slog::info << "Segmentation model initialized." << slog::endl;
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  slog::info << "Segmentation Engine initialized." << slog::endl;
-  auto infer = std::make_shared<openvino_wrapper_lib::ObjectSegmentationMaskrcnn>();
-  slog::info << "Segmentation Inference instanced." << slog::endl;
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonReidentification(
-  const Params::ParamManager::InferenceRawData & param)
-{
-  std::shared_ptr<Models::PersonReidentificationModel> model;
-  std::shared_ptr<openvino_wrapper_lib::PersonReidentification> infer;
-  slog::debug << "for test in createPersonReidentification()"<<slog::endl;
-  model = std::make_shared<Models::PersonReidentificationModel>();
-  model->modelInit(param);
-  slog::info << "Reidentification model initialized" << slog::endl;
-  auto person_reidentification_engine = engine_manager_.createEngine(param.engine, model);
-  infer = std::make_shared<openvino_wrapper_lib::PersonReidentification>();
-  slog::debug<< "for test in createPersonReidentification(), before loadNetwork"<<slog::endl;
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(person_reidentification_engine);
-  slog::debug<< "for test in createPersonReidentification(), OK"<<slog::endl;
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createVehicleAttribsDetection(
-  const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::VehicleAttribsDetectionModel>();
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::VehicleAttribsDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createLicensePlateDetection(
-  const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::LicensePlateDetectionModel>();
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::LicensePlateDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonAttribsDetection(
-  const Params::ParamManager::InferenceRawData & param)
-{
-  auto model = std::make_shared<Models::PersonAttribsDetectionModel>();
-  slog::debug << "for test in createPersonAttributesDetection()"<<slog::endl;
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(param.engine, model);
-  auto infer = std::make_shared<openvino_wrapper_lib::PersonAttribsDetection>();
-  infer->init(param);
-  infer->loadNetwork(model);
-  infer->loadEngine(engine);
-
-  return infer;
-}
-
-#if 0
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonReidentification(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::PersonReidentificationModel>(infer.model, infer.batch);
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto reidentification_inference_ptr =
-    std::make_shared<openvino_wrapper_lib::PersonReidentification>(infer.confidence_threshold);
-  reidentification_inference_ptr->loadNetwork(model);
-  reidentification_inference_ptr->loadEngine(engine);
-
-  return reidentification_inference_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonAttribsDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::PersonAttribsDetectionModel>(infer.model, infer.batch);
-  
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto attribs_inference_ptr =
-    std::make_shared<openvino_wrapper_lib::PersonAttribsDetection>(infer.confidence_threshold);
-  attribs_inference_ptr->loadNetwork(model);
-  attribs_inference_ptr->loadEngine(engine);
-
-  return attribs_inference_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createLandmarksDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::LandmarksDetectionModel>(infer.model, infer.batch);
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto landmarks_inference_ptr =
-    std::make_shared<openvino_wrapper_lib::LandmarksDetection>();
-  landmarks_inference_ptr->loadNetwork(model);
-  landmarks_inference_ptr->loadEngine(engine);
-
-  return landmarks_inference_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createFaceReidentification(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::FaceReidentificationModel>(infer.model, infer.batch);
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto face_reid_ptr =
-    std::make_shared<openvino_wrapper_lib::FaceReidentification>(infer.confidence_threshold);
-  face_reid_ptr->loadNetwork(model);
-  face_reid_ptr->loadEngine(engine);
-
-  return face_reid_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createVehicleAttribsDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::VehicleAttribsDetectionModel>(infer.model, infer.batch);
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto vehicle_attribs_ptr =
-    std::make_shared<openvino_wrapper_lib::VehicleAttribsDetection>();
-  vehicle_attribs_ptr->loadNetwork(model);
-  vehicle_attribs_ptr->loadEngine(engine);
-
-  return vehicle_attribs_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createLicensePlateDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model = std::make_shared<Models::LicensePlateDetectionModel>(infer.model, infer.batch);
-  model->modelInit(param);
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto license_plate_ptr =
-    std::make_shared<openvino_wrapper_lib::LicensePlateDetection>();
-  license_plate_ptr->loadNetwork(model);
-  license_plate_ptr->loadEngine(engine);
-
-  return license_plate_ptr;
-}
-#endif
 
 void PipelineManager::threadPipeline(const char * name)
 {

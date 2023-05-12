@@ -32,9 +32,10 @@ openvino_wrapper_lib::HeadPoseResult::HeadPoseResult(const cv::Rect & location)
 
 // Head Pose Detection
 void openvino_wrapper_lib::HeadPoseDetection::loadNetwork(
-  std::shared_ptr<Models::HeadPoseDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::HeadPoseDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

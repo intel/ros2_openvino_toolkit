@@ -104,6 +104,12 @@ public:
    * running netwrok on target calculation device.
    */
   void loadEngine(std::shared_ptr<Engines::Engine> engine);
+
+  /**
+   * @brief Load the face detection model.
+   */
+  virtual void loadNetwork(const std::shared_ptr<Models::BaseModel>) = 0;
+
   /**
    * @brief Get the loaded Engine instance.
    * @return The loaded Engine instance.
