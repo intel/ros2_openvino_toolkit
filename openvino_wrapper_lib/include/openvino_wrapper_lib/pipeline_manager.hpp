@@ -27,24 +27,39 @@
 #include <mutex>
 #include <set>
 #include <string>
+#include <stdexcept>
 #include <vector>
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/engines/engine_manager.hpp"
 #include "openvino_wrapper_lib/vino_factory.hpp"
 
 
-#define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
-#define REG_INPUT(BASE, key, name)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+template<typename ... Args>
+std::string string_format( const std::string& format, Args ... args )
+{
+    int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+    if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+    auto size = static_cast<size_t>( size_s );
+    std::unique_ptr<char[]> buf( new char[ size ] );
+    std::snprintf( buf.get(), size, format.c_str(), args ... );
+    return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+}
 
+#define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
+#define REG_INPUT(BASE, name, key)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+
+#define trace(fmt, ...) printf(fmt, ##__VA_ARGS__)
 #define REG_MODEL_FACTORY         VinoFactory<std::string, Models::BaseModel>
-#define REG_MODEL(BASE, key, name)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key)
-#define REG_MODEL_type(BASE, key, suffix, name)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key##suffix)
+#define REG_MODEL(BASE, name, key)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key)
+#define REG_MODEL_TYPE(BASE, name, ...)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(string_format("%s", __VA_ARGS__))
+
+
 
 #define REG_INFERENCE_FACTORY  VinoFactory<std::string, openvino_wrapper_lib::BaseInference>
-#define REG_INFERENCE(T, key, name)  static REG_INFERENCE_FACTORY::TReg<openvino_wrapper_lib::T> gs_inference_##name(key)
+#define REG_INFERENCE(T, name, key)  static REG_INFERENCE_FACTORY::TReg<openvino_wrapper_lib::T> gs_inference_##name(key)
 
 #define REG_OUTPUT_FACTORY    VinoFactory<std::string, Outputs::BaseOutput>
-#define REG_OUTPUT(BASE, key, name) static REG_OUTPUT_FACTORY::TReg<Outputs::BASE> gs_output_##name(key)
+#define REG_OUTPUT(BASE, name, key) static REG_OUTPUT_FACTORY::TReg<Outputs::BASE> gs_output_##name(key)
 
 // REG_INPUT(class name,         search key(in this case is string type),             expand variable suffix)
 // eg: 
