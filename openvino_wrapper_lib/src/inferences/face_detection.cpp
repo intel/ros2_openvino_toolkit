@@ -31,11 +31,3 @@ openvino_wrapper_lib::FaceDetectionResult::FaceDetectionResult(const cv::Rect & 
 : ObjectDetectionResult(location)
 {
 }
-
-// FaceDetection
-openvino_wrapper_lib::FaceDetection::FaceDetection(
-  bool enable_roi_constraint,
-  double show_output_thresh)
-: ObjectDetection(enable_roi_constraint, show_output_thresh)
-{
-}

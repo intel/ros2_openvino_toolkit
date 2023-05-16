@@ -32,7 +32,7 @@ namespace Models
 class HeadPoseDetectionModel : public BaseModel
 {
 public:
-  HeadPoseDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  HeadPoseDetectionModel() {};
 
   /**
    * @brief Get the output angle roll.

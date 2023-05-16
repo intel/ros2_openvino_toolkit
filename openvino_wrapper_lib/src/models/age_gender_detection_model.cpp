@@ -23,13 +23,6 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // Validated Age Gender Classification Network
-Models::AgeGenderDetectionModel::AgeGenderDetectionModel(
-  const std::string & label_loc,
-  const std::string & model_loc,
-  int max_batch_size)
-: BaseModel(label_loc,model_loc, max_batch_size)
-{
-}
 bool Models::AgeGenderDetectionModel::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {

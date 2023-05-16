@@ -29,7 +29,7 @@ namespace Models
 class ObjectSegmentationMaskrcnnModel : public BaseModel
 {
 public:
-  ObjectSegmentationMaskrcnnModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectSegmentationMaskrcnnModel() {};
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;

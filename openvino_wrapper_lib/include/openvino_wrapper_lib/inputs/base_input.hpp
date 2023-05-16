@@ -43,6 +43,7 @@ struct Config
 class BaseInputDevice : public Ros2Handler
 {
 public:
+  BaseInputDevice() = default;
   /**
    * @brief Initialize the input device,
    * for cameras, it will turn the camera on and get ready to read frames,
@@ -50,6 +51,11 @@ public:
    * @return Whether the input device is successfully turned on.
    */
   virtual bool initialize() = 0;
+  /**
+   * @brief Initialize the input device,
+   * @return Whether the input device is successfully setup.
+   */
+  virtual bool initialize(const std::string &str) = 0;
   /**
    * @brief Initialize the input device with given width and height.
    * @return Whether the input device is successfully turned on.

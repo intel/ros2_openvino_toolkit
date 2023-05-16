@@ -20,10 +20,6 @@
 #include "openvino_wrapper_lib/models/license_plate_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
-Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 bool Models::LicensePlateDetectionModel::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {

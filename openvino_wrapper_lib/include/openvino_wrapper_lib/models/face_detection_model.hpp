@@ -32,7 +32,7 @@ namespace Models
 class FaceDetectionModel : public ObjectDetectionModel
 {
 public:
-  FaceDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  FaceDetectionModel() : ObjectDetectionModel(){};
   //void checkLayerProperty(const InferenceEngine::CNNNetReader::Ptr &) override;
   /**
    * @brief Get the name of this detection model.

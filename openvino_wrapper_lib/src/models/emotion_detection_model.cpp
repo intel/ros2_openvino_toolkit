@@ -23,12 +23,6 @@
 
 
 // Validated Emotions Detection Network
-Models::EmotionDetectionModel::EmotionDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size)
-{
-}
-
 bool Models::EmotionDetectionModel::updateLayerProperty
 (std::shared_ptr<ov::Model>& model)
 {

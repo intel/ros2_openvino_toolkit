@@ -35,18 +35,17 @@ openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult::ObjectSegmentationMaskrc
 }
 
 // ObjectSegmentation
-openvino_wrapper_lib::ObjectSegmentationMaskrcnn::ObjectSegmentationMaskrcnn(double show_output_thresh)
-    : show_output_thresh_(show_output_thresh), openvino_wrapper_lib::BaseInference()
+void openvino_wrapper_lib::ObjectSegmentationMaskrcnn::init(
+  const Params::ParamManager::InferenceRawData &val)
 {
+    show_output_thresh_ = val.confidence_threshold;
 }
 
-openvino_wrapper_lib::ObjectSegmentationMaskrcnn::~ObjectSegmentationMaskrcnn() = default;
-
 void openvino_wrapper_lib::ObjectSegmentationMaskrcnn::loadNetwork(
-    const std::shared_ptr<Models::ObjectSegmentationMaskrcnnModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::ObjectSegmentationMaskrcnnModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

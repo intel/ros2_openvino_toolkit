@@ -26,13 +26,6 @@
 #include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 
 // Validated Object Detection Network
-Models::ObjectDetectionSSDModel::ObjectDetectionSSDModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: ObjectDetectionModel(label_loc, model_loc, max_batch_size)
-{
-  slog::debug << "TESTING: in ObjectDetectionSSDModel" << slog::endl;
-}
-
 const std::string Models::ObjectDetectionSSDModel::getModelCategory() const
 {
   return "Object Detection SSD";

@@ -54,12 +54,12 @@ class LicensePlateDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::LicensePlateDetectionResult;
-  LicensePlateDetection();
-  ~LicensePlateDetection() override;
+  LicensePlateDetection() {};
+  ~LicensePlateDetection() override {};
   /**
    * @brief Load the license plate detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::LicensePlateDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

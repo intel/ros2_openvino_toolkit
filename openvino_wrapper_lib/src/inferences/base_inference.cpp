@@ -29,10 +29,6 @@ openvino_wrapper_lib::Result::Result(const cv::Rect & location)
 }
 
 // BaseInference
-openvino_wrapper_lib::BaseInference::BaseInference() = default;
-
-openvino_wrapper_lib::BaseInference::~BaseInference() = default;
-
 void openvino_wrapper_lib::BaseInference::loadEngine(const std::shared_ptr<Engines::Engine> engine)
 {
   engine_ = engine;

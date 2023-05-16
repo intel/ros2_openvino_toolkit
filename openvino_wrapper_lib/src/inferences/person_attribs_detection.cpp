@@ -31,14 +31,17 @@ openvino_wrapper_lib::PersonAttribsDetectionResult::PersonAttribsDetectionResult
 : Result(location) {}
 
 // PersonAttribsDetection
-openvino_wrapper_lib::PersonAttribsDetection::PersonAttribsDetection(double attribs_confidence)
-: attribs_confidence_(attribs_confidence), openvino_wrapper_lib::BaseInference() {}
-
-openvino_wrapper_lib::PersonAttribsDetection::~PersonAttribsDetection() = default;
-void openvino_wrapper_lib::PersonAttribsDetection::loadNetwork(
-  const std::shared_ptr<Models::PersonAttribsDetectionModel> network)
+void openvino_wrapper_lib::PersonAttribsDetection::init(
+  const Params::ParamManager::InferenceRawData &val)
 {
-  valid_model_ = network;
+  attribs_confidence_ = val.confidence_threshold;
+}
+
+void openvino_wrapper_lib::PersonAttribsDetection::loadNetwork(
+  const std::shared_ptr<Models::BaseModel> network)
+{
+  valid_model_ = std::dynamic_pointer_cast<Models::PersonAttribsDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

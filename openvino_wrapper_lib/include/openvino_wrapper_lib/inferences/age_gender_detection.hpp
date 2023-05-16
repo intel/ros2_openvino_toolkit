@@ -75,12 +75,13 @@ class AgeGenderDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::AgeGenderResult;
-  AgeGenderDetection();
-  ~AgeGenderDetection() override;
+  AgeGenderDetection() {};
+  ~AgeGenderDetection() override {};
+
   /**
    * @brief Load the age gender detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::AgeGenderDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

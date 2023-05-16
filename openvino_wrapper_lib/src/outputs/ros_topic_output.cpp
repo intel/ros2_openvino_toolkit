@@ -21,18 +21,21 @@
 #include <string>
 #include <memory>
 #include "openvino_wrapper_lib/outputs/ros_topic_output.hpp"
-#include "openvino_wrapper_lib/pipeline_params.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
-  const rclcpp::Node::SharedPtr node)
-: BaseOutput(output_name)
-{
+
+void Outputs::RosTopicOutput::initialize(
+  const std::string &name, 
+  rclcpp::Node::SharedPtr parent_node)
+{ 
+  output_name_ = name;
+  const rclcpp::Node::SharedPtr node = parent_node;
+
   if(node != nullptr){
     node_ = node;
   } else {
-    node_ = rclcpp::Node::make_shared(output_name + "_topic_publisher");
+    node_ = rclcpp::Node::make_shared(output_name_ + "_topic_publisher");
   }
   pub_license_plate_ = node_->create_publisher<object_msgs::msg::LicensePlateStamped>(
     "/openvino_toolkit/" + output_name_ + "/detected_license_plates", 16);
@@ -61,6 +64,7 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
   pub_headpose_ =
     node_->create_publisher<object_msgs::msg::HeadPoseStamped>(
     "/openvino_toolkit/" + output_name_ + "/headposes", 16);
+
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;
@@ -73,7 +77,7 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
   landmarks_topic_ = nullptr;
   vehicle_attribs_topic_ = nullptr;
   license_plate_topic_ = nullptr;
-}
+};
 
 void Outputs::RosTopicOutput::feedFrame(const cv::Mat & frame)
 {

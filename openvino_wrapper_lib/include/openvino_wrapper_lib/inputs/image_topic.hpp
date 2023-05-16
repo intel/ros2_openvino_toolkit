@@ -36,8 +36,9 @@ namespace Input
 class ImageTopic : public BaseInputDevice
 {
 public:
-  ImageTopic(rclcpp::Node::SharedPtr node = nullptr);
+  ImageTopic() {};
   bool initialize() override;
+  bool initialize(const std::string &file) override { return initialize();};
   bool initialize(size_t width, size_t height) override;
   bool read(cv::Mat * frame) override;
 

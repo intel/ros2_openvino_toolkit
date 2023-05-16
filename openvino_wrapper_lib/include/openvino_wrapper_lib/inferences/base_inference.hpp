@@ -22,7 +22,9 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include "openvino_param_lib/param_manager.hpp"
 #include "openvino_wrapper_lib/engines/engine.hpp"
+#include "openvino_wrapper_lib/engines/engine_manager.hpp"
 #include "openvino_wrapper_lib/models/base_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino/openvino.hpp"
@@ -93,13 +95,21 @@ private:
 class BaseInference
 {
 public:
-  BaseInference();
-  virtual ~BaseInference();
+  BaseInference() {};
+  virtual ~BaseInference() {};
+
+  virtual void init(const Params::ParamManager::InferenceRawData &val) {};
   /**
    * @brief load the Engine instance that contains the request for
    * running netwrok on target calculation device.
    */
   void loadEngine(std::shared_ptr<Engines::Engine> engine);
+
+  /**
+   * @brief Load the face detection model.
+   */
+  virtual void loadNetwork(const std::shared_ptr<Models::BaseModel>) = 0;
+
   /**
    * @brief Get the loaded Engine instance.
    * @return The loaded Engine instance.

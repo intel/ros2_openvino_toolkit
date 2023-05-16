@@ -23,14 +23,6 @@
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino_wrapper_lib/engines/engine.hpp"
 // Validated Object Segmentation Network
-Models::ObjectSegmentationModel::ObjectSegmentationModel(
-    const std::string & label_loc, 
-    const std::string & model_loc,
-    int max_batch_size)
-    : BaseModel(label_loc, model_loc, max_batch_size)
-{
-}
-
 bool Models::ObjectSegmentationModel::enqueue(
     const std::shared_ptr<Engines::Engine> &engine,
     const cv::Mat &frame,

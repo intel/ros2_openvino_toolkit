@@ -29,7 +29,7 @@ namespace Models
 class VehicleAttribsDetectionModel : public BaseModel
 {
 public:
-  VehicleAttribsDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  VehicleAttribsDetectionModel() {};
   inline const std::string getInputName() {return input_tensor_name_;}
   inline const std::string getColorOutputName() {return color_output_;}
   inline const std::string getTypeOutputName() {return type_output_;}

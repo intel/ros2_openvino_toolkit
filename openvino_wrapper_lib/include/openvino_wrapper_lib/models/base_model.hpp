@@ -30,6 +30,7 @@
 #include <fstream>
 
 #include <openvino/openvino.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 
@@ -63,7 +64,7 @@ namespace Models
    * @param[in] batch_size The number of batch size (default: 1) the network should have.
    * @return Whether the input device is successfully turned on.
    */
-    BaseModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+    BaseModel() {};
 
   /**
    * @brief Get the maximum batch size of the model.
@@ -77,7 +78,7 @@ namespace Models
     {
       max_batch_size_ = max_batch_size;
     }
-
+ 
     virtual bool enqueue(
         const std::shared_ptr<Engines::Engine> &engine,
         const cv::Mat &frame,
@@ -87,7 +88,7 @@ namespace Models
    * the network input, output size, check layer property and
    * set layer property.
    */
-    void modelInit();
+    void modelInit(const Params::ParamManager::InferenceRawData & param, bool use_def_batch = false, int batch_size = 1);
   /**
    * @brief Get the name of the model.
    * @return The name of the model.
@@ -119,7 +120,7 @@ namespace Models
       return frame_size_;
     }
 
-  private:
+  protected:
     int max_batch_size_;
     std::string model_loc_;
     std::string label_loc_;
@@ -129,7 +130,7 @@ namespace Models
   class ObjectDetectionModel : public BaseModel
   {
   public:
-    ObjectDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+    ObjectDetectionModel() {};
     virtual bool fetchResults(
         const std::shared_ptr<Engines::Engine> &engine,
         std::vector<openvino_wrapper_lib::ObjectDetectionResult> &result,
