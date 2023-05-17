@@ -20,17 +20,22 @@
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <opencv2/opencv.hpp>
 #include "openvino_wrapper_lib/slog.hpp"
+#include "openvino_wrapper_lib/utils/common.hpp"
 #include "openvino_wrapper_lib/engines/engine.hpp"
 #include "openvino_wrapper_lib/inferences/object_detection.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov5_model.hpp"
 
+using namespace cv;
+using namespace dnn;
 
 // Validated Object Detection Network
 Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
   const std::string & label_loc, const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
+  //setKeepInputShapeRatio(true);
 }
 
 bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
@@ -107,26 +112,6 @@ bool Models::ObjectDetectionYolov5Model::enqueue(
   return true;
 }
 
-
-bool Models::ObjectDetectionYolov5Model::matToBlob(
-  const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-  int batch_index, const std::shared_ptr<Engines::Engine> & engine)
-{
-  resize_img = pre_process_ov(orig_image);
-  input_image = orig_image;
-
-  size_t height = resize_img.resized_image.rows;
-  size_t width = resize_img.resized_image.cols;
-  size_t channels = orig_image.channels();
-  auto *input_data = (float *) resize_img.resized_image.data;
-
-  ov::Tensor input_tensor;
-  input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, input_data);
-  engine->getRequest().set_input_tensor(input_tensor);
-
-  return true;
-}
-
 bool Models::ObjectDetectionYolov5Model::fetchResults(
   const std::shared_ptr<Engines::Engine> & engine,
   std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results,
@@ -177,8 +162,8 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   std::vector<int> nms_result;
   cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
   for (int idx: nms_result) {
-      double rx = (double) input_image.cols / (resize_img.resized_image.cols - resize_img.dw);
-      double ry = (double) input_image.rows / (resize_img.resized_image.rows - resize_img.dh);
+      double rx = getFrameResizeRatioWidth();
+      double ry = getFrameResizeRatioHeight();
       double vx = rx * boxes[idx].x;
       double vy = ry * boxes[idx].y;
       double vw = rx * boxes[idx].width;
@@ -193,32 +178,4 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   }
 
   return true;
-}
-
-Models::Resize_t Models::ObjectDetectionYolov5Model::pre_process_ov(const cv::Mat &input_image) {
-    const auto INPUT_WIDTH = getInputWidth(); //640.f;
-    const auto INPUT_HEIGHT = getInputWidth(); //640.f;
-    const float width = static_cast<float>(input_image.cols);
-    const float height = static_cast<float>(input_image.rows);
-    const float r = float(INPUT_WIDTH / std::max(width, height));
-    const int new_unpadW = int(round(width * r));
-    const int new_unpadH = int(round(height * r));
-    Resize_t resize_img{};
-
-    cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
-               0, 0, cv::INTER_AREA);
-
-    resize_img.dw = (int) INPUT_WIDTH - new_unpadW;
-    resize_img.dh = (int) INPUT_HEIGHT - new_unpadH;
-    cv::Scalar color = cv::Scalar(100, 100, 100);
-    cv::copyMakeBorder(resize_img.resized_image,
-                       resize_img.resized_image,
-                       0,
-                       resize_img.dh,
-                       0,
-                       resize_img.dw,
-                       cv::BORDER_CONSTANT,
-                       color);
-
-    return resize_img;
 }

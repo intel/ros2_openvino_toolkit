@@ -53,21 +53,12 @@ public:
     const cv::Mat & frame,
     const cv::Rect & input_frame_loc) override;
 
-  bool matToBlob(
-    const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-    int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
-
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  Resize_t pre_process_ov(const cv::Mat &input_image);
-
-  cv::Mat input_image;
-  Resize_t resize_img;
-
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_

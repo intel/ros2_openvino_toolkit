@@ -25,6 +25,9 @@
 #include <unistd.h>
 #include "openvino_wrapper_lib/models/base_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
+#include "openvino_wrapper_lib/utils/common.hpp"
+#include "openvino_wrapper_lib/engines/engine.hpp"
+#include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 #include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 
 // Validated Base Network
@@ -89,3 +92,71 @@ Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string& model_loc,
   int max_batch_size)
 : BaseModel(label_loc, model_loc, max_batch_size) {}
+
+bool Models::BaseModel::matToBlob(
+  const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
+  int batch_index, const std::shared_ptr<Engines::Engine> & engine)
+{
+  if (engine == nullptr)
+  {
+    slog::err << "A frame is trying to be enqueued in a NULL Engine." << slog::endl;
+    return false;
+  }
+
+  ov::InferRequest infer_request = engine->getRequest();
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Shape input_shape = input_tensor.get_shape();
+
+  OPENVINO_ASSERT(input_shape.size() == 4);
+  const auto layout = getLayoutFromShape(input_shape);
+  // For frozen graph model: layout= "NHWC"
+  const size_t width = input_shape[ov::layout::width_idx(layout)]; //input_shape[2];
+  const size_t height = input_shape[ov::layout::height_idx(layout)]; //input_shape[1];
+  const size_t channels = input_shape[ov::layout::channels_idx(layout)]; //input_shape[3];
+
+  slog::debug <<"width is:"<< width << slog::endl;
+  slog::debug <<"height is:"<< height << slog::endl;
+  slog::debug <<"channels is:"<< channels << slog::endl;
+  slog::debug <<"origin channels is:"<< orig_image.channels() << slog::endl;
+  slog::debug <<"input shape is:"<< input_shape << slog::endl;
+
+  unsigned char* data = input_tensor.data<unsigned char>();
+  cv::Size size = {(int)width, (int)height};
+  cv::Mat resized_image(size, CV_8UC3, data);
+  //blobFromImage(orig_image, resized_image, 1.0/255.0, size, cv::Scalar(), true);
+
+  if ( isKeepInputRatio()){
+    slog::debug << "keep Input Shape Ratio is ENABLED!" << slog::endl;
+    cv::Mat extend_image = extendFrameToInputRatio(orig_image);
+    cv::resize(extend_image, resized_image, size);
+    frame_resize_ratio_width_ = static_cast<float>(extend_image.cols) / width;
+    frame_resize_ratio_height_ = static_cast<float>(extend_image.rows) / height;
+  } else {
+    cv::resize(orig_image, resized_image, size);
+    frame_resize_ratio_width_ = static_cast<float>(orig_image.cols) / width;
+    frame_resize_ratio_height_ = static_cast<float>(orig_image.rows) / height;
+  }
+
+  return true;
+}
+
+cv::Mat Models::BaseModel::extendFrameToInputRatio(const cv::Mat orig)
+{
+  auto orig_width = orig.cols;
+  auto orig_height = orig.rows;
+  const auto target_width = getInputWidth();
+  const auto target_height = getInputHeight();
+  const float orig_ratio = static_cast<float>(orig_width) / orig_height;
+  const float target_ratio = static_cast<float>(target_width) / target_height;
+
+  if (orig_ratio < target_ratio){
+    orig_width = (int)(orig_height * target_ratio);
+  }else{
+    orig_height = (int)(orig_width * target_ratio);
+  }
+
+  cv::Mat result = cv::Mat::zeros(orig_width, orig_height, CV_8UC3);
+  orig.copyTo(result(cv::Rect(0, 0, orig.cols, orig.rows)));
+
+  return result;
+}
