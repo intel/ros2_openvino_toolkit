@@ -196,13 +196,13 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
 }
 
 Models::Resize_t Models::ObjectDetectionYolov5Model::pre_process_ov(const cv::Mat &input_image) {
-    const float INPUT_WIDTH = 640.f;
-    const float INPUT_HEIGHT = 640.f;
-    auto width = (float) input_image.cols;
-    auto height = (float) input_image.rows;
-    auto r = float(INPUT_WIDTH / std::max(width, height));
-    int new_unpadW = int(round(width * r));
-    int new_unpadH = int(round(height * r));
+    const auto INPUT_WIDTH = getInputWidth(); //640.f;
+    const auto INPUT_HEIGHT = getInputWidth(); //640.f;
+    const float width = static_cast<float>(input_image.cols);
+    const float height = static_cast<float>(input_image.rows);
+    const float r = float(INPUT_WIDTH / std::max(width, height));
+    const int new_unpadW = int(round(width * r));
+    const int new_unpadH = int(round(height * r));
     Resize_t resize_img{};
 
     cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
