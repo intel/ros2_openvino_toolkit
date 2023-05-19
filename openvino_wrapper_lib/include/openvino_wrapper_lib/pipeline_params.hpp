@@ -63,6 +63,7 @@ const char kInferTpye_LandmarksDetection[] = "LandmarksDetection";
 const char kInferTpye_FaceReidentification[] = "FaceReidentification";
 const char kInferTpye_VehicleAttribsDetection[] = "VehicleAttribsDetection";
 const char kInferTpye_LicensePlateDetection[] = "LicensePlateDetection";
+const char kInferTpye_HumanPoseEstimation[] = "HumanPoseEstimation";
 
 /**
  * @class PipelineParams

@@ -138,6 +138,10 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
   ros2 launch openvino_node pipeline_person_attributes.launch.py
   ```
+  * run human pose estimation sample code input from Video.
+  ```
+  ros2 launch openvino_node pipeline_human_pose.launch.py
+  ```
 
 # More Information
 * ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
