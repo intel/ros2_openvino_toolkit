@@ -344,6 +344,103 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
+template<typename T>
+void scaleCoord(T& coord) {
+  return;
+    // if (!doResize || scaleFactor == 1) { return; }
+    // coord.x = std::floor(coord.x * scaleFactor);
+    // coord.y = std::floor(coord.y * scaleFactor);
+}
+
+cv::Mat renderHumanPose(const std::vector<openvino_wrapper_lib::HumanPoseEstimationResult> & results, cv::Mat &outputImg) {
+    // if (!result.metaData) {
+    //     throw std::invalid_argument("Renderer: metadata is null");
+    // }
+
+    //auto outputImg = result.metaData->asRef<ImageMetaData>().img;
+
+    // if (outputImg.empty()) {
+    //     throw std::invalid_argument("Renderer: image provided in metadata is empty");
+    // }
+    //outputTransform.resize(outputImg);
+    static const cv::Scalar colors[18] = {
+      cv::Scalar(255, 0, 0), cv::Scalar(255, 85, 0), cv::Scalar(255, 170, 0),
+      cv::Scalar(255, 255, 0), cv::Scalar(170, 255, 0), cv::Scalar(85, 255, 0),
+      cv::Scalar(0, 255, 0), cv::Scalar(0, 255, 85), cv::Scalar(0, 255, 170),
+      cv::Scalar(0, 255, 255), cv::Scalar(0, 170, 255), cv::Scalar(0, 85, 255),
+      cv::Scalar(0, 0, 255), cv::Scalar(85, 0, 255), cv::Scalar(170, 0, 255),
+      cv::Scalar(255, 0, 255), cv::Scalar(255, 0, 170), cv::Scalar(255, 0, 85)
+    };
+    static const std::pair<int, int> keypointsOP[] = {
+      {1, 2}, {1, 5}, {2, 3}, {3, 4}, {5, 6},
+      {6, 7}, {1, 8}, {8, 9}, {9, 10}, {1, 11},
+      {11, 12}, {12, 13}, {1, 0}, {0, 14}, {14, 16},
+      {0, 15}, {15, 17}
+    };
+    static const std::pair<int, int> keypointsAE[] = {
+      {15, 13}, {13, 11}, {16, 14}, {14, 12}, {11, 12},
+      {5, 11},  {6, 12},  {5, 6}, {5, 7}, {6, 8},
+      {7, 9}, {8, 10},  {1, 2}, {0, 1}, {0, 2},
+      {1, 3}, {2, 4}, {3, 5}, {4, 6}
+    };
+    const int stickWidth = 4;
+    const cv::Point2f absentKeypoint(-1.0f, -1.0f);
+      for (auto& r : results) {
+        const auto pose = r.get_pose();
+        for (size_t keypointIdx = 0; keypointIdx < pose.keypoints.size(); keypointIdx++) {
+            if (pose.keypoints[keypointIdx] != absentKeypoint) {
+                scaleCoord(pose.keypoints[keypointIdx]);
+                cv::circle(outputImg, pose.keypoints[keypointIdx], 4, colors[keypointIdx], -1);
+            }
+        }
+    }
+    std::vector<std::pair<int, int>> limbKeypointsIds;
+    if (!results.empty()) {
+        if (results[0].get_pose().keypoints.size() == 18) {
+            limbKeypointsIds.insert(limbKeypointsIds.begin(), std::begin(keypointsOP), std::end(keypointsOP));
+        } else {
+            limbKeypointsIds.insert(limbKeypointsIds.begin(), std::begin(keypointsAE), std::end(keypointsAE));
+        }
+    }
+    cv::Mat pane = outputImg.clone();
+    for (auto& r : results) {
+        const auto pose = r.get_pose();
+        for (const auto& limbKeypointsId : limbKeypointsIds) {
+            std::pair<cv::Point2f, cv::Point2f> limbKeypoints(pose.keypoints[limbKeypointsId.first],
+                                                              pose.keypoints[limbKeypointsId.second]);
+            if (limbKeypoints.first == absentKeypoint || limbKeypoints.second == absentKeypoint) {
+                continue;
+            }
+
+            float meanX = (limbKeypoints.first.x + limbKeypoints.second.x) / 2;
+            float meanY = (limbKeypoints.first.y + limbKeypoints.second.y) / 2;
+            cv::Point difference = limbKeypoints.first - limbKeypoints.second;
+            double length = std::sqrt(difference.x * difference.x + difference.y * difference.y);
+            int angle = static_cast<int>(std::atan2(difference.y, difference.x) * 180 / CV_PI);
+            std::vector<cv::Point> polygon;
+            cv::ellipse2Poly(cv::Point2d(meanX, meanY), cv::Size2d(length / 2, stickWidth), angle, 0, 360, 1, polygon);
+            cv::fillConvexPoly(pane, polygon, colors[limbKeypointsId.second]);
+        }
+    }
+    cv::addWeighted(outputImg, 0.4, pane, 0.6, 0, outputImg);
+    return outputImg;
+}
+
+void Outputs::ImageWindowOutput::accept(
+  const std::vector<openvino_wrapper_lib::HumanPoseEstimationResult> & results)
+{
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect result_rect = results[i].getLocation();
+    unsigned target_index = findOutput(result_rect);
+    //outputs_[target_index].rect = result_rect;
+    //outputs_[target_index].desc +=
+    //  ("[" + results[i].getColor() + "," + results[i].getType() + "]");
+    //results[i] = renderHumanPose(results[i], frame_);
+  }
+  renderHumanPose(results, frame_);
+}
+
+
 void Outputs::ImageWindowOutput::decorateFrame()
 {
   if (getPipeline()->getParameters()->isGetFps()) {

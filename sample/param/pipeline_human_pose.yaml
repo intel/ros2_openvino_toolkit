@@ -1,0 +1,25 @@
+Pipelines:
+- name: people
+  inputs: [Video]
+  input_path: to/be/set/video_path
+  infers:
+    - name: HumanPoseEstimation
+      model: /opt/openvino_toolkit/models/intel/human-pose-estimation-0001/FP32/human-pose-estimation-0001.xml
+      engine: CPU
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.8
+  outputs: [ImageWindow, RViz]
+  connects:
+    - left: Video
+      right: [HumanPoseEstimation]
+    - left: HumanPoseEstimation
+      right: [ImageWindow]
+    #- left: HumanPoseEstimation
+    #  right: [RosTopic]
+    - left: HumanPoseEstimation
+      right: [RViz]
+
+
+
+OpenvinoCommon:

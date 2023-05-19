@@ -138,6 +138,8 @@ private:
   createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
+  std::shared_ptr<openvino_wrapper_lib::BaseInference>
+  createHumanPoseEstimation(const Params::ParamManager::InferenceRawData & infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
   Engines::EngineManager engine_manager_;

@@ -106,6 +106,13 @@ void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::HeadPos
   image_window_output_->accept(results);
 }
 
+void Outputs::RvizOutput::accept(
+  const std::vector<openvino_wrapper_lib::HumanPoseEstimationResult> & results)
+{
+  image_window_output_->accept(results);
+}
+
+
 void Outputs::RvizOutput::handleOutput()
 {
   image_window_output_->setPipeline(getPipeline());
