@@ -68,24 +68,10 @@ bool Models::ObjectDetectionSSDModel::matToBlob(
   ov::Shape in_shape = in_tensor.get_shape();
   const int width = in_shape[3];
   const int height = in_shape[2];
-  const int channels = in_shape[1];
 
-  u_int8_t * blob_data = (u_int8_t *)in_tensor.data();
+  cv::Mat resized_image(resizeImage(orig_image, width, height));
 
-  cv::Mat resized_image(orig_image);
-  if (width != orig_image.size().width || height != orig_image.size().height) {
-    cv::resize(orig_image, resized_image, cv::Size(width, height));
-  }
-  int batchOffset = batch_index * width * height * channels;
-
-  for (int c = 0; c < channels; c++) {
-    for (int h = 0; h < height; h++) {
-      for (int w = 0; w < width; w++) {
-        blob_data[batchOffset + c * width * height + h * width + w] =
-          resized_image.at<cv::Vec3b>(h, w)[c] * scale_factor;
-      }
-    }
-  }
+  dataToBlob(resized_image, scale_factor, batch_index, engine);
 
   slog::debug << "Convert input image to blob: DONE!" << slog::endl;
   return true;
