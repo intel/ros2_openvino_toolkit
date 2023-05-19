@@ -54,7 +54,7 @@
 
 # Introduction
 ## Design Architecture
-From the view of hirarchical architecture design, the package is divided into different functional components, as shown in below picture. 
+From the view of hierarchical architecture design, the package is divided into different functional components, as shown in below picture. 
 
 ![OpenVINO_Architecture](./data/images/design_arch.PNG "OpenVINO RunTime Architecture")
 
@@ -82,8 +82,8 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>ROS Input & Output</summary>
 
-- **Diversal Input resources** are data resources to be infered and analyzed with the OpenVINO framework.
-- **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inferrence results.
+- **Diversal Input resources** are data resources to be inferred and analyzed with the OpenVINO framework.
+- **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inference results.
 </details>
 </p>
 
@@ -108,7 +108,7 @@ The contents in **.yaml config file** should be well structured and follow the s
 <details>
 <summary>Pipeline</summary>
 
-**Pipeline** fulfills the whole data handling process: initiliazing Input Component for image data gathering and formating; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
+**Pipeline** fulfills the whole data handling process: initializing Input Component for image data gathering and formatting; building up the structured inference network and passing the formatted data through the inference network; transferring the inference results and handling output, etc.
 </details>
 </p>
 
@@ -228,7 +228,7 @@ For the snapshot of demo results, refer to the following picture.
 
 # Installation and Launching
 ## Deploy in Local Environment
-* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
+* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 ## Deploy in Docker
@@ -240,6 +240,7 @@ For the snapshot of demo results, refer to the following picture.
 * OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
 
 # FAQ
+* [How to get the IR file for yolov7?](./doc/quick_start/tutorial_for_yolov7_converted.md)
 * [How to get the IR file for yolov5?](./doc/quick_start/tutorial_for_yolov5_converted.md)
 * [How to build OpenVINO by source?](https://github.com/openvinotoolkit/openvino/wiki#how-to-build)
 * [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
@@ -250,7 +251,7 @@ For the snapshot of demo results, refer to the following picture.
 * Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
 
 # More Information
-* ROS2 OpenVINO discription written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
