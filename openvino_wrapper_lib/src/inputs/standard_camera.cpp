@@ -18,6 +18,14 @@
  */
 #include "openvino_wrapper_lib/inputs/standard_camera.hpp"
 
+
+Input::StandardCamera::StandardCamera(const std::string & dev)
+{
+  if (!dev.empty() && isdigit(dev.back())) {
+      camera_id_ = dev.back() - '0';
+  }
+}
+
 bool Input::StandardCamera::initialize()
 {
   return initialize(640, 480);

@@ -129,7 +129,7 @@ PipelineManager::parseInputDevice(const PipelineData & pdata)
     if (name == kInputType_RealSenseCamera) {
       device = std::make_shared<Input::RealSenseCamera>();
     } else if (name == kInputType_StandardCamera) {
-      device = std::make_shared<Input::StandardCamera>();
+      device = std::make_shared<Input::StandardCamera>(pdata.params.input_meta);
     } else if (name == kInputType_IpCamera) {
       if (pdata.params.input_meta != "") {
         device = std::make_shared<Input::IpCamera>(pdata.params.input_meta);
