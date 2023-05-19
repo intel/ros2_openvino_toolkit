@@ -5,27 +5,13 @@ Below steps have been tested on **Ubuntu 20.04** and **Ubuntu 22.04**.
 Supported ROS2 versions include foxy,galactic and humble.
 
 ## 1. Environment Setup
-For ROS2 foxy and galactic on ubuntu 20.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
-
-  * Install Intel® OpenVINO™ Toolkit Version: 2022.3.</br>
-  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)
-    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool.</br>
-    Refer to: [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
-
-  * Install Intel® RealSense™ SDK.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
-
-For ROS2 humble on ubuntu 22.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
-
-  * Install Intel® OpenVINO™ Toolkit Latest Version by Source.</br>
-  Refer to: [OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
-
-  * Install Intel®  RealSense™ SDK by Source.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
+According to the OS system, select the corresponding version to install. 
+|OS System|ROS2|OpenVINO|RealSense SDK|
+|:---: |:---:|:---:|:---:|
+|Ubuntu 20.04|[ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html)|[OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)|[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)|
+|Ubuntu 20.04|[ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)|[OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)|[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)|
+|Ubuntu 22.04|[ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)|[OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)|[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)|
+|Windows10 (WIP)|[ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Windows-Install-Binary.html)|[OpenVINO_install_guide](https://docs.openvino.ai/latest/openvino_docs_install_guides_installing_openvino_windows_header.html#doxid-openvino-docs-install-guides-installing-openvino-windows-header)|[RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_windows.md)|
 
 ## 2. Building and Installation
 * Install ROS2_OpenVINO_Toolkit packages
@@ -52,9 +38,14 @@ source ./install/local_setup.bash
 ```
 
 ## 3. Running the Demo
-### Install OpenVINO 2022.3 by PIP
+### Install OpenVINO 2022.3 development tool by PIP
 OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.</br>
 Refer to: [OMZtool_guide](https://pypi.org/project/openvino-dev/)
+* Install OpenVINO development tool
+```
+python -m pip install --upgrade pip
+pip install openvino-dev[tensorflow2,onnx]
+``` 
 
 * See all available models
 ```
@@ -72,7 +63,7 @@ omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
 omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 ```
-### Install OpenVINO 2022.3 by source code
+### Install OpenVINO 2022.3 development tool by source code
 * See all available models
 ```
 cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
@@ -102,7 +93,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
+* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before launching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch openvino_node pipeline_people.launch.py
@@ -129,7 +120,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 

@@ -1,8 +1,8 @@
 # Run Docker Images For ROS2_OpenVINO_Toolkit
 
 **NOTE:**
-Below steps have been tested on **Ubuntu 20.04**.
-Supported ROS2 versions include foxy and galactic.
+Below steps have been tested on **Ubuntu 20.04** and **Ubuntu 22.04**.
+Supported ROS2 versions include foxy, galactic and humble.
 
 ## 1. Environment Setup
 * Install docker. </br>
@@ -10,22 +10,28 @@ Refer to: [Docker_install_guide](https://docs.docker.com/engine/install/ubuntu/)
 
 ## 2. Build docker image by dockerfile
 ```
-cd ~/ros2_openvino_toolkit/docker/Dockerfile
+cd ~/ros2_openvino_toolkit/docker
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
 docker build --build-arg ROS_PRE_INSTALLED_PKG=<EXPECT_ROS_PRE_INSTALLED_PKG> --build-arg VERSION=<EXPECT_ROS_VERSION> --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_openvino_202203 .
 ```
 For example:
 * Build image for ros_galactic
 ```
-cd ~/ros2_openvino_toolkit/docker/Dockerfile
+cd ~/ros2_openvino_toolkit/docker
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
 docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_galactic_openvino_202203 .
 ```
 * Build image for ros_foxy
 ```
-cd ~/ros2_openvino_toolkit/docker/Dockerfile
+cd ~/ros2_openvino_toolkit/docker
 vi ~/ros2_openvino_toolkit/docker/Dockerfile
 docker build --build-arg ROS_PRE_INSTALLED_PKG=foxy-desktop --build-arg VERSION=foxy --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_foxy_openvino_202203 .
+```
+* Build image for ros_humble
+```
+cd ~/ros2_openvino_toolkit/docker
+vi ~/ros2_openvino_toolkit/docker/Dockerfile
+docker build --build-arg ROS_PRE_INSTALLED_PKG=humble-desktop --build-arg VERSION=humble --build-arg "HTTP_PROXY=set_your_proxy" -t ros2_humble_openvino_202203 .
 ```
 
 ## 3. Download and load docker image
@@ -44,24 +50,34 @@ docker images
 ```
 
 ## 4. Running the Demos
+* Outside Docker Container
 * Install dependency
 ```
   sudo apt install x11-xserver-utils
   xhost +
 ```
+
 * Run docker image
 ```
   docker images
   docker run -itd  -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/dev  --privileged=true --name <your_image_name> <IMAGE_ID>
+  docker ps -a
+  docker exec -it <CONTAINER_ID> bash
 ```
-* In Docker Container
 
+* In Docker Container
 * Preparation
 ```
 source /opt/ros/<ROS_VERSION>/setup.bash
 cd ~/catkin_ws
 source ./install/local_setup.bash
 ```
+
+* Install OpenVINO development tool
+```
+python -m pip install --upgrade pip
+pip install openvino-dev[tensorflow2,onnx]
+``` 
 
 * See all available models
 OMZ tools are provided for downloading and converting OMZ models in ov2022.</br>
@@ -93,7 +109,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](../doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
+* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before launching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](../doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch openvino_node pipeline_people.launch.py
@@ -124,7 +140,7 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehic
   ```
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 
