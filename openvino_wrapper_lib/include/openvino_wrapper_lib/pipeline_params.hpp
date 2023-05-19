@@ -56,6 +56,7 @@ const char kInferTpye_ObjectSegmentation[] = "ObjectSegmentation";
 const char kInferTpye_ObjectSegmentationMaskrcnn[] = "ObjectSegmentationMaskrcnn";
 const char kInferTpye_ObjectDetectionTypeSSD[] = "SSD";
 const char kInferTpye_ObjectDetectionTypeYolov5[] = "yolov5";
+const char kInferTpye_ObjectDetectionTypeYolov7[] = "yolov7";
 const char kInferTpye_PersonReidentification[] = "PersonReidentification";
 const char kInferTpye_PersonAttribsDetection[] = "PersonAttribsDetection";
 const char kInferTpye_LandmarksDetection[] = "LandmarksDetection";

@@ -4,8 +4,10 @@ Pipelines:
   input_path: to/be/set/image_path
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/yolov5n.xml
-      model_type: yolov5
+      model: /opt/openvino_toolkit/models/convert/public/yolov7/FP32/yolov7.xml #yolov7 model
+      model_type: yolov7                                                        #yolov7 model
+      #model: /opt/openvino_toolkit/models/convert/public/yolov5/FP32/yolov5n.xml #yolov5 model
+      #model_type: yolov5                                                         #yolov5 model
       engine: CPU #MYRIAD
       label: to/be/set/xxx.labels
       batch: 1

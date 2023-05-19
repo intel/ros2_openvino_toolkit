@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Intel Corporation
+// Copyright (c) 2023 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,27 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 /**
- * @brief A header file with declaration for ObjectDetectionYolov5Model Class
- * @file object_detection_yolov5_model.h
+ * @brief A header file with declaration for ObjectDetectionYolov7Model Class
+ * @file object_detection_yolov7_model.h
  */
-#ifndef OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
-#define OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
+#ifndef OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV7_MODEL_HPP_
+#define OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV7_MODEL_HPP_
 #include <string>
 #include <memory>
 #include <vector>
 #include "openvino_wrapper_lib/models/base_model.hpp"
+
 namespace Models
 {
 /**
- * @class ObjectDetectionYolov5Model
- * @brief This class generates the YOLO v5 model.
+ * @class ObjectDetectionYolov7Model
+ * @brief This class generates the YOLO v7 model.
  */
-class ObjectDetectionYolov5Model : public ObjectDetectionModel
+class ObjectDetectionYolov7Model : public ObjectDetectionModel
 {
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov7Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,
@@ -62,4 +63,4 @@ public:
 
 };
 }  // namespace Models
-#endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_
+#endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV7_MODEL_HPP_
