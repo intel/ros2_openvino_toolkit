@@ -44,6 +44,7 @@ public:
     int object_size = 0;
     int input_height = 0;
     int input_width = 0;
+    bool has_confidence_output = true; //Yolov5~7 have a float for confidence, while yolov8 hasn't.
     std::string model_name;
     std::map<std::string, std::string> input_names;
     std::map<std::string, std::string> output_names;
@@ -76,6 +77,9 @@ public:
     for (auto & item: attr_.output_names) {
       slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
     }
+
+    slog::info << "| has_confidence_output: " << std::boolalpha << attr_.has_confidence_output <<
+      slog::endl;
 
     if(attr_.max_proposal_count <= 0 || attr_.object_size <= 0 || attr_.input_height <= 0
       || attr_.input_width <= 0 || attr_.input_names.empty() || attr_.output_names.empty()){
@@ -138,7 +142,7 @@ public:
     std::copy(std::istream_iterator<std::string>(input_file),
       std::istream_iterator<std::string>(),
       std::back_inserter(attr_.labels));
-    }
+  }
 
   inline std::vector<std::string>& getLabels()
   {
@@ -183,6 +187,16 @@ public:
   inline void setObjectSize(const int size)
   {
     attr_.object_size = size;
+  }
+
+  inline void setHasConfidenceOutput(const bool has)
+  {
+    attr_.has_confidence_output = has;
+  }
+
+  inline bool hasConfidenceOutput() const
+  {
+    return attr_.has_confidence_output;
   }
 
 protected:
