@@ -66,27 +66,6 @@ void Models::BaseModel::modelInit()
   updateLayerProperty(model_);
 }
 
-#if 0
-bool Models::BaseModel::updateLayerProperty(
-  InferenceEngine::CNNNetReader::Ptr model)
-{
-#if 0
-  if (!updateLayerProperty(model)){
-    slog::warn << "The model(name: " << getModelName() << ") failed to update Layer Property!"
-      << slog::endl;
-    return false;
-  }
-#endif
-  if(!isVerified()){
-    slog::warn << "The model(name: " << getModelName() << ") does NOT pass Attribute Check!"
-      << slog::endl;
-    return false;
-  }
-
-  return true;
-}
-#endif
-
 Models::ObjectDetectionModel::ObjectDetectionModel(
   const std::string& label_loc, 
   const std::string& model_loc,
@@ -123,7 +102,6 @@ bool Models::BaseModel::matToBlob(
   unsigned char* data = input_tensor.data<unsigned char>();
   cv::Size size = {(int)width, (int)height};
   cv::Mat resized_image(size, CV_8UC3, data);
-  //blobFromImage(orig_image, resized_image, 1.0/255.0, size, cv::Scalar(), true);
 
   if ( isKeepInputRatio()){
     slog::debug << "keep Input Shape Ratio is ENABLED!" << slog::endl;
