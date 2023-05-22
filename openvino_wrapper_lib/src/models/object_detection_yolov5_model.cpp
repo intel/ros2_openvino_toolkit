@@ -35,7 +35,7 @@ Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
   const std::string & label_loc, const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
-  //setKeepInputShapeRatio(true);
+  setKeepInputShapeRatio(true);
 }
 
 bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
@@ -49,17 +49,25 @@ bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
     return false;
   }
   // set input property
-  ov::Shape input_dims = input_info_map[0].get_shape();
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   const ov::Layout input_tensor_layout{"NHWC"};
-  setInputHeight(input_dims[2]);
-  setInputWidth(input_dims[3]);
   input_info.tensor().
     set_element_type(ov::element::u8).
     set_layout(input_tensor_layout).
     set_color_format(ov::preprocess::ColorFormat::BGR);
+  if( ! model->input(0).get_partial_shape().is_dynamic()){
+      slog::info << "Shouldn't be here!!!!!!!!!!!!!!!" << slog::endl;
+      ov::Shape input_dims = input_info_map[0].get_shape();
+      setInputHeight(input_dims[2]);
+      setInputWidth(input_dims[3]);
+  } else {
+    slog::info << "The model has DYNAMIC shape, set it to shape {1, 640, 640, 3}." << slog::endl;
+    input_info.tensor().set_shape({1, 640, 640, 3});
+    setInputHeight(640);
+    setInputWidth(640);
+  }
   input_info.preprocess().
     convert_element_type(ov::element::f32).
     convert_color(ov::preprocess::ColorFormat::RGB).scale({255., 255., 255.});
@@ -125,19 +133,35 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   const ov::Tensor &output_tensor = request.get_output_tensor();
   ov::Shape output_shape = output_tensor.get_shape();
   auto *detections = output_tensor.data<float>();
+  int rows = output_shape.at(1);
+  int dimentions = output_shape.at(2);
+  Mat output_buffer(output_shape[1], output_shape[2], CV_32F, detections);
+  //Check if transpose is needed
+  if (output_shape.at(2) > output_shape.at(1) &&
+      output_shape.at(2) > 300){ // 300 is just a random number(bigger than the number of classes)
+    transpose(output_buffer, output_buffer); //[8400,84] for yolov8
+    detections = (float*)output_buffer.data;
+    rows = output_shape.at(2);
+    dimentions = output_shape.at(1);
+  }
+  //slog::debug << "AFTER calibration: rows->" << rows << ", dimentions->" << dimentions << slog::endl; 
+
   std::vector<cv::Rect> boxes;
   std::vector<int> class_ids;
   std::vector<float> confidences;
   std::vector<std::string> & labels = getLabels();
 
-  for (size_t i = 0; i < output_shape.at(1); i++) {
-    float *detection = &detections[i * output_shape.at(2)];
-    float confidence = detection[4];
-    if (confidence < confidence_thresh)
-      continue;
+  for (size_t i = 0; i < rows; i++) {
+    float *detection = &detections[i * dimentions];
+    if (hasConfidenceOutput()) {
+      float confidence = detection[4];
+      if (confidence < confidence_thresh)
+        continue;
+    }
 
-    float *classes_scores = &detection[5];
-    int col = static_cast<int>(output_shape.at(2) - 5);
+    const int classes_scores_start_pos = hasConfidenceOutput()? 5 : 4;
+    float *classes_scores = &detection[classes_scores_start_pos];
+    int col = static_cast<int>(dimentions - classes_scores_start_pos);
 
     cv::Mat scores(1, col, CV_32FC1, classes_scores);
     cv::Point class_id;
@@ -145,7 +169,7 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
     cv::minMaxLoc(scores, nullptr, &max_class_score, nullptr, &class_id);
 
     if (max_class_score > confidence_thresh) {
-        confidences.emplace_back(confidence);
+        confidences.emplace_back(max_class_score);
         class_ids.emplace_back(class_id.x);
 
         float x = detection[0];
