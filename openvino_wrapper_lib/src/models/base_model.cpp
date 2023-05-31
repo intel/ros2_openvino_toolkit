@@ -83,12 +83,11 @@ bool Models::BaseModel::matToBlob(
   }
 
   ov::InferRequest infer_request = engine->getRequest();
-  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input0"));
   ov::Shape input_shape = input_tensor.get_shape();
 
   OPENVINO_ASSERT(input_shape.size() == 4);
   const auto layout = getLayoutFromShape(input_shape);
-  // For frozen graph model: layout= "NHWC"
   const size_t width = input_shape[ov::layout::width_idx(layout)]; //input_shape[2];
   const size_t height = input_shape[ov::layout::height_idx(layout)]; //input_shape[1];
   const size_t channels = input_shape[ov::layout::channels_idx(layout)]; //input_shape[3];
@@ -127,6 +126,8 @@ cv::Mat Models::BaseModel::extendFrameToInputRatio(const cv::Mat orig)
   const float orig_ratio = static_cast<float>(orig_width) / orig_height;
   const float target_ratio = static_cast<float>(target_width) / target_height;
 
+  slog::debug << "extend Ratio: orit_ratio:"<< orig_ratio << ", target_ratio:" << target_ratio <<
+    ", orig_width:" << orig_width << ", orig_height:" << orig_height << slog::endl;
   if (orig_ratio < target_ratio){
     orig_width = (int)(orig_height * target_ratio);
   }else{
@@ -137,4 +138,45 @@ cv::Mat Models::BaseModel::extendFrameToInputRatio(const cv::Mat orig)
   orig.copyTo(result(cv::Rect(0, 0, orig.cols, orig.rows)));
 
   return result;
+}
+
+bool Models::BaseModel::updateLayerProperty(
+    std::shared_ptr<ov::Model>& model)
+{
+  slog::info<< "Checking INPUTS & OUTPUTS for Model " <<getModelName()<<slog::endl;
+
+  // check input shape
+  inputs_info_ = model->inputs();
+  slog::info <<"input size="<<inputs_info_.size()<<slog::endl;
+  if (inputs_info_.size() != getCountOfInputs() ) {
+    slog::warn << "This inference sample should have have " << getCountOfInputs()
+      << " inputs, but we got" << std::to_string(inputs_info_.size()) << "inputs"
+      << slog::endl;
+    throw std::logic_error("input_tensor_count doesn't align!");
+    return false;
+  }
+
+  for (int i = 0; i < getCountOfInputs(); i++){
+    std::string name{"input"};
+    addInputInfo(name+std::to_string(i), inputs_info_[i].get_any_name());
+  }
+
+  // check output shape
+  outputs_info_ = model->outputs();
+  slog::info <<"output size="<<outputs_info_.size()<<slog::endl;
+  if (outputs_info_.size() != getCountOfOutputs()) {
+    slog::warn << "This inference sample should have have " << getCountOfOutputs()
+      <<" outputs, but we got " <<outputs_info_.size() << "outputs"
+      << slog::endl;
+    throw std::logic_error("output_tensor_count doesn't align!");
+    return false;
+  }
+
+  for (int i = 0; i < getCountOfOutputs(); i++){
+    std::string name{"output"};
+    addOutputInfo(name+std::to_string(i), outputs_info_[i].get_any_name());
+  }
+
+  printAttribute();
+  return true;
 }
