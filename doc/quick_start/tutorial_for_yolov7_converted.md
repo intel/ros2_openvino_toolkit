@@ -1,7 +1,8 @@
-# Tutorial_For_yolov5_Converted
+# Tutorial_For_yolov7_Converted
 
 # Introduction
-This document describes a method to convert YOLOv5 nano PyTorch weight files with the. pt extension to ONNX weight files, and a method to convert ONNX weight files to IR files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv5n for deployment in practical applications.
+This document describes a method to convert YOLOv7 nano PyTorch weight files with the .pt extension to ONNX weight files, and a method to convert ONNX weight files to IR 
+files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv7 for deployment in practical applications.
 
 ## Reference Phrase
 |Term|Description|
@@ -15,34 +16,36 @@ This document describes a method to convert YOLOv5 nano PyTorch weight files wit
 |Doc|Link|
 |---|---|
 |OpenVINO|[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
-|YOLOv5|[yolov5](https://github.com/ultralytics/yolov5)|
+|YOLOv7|[yolov7](https://github.com/WongKinYiu/yolov7)|
 
 # Convert Weight File to ONNX
-* Copy YOLOv5 Repository from GitHub
+* Copy YOLOv7 Repository from GitHub
 ```
-git clone https://github.com/ultralytics/yolov5.git
+git clone https://github.com/WongKinYiu/yolov7.git
 ```
 
-* Set Environment for Installing YOLOv5
+* Set Environment for Installing YOLOv7
 ```
-cd yolov5
+cd yolov7
 python3 -m venv yolo_env            // Create a virtual python environment
 source yolo_env/bin/activate        // Activate environment
-pip install -r requirements.txt     // Install yolov5 prerequisites
+pip install -r requirements.txt     // Install yolov7 prerequisites
 pip install onnx                    // Install ONNX
+pip install nvidia-pyindex          // Add NVIDIA PIP index
+pip install onnx-graphsurgeon       // Install GraphSurgeon
 ```
 
 * Download PyTorch Weights
 ```
 mkdir model_convert && cd model_convert
-wget https://github.com/ultralytics/yolov5/releases/download/v6.2/yolov5n.pt
+wget "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7.pt"
 ```
 
 * Convert PyTorch weights to ONNX weights
-YOLOv5 repository provides export.py script, which can be used to convert PyTorch weight to ONNX weight.
+YOLOv7 repository provides export.py script, which can be used to convert PyTorch weight to ONNX weight.
 ```
 cd ..
-python3 export.py --weights model_convert/yolov5n.pt --include onnx
+python3 export.py --weights model_convert/yolov7.pt
 ```
 
 # Convert ONNX files to IR files
@@ -61,27 +64,28 @@ pip install openvino-dev[onnx]==2022.3.0    // Install OpenVINO Dev Tool for ONN
 * Generate IR file
 ```
 cd model_convert
-mo --input_model yolov5n.onnx
+mo --input_model yolov7.onnx
 ```
-Then we will get three files: yolov5n.xml, yolov5n.bin, and yolov5n.mapping under the model_convert folder.
+Then we will get three files: yolov7.xml, yolov7.bin, and yolov7.mapping under the model_convert folder.
 
 # Move to the Recommended Model Path
 ```
-cd ~/yolov5/model_convert
-mkdir -p  /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
-sudo cp yolov5n.bin yolov5n.mapping yolov5n.xml /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
+cd ~/yolov7/model_convert
+mkdir -p  /opt/openvino_toolkit/models/convert/public/yolov7/FP32/
+sudo cp yolov7.bin yolov7.mapping yolov7.xml /opt/openvino_toolkit/models/convert/public/yolov7/FP32/
 ```
 
-# yolov5 optimize to yolov5-int8
+# yolov7 optimize to yolov7-int8
 ```
-The yolov5 optimize to yolov5-int8 refer to the link:
+The yolov7 optimize to yolov7-int8 refer to the link:
 
-https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/111-yolov5-quantization-migration
+https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/226-yolov7-optimization
 
 The installation guide
 https://github.com/openvinotoolkit/openvino_notebooks/blob/main/README.md#-installation-guide
 
 ```
+
 
 # FAQ
 
