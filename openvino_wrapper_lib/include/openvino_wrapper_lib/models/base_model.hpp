@@ -155,6 +155,16 @@ namespace Models
       return keep_input_shape_ratio_;
     }
 
+    inline void setExpectedFrameSize(cv::Size expect)
+    {
+      expected_frame_size_ = expect;
+    }
+
+    inline cv::Size getExpectedFrameSize() const
+    {
+      return expected_frame_size_;
+    }
+
   private:
     int max_batch_size_;
     std::string model_loc_;
@@ -162,6 +172,7 @@ namespace Models
 
     //Information about Input Data
     cv::Size frame_size_;
+    cv::Size expected_frame_size_ {224, 224};
     float frame_resize_ratio_width_ = 1.0;
     float frame_resize_ratio_height_ = 1.0;
     bool keep_input_shape_ratio_ = false;
