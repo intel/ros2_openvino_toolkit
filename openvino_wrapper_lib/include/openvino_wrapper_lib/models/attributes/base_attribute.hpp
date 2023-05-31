@@ -94,9 +94,9 @@ public:
 
     slog::info << "| lables:" << slog::endl;
     for (size_t i = 0; i<attr_.labels.size(); i++){
-      slog::info << "|    " << i << ":" << attr_.labels[i];
-      if (i % 8 == 7)
-        slog::info << slog::endl;
+      if (i % 8 == 0 ) slog::info << "|    ";
+      slog::info  << "[" <<  i << ":" << attr_.labels[i] << "]";
+      if (i % 8 == 7) slog::info << slog::endl;
     }
     slog::info << slog::endl;
 

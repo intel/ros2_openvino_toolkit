@@ -1,0 +1,23 @@
+Pipelines:
+- name: segmentation
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectSegmentationInstance
+      model: /home/lewis/develop/openvino/models/models/yolo/yolov8n_seg/yolov8n-seg_openvino_int8_model/yolov8n-seg.xml
+      #model: /home/lewis/develop/openvino/models/yolov8/yolov8n-seg_openvino_model/yolov8n-seg.xml
+      engine: CPU #"HETERO:CPU,GPU,MYRIAD"
+      label: /home/lewis/develop/openvino/ros2_openvino_toolkit.intel/data/labels/object_detection/coco.names
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [ImageWindow, RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [ImageWindow]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic]
+    - left: ObjectSegmentationInstance
+      right: [RViz]
+
+Common:

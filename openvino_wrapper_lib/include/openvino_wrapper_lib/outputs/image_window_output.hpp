@@ -106,6 +106,12 @@ public:
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &) override;
   /**
    * @brief Generate image window output content according to
+   * the object segmentation instance result.
+   * @param[in] An obejct segmentation result objetc.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &) override;
+  /**
+   * @brief Generate image window output content according to
    * the face detection result.
    * @param[in] A face detection result objetc.
    */
@@ -152,6 +158,7 @@ private:
 
   void mergeMask(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> &);
   void mergeMask(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &);
+  void mergeMask(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &);
 
   struct OutputData
   {

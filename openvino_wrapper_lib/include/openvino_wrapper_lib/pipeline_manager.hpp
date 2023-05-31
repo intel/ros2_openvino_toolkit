@@ -127,6 +127,8 @@ private:
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
+  createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData & infer);
+  std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createPersonReidentification(const Params::ParamManager::InferenceRawData & infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createPersonAttribsDetection(const Params::ParamManager::InferenceRawData & infer);

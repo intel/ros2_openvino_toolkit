@@ -97,7 +97,7 @@ bool Models::ObjectSegmentationModel::matToBlob(
   }
 #else
   ov::InferRequest infer_request = engine->getRequest();
-  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName());
   ov::Shape input_shape = input_tensor.get_shape();
 
   OPENVINO_ASSERT(input_shape.size() == 4);

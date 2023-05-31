@@ -30,7 +30,7 @@ set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 ####################################
 ## to get verbose log,
 ## then, uncomment below line
-add_definitions(-DLOG_LEVEL_DEBUG)
+#add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
 # environment variable OpenVINO_DIR can be use instead of relaive path to specify location of configuration file
@@ -189,6 +189,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/head_pose_detection.cpp
         src/inferences/object_segmentation.cpp
         src/inferences/object_segmentation_maskrcnn.cpp
+        src/inferences/object_segmentation_instance.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp
@@ -209,6 +210,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/head_pose_detection_model.cpp
         src/models/object_segmentation_model.cpp
         src/models/object_segmentation_maskrcnn_model.cpp
+        src/models/object_segmentation_instance_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
         #src/models/landmarks_detection_model.cpp

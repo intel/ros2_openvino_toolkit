@@ -20,5 +20,6 @@ Models::ObjectDetectionYolov8Model::ObjectDetectionYolov8Model(
 {
   //setKeepInputShapeRatio(true);
   setHasConfidenceOutput(false);
+  setExpectedFrameSize({640, 640});
 }
 

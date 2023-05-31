@@ -147,7 +147,7 @@ bool Models::BaseModel::updateLayerProperty(
 
   // check input shape
   inputs_info_ = model->inputs();
-  slog::info <<"input size="<<inputs_info_.size()<<slog::endl;
+  slog::debug <<"input size="<<inputs_info_.size()<<slog::endl;
   if (inputs_info_.size() != getCountOfInputs() ) {
     slog::warn << "This inference sample should have have " << getCountOfInputs()
       << " inputs, but we got" << std::to_string(inputs_info_.size()) << "inputs"
@@ -163,7 +163,7 @@ bool Models::BaseModel::updateLayerProperty(
 
   // check output shape
   outputs_info_ = model->outputs();
-  slog::info <<"output size="<<outputs_info_.size()<<slog::endl;
+  slog::debug <<"output size="<<outputs_info_.size()<<slog::endl;
   if (outputs_info_.size() != getCountOfOutputs()) {
     slog::warn << "This inference sample should have have " << getCountOfOutputs()
       <<" outputs, but we got " <<outputs_info_.size() << "outputs"
@@ -177,6 +177,5 @@ bool Models::BaseModel::updateLayerProperty(
     addOutputInfo(name+std::to_string(i), outputs_info_[i].get_any_name());
   }
 
-  printAttribute();
   return true;
 }
