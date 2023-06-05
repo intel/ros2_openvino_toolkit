@@ -50,7 +50,7 @@ bool Models::HeadPoseDetectionModel::updateLayerProperty
   input_info.tensor().
     set_element_type(ov::element::u8).
     set_layout(input_tensor_layout);
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
 
   // set output property
   auto output_info_map = model->outputs();

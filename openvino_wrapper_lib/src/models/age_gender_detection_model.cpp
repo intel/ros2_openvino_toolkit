@@ -48,7 +48,7 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(
     return false;
   }
 
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
   const ov::Layout tensor_layout{"NCHW"};
   input_info.tensor().
     set_element_type(ov::element::f32).

@@ -44,7 +44,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
   input_info.tensor().set_element_type(ov::element::u8);
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
 
   ov::Shape input_dims = input_info_map[0].get_shape();
   setInputHeight(input_dims[2]);
@@ -60,7 +60,7 @@ bool Models::SSDModelAttr::updateLayerProperty(
   }
 
   ov::preprocess::OutputInfo& output_info = ppp.output();
-  addOutputInfo("output", model->output().get_any_name());
+  addOutputInfo(ModelAttribute::DefaultOutputName, model->output().get_any_name());
   slog::info << "Checking Object Detection output ... Name=" << model->output().get_any_name()
     << slog::endl;
 

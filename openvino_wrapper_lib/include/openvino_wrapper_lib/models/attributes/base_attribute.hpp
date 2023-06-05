@@ -39,6 +39,8 @@ class ModelAttribute
 {
 public:
   using Ptr = std::shared_ptr<ModelAttribute>;
+  const char* DefaultInputName {"input0"};
+  const char* DefaultOutputName = "output0";
   struct ModelAttr {
     // Input Tensor Size 
     int input_height = 0;

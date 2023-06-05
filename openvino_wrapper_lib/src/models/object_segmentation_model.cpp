@@ -167,7 +167,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   input_info.preprocess().
     convert_layout(expect_layout).
     resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
 
   auto outputs_info = model->outputs();
   if (outputs_info.size() != 1) {

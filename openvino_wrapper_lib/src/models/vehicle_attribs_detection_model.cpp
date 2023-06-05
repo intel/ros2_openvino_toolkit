@@ -47,7 +47,7 @@ bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
     set_layout(tensor_layout);
   model = ppp.build();
 
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
  
   // set input and output layer name
   addOutputInfo("color_output_", output_info_map[1].get_any_name());

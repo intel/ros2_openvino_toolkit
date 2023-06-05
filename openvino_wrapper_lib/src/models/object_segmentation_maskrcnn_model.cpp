@@ -183,7 +183,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(
       input_info.tensor().
       set_element_type(ov::element::u8).
       set_layout(tensor_layout);
-      addInputInfo("input", input_tensor_name_);
+      addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
     } else if (info_shape.size() == 2) {  // second input contains image info
       image_info.tensor().set_element_type(ov::element::f32);
       addInputInfo("input2", info_name_);
