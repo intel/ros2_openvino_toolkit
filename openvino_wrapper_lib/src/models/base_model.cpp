@@ -134,7 +134,8 @@ cv::Mat Models::BaseModel::extendFrameToInputRatio(const cv::Mat orig)
     orig_height = (int)(orig_width * target_ratio);
   }
 
-  cv::Mat result = cv::Mat::zeros(orig_width, orig_height, CV_8UC3);
+  slog::debug << "extend Image to: " << orig_width << "x" << orig_height << slog::endl;
+  cv::Mat result = cv::Mat::zeros(orig_height, orig_width, CV_8UC3);
   orig.copyTo(result(cv::Rect(0, 0, orig.cols, orig.rows)));
 
   return result;

@@ -211,6 +211,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/object_segmentation_model.cpp
         src/models/object_segmentation_maskrcnn_model.cpp
         src/models/object_segmentation_instance_model.cpp
+        src/models/object_segmentation_instance_maskrcnn_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
         #src/models/landmarks_detection_model.cpp

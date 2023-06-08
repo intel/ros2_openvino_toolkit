@@ -1,0 +1,29 @@
+Pipelines:
+- name: segmentation
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectSegmentationInstance
+      # for Yolov8 Seg models -----------------
+      model: /opt/openvino_toolkit/models/convert/public/yolov8n-seg/FP32/yolov8n-seg.xml
+      model_type: yolo
+      label: /opt/openvino_toolkit/labels/object_detection/coco.names
+      # for maskrcnn inception resnet -----------------
+      #model: /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP32/mask_rcnn_inception_resnet_v2_atrous_coco.xml
+      #model_type: maskrcnn
+      #label: /opt/openvino_toolkit/labels/object_segmentation/frozen_inference_graph.labels #for maskrcnn
+      #----------------------
+      engine: CPU #"HETERO:CPU,GPU," #"HETERO:CPU,GPU,MYRIAD"
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [ImageWindow, RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [ImageWindow]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic]
+    - left: ObjectSegmentationInstance
+      right: [RViz]
+
+Common:

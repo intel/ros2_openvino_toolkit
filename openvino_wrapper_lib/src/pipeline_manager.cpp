@@ -53,6 +53,7 @@
 #include "openvino_wrapper_lib/inferences/object_segmentation_instance.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_model.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_instance_model.hpp"
+#include "openvino_wrapper_lib/models/object_segmentation_instance_maskrcnn_model.hpp"
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/inputs/realsense_camera.hpp"
@@ -364,8 +365,14 @@ PipelineManager::createObjectSegmentationMaskrcnn(const Params::ParamManager::In
 std::shared_ptr<openvino_wrapper_lib::BaseInference>
 PipelineManager::createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData & infer)
 {
-  auto model =
-    std::make_shared<Models::ObjectSegmentationInstanceModel>(infer.label, infer.model, infer.batch);
+  std::shared_ptr<Models::ObjectSegmentationInstanceModel> model;
+  if (infer.model_type == kInferTpye_ObjectSegmentationTypeMaskrcnn) {
+    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeMaskrcnn" << slog::endl;
+    model = std::make_shared<Models::ObjectSegmentationInstanceMaskrcnnModel>(infer.label, infer.model, infer.batch);
+  } else {
+    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
+    model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer.label, infer.model, infer.batch);
+  }
   model->modelInit();
   slog::info << "Instance Segmentation model initialized." << slog::endl;
   auto engine = engine_manager_.createEngine(infer.engine, model);

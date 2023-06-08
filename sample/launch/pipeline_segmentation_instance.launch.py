@@ -30,7 +30,7 @@ def generate_launch_description():
                                 'rviz/default.rviz')
     return LaunchDescription([
     	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
-                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_segmentation_instance_yolo.yaml')),
+                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_segmentation_instance.yaml')),
         # Realsense
         # NOTE: Split realsense_node launching from OpenVINO package, which
 		# will be launched by RDK launching file or manually.
