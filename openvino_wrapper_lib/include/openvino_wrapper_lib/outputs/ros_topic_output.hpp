@@ -122,6 +122,12 @@ public:
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &) override;
   /**
    * @brief Generate ros topic infomation according to
+   * the object segmentation result.
+   * @param[in] results a bundle of object segmentation maskrcnn results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &) override;
+  /**
+   * @brief Generate ros topic infomation according to
    * the object detection result.
    * @param[in] results a bundle of object detection results.
    */
