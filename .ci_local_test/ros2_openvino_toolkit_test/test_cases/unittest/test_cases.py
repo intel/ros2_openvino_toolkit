@@ -22,9 +22,8 @@ class Test_Cases(unittest.TestCase):
         with open(f"{log_file}") as handle:
             log = handle.read()
             check_log = log.split("user interrupted with ctrl-c (SIGINT)")[0]
-            if f"pipeline_object_yolo" not in log_file:
-                self.assertIn('Analyzing Detection results', check_log)
-                self.assertNotIn('ERROR', check_log)
+            self.assertIn('One Pipeline Created!', check_log)
+            self.assertNotIn('ERROR', check_log)
         for topic in topic_list:
             name = topic.split('/', -1)[-1]
             with open(f"{name}.log") as topic_handle:
