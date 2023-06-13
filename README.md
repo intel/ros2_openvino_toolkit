@@ -37,7 +37,7 @@
 * [x] Age Gender Recognition
 * [x] Emotion Recognition
 * [x] Head Pose Estimation
-* [x] Object Segmentation
+* [x] Object Segmentation (Semantic & Instance)
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
@@ -54,6 +54,7 @@
 
 # Introduction
 ## Design Architecture
+<p><details><summary>Architecture Design</summary>
 From the view of hirarchical architecture design, the package is divided into different functional components, as shown in below picture. 
 
 ![OpenVINO_Architecture](./data/images/design_arch.PNG "OpenVINO RunTime Architecture")
@@ -94,8 +95,10 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 - **Optimized Models** provided by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization. It also supports graph freeze and graph summarize along with dynamic input freezing.
 </details>
 </p>
+</details></p>
 
 ## Logic Flow
+<p><details><summary> Logic Flow</summary>
 From the view of logic implementation, the package introduces the definitions of parameter manager, pipeline and pipeline manager. The following picture depicts how these entities co-work together when the corresponding program is launched.
 
 ![Logic_Flow](./data/images/impletation_logic.PNG "OpenVINO RunTime Logic Flow")
@@ -119,6 +122,7 @@ The contents in **.yaml config file** should be well structured and follow the s
 **Pipeline manager** manages all the created pipelines according to the inference requests or external demands (say, system exception, resource limitation, or end user's operation). Because of co-working with resource management and being aware of the whole framework, it covers the ability of performance optimization by sharing system resource between pipelines and reducing the burden of data copy.
 </details>
 </p>
+</details></p>
 
 # Supported Features
 ## Multiple Input Components
@@ -152,12 +156,13 @@ Currently, the corresponding relation of supported inference features, models us
 |Emotion Recognition| Emotion recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[emotions-recognition-retail-0003](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/emotions-recognition-retail-0003)|
 |Age & Gender Recognition| Age and gender recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[age-gender-recognition-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/age-gender-recognition-retail-0013)|
 |Head Pose Estimation| Head pose estimation based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[head-pose-estimation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/head-pose-estimation-adas-0001)|
-|Object Detection| Object detection based on SSD-based trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)|[mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mobilenet-ssd)|
+|Object Detection| Object detection based on SSD-based trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)|[mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mobilenet-ssd)<br>[yolov5](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/111-yolov5-quantization-migration)<br>[yolov7](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/226-yolov7-optimization)<br>[yolov8](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)|
 |Vehicle and License Detection| Vehicle and license detection based on Intel models.|[pipeline_vehicle_detection.yaml](./sample/param/pipeline_vehicle_detection.yaml)|[vehicle-license-plate-detection-barrier-0106](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-license-plate-detection-barrier-0106)<br>[vehicle-attributes-recognition-barrier-0039](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-attributes-recognition-barrier-0039)<br>[license-plate-recognition-barrier-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/license-plate-recognition-barrier-0001)|
-|Object Segmentation| Object segmentation.|[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)|
+|Object Segmentation - Semantic| semantic segmentation, assign a class label to each pixel in an image. |[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)|
+| Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_segmentation_instance.launch.yaml](./sample/param/pipeline_segmentation_instance.yaml) | [yolov8-seg](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
 |Person Attributes| Person attributes based on object detection.|[pipeline_person_attributes.yaml](./sample/param/pipeline_person_attributes.yaml)|[person-attributes-recognition-crossroad-0230](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-attributes-recognition-crossroad-0230)<br>[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)|
 |Person Reidentification|Person reidentification based on object detection.|[pipeline_person_reidentification.yaml](./sample/param/pipeline_reidentification.yaml)|[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)<br>[person-reidentification-retail-0277](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-reidentification-retail-0277)|
-|Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+|Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.[_Deprecated, it is recommended to use `object segementation - instance` for first try._]|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
 </details>
 </p>
 
@@ -212,6 +217,7 @@ OpenCV based image window is natively supported by the package.
 To enable window, Image Window output should be added into the output choices in .yaml config file. Refer to [the config file guidance](./doc/quick_start/yaml_configuration_guide.md) for more information about checking/adding this feature in your launching.
 
 ## Demo Result Snapshots
+<p><details><summary>Demo Snapshots</summary>
 For the snapshot of demo results, refer to the following picture.
 
 * Face detection input from standard camera
@@ -225,6 +231,7 @@ For the snapshot of demo results, refer to the following picture.
 
 * Person reidentification input from standard camera
 ![person_reidentification_demo_video](./data/images/person-reidentification.gif "person reidentification demo video")
+</details></p>
 
 # Installation and Launching
 ## Deploy in Local Environment
@@ -240,11 +247,28 @@ For the snapshot of demo results, refer to the following picture.
 * OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
 
 # FAQ
-* [How to get the IR file for yolov5?](./doc/quick_start/tutorial_for_yolov5_converted.md)
+* How to get the IR file for [yolov5](./doc/quick_start/tutorial_for_yolov5_converted.md) | [yolov7](./doc/quick_start/tutorial_for_yolov7_converted.md) | [yolov8](./doc/quick_start/tutorial_for_yolov8_converted.md) ?
 * [How to build OpenVINO by source?](https://github.com/openvinotoolkit/openvino/wiki#how-to-build)
 * [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 * [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)
 * [What is the canonical C++ API for interacting with ROS?](https://docs.ros2.org/latest/api/rclcpp/)
+<p><details><summary> How to change logging level?</summary>
+  This project provides to logging levels: *DEBUG* & *INFO*.<br>
+  You may follow the steps to change logging level:<br>
+
+  - Update ./openvino_wrapper_lib/CMakeLists.txt by uncommenting (for DEBUG level) or commenting (for INFO level) this line:
+    ```code
+    #add_definitions(-DLOG_LEVEL_DEBUG)
+    ```
+  - Rebuild project<br>
+    Refer corresponding quick-start documents to rebuild this project. e.g.:<br>
+    ```code
+    source /opt/ros/<ros-distro>/setup.bash
+    colcon build --symlink-install
+    ```
+  - Launch OpenVINO Node<br>
+    You will see the logging is changed.
+</details></p>
 
 # Feedback
 * Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
