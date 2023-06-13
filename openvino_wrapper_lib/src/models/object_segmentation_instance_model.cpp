@@ -245,14 +245,21 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
   for (int idx: nms_result) {
       double rx = getFrameResizeRatioWidth();
       double ry = getFrameResizeRatioHeight();
-      int vx = std::max(0, int(rx * boxes[idx].x));
-      int vy = std::max(0, int(ry * boxes[idx].y));
-      int vw = std::min(std::max(0, int(rx * boxes[idx].width)), getFrameSize().width-vx-1);
-      int vh = std::min(std::max(0, int(ry * boxes[idx].height)), getFrameSize().height-vy-1);
+      slog::debug << "Detection-Ratio (Input Image to Input Tensor): "<< rx << "x" << ry << slog::endl;
 
-      cv::Rect rec(vx, vy, vw, vh);
-      slog::debug << "Detection Rectangle: " << rec << slog::endl;
-      Result result(rec);
+      //Bounding-Box in Input Tensor Size
+      int vx = std::max(0, int(boxes[idx].x));
+      int vy = std::max(0, int(boxes[idx].y));
+      int vw = std::min(std::max(0, int(boxes[idx].width)), getInputWidth()-vx-1);
+      int vh = std::min(std::max(0, int(boxes[idx].height)), getInputHeight()-vy-1);
+
+      cv::Rect vrec(vx, vy, vw, vh);
+      slog::debug << "Detection Rectangle in Input Tensor Size: " << vrec << slog::endl;
+      const int det_bb_w = vw*rx;
+      const int det_bb_h = vh*ry;
+      cv::Rect det_bb(vx*rx, vy*ry, det_bb_w, det_bb_h);
+      slog::debug << "Detection Rectangle in Input Image Size: " << det_bb << slog::endl;
+      Result result(det_bb);
       result.setConfidence(confidences[idx]);
       std::string label = class_ids[idx] < labels.size() ?
         labels[class_ids[idx]] : std::string("label #") + std::to_string(class_ids[idx]);
@@ -268,6 +275,7 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
 
       double mask_rx = static_cast<double>(MASK_WIDTH) / getInputWidth();
       double mask_ry = static_cast<double>(MASK_HEIGHT) / getInputHeight();
+      slog::debug << "Mask-Ratio (Mask Tensor to Input Tensor): " << mask_rx <<"x" << mask_ry << slog::endl;
       int mask_x = int(mask_rx * vx);
       int mask_y = int(mask_ry * vy);
       int mask_w = int(mask_rx * vw);
@@ -279,9 +287,10 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
         mask_h = MASK_HEIGHT - 1;
       }
       cv::Rect roi{mask_x, mask_y, mask_w, mask_h};
+      slog::debug << "Mask ROI:" << roi << slog::endl;
       cv::Mat roi_mask = reshaped_m(roi);
       cv::Mat resized_mask;
-      cv::resize(roi_mask, resized_mask, cv::Size(vw, vh));
+      cv::resize(roi_mask, resized_mask, cv::Size(det_bb_w, det_bb_h));
       result.setMask(resized_mask);
 
       results.push_back(result);
