@@ -5,7 +5,7 @@ mkdir -p /opt/openvino_toolkit/models
 apt install -y python3.8-venv
 cd ~ && python3 -m venv openvino_env && source openvino_env/bin/activate
 python -m pip install --upgrade pip
-pip install openvino-dev[tensorflow2,mxnet,caffe]
+pip install openvino-dev[tensorflow2,onnx]==2022.3
 
 
 #Download the optimized Intermediate Representation (IR) of model (execute once)

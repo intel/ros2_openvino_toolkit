@@ -20,15 +20,16 @@ function run_container() {
     then
         docker rm -f ros2_openvino_container
     fi
+
+    # Removing some docker image ..
     # Using jenkins server ros2_openvino_toolkit code instead of git clone code.
-    cd $work_dir && sed -i '/ros2_openvino_toolkit.git/d' Dockerfile
-    # remove the "\"
-    cd $work_dir && sed -i 's#ros2_object_msgs.git \\#ros2_object_msgs.git#' Dockerfile
+    cd $work_dir && sed -i '/RUN git clone -b ros2/d' Dockerfile
     # add the jpg for test.
     cd $work_dir && sed -i '$i COPY jpg /root/jpg' Dockerfile
 
     cd $work_dir && docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic  -t ros2_openvino_docker:01 .
-    docker run -i --privileged=true --device=/dev/dri -v $work_dir/ros2_openvino_toolkit:/root/catkin_ws/src/ros2_openvino_toolkit -v /tmp/.X11-unix:/tmp/.X11-unix  -v $HOME/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v $work_dir/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh galactic"
+    cd $work_dir && docker images
+    docker run -i --privileged=true --device=/dev/dri -v $work_dir/ros2_openvino_toolkit:/root/catkin_ws/src/ros2_openvino_toolkit  -v $HOME/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v $work_dir/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh galactic"
 
 }
 

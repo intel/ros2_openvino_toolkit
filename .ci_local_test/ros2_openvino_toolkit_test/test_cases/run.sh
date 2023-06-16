@@ -27,6 +27,8 @@ cd /root/test_cases/unittest && python3 run_all.py
 result=$?
 #echo "cat segmentation maskrcnn"
 #cat /root/test_cases/log/pipeline_segmentation_maskrcnn_test_ci.log
+
+echo "Test ENV:" && df -h && free -g
 if [ $result -ne 0 ]
 then
         exit -1
