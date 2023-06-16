@@ -107,6 +107,12 @@ namespace Models
      * @param[in] network_reader The reader of the network to be set.
      */
     virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
+
+    virtual bool matToBlob(
+      const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
+      int batch_index, const std::shared_ptr<Engines::Engine> &engine);
+
+    cv::Mat extendFrameToInputRatio(const cv::Mat);
     ov::Core engine;
     std::shared_ptr<ov::Model> model_; 
     void setFrameSize(const int &w, const int &h)
@@ -119,11 +125,57 @@ namespace Models
       return frame_size_;
     }
 
+    inline void setFrameResizeeRatioWidth(const float r)
+    {
+      frame_resize_ratio_width_ = r;
+    }
+
+    inline void setFrameResizeeRatioHeight(const float r)
+    {
+      frame_resize_ratio_height_ = r;
+    }
+
+    inline float getFrameResizeRatioWidth() const
+    {
+      return frame_resize_ratio_width_;
+    }
+
+    inline float getFrameResizeRatioHeight() const
+    {
+      return frame_resize_ratio_height_;
+    }
+
+    inline void setKeepInputShapeRatio(bool keep)
+    {
+      keep_input_shape_ratio_ = keep;
+    }
+
+    inline bool isKeepInputRatio() const
+    {
+      return keep_input_shape_ratio_;
+    }
+
+    inline void setExpectedFrameSize(cv::Size expect)
+    {
+      expected_frame_size_ = expect;
+    }
+
+    inline cv::Size getExpectedFrameSize() const
+    {
+      return expected_frame_size_;
+    }
+
   private:
     int max_batch_size_;
     std::string model_loc_;
     std::string label_loc_;
+
+    //Information about Input Data
     cv::Size frame_size_;
+    cv::Size expected_frame_size_ {224, 224};
+    float frame_resize_ratio_width_ = 1.0;
+    float frame_resize_ratio_height_ = 1.0;
+    bool keep_input_shape_ratio_ = false;
   };
 
   class ObjectDetectionModel : public BaseModel
@@ -135,9 +187,6 @@ namespace Models
         std::vector<openvino_wrapper_lib::ObjectDetectionResult> &result,
         const float &confidence_thresh = 0.3,
         const bool &enable_roi_constraint = false) = 0;
-    virtual bool matToBlob(
-        const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
-        int batch_index, const std::shared_ptr<Engines::Engine> &engine) = 0;
   };
 
 } // namespace Models

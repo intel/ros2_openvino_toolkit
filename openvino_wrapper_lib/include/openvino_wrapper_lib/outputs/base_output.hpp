@@ -51,6 +51,7 @@
 #include "openvino_wrapper_lib/inferences/vehicle_attribs_detection.hpp"
 #include "openvino_wrapper_lib/inferences/license_plate_detection.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation_maskrcnn.hpp"
+#include "openvino_wrapper_lib/inferences/object_segmentation_instance.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -113,6 +114,12 @@ public:
    * @brief Generate output content according to the object segmentation maskrcnn result.
    */
   virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &)
+  {
+  }
+  /**
+   * @brief Generate output content according to the object segmentation result for instance models.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &)
   {
   }
   /**

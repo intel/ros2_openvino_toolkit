@@ -48,7 +48,7 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   }
 
   model = ppp.build();
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
   addOutputInfo("attributes_output_",output_info_map[0].get_any_name());
   addOutputInfo("top_output_", output_info_map[1].get_any_name());
   addOutputInfo("bottom_output_", output_info_map[2].get_any_name());

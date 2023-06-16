@@ -97,7 +97,7 @@ bool Models::ObjectSegmentationModel::matToBlob(
   }
 #else
   ov::InferRequest infer_request = engine->getRequest();
-  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName());
   ov::Shape input_shape = input_tensor.get_shape();
 
   OPENVINO_ASSERT(input_shape.size() == 4);
@@ -167,7 +167,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(
   input_info.preprocess().
     convert_layout(expect_layout).
     resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
-  addInputInfo("input", input_tensor_name_);
+  addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
 
   auto outputs_info = model->outputs();
   if (outputs_info.size() != 1) {

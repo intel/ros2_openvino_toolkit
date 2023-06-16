@@ -191,6 +191,7 @@ void ParamManager::print() const
     for (auto & infer : pipeline.infers) {
       slog::info << "\t\tName: " << infer.name << slog::endl;
       slog::info << "\t\tModel: " << infer.model << slog::endl;
+      slog::info << "\t\tModel-Type: " << infer.model_type << slog::endl;
       slog::info << "\t\tEngine: " << infer.engine << slog::endl;
       slog::info << "\t\tLabel: " << infer.label << slog::endl;
       slog::info << "\t\tBatch: " << infer.batch << slog::endl;

@@ -23,7 +23,7 @@
 #include <utility>
 #include <map>
 
-#if 0
+#if 0 //in curent versions, these models are not supported any more.
 #include "openvino_wrapper_lib/inferences/landmarks_detection.hpp"
 #include "openvino_wrapper_lib/inferences/face_reidentification.hpp"
 #include "openvino_wrapper_lib/models/face_reidentification_model.hpp"
@@ -47,9 +47,13 @@
 #include "openvino_wrapper_lib/inferences/head_pose_detection.hpp"
 #include "openvino_wrapper_lib/models/head_pose_detection_model.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov5_model.hpp"
+#include "openvino_wrapper_lib/models/object_detection_yolov8_model.hpp"
 #include "openvino_wrapper_lib/models/object_detection_ssd_model.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation.hpp"
+#include "openvino_wrapper_lib/inferences/object_segmentation_instance.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_model.hpp"
+#include "openvino_wrapper_lib/models/object_segmentation_instance_model.hpp"
+#include "openvino_wrapper_lib/models/object_segmentation_instance_maskrcnn_model.hpp"
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/inputs/realsense_camera.hpp"
@@ -211,6 +215,8 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData & pa
       object = createObjectSegmentation(infer);
     } else if (infer.name == kInferTpye_ObjectSegmentationMaskrcnn) {
       object = createObjectSegmentationMaskrcnn(infer);
+    } else if (infer.name == kInferTpye_ObjectSegmentationInstance) {
+      object = createObjectSegmentationInstance(infer);
     } else if (infer.name == kInferTpye_PersonReidentification) {
       object = createPersonReidentification(infer);
     } else if (infer.name == kInferTpye_PersonAttribsDetection) {
@@ -300,6 +306,11 @@ PipelineManager::createObjectDetection(
       std::make_shared<Models::ObjectDetectionYolov5Model>(infer.label, infer.model, infer.batch);
   }
 
+  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov8) {
+    object_detection_model =
+      std::make_shared<Models::ObjectDetectionYolov8Model>(infer.label, infer.model, infer.batch);
+  }
+
   slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
   object_inference_ptr = std::make_shared<openvino_wrapper_lib::ObjectDetection>(
     infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
@@ -332,6 +343,7 @@ PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceR
   return segmentation_inference_ptr;
 }
 
+// TODO: Deprecated
 std::shared_ptr<openvino_wrapper_lib::BaseInference>
 PipelineManager::createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer)
 {
@@ -342,6 +354,30 @@ PipelineManager::createObjectSegmentationMaskrcnn(const Params::ParamManager::In
   auto engine = engine_manager_.createEngine(infer.engine, model);
   slog::info << "Segmentation Engine initialized." << slog::endl;
   auto segmentation_inference_ptr = std::make_shared<openvino_wrapper_lib::ObjectSegmentationMaskrcnn>(
+    infer.confidence_threshold);
+    slog::info << "Segmentation Inference instanced." << slog::endl;
+  segmentation_inference_ptr->loadNetwork(model);
+  segmentation_inference_ptr->loadEngine(engine);
+
+  return segmentation_inference_ptr;
+}
+
+std::shared_ptr<openvino_wrapper_lib::BaseInference>
+PipelineManager::createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData & infer)
+{
+  std::shared_ptr<Models::ObjectSegmentationInstanceModel> model;
+  if (infer.model_type == kInferTpye_ObjectSegmentationTypeMaskrcnn) {
+    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeMaskrcnn" << slog::endl;
+    model = std::make_shared<Models::ObjectSegmentationInstanceMaskrcnnModel>(infer.label, infer.model, infer.batch);
+  } else {
+    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
+    model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer.label, infer.model, infer.batch);
+  }
+  model->modelInit();
+  slog::info << "Instance Segmentation model initialized." << slog::endl;
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  slog::info << "Engine initialized for Instance Segmentation." << slog::endl;
+  auto segmentation_inference_ptr = std::make_shared<openvino_wrapper_lib::ObjectSegmentationInstance>(
     infer.confidence_threshold);
     slog::info << "Segmentation Inference instanced." << slog::endl;
   segmentation_inference_ptr->loadNetwork(model);

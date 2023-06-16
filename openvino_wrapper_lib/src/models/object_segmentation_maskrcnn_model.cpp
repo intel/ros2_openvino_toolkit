@@ -82,7 +82,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(
   }
 
   ov::InferRequest infer_request = engine->getRequest();
-  ov::Tensor input_tensor = infer_request.get_tensor(getInputName("input"));
+  ov::Tensor input_tensor = infer_request.get_tensor(getInputName());
   ov::Shape input_shape = input_tensor.get_shape();
 
   OPENVINO_ASSERT(input_shape.size() == 4);
@@ -183,7 +183,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(
       input_info.tensor().
       set_element_type(ov::element::u8).
       set_layout(tensor_layout);
-      addInputInfo("input", input_tensor_name_);
+      addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
     } else if (info_shape.size() == 2) {  // second input contains image info
       image_info.tensor().set_element_type(ov::element::f32);
       addInputInfo("input2", info_name_);
@@ -192,7 +192,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(
     }
   }
 
-  std::string inputName = getInputName("input");
+  std::string inputName = getInputName();
   slog::debug << "input name is:" << inputName << slog::endl;
   OPENVINO_ASSERT (input_shape.size()== 4);
   size_t netBatchSize = input_shape[0];

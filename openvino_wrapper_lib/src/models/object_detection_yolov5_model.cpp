@@ -1,4 +1,4 @@
-// Copyright (c) 2022 Intel Corporation
+// Copyright (c) 2022-2023 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,77 +13,81 @@
 // limitations under the License.
 
 /** 
- * @brief a header file with declaration of ObjectDetectionModel class
+ * @brief a header file with declaration of ObjectDetectionYolov5Model class
  * @file object_detection_yolov5_model.cpp
  */
 #include <string>
 #include <memory>
 #include <vector>
 #include <algorithm>
+#include <opencv2/opencv.hpp>
 #include "openvino_wrapper_lib/slog.hpp"
+#include "openvino_wrapper_lib/utils/common.hpp"
 #include "openvino_wrapper_lib/engines/engine.hpp"
 #include "openvino_wrapper_lib/inferences/object_detection.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov5_model.hpp"
 
+using namespace cv;
+using namespace dnn;
 
 // Validated Object Detection Network
 Models::ObjectDetectionYolov5Model::ObjectDetectionYolov5Model(
   const std::string & label_loc, const std::string & model_loc, int max_batch_size)
 : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
+  setKeepInputShapeRatio(true);
 }
 
 bool Models::ObjectDetectionYolov5Model::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {
-  slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
-  auto input_info_map = model->inputs();
-  if (input_info_map.size() != 1) {
-    slog::warn << "This model seems not Yolo-like, which has only one input, but we got "
-      << std::to_string(input_info_map.size()) << "inputs" << slog::endl;
-    return false;
-  }
-  // set input property
-  ov::Shape input_dims = input_info_map[0].get_shape();
+  Models::BaseModel::updateLayerProperty(model); 
+
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
-  input_tensor_name_ = model->input().get_any_name();
-  ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  const ov::Layout input_tensor_layout{"NHWC"};
-  setInputHeight(input_dims[2]);
-  setInputWidth(input_dims[3]);
+
+  // preprocess image inputs
+  ov::preprocess::InputInfo& input_info = ppp.input(getInputInfo("input0"));
+  ov::Layout tensor_layout = ov::Layout("NHWC");
+
+  if( model->input(0).get_partial_shape().is_dynamic()){
+    auto expected_size = getExpectedFrameSize();
+    slog::info << "Model's input has dynamic shape, set to expected size: "
+               << expected_size << slog::endl;
+    input_info.tensor().set_shape({1, expected_size.height, expected_size.width, 3});
+  }
+
   input_info.tensor().
-    set_element_type(ov::element::u8).
-    set_layout(input_tensor_layout).
-    set_color_format(ov::preprocess::ColorFormat::BGR);
+  set_element_type(ov::element::u8).
+  set_layout(tensor_layout).
+  set_color_format(ov::preprocess::ColorFormat::BGR);
+
   input_info.preprocess().
     convert_element_type(ov::element::f32).
     convert_color(ov::preprocess::ColorFormat::RGB).scale({255., 255., 255.});
   ppp.input().model().set_layout("NCHW");
-  addInputInfo("input", input_tensor_name_);
 
-  // set output property
-  auto output_info_map = model->outputs();
-  if (output_info_map.size() != 1) {
-    slog::warn << "This model seems not Yolo-like! We got "
-      << std::to_string(output_info_map.size()) << "outputs, but Yolov5 has only one."
-      << slog::endl;
-    return false;
-  }
-  output_tensor_name_ = model->output().get_any_name();
-  ov::preprocess::OutputInfo& output_info = ppp.output();
-  addOutputInfo("output", output_tensor_name_);
-  output_info.tensor().set_element_type(ov::element::f32);
-  slog::info << "Checking Object Detection output ... Name=" << output_tensor_name_
-    << slog::endl;
+  ppp.output().tensor().set_element_type(ov::element::f32);
 
   model = ppp.build();
 
+  ov::Shape input_shape = model->input(getInputInfo("input0")).get_shape();
+  slog::debug<<"image_tensor shape is:"<< input_shape.size() <<slog::endl;
+  OPENVINO_ASSERT (input_shape.size()== 4);
+  setInputHeight(input_shape[1]);
+  setInputWidth(input_shape[2]);
+
+  auto output_info_map = model->outputs();
   ov::Shape output_dims = output_info_map[0].get_shape();
-  setMaxProposalCount(static_cast<int>(output_dims[1]));
-
-  auto object_size = static_cast<int>(output_dims[2]);
-  setObjectSize(object_size);
-
+  if (output_dims[1] < output_dims[2]){
+    slog::info << "Object-Size bigger than Proposal-Count, Outputs need Transform!" << slog::endl;
+    setTranspose(true);
+    setMaxProposalCount(static_cast<int>(output_dims[2]));
+    setObjectSize(static_cast<int>(output_dims[1]));
+  } else {
+    setTranspose(false);
+    setMaxProposalCount(static_cast<int>(output_dims[1]));
+    setObjectSize(static_cast<int>(output_dims[2]));
+  }
   printAttribute();
   slog::info << "This model is Yolo-like, Layer Property updated!" << slog::endl;
   return true;
@@ -107,26 +111,6 @@ bool Models::ObjectDetectionYolov5Model::enqueue(
   return true;
 }
 
-
-bool Models::ObjectDetectionYolov5Model::matToBlob(
-  const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-  int batch_index, const std::shared_ptr<Engines::Engine> & engine)
-{
-  resize_img = pre_process_ov(orig_image);
-  input_image = orig_image;
-
-  size_t height = resize_img.resized_image.rows;
-  size_t width = resize_img.resized_image.cols;
-  size_t channels = orig_image.channels();
-  auto *input_data = (float *) resize_img.resized_image.data;
-
-  ov::Tensor input_tensor;
-  input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, input_data);
-  engine->getRequest().set_input_tensor(input_tensor);
-
-  return true;
-}
-
 bool Models::ObjectDetectionYolov5Model::fetchResults(
   const std::shared_ptr<Engines::Engine> & engine,
   std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results,
@@ -140,19 +124,35 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   const ov::Tensor &output_tensor = request.get_output_tensor();
   ov::Shape output_shape = output_tensor.get_shape();
   auto *detections = output_tensor.data<float>();
+  int rows = output_shape.at(1);
+  int dimentions = output_shape.at(2);
+  Mat output_buffer(output_shape[1], output_shape[2], CV_32F, detections);
+  //Check if transpose is needed
+  if (output_shape.at(2) > output_shape.at(1) &&
+      output_shape.at(2) > 300){ // 300 is just a random number(bigger than the number of classes)
+    transpose(output_buffer, output_buffer); //[8400,84] for yolov8
+    detections = (float*)output_buffer.data;
+    rows = output_shape.at(2);
+    dimentions = output_shape.at(1);
+  }
+  //slog::debug << "AFTER calibration: rows->" << rows << ", dimentions->" << dimentions << slog::endl; 
+
   std::vector<cv::Rect> boxes;
   std::vector<int> class_ids;
   std::vector<float> confidences;
   std::vector<std::string> & labels = getLabels();
 
-  for (size_t i = 0; i < output_shape.at(1); i++) {
-    float *detection = &detections[i * output_shape.at(2)];
-    float confidence = detection[4];
-    if (confidence < confidence_thresh)
-      continue;
+  for (size_t i = 0; i < rows; i++) {
+    float *detection = &detections[i * dimentions];
+    if (hasConfidenceOutput()) {
+      float confidence = detection[4];
+      if (confidence < confidence_thresh)
+        continue;
+    }
 
-    float *classes_scores = &detection[5];
-    int col = static_cast<int>(output_shape.at(2) - 5);
+    const int classes_scores_start_pos = hasConfidenceOutput()? 5 : 4;
+    float *classes_scores = &detection[classes_scores_start_pos];
+    int col = static_cast<int>(dimentions - classes_scores_start_pos);
 
     cv::Mat scores(1, col, CV_32FC1, classes_scores);
     cv::Point class_id;
@@ -160,7 +160,7 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
     cv::minMaxLoc(scores, nullptr, &max_class_score, nullptr, &class_id);
 
     if (max_class_score > confidence_thresh) {
-        confidences.emplace_back(confidence);
+        confidences.emplace_back(max_class_score);
         class_ids.emplace_back(class_id.x);
 
         float x = detection[0];
@@ -177,12 +177,12 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   std::vector<int> nms_result;
   cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
   for (int idx: nms_result) {
-      double rx = (double) input_image.cols / (resize_img.resized_image.cols - resize_img.dw);
-      double ry = (double) input_image.rows / (resize_img.resized_image.rows - resize_img.dh);
-      double vx = rx * boxes[idx].x;
-      double vy = ry * boxes[idx].y;
-      double vw = rx * boxes[idx].width;
-      double vh = ry * boxes[idx].height;
+      double rx = getFrameResizeRatioWidth();
+      double ry = getFrameResizeRatioHeight();
+      int vx = int(rx * boxes[idx].x);
+      double vy = int(ry * boxes[idx].y);
+      double vw = int(rx * boxes[idx].width);
+      double vh = int(ry * boxes[idx].height);
       cv::Rect rec(vx, vy, vw, vh);
       Result result(rec);
       result.setConfidence(confidences[idx]);
@@ -193,32 +193,4 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(
   }
 
   return true;
-}
-
-Models::Resize_t Models::ObjectDetectionYolov5Model::pre_process_ov(const cv::Mat &input_image) {
-    const float INPUT_WIDTH = 640.f;
-    const float INPUT_HEIGHT = 640.f;
-    auto width = (float) input_image.cols;
-    auto height = (float) input_image.rows;
-    auto r = float(INPUT_WIDTH / std::max(width, height));
-    int new_unpadW = int(round(width * r));
-    int new_unpadH = int(round(height * r));
-    Resize_t resize_img{};
-
-    cv::resize(input_image, resize_img.resized_image, {new_unpadW, new_unpadH},
-               0, 0, cv::INTER_AREA);
-
-    resize_img.dw = (int) INPUT_WIDTH - new_unpadW;
-    resize_img.dh = (int) INPUT_HEIGHT - new_unpadH;
-    cv::Scalar color = cv::Scalar(100, 100, 100);
-    cv::copyMakeBorder(resize_img.resized_image,
-                       resize_img.resized_image,
-                       0,
-                       resize_img.dh,
-                       0,
-                       resize_img.dw,
-                       cv::BORDER_CONSTANT,
-                       color);
-
-    return resize_img;
 }
