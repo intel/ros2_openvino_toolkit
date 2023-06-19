@@ -13,8 +13,9 @@ def main():
                  Test_Cases('test_4_pipeline_segmentation_ci'),
                  Test_Cases('test_5_pipeline_vehicle_detection_ci'),
                  Test_Cases('test_6_pipeline_person_attributes_ci'),
-                 Test_Cases('test_7_pipeline_segmentation_image_ci')]
-                 #Test_Cases('test_8_pipeline_object_yolo_ci')]
+                 Test_Cases('test_7_pipeline_segmentation_image_ci'),
+                 Test_Cases('test_8_pipeline_object_yolov5_ci'),
+                 Test_Cases('test_9_pipeline_object_yolov8_ci')]
     suite.addTests(all_cases)
 
     with (open('./result.html', 'wb')) as fp:

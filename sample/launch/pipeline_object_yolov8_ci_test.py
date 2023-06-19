@@ -30,7 +30,7 @@ def generate_launch_description():
                                 'rviz/default.rviz')
     return LaunchDescription([
     	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
-                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_object_yolo_ci.yaml')),
+                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_object_yolov8_ci.yaml')),
         # Openvino detection
         launch_ros.actions.Node(
             package='openvino_node',

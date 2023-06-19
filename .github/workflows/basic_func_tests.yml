@@ -46,5 +46,4 @@ jobs:
             cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace/ros2_openvino_toolkit_test
             ls ../workspace/ros2_openvino_toolkit_test/Dockerfile
             cd ../workspace/ros2_openvino_toolkit_test && ./docker_run.sh
-            
 
