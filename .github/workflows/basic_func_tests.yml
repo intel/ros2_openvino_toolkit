@@ -29,6 +29,9 @@ jobs:
       - name: ros2_openvino_toolkit_test
         run: |
             pwd
+            sudo docker rmi $(docker image ls -aq) || true
+            sudo swapoff /swapfile || true
+            sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc || true
             mkdir -p ../workspace_ci
             cp -r ${GITHUB_WORKSPACE}/.ci_local_test/ros2_openvino_toolkit_test ../workspace_ci
             \cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace_ci/ros2_openvino_toolkit_test/Dockerfile
