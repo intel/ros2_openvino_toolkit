@@ -16,6 +16,7 @@ def main():
                  Test_Cases('test_7_pipeline_segmentation_image_ci'),
                  Test_Cases('test_8_pipeline_object_yolov5_ci'),
                  Test_Cases('test_9_pipeline_object_yolov8_ci')]
+                 #Test_Cases('test_10_pipeline_segmentation_instance_ci')]
     suite.addTests(all_cases)
 
     with (open('./result.html', 'wb')) as fp:

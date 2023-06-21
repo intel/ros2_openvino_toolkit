@@ -12,10 +12,13 @@ source openvino_env/bin/activate
 #Export a YOLOv8n model to a different format like ONNX, CoreML, etc.
 # export official model
 yolo export model=yolov8n.pt format=openvino
+yolo export model=yolov8n-seg.pt format=openvino
 
 
 # Move to the Recommended Model Path
 mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n-seg
 
 cp yolov8n_openvino_model/* /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+cp yolov8n-seg_openvino_model/* /opt/openvino_toolkit/models/convert/public/FP32/yolov8n-seg
 
