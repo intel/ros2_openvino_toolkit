@@ -15,22 +15,35 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # Removed the old artifacts
+  remove-old-artifacts:
+    runs-on: ubuntu-20.04
+    timeout-minutes: 10
+    steps:
+    - name: Remove old artifacts
+      uses: c-hive/gha-remove-artifacts@v1
+      with:
+        age: '15 days'
   # This workflow contains a single job called "build"
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-
       # Runs a set of commands using the runners shell
       - name: ros2_openvino_toolkit_test
         run: |
-            pwd
-            mkdir -p ../workspace_ci
-            cp -r ${GITHUB_WORKSPACE}/.ci_local_test/ros2_openvino_toolkit_test ../workspace_ci
-            \cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace_ci/ros2_openvino_toolkit_test/Dockerfile
-            cp -r ${GITHUB_WORKSPACE} ../workspace_ci/ros2_openvino_toolkit_test
-            cd ../workspace_ci/ros2_openvino_toolkit_test && ./docker_run.sh
+            df -h
+            sudo docker rmi $(docker image ls -aq) || true
+            sudo swapoff /swapfile || true
+            sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc  || true
+            mkdir -p ../workspace
+            cp -r ${GITHUB_WORKSPACE}/.ci_local_test/ros2_openvino_toolkit_test ../workspace
+            cp -r ${GITHUB_WORKSPACE}  ../workspace/ros2_openvino_toolkit_test
+            ls ${GITHUB_WORKSPACE}/docker/Dockerfile
+            cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace/ros2_openvino_toolkit_test
+            ls ../workspace/ros2_openvino_toolkit_test/Dockerfile
+            cd ../workspace/ros2_openvino_toolkit_test && ./docker_run.sh
+

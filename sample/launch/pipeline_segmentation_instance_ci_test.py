@@ -25,27 +25,31 @@ import launch
 
 def generate_launch_description():
     #default_yaml = os.path.join(get_package_share_directory('openvino_node'), 'param',
-                                #'pipeline_object_yolo.yaml')
+                                #'pipeline_segmentation.yaml')
     default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
     	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
-                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_object_yolo_ci.yaml')),
+                                             os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_segmentation_instance_yolov8_seg_ci.yaml')),
+        # Realsense
+        # NOTE: Split realsense_node launching from OpenVINO package, which
+		# will be launched by RDK launching file or manually.
+
         # Openvino detection
         launch_ros.actions.Node(
             package='openvino_node',
             executable='pipeline_with_params',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
-                ('/openvino_toolkit/object/detected_objects',
-                 '/ros2_openvino_toolkit/detected_objects'),
-                ('/openvino_toolkit/object/images',
-                 '/ros2_openvino_toolkit/image_rviz')],
+                ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
+                ('/openvino_toolkit/segmentation/segmented_obejcts',
+                 '/ros2_openvino_toolkit/segmented_obejcts'),
+                ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
         #launch_ros.actions.Node(
-            #package='rviz2',
-            #executable='rviz2', output='screen',
-            #arguments=['--display-config', default_rviz]),
+        #    package='rviz2',
+        #    executable='rviz2', output='screen',
+        #    arguments=['--display-config', default_rviz]),
     ])
