@@ -193,16 +193,24 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::fetchResults(
       float y1 = std::min(std::max(0.0f, box_info[4] * iH), static_cast<float>(iH)) * ry;
       float x2 = std::min(std::max(0.0f, box_info[5] * iW), static_cast<float>(iW)) * rx;
       float y2 = std::min(std::max(0.0f, box_info[6] * iH), static_cast<float>(iH)) * ry;
+      auto fSize = getFrameSize();
+      if ((int)x2 >= fSize.width){
+        x2 = fSize.width-2;
+      }
+      if ((int)y2 >= fSize.height){
+        x2 = fSize.height-2;
+      }
       int box_width = static_cast<int>(x2 - x1);
       int box_height = static_cast<int>(y2 - y1);
       slog::debug << "Box[" << box_width << "x" << box_height << "]" << slog::endl;
       if (box_width <= 0 || box_height <=0) break;
       int class_id = static_cast<int>(box_info[1] + 1e-6f);
       float * mask_arr = mask_data + box_stride * box + H * W * (class_id - 1);
-      slog::info << "Detected class " << class_id << " with probability " << prob << " from batch " << batch
-                          << ": [" << x1 << ", " << y1 << "], [" << x2 << ", " << y2 << "]" << slog::endl;
       cv::Mat mask_mat(H, W, CV_32FC1, mask_arr);
-      cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height);
+      cv::Rect roi = cv::Rect(static_cast<int>(x1), static_cast<int>(y1), box_width, box_height)
+                     /*& cv::Rect({0, 0}, getFrameSize()-cv::Size{2, 2})*/;
+      slog::info << "Detected class " << class_id << " with probability " << prob << " from batch " << batch
+                          << ": " << roi << slog::endl;
       cv::Mat resized_mask_mat(box_height, box_width, CV_32FC1);
       cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
       Result result(roi);
