@@ -40,6 +40,7 @@ namespace Input
 class StandardCamera : public BaseInputDevice
 {
 public:
+  StandardCamera(const std::string & camera="");
   /**
    * @brief Initialize the input device,
    * for cameras, it will turn the camera on and get ready to read frames,
@@ -62,6 +63,7 @@ private:
   int getCameraId();
   cv::VideoCapture cap;
   int camera_id_ = -1;
+  std::string device_path_;
 };
 }  // namespace Input
 #endif  // OPENVINO_WRAPPER_LIB__INPUTS__STANDARD_CAMERA_HPP_

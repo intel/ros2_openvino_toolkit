@@ -180,6 +180,7 @@ void ParamManager::print() const
       slog::info << i.c_str() << ", ";
     }
     slog::info << slog::endl;
+    slog::info << "\tInput_Meta: " << pipeline.input_meta << slog::endl;
 
     slog::info << "\tOutputs: ";
     for (auto & i : pipeline.outputs) {
