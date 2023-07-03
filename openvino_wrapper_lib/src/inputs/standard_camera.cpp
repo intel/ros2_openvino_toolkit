@@ -18,6 +18,11 @@
  */
 #include "openvino_wrapper_lib/inputs/standard_camera.hpp"
 
+Input::StandardCamera::StandardCamera(const std::string & camera)
+: device_path_(camera)
+{
+}
+
 bool Input::StandardCamera::initialize()
 {
   return initialize(640, 480);
@@ -25,14 +30,23 @@ bool Input::StandardCamera::initialize()
 
 bool Input::StandardCamera::initialize(size_t width, size_t height)
 {
-  auto id = getCameraId();
-  setInitStatus(cap.open(id));
-  cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
-  cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
-  setWidth(width);
-  setHeight(height);
+  bool init = false;
+  if(!device_path_.empty()){
+    init = cap.open(device_path_);
+  }
+  if (init == false){
+    auto id = getCameraId();
+    init = cap.open(id);
+  }
 
-  return isInit();
+  if(init){
+    cap.set(cv::CAP_PROP_FRAME_WIDTH, width);
+    cap.set(cv::CAP_PROP_FRAME_HEIGHT, height);
+    setWidth(width);
+    setHeight(height);
+    setInitStatus(true);
+  }
+  return init;
 }
 
 bool Input::StandardCamera::read(cv::Mat * frame)
