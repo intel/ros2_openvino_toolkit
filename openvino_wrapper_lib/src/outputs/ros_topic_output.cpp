@@ -348,7 +348,7 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Hea
 
 void Outputs::RosTopicOutput::handleOutput()
 {
-  auto header = getPipeline()->getInputDevice()->getLockedHeader();
+  auto header = getPipeline()->getInputDevice()->getHeader();
   if (vehicle_attribs_topic_ != nullptr) {
     vehicle_attribs_topic_->header = header;
     pub_vehicle_attribs_->publish(*vehicle_attribs_topic_);
