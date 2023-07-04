@@ -98,6 +98,12 @@ public:
  */
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &) override;
   /**
+   * @brief Generate image window output content according to
+   * the object segmentation instance result.
+   * @param[in] An obejct segmentation result objetc.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &) override;
+  /**
    * @brief Generate rviz output content according to
    * the emotion detection result.
    * @param[in] A emotion detection result objetc.
