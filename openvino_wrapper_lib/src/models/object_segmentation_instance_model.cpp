@@ -255,9 +255,18 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
 
       cv::Rect vrec(vx, vy, vw, vh);
       slog::debug << "Detection Rectangle in Input Tensor Size: " << vrec << slog::endl;
-      const int det_bb_w = vw*rx;
-      const int det_bb_h = vh*ry;
-      cv::Rect det_bb(vx*rx, vy*ry, det_bb_w, det_bb_h);
+      const int det_bb_x = vx*rx;
+      const int det_bb_y = vy*ry;
+      const auto frame_size = getFrameSize();
+      int det_bb_w = vw*rx;
+      int det_bb_h = vh*ry;
+      if (det_bb_w+det_bb_x >= frame_size.width){
+        det_bb_w = std::max(0, frame_size.width - det_bb_x - 2);
+      }
+      if (det_bb_h+det_bb_y >= frame_size.height){
+        det_bb_h = std::max(0, frame_size.height - det_bb_y -2);
+      }
+      cv::Rect det_bb(det_bb_x, det_bb_y, det_bb_w, det_bb_h);
       slog::debug << "Detection Rectangle in Input Image Size: " << det_bb << slog::endl;
       Result result(det_bb);
       result.setConfidence(confidences[idx]);
