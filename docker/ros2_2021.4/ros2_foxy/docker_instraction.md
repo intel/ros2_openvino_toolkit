@@ -4,7 +4,7 @@
 Below steps have been tested on **Ubuntu 20.04**.
 
 ## 1. Environment Setup
-* System with Ubuntu20.04 or 22.0 installed  
+* System with Ubuntu20.04 or 22.04444 installed  
 * Docker installed ([guide](https://docs.docker.com/engine/install/ubuntu/))
 * Realsense Camera inserted
 * Dockerfile(docker/ros2_2021.4/ros2_foxy/Dockerfile)
