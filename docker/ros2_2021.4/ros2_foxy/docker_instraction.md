@@ -6,40 +6,66 @@ Below steps have been tested on **Ubuntu 20.04**.
 ## 1. Environment Setup
 * Install docker ([guide](https://docs.docker.com/engine/install/ubuntu/))
 
-## 2. Download and load docker image
-* Download docker image
+## 2. add proxy
 ```
- # ros2_foxy_openvino_202104_v1.tar for demo
- cd ~/Downloads/
- weget https://github.com/intel/ros2_openvino_toolkit/tree/master/DockerImages/ros2_foxy_openvino_202104_v1.tar
+a. sudo mkdir -p /etc/systemd/system/docker.service.d/
+		 
+b. sudo vim /etc/systemd/system/docker.service.d/proxy.conf
+		 
+cat /etc/systemd/system/docker.service.d/proxy.conf
+[Service]
+Environment="HTTPS_PROXY=http://child-prc.intel.com:913"
+		 
+c. sudo vim /etc/systemd/system/docker.service.d/http-proxy.conf
+root@GNRD:/home/media/GNRD# cat /etc/systemd/system/docker.service.d/http-proxy.conf
+[Service]
+Environment="HTTP_PROXY=http://child-prc.intel.com:913" "HTTPS_PROXY=http://child-prc.intel.com:913"
+		 
+sudo systemctl daemon-reload
+sudo systemctl restart docker
 ```
-* Load docker image
+## 3. Build image
 ```
-cd ~/Downloads/
-docker load -i ros2_foxy_openvino_202104_v1.tar
-docker Images
-/// (show ros2_foxy_openvino_202104_v1 images in list)
+sudo docker build --build-arg ROS_PRE_INSTALLED_PKG=foxy-desktop --build-arg VERSION=foxy --build-arg "HTTP_PROXY=http://proxy-prc.intel.com:913" -t ros2_foxy_openvino_20230 .
 ```
 
-## 3. Running the Demos
+## 4. Running the Demos
 * Install dependency
 ```
-  sudo apt install x11-xserver-utils
   xhost +
 ```
 * run docker image
 ```
-  docker images
-  docker run -it -e DISPLAY -e QT_X11_NO_MITSHM=1 -v /tmp/.X11-unix:/tmp/.X11-unix -v $HOME/.Xauthority:/root/.Xauthority --privileged --network=host --device=/dev/video0 ros2_foxy_openvino_202104:v1 /bin/bash
-```
+  sudo docker images
+  sudo docker run -itd --network=host --privileged -p 40080:80  -p 48080:8080 -p 8888:8888 -p 9000:9000 -p 9090:9090  --device /dev/dri -v /dev/:/dev/ -v /tmp/.X11-unix:/tmp/.X11-unix -e DISPLAY=unix:0 -e AMR_TYPE=symg --name ros2_foxy_ov_230 ros2_foxy_openvino_20230 bash
+  sudo docker exec -it ros2_foxy_ov_230 bash
+  ```
 * In Docker Container
 
 * Preparation
 ```
-source /opt/intel/openvino_2021/bin/setupvars.sh
-sudo mkdir -p /opt/openvino_toolkit
+source /opt/ros/foxy/setup.bash
+source install/setup.bash
+mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
 sudo ln -s /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader /opt/openvino_toolkit/models
 sudo chmod 777 -R /opt/openvino_toolkit/models
+```
+* - On Host Machine
+```
+#YOLOV8 Model convert:
+mkdir -p yolov8 && cd yolov8
+pip install ultralytics
+apt install python3.10-venv
+python3 -m venv openvino_env
+source openvino_env/bin/activate
+python -m pip install --upgrade pip
+pip install openvino-dev
+pip install openvino-dev[extras]
+pip install openvino-dev[tensorflow2,onnx]
+#yolo export model=yolov8n.pt format=openvino
+yolo export model=yolov8n.pt format=onnx opset=10
+mo --input_model yolov8n.onnx --use_legacy_frontend
+sudo docker cp yolov8n/ ros2_foxy_ov_230:/opt/openvino_toolkit/models/convert/public/FP32/
 ```
 
 * See all available models
@@ -95,6 +121,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   sudo python3 downloader/downloader.py --name yolo-v2-tf
   sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=yolo-v2-tf --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
   ```
+
 
 * Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
