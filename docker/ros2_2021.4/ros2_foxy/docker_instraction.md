@@ -50,23 +50,6 @@ mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
 sudo ln -s /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader /opt/openvino_toolkit/models
 sudo chmod 777 -R /opt/openvino_toolkit/models
 ```
-* - On Host Machine
-```
-#YOLOV8 Model convert:
-mkdir -p yolov8 && cd yolov8
-pip install ultralytics
-apt install python3.10-venv
-python3 -m venv openvino_env
-source openvino_env/bin/activate
-python -m pip install --upgrade pip
-pip install openvino-dev
-pip install openvino-dev[extras]
-pip install openvino-dev[tensorflow2,onnx]
-#yolo export model=yolov8n.pt format=openvino
-yolo export model=yolov8n.pt format=onnx opset=10
-mo --input_model yolov8n.onnx --use_legacy_frontend
-sudo docker cp yolov8n/ ros2_foxy_ov_230:/opt/openvino_toolkit/models/convert/public/FP32/
-```
 
 * See all available models
 ```
@@ -121,7 +104,24 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   sudo python3 downloader/downloader.py --name yolo-v2-tf
   sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=yolo-v2-tf --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
   ```
+  * YOLOV8
+  ```
+  mkdir -p yolov8 && cd yolov8
+  pip install ultralytics
+  apt install python3.10-venv
+  python3 -m venv openvino_env
+  source openvino_env/bin/activate
+  python -m pip install --upgrade pip
+  pip install openvino-dev	
+  pip install openvino-dev[extras]
+  pip install openvino-dev[tensorflow2,onnx]
+  #yolo export model=yolov8n.pt format=openvino
+  yolo export model=yolov8n.pt format=onnx opset=10
+  mo --input_model yolov8n.onnx --use_legacy_frontend
+  cp yolov8* /opt/openvino_toolkit/models/convert/public/FP32/yolov8n/
 
+
+  ```
 
 * Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
