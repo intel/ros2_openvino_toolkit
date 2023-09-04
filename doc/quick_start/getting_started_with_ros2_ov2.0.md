@@ -11,8 +11,6 @@ For ROS2 foxy and galactic and humble on ubuntu 20.04/ubuntu22.04:
 
   * Install Intel® OpenVINO™ Toolkit Version: 2023.0.</br>
   Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2023.0/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)
-    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool.</br>
-    Refer to: [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
 
   * Install Intel® RealSense™ SDK.</br>
   Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
