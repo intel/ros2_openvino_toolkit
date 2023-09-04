@@ -79,7 +79,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
 ```
 
 * copy label files (execute once)
-* Before launch, copy label files to the same model path, make sure the model path and label path match the ros_openvino_toolkit/vino_launch/param/xxxx.yaml.
+* Before launch, copy label files to the same model path, make sure the model path and label path match the ros_openvino_toolkit/vino_launch/param/xxxx.yaml.Please refer to the quick start document for yaml configuration guidance for detailed configuration guidance.
 ```
  sudo cp /root/ros2_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP32/
  sudo cp /root/ros2_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/face_detection/output/intel/face-detection-adas-0001/FP16/
