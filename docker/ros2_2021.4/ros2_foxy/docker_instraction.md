@@ -5,6 +5,9 @@ Below steps have been tested on **Ubuntu 20.04**.
 
 ## 1. Environment Setup
 * Install docker ([guide](https://docs.docker.com/engine/install/ubuntu/))
+* Realsense Camera inserted
+* Dockerfile
+* Converted models
 
 ## 2. add proxy
 ```
