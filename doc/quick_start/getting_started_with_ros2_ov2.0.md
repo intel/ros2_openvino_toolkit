@@ -5,27 +5,18 @@ Below steps have been tested on **Ubuntu 20.04** and **Ubuntu 22.04**.
 Supported ROS2 versions include foxy,galactic and humble.
 
 ## 1. Environment Setup
-For ROS2 foxy and galactic on ubuntu 20.04:
+For ROS2 foxy and galactic and humble on ubuntu 20.04/ubuntu22.04:
   * Install ROS2.</br>
-  Refer to: [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
+  Refer to: [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html) & [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
 
-  * Install Intel® OpenVINO™ Toolkit Version: 2022.3.</br>
-  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)
+  * Install Intel® OpenVINO™ Toolkit Version: 2023.0.</br>
+  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2023.0/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)
     * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool.</br>
     Refer to: [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
 
   * Install Intel® RealSense™ SDK.</br>
   Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
 
-For ROS2 humble on ubuntu 22.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
-
-  * Install Intel® OpenVINO™ Toolkit Latest Version by Source.</br>
-  Refer to: [OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
-
-  * Install Intel®  RealSense™ SDK by Source.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 
 ## 2. Building and Installation
 * Install ROS2_OpenVINO_Toolkit packages
@@ -50,7 +41,7 @@ source ./install/local_setup.bash
 ```
 
 ## 3. Running the Demo
-### Install OpenVINO 2022.3 by PIP
+### Download Models by PIP
 OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.</br>
 Refer to: [OMZtool_guide](https://pypi.org/project/openvino-dev/)
 
@@ -70,7 +61,7 @@ omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
 omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 ```
-### Install OpenVINO 2022.3 by source code
+### Download Models by source code
 * See all available models
 ```
 cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
@@ -99,6 +90,24 @@ sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/fr
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
+* Yolov8_converted 
+```
+mkdir -p yolov8 && cd yolov8
+pip install ultralytics
+apt install python3.10-venv
+python3 -m venv openvino_env
+source openvino_env/bin/activate
+python -m pip install --upgrade pip
+pip install openvino-dev[extras]
+pip install openvino-dev[tensorflow2,onnx]
+#yolo export model=yolov8n.pt format=openvino
+yolo export model=yolov8n.pt format=onnx opset=10
+mo --input_model yolov8n.onnx --use_legacy_frontend
+cd yolov8n_openvino_model
+mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+sudo cp yolov8* /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+```
+
 
 * Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
   * run face detection sample code input from StandardCamera.
