@@ -46,6 +46,8 @@ Pipelines:
 
 Common:
 ```
+## [pipeline_object_yolo.yaml](../../sample/param/pipeline_object_yolo.yaml)
+
 ```
 Pipelines:
 - name: object
@@ -78,6 +80,7 @@ OpenvinoCommon:
 
 
 ```
+## [pipeline_segmentation_instance.yaml](../../sample/param/pipeline_segmentation_instance.yaml)
 
 ```
 Pipelines:
