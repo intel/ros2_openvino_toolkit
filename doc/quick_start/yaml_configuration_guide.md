@@ -46,6 +46,73 @@ Pipelines:
 
 Common:
 ```
+```
+Pipelines:
+- name: object
+  inputs: [RealSenseCamera]
+  #input_path: to/be/set/image_path
+  infers:
+    - name: ObjectDetection
+      #model: /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/yolov5n.xml
+      #model: /home/lewis/develop/openvino/models/models/yolo/yolov7/yolov7_int8.xml
+      #model: /home/lewis/develop/openvino/models/models/yolo/yolov8/yolov8n_openvino_int8_model/yolov8n.xml
+      model: /opt/openvino_toolkit/models/convert/public/FP32/yolov8n/yolov8n.xml
+      model_type: yolov8 #yolov8
+      engine: CPU #MYRIAD
+      label: to/be/set/xxx.labels
+      batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [ImageWindow, RosTopic, RViz]
+  connects:
+    - left: RealSenseCamera
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [ImageWindow]
+    - left: ObjectDetection
+      right: [RosTopic]
+    - left: ObjectDetection
+      right: [RViz]
+
+OpenvinoCommon:
+
+
+```
+
+```
+Pipelines:
+- name: segmentation
+  inputs: [RealSenseCamera]
+  infers:
+    - name: ObjectSegmentationInstance
+      # for Yolov8 Seg models -----------------
+      model: /opt/openvino_toolkit/models/convert/public/gearbolt-model/best_openvino_model/best.xml
+      model_type: yolo
+      label: /opt/openvino_toolkit/models/convert/public/gearbolt-model/configs/gearbolt.labels
+      # for maskrcnn inception resnet -----------------
+      #model: /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_resnet_v2_atrous_coco/FP32/mask_rcnn_inception_resnet_v2_atrous_coco.xml
+      #model_type: maskrcnn
+      #label: /opt/openvino_toolkit/labels/object_segmentation/frozen_inference_graph.labels #for maskrcnn
+      #----------------------
+      engine: CPU #"HETERO:CPU,GPU," #"HETERO:CPU,GPU,MYRIAD"
+      batch: 1
+      confidence_threshold: 0.7
+  outputs: [ImageWindow, RosTopic, RViz]
+  connects:
+    - left: RealSenseCamera
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [ImageWindow]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic]
+    - left: ObjectSegmentationInstance
+      right: [RViz]
+
+Common:
+
+
+```
+
 ## Interface Description
 
 ### Specify pipeline name
