@@ -20,12 +20,13 @@
 #include "openvino_wrapper_lib/models/vehicle_attribs_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
-Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
+Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(const std::string& label_loc,
+                                                                   const std::string& model_loc, int max_batch_size)
+  : BaseModel(label_loc, model_loc, max_batch_size)
+{
+}
 
-bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& model)
+bool Models::VehicleAttribsDetectionModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   auto input_info_map = model->inputs();
@@ -41,14 +42,12 @@ bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  const ov::Layout tensor_layout{"NCHW"};
-  input_info.tensor().
-    set_element_type(ov::element::u8).
-    set_layout(tensor_layout);
+  const ov::Layout tensor_layout{ "NCHW" };
+  input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
   model = ppp.build();
 
   addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
- 
+
   // set input and output layer name
   addOutputInfo("color_output_", output_info_map[1].get_any_name());
   addOutputInfo("type_output_", output_info_map[0].get_any_name());
@@ -61,4 +60,3 @@ const std::string Models::VehicleAttribsDetectionModel::getModelCategory() const
 {
   return "Vehicle Attributes Detection";
 }
-

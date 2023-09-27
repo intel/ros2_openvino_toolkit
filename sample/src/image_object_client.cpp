@@ -21,14 +21,15 @@
 
 #include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("service_example_for_object");
   if (argc != 2) {
-    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run openvino_node image_object_client"
-      "<image_path>");
+    RCLCPP_INFO(node->get_logger(),
+                "Usage: ros2 run openvino_node image_object_client"
+                "<image_path>");
     return -1;
   }
 
@@ -47,9 +48,7 @@ int main(int argc, char ** argv)
   }
 
   auto result = client->async_send_request(request);
-  if (rclcpp::spin_until_future_complete(node, result) ==
-    rclcpp::FutureReturnCode::SUCCESS)
-  {
+  if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS) {
     auto srv = result.get();
 
     cv::Mat image = cv::imread(image_path);
@@ -58,16 +57,13 @@ int main(int argc, char ** argv)
 
     for (unsigned int i = 0; i < srv->objects.objects_vector.size(); i++) {
       std::stringstream ss;
-      ss << srv->objects.objects_vector[i].object.object_name << ": " <<
-        srv->objects.objects_vector[i].object.probability * 100 << "%";
-      RCLCPP_INFO(node->get_logger(), "%d: object: %s", i,
-        srv->objects.objects_vector[i].object.object_name.c_str());
-      RCLCPP_INFO(node->get_logger(), "prob: %f",
-        srv->objects.objects_vector[i].object.probability);
-      RCLCPP_INFO(
-        node->get_logger(), "location: (%d, %d, %d, %d)",
-        srv->objects.objects_vector[i].roi.x_offset, srv->objects.objects_vector[i].roi.y_offset,
-        srv->objects.objects_vector[i].roi.width, srv->objects.objects_vector[i].roi.height);
+      ss << srv->objects.objects_vector[i].object.object_name << ": "
+         << srv->objects.objects_vector[i].object.probability * 100 << "%";
+      RCLCPP_INFO(node->get_logger(), "%d: object: %s", i, srv->objects.objects_vector[i].object.object_name.c_str());
+      RCLCPP_INFO(node->get_logger(), "prob: %f", srv->objects.objects_vector[i].object.probability);
+      RCLCPP_INFO(node->get_logger(), "location: (%d, %d, %d, %d)", srv->objects.objects_vector[i].roi.x_offset,
+                  srv->objects.objects_vector[i].roi.y_offset, srv->objects.objects_vector[i].roi.width,
+                  srv->objects.objects_vector[i].roi.height);
 
       int xmin = srv->objects.objects_vector[i].roi.x_offset;
       int ymin = srv->objects.objects_vector[i].roi.y_offset;
@@ -80,10 +76,8 @@ int main(int argc, char ** argv)
       cv::Point left_top = cv::Point(xmin, ymin);
       cv::Point right_bottom = cv::Point(xmax, ymax);
       cv::rectangle(image, left_top, right_bottom, cv::Scalar(0, 255, 0), 1, 8, 0);
-      cv::rectangle(image, cv::Point(xmin, ymin), cv::Point(xmax, ymin + 20), cv::Scalar(0, 255, 0),
-        -1);
-      cv::putText(image, ss.str(), cv::Point(xmin + 5, ymin + 20), cv::FONT_HERSHEY_PLAIN, 1,
-        cv::Scalar(0, 0, 255), 1);
+      cv::rectangle(image, cv::Point(xmin, ymin), cv::Point(xmax, ymin + 20), cv::Scalar(0, 255, 0), -1);
+      cv::putText(image, ss.str(), cv::Point(xmin + 5, ymin + 20), cv::FONT_HERSHEY_PLAIN, 1, cv::Scalar(0, 0, 255), 1);
     }
     cv::imshow("image_detection", image);
     cv::waitKey(0);

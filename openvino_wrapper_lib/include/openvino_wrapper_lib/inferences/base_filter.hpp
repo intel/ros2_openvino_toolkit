@@ -52,34 +52,34 @@ public:
    * @param[in] Filter conditions.
    * @return true if some of the conditions are valid, otherwise false.
    */
-  bool isValidFilterConditions(const std::string &);
+  bool isValidFilterConditions(const std::string&);
 
   /**
    * @brief Accept the filter conditions for filtering.
    * @param[in] Filter conditions.
    */
-  void acceptFilterConditions(const std::string &);
+  void acceptFilterConditions(const std::string&);
 
   /**
    * @brief Decide whether the input string is a relational operator or not.
    * @param[in] A string to be decided.
    * @return True if the input string is a relational operator, false if not.
    */
-  bool isRelationOperator(const std::string &);
+  bool isRelationOperator(const std::string&);
 
   /**
    * @brief Decide whether the input string is a logic operator or not.
    * @param[in] A string to be decided.
    * @return True if the input string is a logic operator, false if not.
    */
-  bool isLogicOperator(const std::string &);
+  bool isLogicOperator(const std::string&);
 
   /**
    * @brief Decide whether the an operator has a higher priority than anthor.
    * @param[in] The two operators.
    * @return True if the first operator has higher priority, false if not.
    */
-  bool isPriorTo(const std::string &, const std::string &);
+  bool isPriorTo(const std::string&, const std::string&);
 
   /**
    * @brief Convert the input bool variable to a string type.
@@ -93,75 +93,74 @@ public:
    * @param[in] A string type to be converted.
    * @return A converted bool result.
    */
-  bool strToBool(const std::string &);
+  bool strToBool(const std::string&);
 
   /**
    * @brief Get the filter conditions in the suffix order.
    * @return A vector with suffix-order filter conditions.
    */
-  const std::vector<std::string> & getSuffixConditions() const;
+  const std::vector<std::string>& getSuffixConditions() const;
 
   /**
    * @brief Do logic operation with the given bool values and the operator.
    * @param[in] A bool string, an logic operator, the other bool string.
    * @return The logic operation result.
    */
-  bool logicOperation(const std::string &, const std::string &, const std::string &);
+  bool logicOperation(const std::string&, const std::string&, const std::string&);
 
   /**
    * @brief Compare two strings with a given relational operator.
    * @param[in] A string, an relational operator, the other string.
    * @return True if valid, false if not.
    */
-  static bool stringCompare(const std::string &, const std::string &, const std::string &);
+  static bool stringCompare(const std::string&, const std::string&, const std::string&);
 
   /**
    * @brief Compare two floats with a given relational operator.
    * @param[in] A float number, an relational operator, the other float number.
    * @return True if valid, false if not.
    */
-  static bool floatCompare(float, const std::string &, float);
+  static bool floatCompare(float, const std::string&, float);
 
   /**
    * @brief Convert a string into a float number.
    * @param[in] A string to be converted.
    * @return The converted float number, 0 if string is invalid.
    */
-  static float stringToFloat(const std::string &);
+  static float stringToFloat(const std::string&);
 
-  /**
-   * @brief A macro to decide whether a given result satisfies the filter condition.
-   * @param[in] A key to function mapping, a given result.
-   * @return True if valid, false if not.
-   */
-  #define ISVALIDRESULT(key_to_function, result) \
-  { \
-    std::vector<std::string> suffix_conditons = getSuffixConditions(); \
-    std::stack<std::string> result_stack; \
-    for (auto elem : suffix_conditons) { \
-      if (!isRelationOperator(elem) && !isLogicOperator(elem)) { \
-        result_stack.push(elem); \
-      } else { \
-        try { \
-          std::string str1 = result_stack.top(); \
-          result_stack.pop(); \
-          std::string str2 = result_stack.top(); \
-          result_stack.pop(); \
-          if (key_to_function.count(str2)) { \
-            result_stack.push(boolToStr(key_to_function[str2](result, elem, str1))); \
-          } else { \
-            result_stack.push(boolToStr(logicOperation(str1, elem, str2))); \
-          } \
-        } \
-        catch (...) { \
-          slog::err << "Invalid filter conditions format!" << slog::endl; \
-        } \
-      } \
-    } \
-    if (result_stack.empty()) { \
-      return true; \
-    } \
-    return strToBool(result_stack.top()); \
+/**
+ * @brief A macro to decide whether a given result satisfies the filter condition.
+ * @param[in] A key to function mapping, a given result.
+ * @return True if valid, false if not.
+ */
+#define ISVALIDRESULT(key_to_function, result)                                                                         \
+  {                                                                                                                    \
+    std::vector<std::string> suffix_conditons = getSuffixConditions();                                                 \
+    std::stack<std::string> result_stack;                                                                              \
+    for (auto elem : suffix_conditons) {                                                                               \
+      if (!isRelationOperator(elem) && !isLogicOperator(elem)) {                                                       \
+        result_stack.push(elem);                                                                                       \
+      } else {                                                                                                         \
+        try {                                                                                                          \
+          std::string str1 = result_stack.top();                                                                       \
+          result_stack.pop();                                                                                          \
+          std::string str2 = result_stack.top();                                                                       \
+          result_stack.pop();                                                                                          \
+          if (key_to_function.count(str2)) {                                                                           \
+            result_stack.push(boolToStr(key_to_function[str2](result, elem, str1)));                                   \
+          } else {                                                                                                     \
+            result_stack.push(boolToStr(logicOperation(str1, elem, str2)));                                            \
+          }                                                                                                            \
+        } catch (...) {                                                                                                \
+          slog::err << "Invalid filter conditions format!" << slog::endl;                                              \
+        }                                                                                                              \
+      }                                                                                                                \
+    }                                                                                                                  \
+    if (result_stack.empty()) {                                                                                        \
+      return true;                                                                                                     \
+    }                                                                                                                  \
+    return strToBool(result_stack.top());                                                                              \
   }
 
 private:
@@ -170,25 +169,25 @@ private:
    * @param[in] A string form filter conditions.
    * @return The vector form filter conditions.
    */
-  std::vector<std::string> split(const std::string & filter_conditions);
+  std::vector<std::string> split(const std::string& filter_conditions);
 
   /**
    * @brief Convert the infix expression into suffix expression.
    * @param[in] The infix form filter conditions.
    */
-  void infixToSuffix(std::vector<std::string>&infix_conditions);
+  void infixToSuffix(std::vector<std::string>& infix_conditions);
 
   /**
    * @brief Strip the extra space in a string.
    * @param[in] A string to be striped.
    * @return The striped string.
    */
-  std::string strip(const std::string & str);
+  std::string strip(const std::string& str);
 
   std::string striped_conditions_ = "";
   std::vector<std::string> suffix_conditons_;
-  std::vector<std::string> relation_operators_ = {"==", "!=", "<=", ">=", "<", ">"};
-  std::vector<std::string> logic_operators_ = {"&&", "||"};
+  std::vector<std::string> relation_operators_ = { "==", "!=", "<=", ">=", "<", ">" };
+  std::vector<std::string> logic_operators_ = { "&&", "||" };
 };
 }  // namespace openvino_wrapper_lib
 

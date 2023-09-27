@@ -20,22 +20,20 @@
 #include "openvino_wrapper_lib/models/person_reidentification_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Person Reidentification Network
-Models::PersonReidentificationModel::PersonReidentificationModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
+Models::PersonReidentificationModel::PersonReidentificationModel(const std::string& label_loc,
+                                                                 const std::string& model_loc, int max_batch_size)
+  : BaseModel(label_loc, model_loc, max_batch_size)
+{
+}
 
-bool Models::PersonReidentificationModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& model)
+bool Models::PersonReidentificationModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking Inputs for Model" << getModelName() << slog::endl;
   auto input_info_map = model->inputs();
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_ = input_info_map[0].get_any_name();
-  const ov::Layout input_tensor_layout{"NCHW"};
-  ppp.input(input_).
-    tensor().
-    set_element_type(ov::element::u8).
-    set_layout(input_tensor_layout);
+  const ov::Layout input_tensor_layout{ "NCHW" };
+  ppp.input(input_).tensor().set_element_type(ov::element::u8).set_layout(input_tensor_layout);
 
   // set output property
   auto output_info_map = model->outputs();

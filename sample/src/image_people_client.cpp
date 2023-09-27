@@ -24,14 +24,15 @@
 
 #include "openvino_wrapper_lib/services/frame_processing_server.hpp"
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
 
   auto node = rclcpp::Node::make_shared("service_example_for_face");
   if (argc != 2) {
-    RCLCPP_INFO(node->get_logger(), "Usage: ros2 run openvino_node image_object_client"
-      "<image_path>");
+    RCLCPP_INFO(node->get_logger(),
+                "Usage: ros2 run openvino_node image_object_client"
+                "<image_path>");
     return -1;
   }
 
@@ -51,34 +52,27 @@ int main(int argc, char ** argv)
 
   auto result = client->async_send_request(request);
 
-  if (rclcpp::spin_until_future_complete(node, result) ==
-    rclcpp::FutureReturnCode::SUCCESS)
-  {
+  if (rclcpp::spin_until_future_complete(node, result) == rclcpp::FutureReturnCode::SUCCESS) {
     auto people = result.get();
     if (people->persons.emotions.size() == 0 && people->persons.agegenders.size() == 0 &&
-      people->persons.headposes.size() == 0)
-    {
+        people->persons.headposes.size() == 0) {
       RCLCPP_INFO(node->get_logger(), "Get response, but no any person found.");
       return 0;
     }
     RCLCPP_INFO(node->get_logger(), "Found persons...");
 
     for (unsigned int i = 0; i < people->persons.faces.size(); i++) {
-      RCLCPP_INFO(node->get_logger(), "%d: object: %s", i,
-        people->persons.faces[i].object.object_name.c_str());
-      RCLCPP_INFO(node->get_logger(), "prob: %f",
-        people->persons.faces[i].object.probability);
-      RCLCPP_INFO(
-        node->get_logger(), "location: (%d, %d, %d, %d)",
-        people->persons.faces[i].roi.x_offset, people->persons.faces[i].roi.y_offset,
-        people->persons.faces[i].roi.width, people->persons.faces[i].roi.height);
-      RCLCPP_INFO(node->get_logger(), "Emotions: %s",
-        people->persons.emotions[i].emotion.c_str());
-      RCLCPP_INFO(node->get_logger(), "Age: %f, Gender: %s",
-        people->persons.agegenders[i].age, people->persons.agegenders[i].gender.c_str());
+      RCLCPP_INFO(node->get_logger(), "%d: object: %s", i, people->persons.faces[i].object.object_name.c_str());
+      RCLCPP_INFO(node->get_logger(), "prob: %f", people->persons.faces[i].object.probability);
+      RCLCPP_INFO(node->get_logger(), "location: (%d, %d, %d, %d)", people->persons.faces[i].roi.x_offset,
+                  people->persons.faces[i].roi.y_offset, people->persons.faces[i].roi.width,
+                  people->persons.faces[i].roi.height);
+      RCLCPP_INFO(node->get_logger(), "Emotions: %s", people->persons.emotions[i].emotion.c_str());
+      RCLCPP_INFO(node->get_logger(), "Age: %f, Gender: %s", people->persons.agegenders[i].age,
+                  people->persons.agegenders[i].gender.c_str());
       RCLCPP_INFO(node->get_logger(), "Yaw, Pitch and Roll for head pose is: (%f, %f, %f),",
-        people->persons.headposes[i].yaw, people->persons.headposes[i].pitch,
-        people->persons.headposes[i].roll);
+                  people->persons.headposes[i].yaw, people->persons.headposes[i].pitch,
+                  people->persons.headposes[i].roll);
     }
   } else {
     RCLCPP_WARN(node->get_logger(), "NO response received!!");

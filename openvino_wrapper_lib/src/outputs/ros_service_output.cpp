@@ -23,8 +23,7 @@
 #include "openvino_wrapper_lib/outputs/ros_service_output.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
   if (detected_objects_topic_ != nullptr && detected_objects_topic_->objects_vector.size() > 0) {
     response->objects.objects_vector = detected_objects_topic_->objects_vector;
@@ -33,40 +32,35 @@ void Outputs::RosServiceOutput::setServiceResponse(
   }
 }
 
-void Outputs::RosServiceOutput::setResponseForFace(
-  std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+void Outputs::RosServiceOutput::setResponseForFace(std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {
   if (faces_topic_ != nullptr && faces_topic_->objects_vector.size() > 0) {
     response->objects.objects_vector = faces_topic_->objects_vector;
   }
 }
 
-void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response)
+void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response)
 {
   if (age_gender_topic_ != nullptr) {
     response->age_gender.objects = age_gender_topic_->objects;
   }
 }
 
-void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response)
+void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response)
 {
   if (emotions_topic_ != nullptr) {
     response->emotion.emotions = emotions_topic_->emotions;
   }
 }
 
-void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response)
+void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response)
 {
   if (headpose_topic_ != nullptr) {
     response->headpose.headposes = headpose_topic_->headposes;
   }
 }
 
-void Outputs::RosServiceOutput::setServiceResponse(
-  std::shared_ptr<object_msgs::srv::People::Response> response)
+void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::People::Response> response)
 {
   slog::info << "in People::Response ...";
   if (faces_topic_ != nullptr) {

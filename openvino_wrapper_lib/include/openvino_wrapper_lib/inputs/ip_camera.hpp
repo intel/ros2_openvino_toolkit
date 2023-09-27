@@ -33,7 +33,9 @@ namespace Input
 class IpCamera : public BaseInputDevice
 {
 public:
-  explicit IpCamera(const std::string & ip_uri) : ip_uri_(ip_uri) {}
+  explicit IpCamera(const std::string& ip_uri) : ip_uri_(ip_uri)
+  {
+  }
   /**
    * @brief Initialize the input device,
    * for cameras, it will turn the camera on and get ready to read frames,
@@ -50,7 +52,7 @@ public:
    * @brief Read next frame, and give the value to argument frame.
    * @return Whether the next frame is successfully read.
    */
-  bool read(cv::Mat * frame) override;
+  bool read(cv::Mat* frame) override;
 
 private:
   cv::VideoCapture cap;

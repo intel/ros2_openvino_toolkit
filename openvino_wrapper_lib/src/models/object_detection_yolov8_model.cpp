@@ -14,12 +14,11 @@
 
 #include "openvino_wrapper_lib/models/object_detection_yolov8_model.hpp"
 
-Models::ObjectDetectionYolov8Model::ObjectDetectionYolov8Model(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: ObjectDetectionYolov5Model(label_loc, model_loc, max_batch_size)
+Models::ObjectDetectionYolov8Model::ObjectDetectionYolov8Model(const std::string& label_loc,
+                                                               const std::string& model_loc, int max_batch_size)
+  : ObjectDetectionYolov5Model(label_loc, model_loc, max_batch_size)
 {
-  //setKeepInputShapeRatio(true);
+  // setKeepInputShapeRatio(true);
   setHasConfidenceOutput(false);
-  setExpectedFrameSize({640, 640});
+  setExpectedFrameSize({ 640, 640 });
 }
-

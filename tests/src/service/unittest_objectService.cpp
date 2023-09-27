@@ -39,7 +39,7 @@ TEST(UnitTestObject, testObject)
   auto client = node->create_client<object_msgs::srv::DetectObject>("/openvino_toolkit/service");
 
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
-  
+
   auto request = std::make_shared<object_msgs::srv::DetectObject::Request>();
 
   std::string buffer = generate_file_path("data/images/car_vihecle.png");
@@ -48,9 +48,7 @@ TEST(UnitTestObject, testObject)
 
   auto result = client->async_send_request(request);
 
-  ASSERT_EQ(
-    rclcpp::FutureReturnCode::SUCCESS,
-    rclcpp::spin_until_future_complete(node, result));
+  ASSERT_EQ(rclcpp::FutureReturnCode::SUCCESS, rclcpp::spin_until_future_complete(node, result));
 
   auto srv = result.get();
 
@@ -61,20 +59,15 @@ TEST(UnitTestObject, testObject)
   }
 
   EXPECT_TRUE(srv->objects.objects_vector[0].roi.x_offset > 1080 &&
-    srv->objects.objects_vector[0].roi.x_offset < 1720 &&
-    srv->objects.objects_vector[0].roi.y_offset > 215 &&
-    srv->objects.objects_vector[0].roi.y_offset < 480);
-  EXPECT_TRUE(srv->objects.objects_vector[1].roi.x_offset > 310 &&
-    srv->objects.objects_vector[1].roi.x_offset < 785 &&
-    srv->objects.objects_vector[1].roi.y_offset > 225 &&
-    srv->objects.objects_vector[1].roi.y_offset < 460);
-  EXPECT_TRUE(srv->objects.objects_vector[2].roi.x_offset > 195 &&
-    srv->objects.objects_vector[2].roi.x_offset < 405 &&
-    srv->objects.objects_vector[2].roi.y_offset > 220 &&
-    srv->objects.objects_vector[2].roi.y_offset < 345);
+              srv->objects.objects_vector[0].roi.x_offset < 1720 && srv->objects.objects_vector[0].roi.y_offset > 215 &&
+              srv->objects.objects_vector[0].roi.y_offset < 480);
+  EXPECT_TRUE(srv->objects.objects_vector[1].roi.x_offset > 310 && srv->objects.objects_vector[1].roi.x_offset < 785 &&
+              srv->objects.objects_vector[1].roi.y_offset > 225 && srv->objects.objects_vector[1].roi.y_offset < 460);
+  EXPECT_TRUE(srv->objects.objects_vector[2].roi.x_offset > 195 && srv->objects.objects_vector[2].roi.x_offset < 405 &&
+              srv->objects.objects_vector[2].roi.y_offset > 220 && srv->objects.objects_vector[2].roi.y_offset < 345);
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);

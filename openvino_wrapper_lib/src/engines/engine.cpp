@@ -19,17 +19,14 @@
 #include "openvino_wrapper_lib/engines/engine.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 
-#if(defined(USE_OLD_E_PLUGIN_API))
-Engines::Engine::Engine(
-  InferenceEngine::InferencePlugin plg,
-  const Models::BaseModel::Ptr base_model)
+#if (defined(USE_OLD_E_PLUGIN_API))
+Engines::Engine::Engine(InferenceEngine::InferencePlugin plg, const Models::BaseModel::Ptr base_model)
 {
   request_ = (plg.LoadNetwork(base_model->getModel()->getNetwork(), {})).CreateInferRequestPtr();
 }
 #endif
 
-Engines::Engine::Engine(
-  ov::InferRequest & request)
+Engines::Engine::Engine(ov::InferRequest& request)
 {
   request_ = request;
 }

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 /**
-* \brief A sample for vino_param_manager library. This sample performs
-* getting/setting
-* parameters for vino related functions.
-* \file sample/parameters.cpp
-*/
+ * \brief A sample for vino_param_manager library. This sample performs
+ * getting/setting
+ * parameters for vino related functions.
+ * \file sample/parameters.cpp
+ */
 
 #include <openvino_param_lib/param_manager.hpp>
 #include <openvino_wrapper_lib/slog.hpp>
@@ -31,12 +31,12 @@
 #include <vector>
 #include "utility.hpp"
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   try {
     // ------Parsing and validation of input args---------
     std::string config = getConfigPath(argc, argv);
-    if(config.empty()){
+    if (config.empty()) {
       throw std::runtime_error("Config File is not correctly set.");
       return -1;
     }
@@ -46,7 +46,7 @@ int main(int argc, char * argv[])
 
     slog::info << "print again, should same as above....." << slog::endl;
     Params::ParamManager::getInstance().print();
-  } catch (const std::exception & error) {
+  } catch (const std::exception& error) {
     slog::err << error.what() << slog::endl;
     return -1;
   } catch (...) {

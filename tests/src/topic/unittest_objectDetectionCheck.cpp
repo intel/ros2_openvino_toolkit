@@ -41,21 +41,18 @@
 
 static bool test_pass = false;
 
-template<typename DurationT>
-void wait_for_future(
-  rclcpp::Executor & executor, std::shared_future<bool> & future,
-  const DurationT & timeout)
+template <typename DurationT>
+void wait_for_future(rclcpp::Executor& executor, std::shared_future<bool>& future, const DurationT& timeout)
 {
   using rclcpp::FutureReturnCode;
   rclcpp::FutureReturnCode future_ret;
   auto start_time = std::chrono::steady_clock::now();
   future_ret = executor.spin_until_future_complete(future, timeout);
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-  EXPECT_EQ(FutureReturnCode::SUCCESS, future_ret) <<
-    "the usb camera don't publish data to topic\n" <<
-    "future failed to be set after: " <<
-    std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time).count() <<
-    " milliseconds\n";
+  EXPECT_EQ(FutureReturnCode::SUCCESS, future_ret)
+      << "the usb camera don't publish data to topic\n"
+      << "future failed to be set after: "
+      << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time).count() << " milliseconds\n";
 }
 
 TEST(UnitTestObjectDetection, testObjectDetection)
@@ -65,18 +62,17 @@ TEST(UnitTestObjectDetection, testObjectDetection)
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_faceDetection_callback =
-    [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
-      test_pass = true;
-      sub_called.set_value(true);
-    };
+  auto openvino_faceDetection_callback = [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
+    test_pass = true;
+    sub_called.set_value(true);
+  };
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-      "/ros2_openvino_toolkit/detected_objects", qos, openvino_faceDetection_callback);
+    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("/ros2_openvino_toolkit/detected_objects",
+                                                                            qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -86,7 +82,7 @@ TEST(UnitTestObjectDetection, testObjectDetection)
   }
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);

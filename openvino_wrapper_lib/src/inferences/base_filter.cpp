@@ -22,44 +22,39 @@
 #include <string>
 #include <vector>
 
-openvino_wrapper_lib::BaseFilter::BaseFilter() {}
+openvino_wrapper_lib::BaseFilter::BaseFilter()
+{
+}
 
-bool openvino_wrapper_lib::BaseFilter::isValidFilterConditions(
-  const std::string & filter_conditions)
+bool openvino_wrapper_lib::BaseFilter::isValidFilterConditions(const std::string& filter_conditions)
 {
   return strip(filter_conditions) != "";
 }
 
-void openvino_wrapper_lib::BaseFilter::acceptFilterConditions(
-  const std::string & filter_conditions)
+void openvino_wrapper_lib::BaseFilter::acceptFilterConditions(const std::string& filter_conditions)
 {
   striped_conditions_ = strip(filter_conditions);
   std::vector<std::string> infix_conditions = split(striped_conditions_);
   infixToSuffix(infix_conditions);
 }
 
-bool openvino_wrapper_lib::BaseFilter::isRelationOperator(const std::string & str)
+bool openvino_wrapper_lib::BaseFilter::isRelationOperator(const std::string& str)
 {
-  if (std::find(relation_operators_.begin(), relation_operators_.end(), str) !=
-    relation_operators_.end())
-  {
+  if (std::find(relation_operators_.begin(), relation_operators_.end(), str) != relation_operators_.end()) {
     return true;
   }
   return false;
 }
 
-bool openvino_wrapper_lib::BaseFilter::isLogicOperator(const std::string & str)
+bool openvino_wrapper_lib::BaseFilter::isLogicOperator(const std::string& str)
 {
-  if (std::find(logic_operators_.begin(), logic_operators_.end(), str) !=
-    logic_operators_.end())
-  {
+  if (std::find(logic_operators_.begin(), logic_operators_.end(), str) != logic_operators_.end()) {
     return true;
   }
   return false;
 }
 
-bool openvino_wrapper_lib::BaseFilter::isPriorTo(
-  const std::string & operator1, const std::string & operator2)
+bool openvino_wrapper_lib::BaseFilter::isPriorTo(const std::string& operator1, const std::string& operator2)
 {
   if (isRelationOperator(operator1) && isLogicOperator(operator2)) {
     return true;
@@ -69,13 +64,17 @@ bool openvino_wrapper_lib::BaseFilter::isPriorTo(
 
 std::string openvino_wrapper_lib::BaseFilter::boolToStr(bool value)
 {
-  if (value) {return "true";}
+  if (value) {
+    return "true";
+  }
   return "false";
 }
 
-bool openvino_wrapper_lib::BaseFilter::strToBool(const std::string & value)
+bool openvino_wrapper_lib::BaseFilter::strToBool(const std::string& value)
 {
-  if (!value.compare("true")) {return true;} else if (!value.compare("false")) {
+  if (!value.compare("true")) {
+    return true;
+  } else if (!value.compare("false")) {
     return false;
   } else {
     slog::err << "Invalid string: " << value << " for bool conversion!" << slog::endl;
@@ -83,14 +82,13 @@ bool openvino_wrapper_lib::BaseFilter::strToBool(const std::string & value)
   return false;
 }
 
-const std::vector<std::string> &
-openvino_wrapper_lib::BaseFilter::getSuffixConditions() const
+const std::vector<std::string>& openvino_wrapper_lib::BaseFilter::getSuffixConditions() const
 {
   return suffix_conditons_;
 }
 
-bool openvino_wrapper_lib::BaseFilter::logicOperation(
-  const std::string & logic1, const std::string & op, const std::string & logic2)
+bool openvino_wrapper_lib::BaseFilter::logicOperation(const std::string& logic1, const std::string& op,
+                                                      const std::string& logic2)
 {
   if (!op.compare("&&")) {
     return strToBool(logic1) && strToBool(logic2);
@@ -102,8 +100,8 @@ bool openvino_wrapper_lib::BaseFilter::logicOperation(
   }
 }
 
-bool openvino_wrapper_lib::BaseFilter::stringCompare(
-  const std::string & candidate, const std::string & op, const std::string & target)
+bool openvino_wrapper_lib::BaseFilter::stringCompare(const std::string& candidate, const std::string& op,
+                                                     const std::string& target)
 {
   if (!op.compare("==")) {
     return !target.compare(candidate);
@@ -115,8 +113,7 @@ bool openvino_wrapper_lib::BaseFilter::stringCompare(
   }
 }
 
-bool openvino_wrapper_lib::BaseFilter::floatCompare(
-  float candidate, const std::string & op, float target)
+bool openvino_wrapper_lib::BaseFilter::floatCompare(float candidate, const std::string& op, float target)
 {
   if (!op.compare("<=")) {
     return candidate <= target;
@@ -132,7 +129,7 @@ bool openvino_wrapper_lib::BaseFilter::floatCompare(
   }
 }
 
-float openvino_wrapper_lib::BaseFilter::stringToFloat(const std::string & candidate)
+float openvino_wrapper_lib::BaseFilter::stringToFloat(const std::string& candidate)
 {
   float result = 0;
   try {
@@ -143,8 +140,7 @@ float openvino_wrapper_lib::BaseFilter::stringToFloat(const std::string & candid
   return result;
 }
 
-std::vector<std::string> openvino_wrapper_lib::BaseFilter::split(
-  const std::string & filter_conditions)
+std::vector<std::string> openvino_wrapper_lib::BaseFilter::split(const std::string& filter_conditions)
 {
   std::vector<std::string> seperators;
   seperators.insert(seperators.end(), relation_operators_.begin(), relation_operators_.end());
@@ -174,8 +170,7 @@ std::vector<std::string> openvino_wrapper_lib::BaseFilter::split(
   return infix_conditions;
 }
 
-void openvino_wrapper_lib::BaseFilter::infixToSuffix(
-  std::vector<std::string> & infix_conditions)
+void openvino_wrapper_lib::BaseFilter::infixToSuffix(std::vector<std::string>& infix_conditions)
 {
   std::stack<std::string> operator_stack;
   for (auto elem : infix_conditions) {
@@ -206,7 +201,7 @@ void openvino_wrapper_lib::BaseFilter::infixToSuffix(
   }
 }
 
-std::string openvino_wrapper_lib::BaseFilter::strip(const std::string & str)
+std::string openvino_wrapper_lib::BaseFilter::strip(const std::string& str)
 {
   std::string stripped_string = "";
   for (auto character : str) {

@@ -32,7 +32,7 @@ namespace Input
 class Image : public BaseInputDevice
 {
 public:
-  explicit Image(const std::string &);
+  explicit Image(const std::string&);
   /**
    * @brief Read an image file from the file path.
    * @param[in] An image file path.
@@ -52,9 +52,9 @@ public:
    * @brief Read next frame, and give the value to argument frame.
    * @return Whether the next frame is successfully read.
    */
-  bool read(cv::Mat * frame) override;
+  bool read(cv::Mat* frame) override;
 
-  void config(const Config &) override;
+  void config(const Config&) override;
 
 private:
   cv::Mat image_;

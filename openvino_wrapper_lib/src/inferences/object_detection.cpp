@@ -27,17 +27,15 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // ObjectDetectionResult
-openvino_wrapper_lib::ObjectDetectionResult::ObjectDetectionResult(const cv::Rect & location)
-: Result(location)
+openvino_wrapper_lib::ObjectDetectionResult::ObjectDetectionResult(const cv::Rect& location) : Result(location)
 {
 }
 
 // ObjectDetection
-openvino_wrapper_lib::ObjectDetection::ObjectDetection(
-  bool enable_roi_constraint,
-  double show_output_thresh)
-: show_output_thresh_(show_output_thresh),
-  enable_roi_constraint_(enable_roi_constraint), openvino_wrapper_lib::BaseInference()
+openvino_wrapper_lib::ObjectDetection::ObjectDetection(bool enable_roi_constraint, double show_output_thresh)
+  : show_output_thresh_(show_output_thresh)
+  , enable_roi_constraint_(enable_roi_constraint)
+  , openvino_wrapper_lib::BaseInference()
 {
   result_filter_ = std::make_shared<Filter>();
   result_filter_->init();
@@ -45,24 +43,21 @@ openvino_wrapper_lib::ObjectDetection::ObjectDetection(
 
 openvino_wrapper_lib::ObjectDetection::~ObjectDetection() = default;
 
-void openvino_wrapper_lib::ObjectDetection::loadNetwork(
-  std::shared_ptr<Models::ObjectDetectionModel> network)
+void openvino_wrapper_lib::ObjectDetection::loadNetwork(std::shared_ptr<Models::ObjectDetectionModel> network)
 {
   valid_model_ = network;
 
   setMaxBatchSize(network->getMaxBatchSize());
 }
-bool openvino_wrapper_lib::ObjectDetection::enqueue(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+bool openvino_wrapper_lib::ObjectDetection::enqueue(const cv::Mat& frame, const cv::Rect& input_frame_loc)
 {
   if (valid_model_ == nullptr || getEngine() == nullptr) {
     return false;
   }
 
   if (enqueued_frames_ >= valid_model_->getMaxBatchSize()) {
-    slog::warn << "Number of " << getName() << "input more than maximum(" <<
-      max_batch_size_ << ") processed by inference" << slog::endl;
+    slog::warn << "Number of " << getName() << "input more than maximum(" << max_batch_size_
+               << ") processed by inference" << slog::endl;
     return false;
   }
 
@@ -83,8 +78,8 @@ bool openvino_wrapper_lib::ObjectDetection::fetchResults()
 
   results_.clear();
 
-  return (valid_model_ != nullptr) && valid_model_->fetchResults(
-    getEngine(), results_, show_output_thresh_, enable_roi_constraint_);
+  return (valid_model_ != nullptr) &&
+         valid_model_->fetchResults(getEngine(), results_, show_output_thresh_, enable_roi_constraint_);
 }
 
 int openvino_wrapper_lib::ObjectDetection::getResultsLength() const
@@ -92,7 +87,7 @@ int openvino_wrapper_lib::ObjectDetection::getResultsLength() const
   return static_cast<int>(results_.size());
 }
 
-const openvino_wrapper_lib::ObjectDetection::Result *
+const openvino_wrapper_lib::ObjectDetection::Result*
 openvino_wrapper_lib::ObjectDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
@@ -103,16 +98,15 @@ const std::string openvino_wrapper_lib::ObjectDetection::getName() const
   return valid_model_->getModelCategory();
 }
 
-void openvino_wrapper_lib::ObjectDetection::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+void openvino_wrapper_lib::ObjectDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
 }
 
-const std::vector<cv::Rect> openvino_wrapper_lib::ObjectDetection::getFilteredROIs(
-  const std::string filter_conditions) const
+const std::vector<cv::Rect>
+openvino_wrapper_lib::ObjectDetection::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!result_filter_->isValidFilterConditions(filter_conditions)) {
     std::vector<cv::Rect> filtered_rois;
@@ -126,9 +120,10 @@ const std::vector<cv::Rect> openvino_wrapper_lib::ObjectDetection::getFilteredRO
   return result_filter_->getFilteredLocations();
 }
 
-
 // ObjectDetectionResultFilter
-openvino_wrapper_lib::ObjectDetectionResultFilter::ObjectDetectionResultFilter() {}
+openvino_wrapper_lib::ObjectDetectionResultFilter::ObjectDetectionResultFilter()
+{
+}
 
 void openvino_wrapper_lib::ObjectDetectionResultFilter::init()
 {
@@ -136,14 +131,12 @@ void openvino_wrapper_lib::ObjectDetectionResultFilter::init()
   key_to_function_.insert(std::make_pair("confidence", isValidConfidence));
 }
 
-void openvino_wrapper_lib::ObjectDetectionResultFilter::acceptResults(
-  const std::vector<Result> & results)
+void openvino_wrapper_lib::ObjectDetectionResultFilter::acceptResults(const std::vector<Result>& results)
 {
   results_ = results;
 }
 
-std::vector<cv::Rect>
-openvino_wrapper_lib::ObjectDetectionResultFilter::getFilteredLocations()
+std::vector<cv::Rect> openvino_wrapper_lib::ObjectDetectionResultFilter::getFilteredLocations()
 {
   std::vector<cv::Rect> locations;
   for (auto result : results_) {
@@ -154,27 +147,24 @@ openvino_wrapper_lib::ObjectDetectionResultFilter::getFilteredLocations()
   return locations;
 }
 
-bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidLabel(
-  const Result & result, const std::string & op, const std::string & target)
+bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidLabel(const Result& result, const std::string& op,
+                                                                     const std::string& target)
 {
   return stringCompare(result.getLabel(), op, target);
 }
 
-bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidConfidence(
-  const Result & result, const std::string & op, const std::string & target)
+bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidConfidence(const Result& result, const std::string& op,
+                                                                          const std::string& target)
 {
   return floatCompare(result.getConfidence(), op, stringToFloat(target));
 }
 
-bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidResult(
-  const Result & result)
+bool openvino_wrapper_lib::ObjectDetectionResultFilter::isValidResult(const Result& result)
 {
   ISVALIDRESULT(key_to_function_, result);
 }
 
-double openvino_wrapper_lib::ObjectDetection::calcIoU(
-  const cv::Rect & box_1,
-  const cv::Rect & box_2)
+double openvino_wrapper_lib::ObjectDetection::calcIoU(const cv::Rect& box_1, const cv::Rect& box_2)
 {
   cv::Rect i = box_1 & box_2;
   cv::Rect u = box_1 | box_2;

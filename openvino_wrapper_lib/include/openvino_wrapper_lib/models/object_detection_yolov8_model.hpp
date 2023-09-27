@@ -27,9 +27,7 @@ class ObjectDetectionYolov8Model : public ObjectDetectionYolov5Model
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  explicit ObjectDetectionYolov8Model(const std::string& label_loc, const std::string & model_loc,
-                                      int batch_size = 1);
-
+  explicit ObjectDetectionYolov8Model(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV8_MODEL_HPP_

@@ -39,9 +39,9 @@ TEST(UnitTestPeople, testPeople)
   auto node = rclcpp::Node::make_shared("openvino_people_service_test");
 
   auto client = node->create_client<object_msgs::srv::People>("/openvino_toolkit/service");
-  
+
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
-  
+
   auto request = std::make_shared<object_msgs::srv::People::Request>();
 
   std::string buffer = generate_file_path("data/images/team.jpg");
@@ -50,9 +50,7 @@ TEST(UnitTestPeople, testPeople)
 
   auto result = client->async_send_request(request);
 
-  ASSERT_EQ(
-    rclcpp::FutureReturnCode::SUCCESS,
-    rclcpp::spin_until_future_complete(node, result));
+  ASSERT_EQ(rclcpp::FutureReturnCode::SUCCESS, rclcpp::spin_until_future_complete(node, result));
 
   auto srv = result.get();
 
@@ -66,7 +64,7 @@ TEST(UnitTestPeople, testPeople)
   }
 }
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
   testing::InitGoogleTest(&argc, argv);

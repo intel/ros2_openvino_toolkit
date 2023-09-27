@@ -47,12 +47,15 @@ std::string getConfigPath(std::string config_file)
 TEST(UnitTestCheckPipeline, testCreatePipeline)
 {
   auto node = rclcpp::Node::make_shared("pipeline_test");
-  std::vector<std::string> config_files = {"image_object_service_test.yaml", "pipeline_face_reid_video.yaml",
-	                                   "pipeline_image_test.yaml", "pipeline_reidentification_test.yaml",
-					   "pipeline_vehicle_detection_test.yaml", "image_people_service_test.yaml",
-					   "pipeline_segmentation_test.yaml", "pipeline_face_test.yaml"};
-  for (unsigned int i = 0; i < config_files.size(); i++)
-  {
+  std::vector<std::string> config_files = { "image_object_service_test.yaml",
+                                            "pipeline_face_reid_video.yaml",
+                                            "pipeline_image_test.yaml",
+                                            "pipeline_reidentification_test.yaml",
+                                            "pipeline_vehicle_detection_test.yaml",
+                                            "image_people_service_test.yaml",
+                                            "pipeline_segmentation_test.yaml",
+                                            "pipeline_face_test.yaml" };
+  for (unsigned int i = 0; i < config_files.size(); i++) {
     std::string config_file = getConfigPath(config_files[i]);
     EXPECT_TRUE(std::ifstream(config_file).is_open());
     ASSERT_NO_THROW({
@@ -60,7 +63,7 @@ TEST(UnitTestCheckPipeline, testCreatePipeline)
       auto pipelines = Params::ParamManager::getInstance().getPipelines();
       EXPECT_GT(pipelines.size(), 0);
 
-      for (auto & p : pipelines) {
+      for (auto& p : pipelines) {
         PipelineManager::getInstance().createPipeline(p, node);
       }
     });
@@ -78,7 +81,7 @@ TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
     auto pipelines = Params::ParamManager::getInstance().getPipelines();
     EXPECT_GT(pipelines.size(), 0);
 
-    for (auto & p : pipelines) {
+    for (auto& p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, node);
     }
   });
@@ -86,24 +89,23 @@ TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
 
 TEST(UnitTestCheckPipeline, testPipelineIncorrectConfig)
 {
-    auto node = rclcpp::Node::make_shared("pipeline_anormal_test");
+  auto node = rclcpp::Node::make_shared("pipeline_anormal_test");
   std::string config_file = getConfigPath("pipeline_anormal.yaml");
   EXPECT_TRUE(std::ifstream(config_file).is_open());
-  try{
+  try {
     Params::ParamManager::getInstance().parse(config_file);
     auto pipelines = Params::ParamManager::getInstance().getPipelines();
     EXPECT_GT(pipelines.size(), 0);
 
-    for (auto & p : pipelines) {
-      PipelineManager::getInstance().createPipeline(p,node);
+    for (auto& p : pipelines) {
+      PipelineManager::getInstance().createPipeline(p, node);
     }
-  }
-  catch (...) {
+  } catch (...) {
     SUCCEED();
   }
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);
