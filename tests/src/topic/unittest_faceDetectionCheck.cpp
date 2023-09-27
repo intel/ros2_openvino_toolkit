@@ -49,21 +49,18 @@ static bool emotion_test_pass = false;
 static bool ageGender_test_pass = false;
 static bool headPose_test_pass = false;
 
-template<typename DurationT>
-void wait_for_future(
-  rclcpp::Executor & executor, std::shared_future<bool> & future,
-  const DurationT & timeout)
+template <typename DurationT>
+void wait_for_future(rclcpp::Executor& executor, std::shared_future<bool>& future, const DurationT& timeout)
 {
   using rclcpp::FutureReturnCode;
   rclcpp::FutureReturnCode future_ret;
   auto start_time = std::chrono::steady_clock::now();
   future_ret = executor.spin_until_future_complete(future, timeout);
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;
-  EXPECT_EQ(FutureReturnCode::SUCCESS, future_ret) <<
-    "the usb camera don't publish data to topic\n" <<
-    "future failed to be set after: " <<
-    std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time).count() <<
-    " milliseconds\n";
+  EXPECT_EQ(FutureReturnCode::SUCCESS, future_ret)
+      << "the usb camera don't publish data to topic\n"
+      << "future failed to be set after: "
+      << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time).count() << " milliseconds\n";
 }
 
 TEST(UnitTestFaceDetection, testFaceDetection)
@@ -73,18 +70,17 @@ TEST(UnitTestFaceDetection, testFaceDetection)
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_faceDetection_callback =
-    [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
-      face_test_pass = true;
-      sub_called.set_value(true);
-    };
+  auto openvino_faceDetection_callback = [&sub_called](const object_msgs::msg::ObjectsInBoxes::SharedPtr msg) -> void {
+    face_test_pass = true;
+    sub_called.set_value(true);
+  };
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-      "/ros2_openvino_toolkit/face_detection", qos, openvino_faceDetection_callback);
+    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("/ros2_openvino_toolkit/face_detection",
+                                                                            qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -102,17 +98,17 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
   auto openvino_emotionRecognition_callback =
-    [&sub_called](const object_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
-      emotion_test_pass = true;
-      sub_called.set_value(true);
-    };
+      [&sub_called](const object_msgs::msg::EmotionsStamped::SharedPtr msg) -> void {
+    emotion_test_pass = true;
+    sub_called.set_value(true);
+  };
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
   {
     auto sub2 = node->create_subscription<object_msgs::msg::EmotionsStamped>(
-      "/ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
+        "/ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -129,18 +125,17 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_ageGender_callback =
-    [&sub_called](const object_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
-      ageGender_test_pass = true;
-      sub_called.set_value(true);
-    };
+  auto openvino_ageGender_callback = [&sub_called](const object_msgs::msg::AgeGenderStamped::SharedPtr msg) -> void {
+    ageGender_test_pass = true;
+    sub_called.set_value(true);
+  };
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
   {
     auto sub3 = node->create_subscription<object_msgs::msg::AgeGenderStamped>(
-      "/ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
+        "/ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -157,18 +152,17 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
   std::promise<bool> sub_called;
   std::shared_future<bool> sub_called_future(sub_called.get_future());
 
-  auto openvino_headPose_callback =
-    [&sub_called](const object_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
-      headPose_test_pass = true;
-      sub_called.set_value(true);
-    };
+  auto openvino_headPose_callback = [&sub_called](const object_msgs::msg::HeadPoseStamped::SharedPtr msg) -> void {
+    headPose_test_pass = true;
+    sub_called.set_value(true);
+  };
 
   rclcpp::executors::SingleThreadedExecutor executor;
   executor.add_node(node);
 
   {
     auto sub4 = node->create_subscription<object_msgs::msg::HeadPoseStamped>(
-      "/ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
+        "/ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -178,7 +172,7 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
   }
 }
 
-int main(int argc, char * argv[])
+int main(int argc, char* argv[])
 {
   testing::InitGoogleTest(&argc, argv);
   rclcpp::init(argc, argv);

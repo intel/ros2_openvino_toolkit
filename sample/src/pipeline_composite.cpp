@@ -13,10 +13,10 @@
 // limitations under the License.
 
 /**
-* \brief The is the composition version making the pipeline management into
-* a rclcpp Node.
-* \file pipeline_composite.cpp
-*/
+ * \brief The is the composition version making the pipeline management into
+ * a rclcpp Node.
+ * \file pipeline_composite.cpp
+ */
 
 #include <rclcpp/rclcpp.hpp>
 #include <ament_index_cpp/get_resource.hpp>
@@ -40,7 +40,7 @@
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/pipeline_manager.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
-#if(defined(USE_OLD_E_PLUGIN_API))
+#if (defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
 #include "openvino/openvino.hpp"
@@ -61,8 +61,8 @@ void signalHandler(int signum)
 class ComposablePipeline : public rclcpp::Node
 {
 public:
-  ComposablePipeline(const rclcpp::NodeOptions & node_options=rclcpp::NodeOptions())
-  : rclcpp::Node("composable_pipeline", "/", node_options)
+  ComposablePipeline(const rclcpp::NodeOptions& node_options = rclcpp::NodeOptions())
+    : rclcpp::Node("composable_pipeline", "/", node_options)
   {
     initPipeline();
   }
@@ -85,7 +85,7 @@ private:
     }
 
     std::shared_ptr<rclcpp::Node> node_handler(this);
-    for (auto & p : pipelines) {
+    for (auto& p : pipelines) {
       PipelineManager::getInstance().createPipeline(p, node_handler);
     }
 
@@ -98,7 +98,6 @@ private:
     // return declare_parameter("config").get<rclcpp::PARAMETER_STRING>();
     return "";
   }
-
 };
 
 #include "rclcpp_components/register_node_macro.hpp"

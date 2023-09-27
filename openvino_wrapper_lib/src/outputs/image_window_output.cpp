@@ -26,13 +26,13 @@
 #include "openvino_wrapper_lib/outputs/image_window_output.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 
-Outputs::ImageWindowOutput::ImageWindowOutput(const std::string & output_name, int focal_length)
-: BaseOutput(output_name), focal_length_(focal_length)
+Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& output_name, int focal_length)
+  : BaseOutput(output_name), focal_length_(focal_length)
 {
   cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
 }
 
-void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
+void Outputs::ImageWindowOutput::feedFrame(const cv::Mat& frame)
 {
   // frame_ = frame;
   frame_ = frame.clone();
@@ -48,8 +48,7 @@ void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
   }
 }
 
-unsigned Outputs::ImageWindowOutput::findOutput(
-  const cv::Rect & result_rect)
+unsigned Outputs::ImageWindowOutput::findOutput(const cv::Rect& result_rect)
 {
   for (unsigned i = 0; i < outputs_.size(); i++) {
     if (outputs_[i].rect == result_rect) {
@@ -63,8 +62,7 @@ unsigned Outputs::ImageWindowOutput::findOutput(
   return outputs_.size() - 1;
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -74,20 +72,17 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
     outputs_[target_index].rect = result_rect;
-    outputs_[target_index].desc +=
-      ("[" + results[i].getColor() + "," + results[i].getType() + "]");
+    outputs_[target_index].desc += ("[" + results[i].getColor() + "," + results[i].getType() + "]");
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::FaceReidentificationResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::FaceReidentificationResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -97,8 +92,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::LandmarksDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::LandmarksDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -110,30 +104,27 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
     if (results[i].getMaleProbability() < 0.5) {
       outputs_[target_index].scalar = cv::Scalar(0, 0, 255);
-    }
-    else{
+    } else {
       outputs_[target_index].scalar = cv::Scalar(0, 255, 0);
     }
-    outputs_[target_index].pa_top.x = results[i].getTopLocation().x*result_rect.width + result_rect.x;
-    outputs_[target_index].pa_top.y = results[i].getTopLocation().y*result_rect.height + result_rect.y;
-    outputs_[target_index].pa_bottom.x = results[i].getBottomLocation().x*result_rect.width + result_rect.x;
-    outputs_[target_index].pa_bottom.y = results[i].getBottomLocation().y*result_rect.height + result_rect.y;
+    outputs_[target_index].pa_top.x = results[i].getTopLocation().x * result_rect.width + result_rect.x;
+    outputs_[target_index].pa_top.y = results[i].getTopLocation().y * result_rect.height + result_rect.y;
+    outputs_[target_index].pa_bottom.x = results[i].getBottomLocation().x * result_rect.width + result_rect.x;
+    outputs_[target_index].pa_bottom.y = results[i].getBottomLocation().y * result_rect.height + result_rect.y;
 
     outputs_[target_index].rect = result_rect;
     outputs_[target_index].desc += "[" + results[i].getAttributes() + "]";
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::PersonReidentificationResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::PersonReidentificationResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -143,30 +134,27 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-
-void Outputs::ImageWindowOutput::mergeMask(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> & results)
+void Outputs::ImageWindowOutput::mergeMask(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult>& results)
 {
-    const float alpha = 0.7f;
-    //const float MASK_THRESHOLD = 0.5;
-    //only for merged mask mat got from modles::fetchResults()
-    for (unsigned i=0; i<results.size(); i++){
-      cv::Rect location = results[i].getLocation();
-      slog::debug << "Rect:" << location << slog::endl;
-      slog::debug << " Frame Size: " << frame_.size() << slog::endl;
-      cv::Mat mask = results[i].getMask();
-      cv::resize(mask, mask, frame_.size());
-      cv::addWeighted(mask, alpha, frame_, 1.0f - alpha, 0.0f, frame_);
-    }
+  const float alpha = 0.7f;
+  // const float MASK_THRESHOLD = 0.5;
+  // only for merged mask mat got from modles::fetchResults()
+  for (unsigned i = 0; i < results.size(); i++) {
+    cv::Rect location = results[i].getLocation();
+    slog::debug << "Rect:" << location << slog::endl;
+    slog::debug << " Frame Size: " << frame_.size() << slog::endl;
+    cv::Mat mask = results[i].getMask();
+    cv::resize(mask, mask, frame_.size());
+    cv::addWeighted(mask, alpha, frame_, 1.0f - alpha, 0.0f, frame_);
+  }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
     unsigned target_index = findOutput(result_rect);
-    
+
     auto fd_conf = results[i].getConfidence();
     if (fd_conf > 0) {
       outputs_[target_index].rect = result_rect;
@@ -180,9 +168,9 @@ void Outputs::ImageWindowOutput::accept(
   mergeMask(results);
 }
 
-//TODO: Deprecated, will merge the impl into the func for  instanceResult.
+// TODO: Deprecated, will merge the impl into the func for  instanceResult.
 void Outputs::ImageWindowOutput::mergeMask(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> & results)
+    const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult>& results)
 {
   std::map<std::string, int> class_color;
   for (unsigned i = 0; i < results.size(); i++) {
@@ -190,22 +178,21 @@ void Outputs::ImageWindowOutput::mergeMask(
     if (class_color.find(class_label) == class_color.end()) {
       class_color[class_label] = class_color.size();
     }
-    auto & color = colors_[class_color[class_label] % colors_.size() ];
+    auto& color = colors_[class_color[class_label] % colors_.size()];
     const float alpha = 0.7f;
     const float MASK_THRESHOLD = 0.5;
 
     cv::Rect location = results[i].getLocation();
     cv::Mat roi_img = frame_(location);
     cv::Mat mask = results[i].getMask();
-    cv::Mat colored_mask(location.height, location.width, frame_.type(),
-		   cv::Scalar(color[2], color[1], color[0]) );
+    cv::Mat colored_mask(location.height, location.width, frame_.type(), cv::Scalar(color[2], color[1], color[0]));
     roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
     cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
   }
 }
 
 void Outputs::ImageWindowOutput::mergeMask(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> & results)
+    const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results)
 {
   std::map<std::string, int> class_color;
   for (unsigned i = 0; i < results.size(); i++) {
@@ -213,23 +200,22 @@ void Outputs::ImageWindowOutput::mergeMask(
     if (class_color.find(class_label) == class_color.end()) {
       class_color[class_label] = class_color.size();
     }
-    auto & color = colors_[class_color[class_label] % colors_.size() ];
+    auto& color = colors_[class_color[class_label] % colors_.size()];
     const float alpha = 0.7f;
     const float MASK_THRESHOLD = 0.5;
 
     cv::Rect location = results[i].getLocation();
     cv::Mat roi_img = frame_(location);
     cv::Mat mask = results[i].getMask();
-    cv::Mat colored_mask(location.height, location.width, frame_.type(),
-		   cv::Scalar(color[2], color[1], color[0]) );
+    cv::Mat colored_mask(location.height, location.width, frame_.type(), cv::Scalar(color[2], color[1], color[0]));
     roi_img.copyTo(colored_mask, mask <= MASK_THRESHOLD);
     cv::addWeighted(colored_mask, alpha, roi_img, 1.0f - alpha, 0.0f, roi_img);
   }
 }
 
-//TODO: Deprecated, will merge the impl into the func for  instanceResult.
+// TODO: Deprecated, will merge the impl into the func for  instanceResult.
 void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> & results)
+    const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -248,7 +234,7 @@ void Outputs::ImageWindowOutput::accept(
 }
 
 void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> & results)
+    const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -266,9 +252,7 @@ void Outputs::ImageWindowOutput::accept(
   mergeMask(results);
 }
 
-
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::FaceDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -283,8 +267,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -301,8 +284,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::EmotionsResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::EmotionsResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -314,8 +296,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::AgeGenderResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::AgeGenderResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect result_rect = results[i].getLocation();
@@ -332,9 +313,7 @@ void Outputs::ImageWindowOutput::accept(
   }
 }
 
-cv::Point Outputs::ImageWindowOutput::calcAxis(
-  cv::Mat r, double cx, double cy, double cz,
-  cv::Point cp)
+cv::Point Outputs::ImageWindowOutput::calcAxis(cv::Mat r, double cx, double cy, double cz, cv::Point cp)
 {
   cv::Mat Axis(3, 1, CV_32F);
   Axis.at<float>(0) = cx;
@@ -344,10 +323,8 @@ cv::Point Outputs::ImageWindowOutput::calcAxis(
   o.at<float>(2) = camera_matrix_.at<float>(0);
   Axis = r * Axis + o;
   cv::Point point;
-  point.x = static_cast<int>((Axis.at<float>(0) / Axis.at<float>(2) * camera_matrix_.at<float>(0)) +
-    cp.x);
-  point.y = static_cast<int>((Axis.at<float>(1) / Axis.at<float>(2) * camera_matrix_.at<float>(4)) +
-    cp.y);
+  point.x = static_cast<int>((Axis.at<float>(0) / Axis.at<float>(2) * camera_matrix_.at<float>(0)) + cp.x);
+  point.y = static_cast<int>((Axis.at<float>(1) / Axis.at<float>(2) * camera_matrix_.at<float>(4)) + cp.y);
   return point;
 }
 
@@ -363,8 +340,7 @@ cv::Mat Outputs::ImageWindowOutput::getRotationTransform(double yaw, double pitc
   return r;
 }
 
-void Outputs::ImageWindowOutput::accept(
-  const std::vector<openvino_wrapper_lib::HeadPoseResult> & results)
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::HeadPoseResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
     auto result = results[i];
@@ -393,15 +369,13 @@ void Outputs::ImageWindowOutput::decorateFrame()
     int fps = getPipeline()->getFPS();
     std::stringstream ss;
     ss << "FPS: " << fps;
-    cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX, 0.5,
-      cv::Scalar(255, 0, 0));
+    cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX, 0.5, cv::Scalar(255, 0, 0));
   }
   for (auto o : outputs_) {
     auto new_y = std::max(15, o.rect.y - 15);
-    cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
-      o.scalar);
+    cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, o.scalar);
     cv::rectangle(frame_, o.rect, o.scalar, 1);
-    if (o.pa_top != o.pa_bottom){
+    if (o.pa_top != o.pa_bottom) {
       cv::circle(frame_, o.pa_top, 3, cv::Scalar(255, 0, 0), 2);
       cv::circle(frame_, o.pa_bottom, 3, cv::Scalar(0, 255, 0), 2);
     }
@@ -424,7 +398,7 @@ void Outputs::ImageWindowOutput::decorateFrame()
 
 void Outputs::ImageWindowOutput::handleOutput()
 {
-  if(frame_.cols == 0 || frame_.rows == 0){
+  if (frame_.cols == 0 || frame_.rows == 0) {
     return;
   }
   decorateFrame();

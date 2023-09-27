@@ -33,20 +33,15 @@
 
 namespace vino_service
 {
-template<typename T>
-FrameProcessingServer<T>::FrameProcessingServer(
-  const std::string & service_name,
-  const std::string & config_path)
-: Node("node_with_service"),
-  service_name_(service_name),
-  config_path_(config_path)
+template <typename T>
+FrameProcessingServer<T>::FrameProcessingServer(const std::string& service_name, const std::string& config_path)
+  : Node("node_with_service"), service_name_(service_name), config_path_(config_path)
 {
   initService(config_path);
 }
 
-template<typename T>
-void FrameProcessingServer<T>::initService(
-  const std::string & config_path)
+template <typename T>
+void FrameProcessingServer<T>::initService(const std::string& config_path)
 {
   Params::ParamManager::getInstance().parse(config_path);
   Params::ParamManager::getInstance().print();
@@ -56,24 +51,21 @@ void FrameProcessingServer<T>::initService(
     throw std::logic_error("1 and only 1 pipeline can be set to FrameProcessServer!");
   }
 
-  for (auto & p : pipelines) {
+  for (auto& p : pipelines) {
     PipelineManager::getInstance().createPipeline(p);
   }
 
-  service_ = create_service<T>("/openvino_toolkit/service",
-      std::bind(&FrameProcessingServer::cbService, this,
-      std::placeholders::_1, std::placeholders::_2));
+  service_ = create_service<T>("/openvino_toolkit/service", std::bind(&FrameProcessingServer::cbService, this,
+                                                                      std::placeholders::_1, std::placeholders::_2));
 }
 
-template<typename T>
-void FrameProcessingServer<T>::cbService(
-  const std::shared_ptr<typename T::Request> request,
-  std::shared_ptr<typename T::Response> response)
+template <typename T>
+void FrameProcessingServer<T>::cbService(const std::shared_ptr<typename T::Request> request,
+                                         std::shared_ptr<typename T::Response> response)
 {
-  std::map<std::string, PipelineManager::PipelineData> pipelines_ =
-    PipelineManager::getInstance().getPipelines();
+  std::map<std::string, PipelineManager::PipelineData> pipelines_ = PipelineManager::getInstance().getPipelines();
   for (auto it = pipelines_.begin(); it != pipelines_.end(); ++it) {
-    PipelineManager::PipelineData & p = pipelines_[it->second.params.name.c_str()];
+    PipelineManager::PipelineData& p = pipelines_[it->second.params.name.c_str()];
     auto input = p.pipeline->getInputDevice();
     Input::Config config;
     config.path = request->image_path;
@@ -81,7 +73,7 @@ void FrameProcessingServer<T>::cbService(
     p.pipeline->runOnce();
     auto output_handle = p.pipeline->getOutputHandle();
 
-    for (auto & pair : output_handle) {
+    for (auto& pair : output_handle) {
       if (!pair.first.compare(kOutputTpye_RosService)) {
         pair.second->setServiceResponse(response);
         pair.second->clearData();

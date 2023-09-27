@@ -34,24 +34,24 @@ static const char help_message[] = "Print a usage message.";
 static const char parameter_file_message[] = "Absolute path of parameter config file.";
 
 /**
-* \brief This function show a help message
-*/
+ * \brief This function show a help message
+ */
 static void showUsageForParam(const std::string prog)
 {
   std::cout << std::endl;
-  std::cout << prog <<" [OPTION]" << std::endl;
+  std::cout << prog << " [OPTION]" << std::endl;
   std::cout << "Options:" << std::endl;
   std::cout << std::endl;
   std::cout << "    -h                         " << help_message << std::endl;
   std::cout << "    -config \"<path>\"         " << parameter_file_message << std::endl;
 }
 
-static std::string getConfigPath(int argc, char * argv[])
+static std::string getConfigPath(int argc, char* argv[])
 {
-  for(int i = 1; i < argc - 1; i++){
+  for (int i = 1; i < argc - 1; i++) {
     std::string arg = argv[i];
-    if(arg == "-config" || arg == "--config"){
-      return argv[i+1];
+    if (arg == "-config" || arg == "--config") {
+      return argv[i + 1];
     }
   }
 

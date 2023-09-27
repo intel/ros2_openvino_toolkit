@@ -41,7 +41,7 @@ public:
    * @param[in] feature The new detected track feature.
    * @return The detected track ID.
    */
-  int processNewTrack(const std::vector<float> & feature);
+  int processNewTrack(const std::vector<float>& feature);
 
 private:
   /**
@@ -50,13 +50,13 @@ private:
    * @param[in] most similar track's ID to be recorded.
    * @return similarity with the most similar track.
    */
-  double findMostSimilarTrack(const std::vector<float> & feature, int & most_similar_id);
+  double findMostSimilarTrack(const std::vector<float>& feature, int& most_similar_id);
   /**
    * @brief Update the matched track's feature by the new track.
    * @param[in] track_id The matched track ID.
    * @param[in] feature The matched track's feature
    */
-  void updateMatchTrack(int track_id, const std::vector<float> & feature);
+  void updateMatchTrack(int track_id, const std::vector<float>& feature);
   /**
    * @brief Remove the earlest track from the recorded tracks.
    */
@@ -66,13 +66,12 @@ private:
    * @param[in] feature A track's feature.
    * @return new added track's ID.
    */
-  int addNewTrack(const std::vector<float> & feature);
+  int addNewTrack(const std::vector<float>& feature);
   /**
    * @brief Calculate the cosine similarity between two features.
    * @return The simlarity result.
    */
-  double calcSimilarity(
-    const std::vector<float> & feature_a, const std::vector<float> & feature_b);
+  double calcSimilarity(const std::vector<float>& feature_a, const std::vector<float>& feature_b);
   /**
    * @brief get the current millisecond count since epoch.
    * @return millisecond count since epoch.

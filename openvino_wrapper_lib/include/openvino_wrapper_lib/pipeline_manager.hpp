@@ -39,24 +39,21 @@ class PipelineManager
 {
 public:
   /**
-  * @brief Get the singleton instance of PipelineManager class.
-  * The instance will be created when first call.
-  * @return The reference of PipelineManager instance.
-  */
-  static PipelineManager & getInstance()
+   * @brief Get the singleton instance of PipelineManager class.
+   * The instance will be created when first call.
+   * @return The reference of PipelineManager instance.
+   */
+  static PipelineManager& getInstance()
   {
     static PipelineManager manager_;
     return manager_;
   }
 
-  std::shared_ptr<Pipeline> createPipeline(
-    const Params::ParamManager::PipelineRawData & params,
-    rclcpp::Node::SharedPtr node = nullptr);
+  std::shared_ptr<Pipeline> createPipeline(const Params::ParamManager::PipelineRawData& params,
+                                           rclcpp::Node::SharedPtr node = nullptr);
 
-  void removePipeline(const std::string & name);
-  PipelineManager & updatePipeline(
-    const std::string & name,
-    const Params::ParamManager::PipelineRawData & params);
+  void removePipeline(const std::string& name);
+  PipelineManager& updatePipeline(const std::string& name, const Params::ParamManager::PipelineRawData& params);
 
   void runAll();
   void stopAll();
@@ -93,7 +90,7 @@ public:
     return pipelines_;
   }
 
-  std::map<std::string, PipelineData> * getPipelinesPtr()
+  std::map<std::string, PipelineData>* getPipelinesPtr()
   {
     return &pipelines_;
   }
@@ -102,44 +99,42 @@ private:
   PipelineManager()
   {
   }
-  PipelineManager(PipelineManager const &);
-  void operator=(PipelineManager const &);
-  void threadPipeline(const char * name);
-  void threadSpinNodes(const char * name);
-  std::map<std::string, std::shared_ptr<Input::BaseInputDevice>>
-  parseInputDevice(const PipelineData & params);
-  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>
-  parseOutput(const PipelineData & pdata);
+  PipelineManager(PipelineManager const&);
+  void operator=(PipelineManager const&);
+  void threadPipeline(const char* name);
+  void threadSpinNodes(const char* name);
+  std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> parseInputDevice(const PipelineData& params);
+  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> parseOutput(const PipelineData& pdata);
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>
-  parseInference(const Params::ParamManager::PipelineRawData & params);
+  parseInference(const Params::ParamManager::PipelineRawData& params);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceDetection(const Params::ParamManager::InferenceRawData & infer);
+  createFaceDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & infer);
+  createAgeGenderRecognition(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createEmotionRecognition(const Params::ParamManager::InferenceRawData & infer);
+  createEmotionRecognition(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & infer);
+  createHeadPoseEstimation(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectDetection(const Params::ParamManager::InferenceRawData & infer);
+  createObjectDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer);
+  createObjectSegmentation(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer);
+  createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData & infer);
+  createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonReidentification(const Params::ParamManager::InferenceRawData & infer);
+  createPersonReidentification(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
+  createPersonAttribsDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLandmarksDetection(const Params::ParamManager::InferenceRawData & infer);
+  createLandmarksDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceReidentification(const Params::ParamManager::InferenceRawData & infer);
+  createFaceReidentification(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
+  createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
+  createLicensePlateDetection(const Params::ParamManager::InferenceRawData& infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
   Engines::EngineManager engine_manager_;

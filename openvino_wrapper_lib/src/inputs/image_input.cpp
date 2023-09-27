@@ -21,7 +21,7 @@
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 
-Input::Image::Image(const std::string & file)
+Input::Image::Image(const std::string& file)
 {
   file_.assign(file);
 }
@@ -39,7 +39,7 @@ bool Input::Image::initialize()
   return isInit();
 }
 
-bool Input::Image::read(cv::Mat * frame)
+bool Input::Image::read(cv::Mat* frame)
 {
   if (!isInit()) {
     return false;
@@ -49,12 +49,11 @@ bool Input::Image::read(cv::Mat * frame)
   return true;
 }
 
-void Input::Image::config(const Input::Config & config)
+void Input::Image::config(const Input::Config& config)
 {
   if (config.path != "") {
     file_.assign(config.path);
     initialize();
-    slog::info << "Image Input device was reinitialized with new file:" <<
-      config.path.c_str() << slog::endl;
+    slog::info << "Image Input device was reinitialized with new file:" << config.path.c_str() << slog::endl;
   }
 }

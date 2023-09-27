@@ -26,31 +26,32 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // PersonAttribsDetectionResult
-openvino_wrapper_lib::PersonAttribsDetectionResult::PersonAttribsDetectionResult(
-  const cv::Rect & location)
-: Result(location) {}
+openvino_wrapper_lib::PersonAttribsDetectionResult::PersonAttribsDetectionResult(const cv::Rect& location)
+  : Result(location)
+{
+}
 
 // PersonAttribsDetection
 openvino_wrapper_lib::PersonAttribsDetection::PersonAttribsDetection(double attribs_confidence)
-: attribs_confidence_(attribs_confidence), openvino_wrapper_lib::BaseInference() {}
+  : attribs_confidence_(attribs_confidence), openvino_wrapper_lib::BaseInference()
+{
+}
 
 openvino_wrapper_lib::PersonAttribsDetection::~PersonAttribsDetection() = default;
 void openvino_wrapper_lib::PersonAttribsDetection::loadNetwork(
-  const std::shared_ptr<Models::PersonAttribsDetectionModel> network)
+    const std::shared_ptr<Models::PersonAttribsDetectionModel> network)
 {
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-bool openvino_wrapper_lib::PersonAttribsDetection::enqueue(
-  const cv::Mat & frame, const cv::Rect & input_frame_loc)
+bool openvino_wrapper_lib::PersonAttribsDetection::enqueue(const cv::Mat& frame, const cv::Rect& input_frame_loc)
 {
   if (getEnqueuedNum() == 0) {
     results_.clear();
   }
-  if (!openvino_wrapper_lib::BaseInference::enqueue<u_int8_t>(
-      frame, input_frame_loc, 1, 0, valid_model_->getInputName()))
-  {
+  if (!openvino_wrapper_lib::BaseInference::enqueue<u_int8_t>(frame, input_frame_loc, 1, 0,
+                                                              valid_model_->getInputName())) {
     return false;
   }
   Result r(input_frame_loc);
@@ -66,7 +67,9 @@ bool openvino_wrapper_lib::PersonAttribsDetection::submitRequest()
 bool openvino_wrapper_lib::PersonAttribsDetection::fetchResults()
 {
   bool can_fetch = openvino_wrapper_lib::BaseInference::fetchResults();
-  if (!can_fetch) {return false;}
+  if (!can_fetch) {
+    return false;
+  }
   bool found_result = false;
   ov::InferRequest request = getEngine()->getRequest();
   slog::debug << "Analyzing Attributes Detection results..." << slog::endl;
@@ -86,19 +89,20 @@ bool openvino_wrapper_lib::PersonAttribsDetection::fetchResults()
   for (int i = 0; i < getResultsLength(); i++) {
     results_[i].male_probability_ = attri_values[i * net_attrib_length];
     results_[i].top_point_.x = top_values[i];
-    results_[i].top_point_.y = top_values[i+1];
+    results_[i].top_point_.y = top_values[i + 1];
     results_[i].bottom_point_.x = bottom_values[i];
-    results_[i].bottom_point_.y = bottom_values[i+1];
+    results_[i].bottom_point_.y = bottom_values[i + 1];
     std::string attrib = "";
     for (int j = 1; j < net_attrib_length; j++) {
-      attrib += (attri_values[i * net_attrib_length + j] > attribs_confidence_) ?
-        net_attributes_[j] + ", " : "";
+      attrib += (attri_values[i * net_attrib_length + j] > attribs_confidence_) ? net_attributes_[j] + ", " : "";
     }
-    results_[i].attributes_ = attrib;    
+    results_[i].attributes_ = attrib;
 
     found_result = true;
-  }  
-  if (!found_result) {results_.clear();}
+  }
+  if (!found_result) {
+    results_.clear();
+  }
   return true;
 }
 
@@ -107,8 +111,7 @@ int openvino_wrapper_lib::PersonAttribsDetection::getResultsLength() const
   return static_cast<int>(results_.size());
 }
 
-const openvino_wrapper_lib::Result *
-openvino_wrapper_lib::PersonAttribsDetection::getLocationResult(int idx) const
+const openvino_wrapper_lib::Result* openvino_wrapper_lib::PersonAttribsDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
@@ -118,20 +121,19 @@ const std::string openvino_wrapper_lib::PersonAttribsDetection::getName() const
   return valid_model_->getModelCategory();
 }
 
-void openvino_wrapper_lib::PersonAttribsDetection::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+void openvino_wrapper_lib::PersonAttribsDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
 }
 
-const std::vector<cv::Rect> openvino_wrapper_lib::PersonAttribsDetection::getFilteredROIs(
-  const std::string filter_conditions) const
+const std::vector<cv::Rect>
+openvino_wrapper_lib::PersonAttribsDetection::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!filter_conditions.empty()) {
-    slog::err << "Person attributes detection does not support filtering now! " <<
-      "Filter conditions: " << filter_conditions << slog::endl;
+    slog::err << "Person attributes detection does not support filtering now! "
+              << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
   for (auto res : results_) {

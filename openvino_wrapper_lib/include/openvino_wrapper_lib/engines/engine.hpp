@@ -35,7 +35,7 @@ namespace Engines
 class Engine
 {
 public:
-#if(defined(USE_OLD_E_PLUGIN_API))
+#if (defined(USE_OLD_E_PLUGIN_API))
   /**
    * DEPRECATED! instead of using Engine(InferenceEngine::InferRequest::Ptr &)
    * @brief Create an NetworkEngine instance
@@ -47,12 +47,12 @@ public:
   /**
    * @brief Using an Inference Request to initialize the inference Engine.
    */
-  Engine(ov::InferRequest &);
+  Engine(ov::InferRequest&);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
    */
-  inline ov::InferRequest & getRequest()
+  inline ov::InferRequest& getRequest()
   {
     return request_;
   }
@@ -61,8 +61,8 @@ public:
    * @param[in] callbackToSet A lambda function as callback function.
    * The callback function will be called when request is finished.
    */
-  template<typename T>
-  void setCompletionCallback(const T & callbackToSet)
+  template <typename T>
+  void setCompletionCallback(const T& callbackToSet)
   {
     request_.set_callback(callbackToSet);
   }

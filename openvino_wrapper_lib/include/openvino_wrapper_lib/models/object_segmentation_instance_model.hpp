@@ -19,7 +19,7 @@
 
 namespace openvino_wrapper_lib
 {
-  class ObjectSegmentationInstanceResult;
+class ObjectSegmentationInstanceResult;
 }
 
 namespace Models
@@ -32,17 +32,15 @@ namespace Models
 class ObjectSegmentationInstanceModel : public BaseModel
 {
   using Result = openvino_wrapper_lib::ObjectSegmentationInstanceResult;
+
 public:
-  ObjectSegmentationInstanceModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectSegmentationInstanceModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
-  virtual bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> & results,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false);
+  virtual bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                            std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results,
+                            const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false);
 
-  bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
-    const cv::Rect & ) override;
+  bool enqueue(const std::shared_ptr<Engines::Engine>&, const cv::Mat&, const cv::Rect&) override;
 
   /**
    * @brief Get the name of this segmentation model.
@@ -50,7 +48,6 @@ public:
    */
   const std::string getModelCategory() const override;
   virtual bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_SEGMENTATION_INSTANCE_MODEL_HPP_

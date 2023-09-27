@@ -20,12 +20,13 @@
 #include "openvino_wrapper_lib/models/license_plate_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
-Models::LicensePlateDetectionModel::LicensePlateDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
+Models::LicensePlateDetectionModel::LicensePlateDetectionModel(const std::string& label_loc,
+                                                               const std::string& model_loc, int max_batch_size)
+  : BaseModel(label_loc, model_loc, max_batch_size)
+{
+}
 
-bool Models::LicensePlateDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& model)
+bool Models::LicensePlateDetectionModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
 {
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   auto input_info_map = model->inputs();
@@ -45,11 +46,8 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(
 
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = input_info_map[0].get_any_name();
-  const ov::Layout tensor_layout{"NCHW"};
-  ppp.input(input_tensor_name_).
-    tensor().
-    set_element_type(ov::element::u8).
-    set_layout(tensor_layout);
+  const ov::Layout tensor_layout{ "NCHW" };
+  ppp.input(input_tensor_name_).tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
   model = ppp.build();
 
   input_ = input_tensor_name_;

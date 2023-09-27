@@ -18,7 +18,6 @@
  */
 #include "openvino_wrapper_lib/inputs/ip_camera.hpp"
 
-
 bool Input::IpCamera::initialize()
 {
   // Initialize width and height to reasonable dimensions
@@ -35,7 +34,7 @@ bool Input::IpCamera::initialize(size_t width, size_t height)
   return isInit();
 }
 
-bool Input::IpCamera::read(cv::Mat * frame)
+bool Input::IpCamera::read(cv::Mat* frame)
 {
   if (!isInit()) {
     return false;

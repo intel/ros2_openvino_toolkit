@@ -36,19 +36,15 @@
 
 namespace vino_service
 {
-template<typename T>
+template <typename T>
 class FrameProcessingServer : public rclcpp::Node
 {
 public:
-  explicit FrameProcessingServer(
-    const std::string & service_name,
-    const std::string & config_path);
-  void initService(const std::string & config_path);
+  explicit FrameProcessingServer(const std::string& service_name, const std::string& config_path);
+  void initService(const std::string& config_path);
 
 private:
-  void cbService(
-    const std::shared_ptr<typename T::Request> request,
-    std::shared_ptr<typename T::Response> response);
+  void cbService(const std::shared_ptr<typename T::Request> request, std::shared_ptr<typename T::Response> response);
 
   // rclcpp::Service<T::template>::SharedPtr service_;
   std::shared_ptr<rclcpp::Service<T>> service_;

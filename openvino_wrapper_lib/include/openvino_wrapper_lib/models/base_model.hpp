@@ -35,24 +35,24 @@
 
 namespace Engines
 {
-  class Engine;
+class Engine;
 }
 
 namespace openvino_wrapper_lib
 {
-  class ObjectDetectionResult;
+class ObjectDetectionResult;
 }
 
 namespace Models
 {
-  /**
-   * @class BaseModel
-   * @brief This class represents the network given by .xml and .bin file
-   */
-  class BaseModel : public ModelAttribute
-  {
-  public:
-    using Ptr = std::shared_ptr<BaseModel>;
+/**
+ * @class BaseModel
+ * @brief This class represents the network given by .xml and .bin file
+ */
+class BaseModel : public ModelAttribute
+{
+public:
+  using Ptr = std::shared_ptr<BaseModel>;
   /**
    * @brief Initialize the class with given .xml, .bin and .labels file. It will
    * also check whether the number of input and output are fit.
@@ -63,132 +63,133 @@ namespace Models
    * @param[in] batch_size The number of batch size (default: 1) the network should have.
    * @return Whether the input device is successfully turned on.
    */
-    BaseModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+  BaseModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
   /**
    * @brief Get the maximum batch size of the model.
    * @return The maximum batch size of the model.
    */
-    inline int getMaxBatchSize() const
-    {
-      return max_batch_size_;
-    }
-    inline void setMaxBatchSize(int max_batch_size)
-    {
-      max_batch_size_ = max_batch_size;
-    }
+  inline int getMaxBatchSize() const
+  {
+    return max_batch_size_;
+  }
+  inline void setMaxBatchSize(int max_batch_size)
+  {
+    max_batch_size_ = max_batch_size;
+  }
 
-    virtual bool enqueue(
-        const std::shared_ptr<Engines::Engine> &engine,
-        const cv::Mat &frame,
-        const cv::Rect &input_frame_loc) { return true; }
+  virtual bool enqueue(const std::shared_ptr<Engines::Engine>& engine, const cv::Mat& frame,
+                       const cv::Rect& input_frame_loc)
+  {
+    return true;
+  }
   /**
    * @brief Initialize the model. During the process the class will check
    * the network input, output size, check layer property and
    * set layer property.
    */
-    void modelInit();
+  void modelInit();
   /**
    * @brief Get the name of the model.
    * @return The name of the model.
    */
-    virtual const std::string getModelCategory() const = 0;
-    inline ModelAttr getAttribute() { return attr_; }
-
-    inline std::shared_ptr<ov::Model> getModel() const
-    {
-      return model_;
-    }
-
-  protected:
-    /**
-     * New infterface to check and update Layer Property
-     * @brief Set the layer property (layer layout, layer precision, etc.).
-     * @param[in] network_reader The reader of the network to be set.
-     */
-    virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
-
-    virtual bool matToBlob(
-      const cv::Mat &orig_image, const cv::Rect &, float scale_factor,
-      int batch_index, const std::shared_ptr<Engines::Engine> &engine);
-
-    cv::Mat extendFrameToInputRatio(const cv::Mat);
-    ov::Core engine;
-    std::shared_ptr<ov::Model> model_; 
-    void setFrameSize(const int &w, const int &h)
-    {
-      frame_size_.width = w;
-      frame_size_.height = h;
-    }
-    cv::Size getFrameSize()
-    {
-      return frame_size_;
-    }
-
-    inline void setFrameResizeeRatioWidth(const float r)
-    {
-      frame_resize_ratio_width_ = r;
-    }
-
-    inline void setFrameResizeeRatioHeight(const float r)
-    {
-      frame_resize_ratio_height_ = r;
-    }
-
-    inline float getFrameResizeRatioWidth() const
-    {
-      return frame_resize_ratio_width_;
-    }
-
-    inline float getFrameResizeRatioHeight() const
-    {
-      return frame_resize_ratio_height_;
-    }
-
-    inline void setKeepInputShapeRatio(bool keep)
-    {
-      keep_input_shape_ratio_ = keep;
-    }
-
-    inline bool isKeepInputRatio() const
-    {
-      return keep_input_shape_ratio_;
-    }
-
-    inline void setExpectedFrameSize(cv::Size expect)
-    {
-      expected_frame_size_ = expect;
-    }
-
-    inline cv::Size getExpectedFrameSize() const
-    {
-      return expected_frame_size_;
-    }
-
-  private:
-    int max_batch_size_;
-    std::string model_loc_;
-    std::string label_loc_;
-
-    //Information about Input Data
-    cv::Size frame_size_;
-    cv::Size expected_frame_size_ {224, 224};
-    float frame_resize_ratio_width_ = 1.0;
-    float frame_resize_ratio_height_ = 1.0;
-    bool keep_input_shape_ratio_ = false;
-  };
-
-  class ObjectDetectionModel : public BaseModel
+  virtual const std::string getModelCategory() const = 0;
+  inline ModelAttr getAttribute()
   {
-  public:
-    ObjectDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
-    virtual bool fetchResults(
-        const std::shared_ptr<Engines::Engine> &engine,
-        std::vector<openvino_wrapper_lib::ObjectDetectionResult> &result,
-        const float &confidence_thresh = 0.3,
-        const bool &enable_roi_constraint = false) = 0;
-  };
+    return attr_;
+  }
 
-} // namespace Models
+  inline std::shared_ptr<ov::Model> getModel() const
+  {
+    return model_;
+  }
 
-#endif // OPENVINO_WRAPPER_LIB__MODELS__BASE_MODEL_HPP_
+protected:
+  /**
+   * New infterface to check and update Layer Property
+   * @brief Set the layer property (layer layout, layer precision, etc.).
+   * @param[in] network_reader The reader of the network to be set.
+   */
+  virtual bool updateLayerProperty(std::shared_ptr<ov::Model>& network_reader) = 0;
+
+  virtual bool matToBlob(const cv::Mat& orig_image, const cv::Rect&, float scale_factor, int batch_index,
+                         const std::shared_ptr<Engines::Engine>& engine);
+
+  cv::Mat extendFrameToInputRatio(const cv::Mat);
+  ov::Core engine;
+  std::shared_ptr<ov::Model> model_;
+  void setFrameSize(const int& w, const int& h)
+  {
+    frame_size_.width = w;
+    frame_size_.height = h;
+  }
+  cv::Size getFrameSize()
+  {
+    return frame_size_;
+  }
+
+  inline void setFrameResizeeRatioWidth(const float r)
+  {
+    frame_resize_ratio_width_ = r;
+  }
+
+  inline void setFrameResizeeRatioHeight(const float r)
+  {
+    frame_resize_ratio_height_ = r;
+  }
+
+  inline float getFrameResizeRatioWidth() const
+  {
+    return frame_resize_ratio_width_;
+  }
+
+  inline float getFrameResizeRatioHeight() const
+  {
+    return frame_resize_ratio_height_;
+  }
+
+  inline void setKeepInputShapeRatio(bool keep)
+  {
+    keep_input_shape_ratio_ = keep;
+  }
+
+  inline bool isKeepInputRatio() const
+  {
+    return keep_input_shape_ratio_;
+  }
+
+  inline void setExpectedFrameSize(cv::Size expect)
+  {
+    expected_frame_size_ = expect;
+  }
+
+  inline cv::Size getExpectedFrameSize() const
+  {
+    return expected_frame_size_;
+  }
+
+private:
+  int max_batch_size_;
+  std::string model_loc_;
+  std::string label_loc_;
+
+  // Information about Input Data
+  cv::Size frame_size_;
+  cv::Size expected_frame_size_{ 224, 224 };
+  float frame_resize_ratio_width_ = 1.0;
+  float frame_resize_ratio_height_ = 1.0;
+  bool keep_input_shape_ratio_ = false;
+};
+
+class ObjectDetectionModel : public BaseModel
+{
+public:
+  ObjectDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+  virtual bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                            std::vector<openvino_wrapper_lib::ObjectDetectionResult>& result,
+                            const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false) = 0;
+};
+
+}  // namespace Models
+
+#endif  // OPENVINO_WRAPPER_LIB__MODELS__BASE_MODEL_HPP_

@@ -25,42 +25,38 @@
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "cv_bridge/cv_bridge.h"
 
-Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
-  const rclcpp::Node::SharedPtr node)
-: BaseOutput(output_name)
+Outputs::RosTopicOutput::RosTopicOutput(std::string output_name, const rclcpp::Node::SharedPtr node)
+  : BaseOutput(output_name)
 {
-  if(node != nullptr){
+  if (node != nullptr) {
     node_ = node;
   } else {
     node_ = rclcpp::Node::make_shared(output_name + "_topic_publisher");
   }
   pub_license_plate_ = node_->create_publisher<object_msgs::msg::LicensePlateStamped>(
-    "/openvino_toolkit/" + output_name_ + "/detected_license_plates", 16);
+      "/openvino_toolkit/" + output_name_ + "/detected_license_plates", 16);
   pub_vehicle_attribs_ = node_->create_publisher<object_msgs::msg::VehicleAttribsStamped>(
-    "/openvino_toolkit/" + output_name_ + "/detected_vehicles_attribs", 16);
+      "/openvino_toolkit/" + output_name_ + "/detected_vehicles_attribs", 16);
   pub_landmarks_ = node_->create_publisher<object_msgs::msg::LandmarkStamped>(
-    "/openvino_toolkit/" + output_name_ + "/detected_landmarks", 16);
+      "/openvino_toolkit/" + output_name_ + "/detected_landmarks", 16);
   pub_face_reid_ = node_->create_publisher<object_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/" + output_name_ + "/reidentified_faces", 16);
+      "/openvino_toolkit/" + output_name_ + "/reidentified_faces", 16);
   pub_person_attribs_ = node_->create_publisher<object_msgs::msg::PersonAttributeStamped>(
-    "/openvino_toolkit/" + output_name_ + "/person_attributes", 16);
+      "/openvino_toolkit/" + output_name_ + "/person_attributes", 16);
   pub_person_reid_ = node_->create_publisher<object_msgs::msg::ReidentificationStamped>(
-    "/openvino_toolkit/" + output_name_ + "/reidentified_persons", 16);
+      "/openvino_toolkit/" + output_name_ + "/reidentified_persons", 16);
   pub_segmented_object_ = node_->create_publisher<object_msgs::msg::ObjectsInMasks>(
-    "/openvino_toolkit/" + output_name_ + "/segmented_obejcts", 16);
+      "/openvino_toolkit/" + output_name_ + "/segmented_obejcts", 16);
   pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-    "/openvino_toolkit/" + output_name_ + "/detected_objects", 16);
+      "/openvino_toolkit/" + output_name_ + "/detected_objects", 16);
   pub_face_ =
-    node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
-    "/openvino_toolkit/" + output_name_ + "/faces", 16);
+      node_->create_publisher<object_msgs::msg::ObjectsInBoxes>("/openvino_toolkit/" + output_name_ + "/faces", 16);
   pub_emotion_ =
-    node_->create_publisher<object_msgs::msg::EmotionsStamped>(
-    "/openvino_toolkit/" + output_name_ + "/emotions", 16);
+      node_->create_publisher<object_msgs::msg::EmotionsStamped>("/openvino_toolkit/" + output_name_ + "/emotions", 16);
   pub_age_gender_ = node_->create_publisher<object_msgs::msg::AgeGenderStamped>(
-    "/openvino_toolkit/" + output_name_ + "/age_genders", 16);
-  pub_headpose_ =
-    node_->create_publisher<object_msgs::msg::HeadPoseStamped>(
-    "/openvino_toolkit/" + output_name_ + "/headposes", 16);
+      "/openvino_toolkit/" + output_name_ + "/age_genders", 16);
+  pub_headpose_ = node_->create_publisher<object_msgs::msg::HeadPoseStamped>(
+      "/openvino_toolkit/" + output_name_ + "/headposes", 16);
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;
@@ -75,17 +71,16 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name,
   license_plate_topic_ = nullptr;
 }
 
-void Outputs::RosTopicOutput::feedFrame(const cv::Mat & frame)
+void Outputs::RosTopicOutput::feedFrame(const cv::Mat& frame)
 {
   frame_ = frame.clone();
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult>& results)
 {
   vehicle_attribs_topic_ = std::make_shared<object_msgs::msg::VehicleAttribsStamped>();
   object_msgs::msg::VehicleAttribs attribs;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     attribs.roi.x_offset = loc.x;
     attribs.roi.y_offset = loc.y;
@@ -97,12 +92,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult>& results)
 {
   license_plate_topic_ = std::make_shared<object_msgs::msg::LicensePlateStamped>();
   object_msgs::msg::LicensePlate plate;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     plate.roi.x_offset = loc.x;
     plate.roi.y_offset = loc.y;
@@ -113,12 +107,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::FaceReidentificationResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::FaceReidentificationResult>& results)
 {
   face_reid_topic_ = std::make_shared<object_msgs::msg::ReidentificationStamped>();
   object_msgs::msg::Reidentification face;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     face.roi.x_offset = loc.x;
     face.roi.y_offset = loc.y;
@@ -129,12 +122,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::LandmarksDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::LandmarksDetectionResult>& results)
 {
   landmarks_topic_ = std::make_shared<object_msgs::msg::LandmarkStamped>();
   object_msgs::msg::Landmark landmark;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     landmark.roi.x_offset = loc.x;
     landmark.roi.y_offset = loc.y;
@@ -151,12 +143,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult>& results)
 {
   person_attribs_topic_ = std::make_shared<object_msgs::msg::PersonAttributeStamped>();
   object_msgs::msg::PersonAttribute person_attrib;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     person_attrib.roi.x_offset = loc.x;
     person_attrib.roi.y_offset = loc.y;
@@ -167,12 +158,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::PersonReidentificationResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::PersonReidentificationResult>& results)
 {
   person_reid_topic_ = std::make_shared<object_msgs::msg::ReidentificationStamped>();
   object_msgs::msg::Reidentification person;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     person.roi.x_offset = loc.x;
     person.roi.y_offset = loc.y;
@@ -183,12 +173,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult>& results)
 {
   segmented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInMasks>();
   object_msgs::msg::ObjectInMask object;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -206,12 +195,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult>& results)
 {
   segmented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInMasks>();
   object_msgs::msg::ObjectInMask object;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -229,12 +217,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results)
 {
   segmented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInMasks>();
   object_msgs::msg::ObjectInMask object;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -252,12 +239,11 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results)
 {
   detected_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
   object_msgs::msg::ObjectInBox object;
-  for (auto & r : results) {
+  for (auto& r : results) {
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -269,8 +255,7 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(
-  const std::vector<openvino_wrapper_lib::FaceDetectionResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult>& results)
 {
   faces_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
 
@@ -288,7 +273,7 @@ void Outputs::RosTopicOutput::accept(
   }
 }
 
-void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::EmotionsResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::EmotionsResult>& results)
 {
   emotions_topic_ = std::make_shared<object_msgs::msg::EmotionsStamped>();
 
@@ -304,7 +289,7 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Emo
   }
 }
 
-void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::AgeGenderResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::AgeGenderResult>& results)
 {
   age_gender_topic_ = std::make_shared<object_msgs::msg::AgeGenderStamped>();
 
@@ -328,7 +313,7 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Age
   }
 }
 
-void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::HeadPoseResult> & results)
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::HeadPoseResult>& results)
 {
   headpose_topic_ = std::make_shared<object_msgs::msg::HeadPoseStamped>();
 
@@ -410,4 +395,3 @@ void Outputs::RosTopicOutput::handleOutput()
     headpose_topic_ = nullptr;
   }
 }
-

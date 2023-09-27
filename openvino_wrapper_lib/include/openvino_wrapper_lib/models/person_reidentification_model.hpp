@@ -29,9 +29,15 @@ namespace Models
 class PersonReidentificationModel : public BaseModel
 {
 public:
-  PersonReidentificationModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
-  inline const std::string getInputName() {return input_;}
-  inline const std::string getOutputName() {return output_;}
+  PersonReidentificationModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+  inline const std::string getInputName()
+  {
+    return input_;
+  }
+  inline const std::string getOutputName()
+  {
+    return output_;
+  }
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.

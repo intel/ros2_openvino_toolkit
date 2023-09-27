@@ -15,12 +15,12 @@
 #include "openvino_wrapper_lib/outputs/base_output.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 
-void Outputs::BaseOutput::setPipeline(Pipeline * const pipeline)
+void Outputs::BaseOutput::setPipeline(Pipeline* const pipeline)
 {
   pipeline_ = pipeline;
 }
 
-Pipeline * Outputs::BaseOutput::getPipeline() const
+Pipeline* Outputs::BaseOutput::getPipeline() const
 {
   return pipeline_;
 }

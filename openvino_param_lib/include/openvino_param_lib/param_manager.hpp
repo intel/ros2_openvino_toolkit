@@ -46,7 +46,7 @@ public:
    * The instance will be created when first call.
    * @return The reference of paramManager class.
    */
-  static ParamManager & getInstance()
+  static ParamManager& getInstance()
   {
     static ParamManager manager_;
     return manager_;
@@ -125,7 +125,7 @@ public:
    * @param[in] name: the name of the pipeline to be retrieved.
    * @return The pipeline paratmeters, or throw a loginc error.
    */
-  PipelineRawData getPipeline(const std::string & name) const;
+  PipelineRawData getPipeline(const std::string& name) const;
 
   /**
    * @brief Retrieve common parameters.
@@ -140,8 +140,8 @@ private:
   ParamManager()
   {
   }
-  ParamManager(ParamManager const &);
-  void operator=(ParamManager const &);
+  ParamManager(ParamManager const&);
+  void operator=(ParamManager const&);
 
   std::vector<PipelineRawData> pipelines_;
   CommonRawData common_;

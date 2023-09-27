@@ -29,11 +29,23 @@ namespace Models
 class LicensePlateDetectionModel : public BaseModel
 {
 public:
-  LicensePlateDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
-  inline const std::string getInputName() {return input_;}
-  inline const std::string getSeqInputName() {return seq_input_;}
-  inline const std::string getOutputName() {return output_;}
-  inline int getMaxSequenceSize() const {return max_sequence_size_;}
+  LicensePlateDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+  inline const std::string getInputName()
+  {
+    return input_;
+  }
+  inline const std::string getSeqInputName()
+  {
+    return seq_input_;
+  }
+  inline const std::string getOutputName()
+  {
+    return output_;
+  }
+  inline int getMaxSequenceSize() const
+  {
+    return max_sequence_size_;
+  }
   /**
    * @brief Get the name of this detection model.
    * @return Name of the model.

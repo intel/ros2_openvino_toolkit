@@ -29,7 +29,7 @@
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 
-Pipeline::Pipeline(const std::string & name)
+Pipeline::Pipeline(const std::string& name)
 {
   if (!name.empty()) {
     params_ = std::make_shared<PipelineParams>(name);
@@ -37,7 +37,7 @@ Pipeline::Pipeline(const std::string & name)
   counter_ = 0;
 }
 
-bool Pipeline::add(const std::string & name, std::shared_ptr<Input::BaseInputDevice> input_device)
+bool Pipeline::add(const std::string& name, std::shared_ptr<Input::BaseInputDevice> input_device)
 {
   if (name.empty()) {
     slog::err << "Item name can't be empty!" << slog::endl;
@@ -51,9 +51,7 @@ bool Pipeline::add(const std::string & name, std::shared_ptr<Input::BaseInputDev
   return true;
 }
 
-bool Pipeline::add(
-  const std::string & parent, const std::string & name,
-  std::shared_ptr<Outputs::BaseOutput> output)
+bool Pipeline::add(const std::string& parent, const std::string& name, std::shared_ptr<Outputs::BaseOutput> output)
 {
   if (parent.empty() || name.empty() || !isLegalConnect(parent, name) || output == nullptr) {
     slog::err << "ARGuments ERROR when adding output instance!" << slog::endl;
@@ -69,7 +67,7 @@ bool Pipeline::add(
   return false;
 }
 
-bool Pipeline::add(const std::string & parent, const std::string & name)
+bool Pipeline::add(const std::string& parent, const std::string& name)
 {
   if (isLegalConnect(parent, name)) {
     addConnect(parent, name);
@@ -79,18 +77,16 @@ bool Pipeline::add(const std::string & parent, const std::string & name)
   return false;
 }
 
-bool Pipeline::add(const std::string & name, std::shared_ptr<Outputs::BaseOutput> output)
+bool Pipeline::add(const std::string& name, std::shared_ptr<Outputs::BaseOutput> output)
 {
   if (name.empty()) {
     slog::err << "Item name can't be empty!" << slog::endl;
     return false;
   }
 
-  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>::iterator it =
-    name_to_output_map_.find(name);
+  std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>::iterator it = name_to_output_map_.find(name);
   if (it != name_to_output_map_.end()) {
-    slog::warn << "inferance instance for [" << name <<
-      "] already exists, update it with new instance." << slog::endl;
+    slog::warn << "inferance instance for [" << name << "] already exists, update it with new instance." << slog::endl;
   }
   name_to_output_map_[name] = output;
   output_names_.insert(name);
@@ -100,28 +96,23 @@ bool Pipeline::add(const std::string & name, std::shared_ptr<Outputs::BaseOutput
   return true;
 }
 
-void Pipeline::addConnect(const std::string & parent, const std::string & name)
+void Pipeline::addConnect(const std::string& parent, const std::string& name)
 {
-  std::pair<std::multimap<std::string, std::string>::iterator,
-    std::multimap<std::string, std::string>::iterator>
-  ret;
+  std::pair<std::multimap<std::string, std::string>::iterator, std::multimap<std::string, std::string>::iterator> ret;
   ret = next_.equal_range(parent);
 
   for (std::multimap<std::string, std::string>::iterator it = ret.first; it != ret.second; ++it) {
     if (it->second == name) {
-      slog::warn << "The connect [" << parent << "<-->" << name << "] already exists." <<
-        slog::endl;
+      slog::warn << "The connect [" << parent << "<-->" << name << "] already exists." << slog::endl;
       return;
     }
   }
-  slog::info << "Adding connection into pipeline:[" << parent << "<-->" << name << "]" <<
-    slog::endl;
-  next_.insert({parent, name});
+  slog::info << "Adding connection into pipeline:[" << parent << "<-->" << name << "]" << slog::endl;
+  next_.insert({ parent, name });
 }
 
-bool Pipeline::add(
-  const std::string & parent, const std::string & name,
-  std::shared_ptr<openvino_wrapper_lib::BaseInference> inference)
+bool Pipeline::add(const std::string& parent, const std::string& name,
+                   std::shared_ptr<openvino_wrapper_lib::BaseInference> inference)
 {
   if (parent.empty() || name.empty() || !isLegalConnect(parent, name)) {
     slog::err << "ARGuments ERROR when adding inference instance!" << slog::endl;
@@ -136,9 +127,7 @@ bool Pipeline::add(
   return false;
 }
 
-bool Pipeline::add(
-  const std::string & name,
-  std::shared_ptr<openvino_wrapper_lib::BaseInference> inference)
+bool Pipeline::add(const std::string& name, std::shared_ptr<openvino_wrapper_lib::BaseInference> inference)
 {
   if (name.empty()) {
     slog::err << "Item name can't be empty!" << slog::endl;
@@ -146,10 +135,9 @@ bool Pipeline::add(
   }
 
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>::iterator it =
-    name_to_detection_map_.find(name);
+      name_to_detection_map_.find(name);
   if (it != name_to_detection_map_.end()) {
-    slog::warn << "inferance instance for [" << name <<
-      "] already exists, update it with new instance." << slog::endl;
+    slog::warn << "inferance instance for [" << name << "] already exists, update it with new instance." << slog::endl;
   } else {
     ++total_inference_;
   }
@@ -162,9 +150,9 @@ bool Pipeline::isLegalConnect(const std::string parent, const std::string child)
 {
   int parent_order = getCatagoryOrder(parent);
   int child_order = getCatagoryOrder(child);
-  slog::info << "Checking connection into pipeline:[" << parent << "(" << parent_order << ")" <<
-    "<-->" << child << "(" << child_order << ")" <<
-    "]" << slog::endl;
+  slog::info << "Checking connection into pipeline:[" << parent << "(" << parent_order << ")"
+             << "<-->" << child << "(" << child_order << ")"
+             << "]" << slog::endl;
   return (parent_order != kCatagoryOrder_Unknown) && (child_order != kCatagoryOrder_Unknown) &&
          (parent_order <= child_order);
 }
@@ -188,7 +176,7 @@ void Pipeline::runOnce()
   initInferenceCounter();
 
   if (!input_device_->read(&frame_)) {
-    return; //do nothing if now frame read out
+    return;  // do nothing if now frame read out
   }
   width_ = frame_.cols;
   height_ = frame_.rows;
@@ -204,49 +192,47 @@ void Pipeline::runOnce()
     detection_ptr->submitRequest();
   }
 
-  for (auto &pair : name_to_output_map_)
-  {
+  for (auto& pair : name_to_output_map_) {
     pair.second->feedFrame(frame_);
   }
   countFPS();
 
   slog::debug << "DEBUG: align inference process, waiting until all inferences done!" << slog::endl;
   std::unique_lock<std::mutex> lock(counter_mutex_);
-  cv_.wait(lock, [self = this]() {return self->counter_ == 0;});
+  cv_.wait(lock, [self = this]() { return self->counter_ == 0; });
 
   slog::debug << "DEBUG: in Pipeline run process...handleOutput" << slog::endl;
-  for (auto & pair : name_to_output_map_) {
+  for (auto& pair : name_to_output_map_) {
     pair.second->handleOutput();
   }
 }
 
 void Pipeline::printPipeline()
 {
-  for (auto & current_node : next_) {
+  for (auto& current_node : next_) {
     printf("%s --> %s\n", current_node.first.c_str(), current_node.second.c_str());
   }
 }
 
 void Pipeline::setCallback()
 {
-  for (auto & pair : name_to_detection_map_) {
+  for (auto& pair : name_to_detection_map_) {
     std::string detection_name = pair.first;
     std::function<void(std::__exception_ptr::exception_ptr)> callb;
-    callb = [detection_name, self = this](std::exception_ptr ex)
-      {
-        if (ex)
-          throw ex;
+    callb = [detection_name, self = this](std::exception_ptr ex) {
+      if (ex)
+        throw ex;
 
-        self->callback(detection_name);
-        return;
-      };
+      self->callback(detection_name);
+      return;
+    };
     pair.second->getEngine()->getRequest().set_callback(callb);
-   }
+  }
 }
 
-void Pipeline::callback(const std::string & detection_name)
+void Pipeline::callback(const std::string& detection_name)
 {
-  slog::debug <<"Hello callback ----> " << detection_name <<slog::endl;
+  slog::debug << "Hello callback ----> " << detection_name << slog::endl;
   auto detection_ptr = name_to_detection_map_[detection_name];
   detection_ptr->fetchResults();
   // set output
@@ -308,7 +294,7 @@ void Pipeline::countFPS()
   auto t_end = std::chrono::high_resolution_clock::now();
   typedef std::chrono::duration<double, std::ratio<1, 1000>> ms;
   ms secondDetection = std::chrono::duration_cast<ms>(t_end - t_start_);
-  if (secondDetection.count() > 1000) {  
+  if (secondDetection.count() > 1000) {
     setFPS(frame_cnt_);
     frame_cnt_ = 0;
     t_start_ = t_end;

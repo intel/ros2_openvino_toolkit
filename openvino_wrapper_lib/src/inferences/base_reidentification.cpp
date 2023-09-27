@@ -27,13 +27,12 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // Tracker
-openvino_wrapper_lib::Tracker::Tracker(
-  int max_record_size, double same_track_thresh, double new_track_thresh)
-: max_record_size_(max_record_size),
-  same_track_thresh_(same_track_thresh),
-  new_track_thresh_(new_track_thresh) {}
+openvino_wrapper_lib::Tracker::Tracker(int max_record_size, double same_track_thresh, double new_track_thresh)
+  : max_record_size_(max_record_size), same_track_thresh_(same_track_thresh), new_track_thresh_(new_track_thresh)
+{
+}
 
-int openvino_wrapper_lib::Tracker::processNewTrack(const std::vector<float> & feature)
+int openvino_wrapper_lib::Tracker::processNewTrack(const std::vector<float>& feature)
 {
   int most_similar_id;
   double similarity = findMostSimilarTrack(feature, most_similar_id);
@@ -45,8 +44,7 @@ int openvino_wrapper_lib::Tracker::processNewTrack(const std::vector<float> & fe
   return most_similar_id;
 }
 
-double openvino_wrapper_lib::Tracker::findMostSimilarTrack(
-  const std::vector<float> & feature, int & most_similar_id)
+double openvino_wrapper_lib::Tracker::findMostSimilarTrack(const std::vector<float>& feature, int& most_similar_id)
 {
   double max_similarity = 0;
   most_similar_id = -1;
@@ -60,13 +58,13 @@ double openvino_wrapper_lib::Tracker::findMostSimilarTrack(
   return max_similarity;
 }
 
-double openvino_wrapper_lib::Tracker::calcSimilarity(
-  const std::vector<float> & feature_a, const std::vector<float> & feature_b)
+double openvino_wrapper_lib::Tracker::calcSimilarity(const std::vector<float>& feature_a,
+                                                     const std::vector<float>& feature_b)
 {
   if (feature_a.size() != feature_b.size()) {
-    slog::err << "cosine similarity can't be called for vectors of different lengths: " <<
-      "feature_a size = " << std::to_string(feature_a.size()) <<
-      "feature_b size = " << std::to_string(feature_b.size()) << slog::endl;
+    slog::err << "cosine similarity can't be called for vectors of different lengths: "
+              << "feature_a size = " << std::to_string(feature_a.size())
+              << "feature_b size = " << std::to_string(feature_b.size()) << slog::endl;
   }
   float mul_sum, denom_a, denom_b, value_a, value_b;
   mul_sum = denom_a = denom_b = value_a = value_b = 0;
@@ -79,13 +77,13 @@ double openvino_wrapper_lib::Tracker::calcSimilarity(
   }
   if (denom_a == 0 || denom_b == 0) {
     slog::err << "cosine similarity is not defined whenever one or both "
-      "input vectors are zero-vectors." << slog::endl;
+                 "input vectors are zero-vectors."
+              << slog::endl;
   }
   return mul_sum / (sqrt(denom_a) * sqrt(denom_b));
 }
 
-void openvino_wrapper_lib::Tracker::updateMatchTrack(
-  int track_id, const std::vector<float> & feature)
+void openvino_wrapper_lib::Tracker::updateMatchTrack(int track_id, const std::vector<float>& feature)
 {
   if (recorded_tracks_.find(track_id) != recorded_tracks_.end()) {
     recorded_tracks_[track_id].feature.assign(feature.begin(), feature.end());
@@ -109,8 +107,7 @@ void openvino_wrapper_lib::Tracker::removeEarlestTrack()
   recorded_tracks_.erase(remove_iter);
 }
 
-
-int openvino_wrapper_lib::Tracker::addNewTrack(const std::vector<float> & feature)
+int openvino_wrapper_lib::Tracker::addNewTrack(const std::vector<float>& feature)
 {
   if (recorded_tracks_.size() >= max_record_size_) {
     std::thread remove_thread(std::bind(&Tracker::removeEarlestTrack, this));
@@ -127,8 +124,7 @@ int openvino_wrapper_lib::Tracker::addNewTrack(const std::vector<float> & featur
 
 int64_t openvino_wrapper_lib::Tracker::getCurrentTime()
 {
-  auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(
-    std::chrono::system_clock::now());
+  auto tp = std::chrono::time_point_cast<std::chrono::milliseconds>(std::chrono::system_clock::now());
   return static_cast<int64_t>(tp.time_since_epoch().count());
 }
 
@@ -140,8 +136,7 @@ bool openvino_wrapper_lib::Tracker::saveTracksToFile(std::string filepath)
     return false;
   }
   for (auto record : recorded_tracks_) {
-    outfile << record.first << " " <<
-      record.second.lastest_update_time << " ";
+    outfile << record.first << " " << record.second.lastest_update_time << " ";
     for (auto elem : record.second.feature) {
       outfile << elem << " ";
     }

@@ -66,98 +66,99 @@ namespace Outputs
 class BaseOutput
 {
 public:
-  explicit BaseOutput(std::string output_name)
-  : output_name_(output_name) {}
+  explicit BaseOutput(std::string output_name) : output_name_(output_name)
+  {
+  }
   /**
    * @brief Generate output content according to the license plate detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the vehicle attributes detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the face reidentification result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::FaceReidentificationResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::FaceReidentificationResult>&)
   {
   }
   /**
    * @brief Generate output content according to the landmarks detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::LandmarksDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::LandmarksDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the person reidentification result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the person reidentification result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::PersonReidentificationResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::PersonReidentificationResult>&)
   {
   }
   /**
    * @brief Generate output content according to the object segmentation result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult>&)
   {
   }
   /**
    * @brief Generate output content according to the object segmentation maskrcnn result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult>&)
   {
   }
   /**
    * @brief Generate output content according to the object segmentation result for instance models.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&)
   {
   }
   /**
    * @brief Generate output content according to the object detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::ObjectDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the face detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult>&)
   {
   }
   /**
    * @brief Generate output content according to the emotion detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::EmotionsResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::EmotionsResult>&)
   {
   }
   /**
    * @brief Generate output content according to the age and gender detection
    * result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::AgeGenderResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::AgeGenderResult>&)
   {
   }
   /**
    * @brief Generate output content according to the headpose detection result.
    */
-  virtual void accept(const std::vector<openvino_wrapper_lib::HeadPoseResult> &)
+  virtual void accept(const std::vector<openvino_wrapper_lib::HeadPoseResult>&)
   {
   }
   /**
    * @brief Calculate the camera matrix of a frame for image window output, no
          implementation for ros topic output.
    */
-  virtual void feedFrame(const cv::Mat &)
+  virtual void feedFrame(const cv::Mat&)
   {
   }
   /**
@@ -165,26 +166,34 @@ public:
    */
   virtual void handleOutput() = 0;
 
-  void setPipeline(Pipeline * const pipeline);
-  virtual void setServiceResponse(
-    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
-  virtual void setServiceResponseForFace(
-    std::shared_ptr<object_msgs::srv::DetectObject::Response> response) {}
-  virtual void setServiceResponse(
-    std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response) {}
-  virtual void setServiceResponse(
-    std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response) {}
-  virtual void setServiceResponse(
-    std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response) {}
-  virtual void setServiceResponse(
-    std::shared_ptr<object_msgs::srv::People::Response> response) {}
-  Pipeline * getPipeline() const;
+  void setPipeline(Pipeline* const pipeline);
+  virtual void setServiceResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+  {
+  }
+  virtual void setServiceResponseForFace(std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
+  {
+  }
+  virtual void setServiceResponse(std::shared_ptr<object_msgs::srv::AgeGenderSrv::Response> response)
+  {
+  }
+  virtual void setServiceResponse(std::shared_ptr<object_msgs::srv::EmotionSrv::Response> response)
+  {
+  }
+  virtual void setServiceResponse(std::shared_ptr<object_msgs::srv::HeadPoseSrv::Response> response)
+  {
+  }
+  virtual void setServiceResponse(std::shared_ptr<object_msgs::srv::People::Response> response)
+  {
+  }
+  Pipeline* getPipeline() const;
   cv::Mat getFrame() const;
-  virtual void clearData() {}
+  virtual void clearData()
+  {
+  }
 
 protected:
   cv::Mat frame_;
-  Pipeline * pipeline_;
+  Pipeline* pipeline_;
   std::string output_name_;
 };
 }  // namespace Outputs

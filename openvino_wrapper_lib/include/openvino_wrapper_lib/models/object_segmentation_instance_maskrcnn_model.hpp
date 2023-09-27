@@ -27,17 +27,16 @@ namespace Models
 class ObjectSegmentationInstanceMaskrcnnModel : public ObjectSegmentationInstanceModel
 {
   using Result = openvino_wrapper_lib::ObjectSegmentationInstanceResult;
-public:
-  ObjectSegmentationInstanceMaskrcnnModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
 
-  bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult> & results,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false);
+public:
+  ObjectSegmentationInstanceMaskrcnnModel(const std::string& label_loc, const std::string& model_loc,
+                                          int batch_size = 1);
+
+  bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                    std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results,
+                    const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false);
 
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_SEGMENTATION_INSTANCE_MASKRCNN_MODEL_HPP_

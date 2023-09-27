@@ -28,7 +28,7 @@ namespace Input
 class Ros2Handler
 {
 public:
-  void setHandler(const std::shared_ptr<rclcpp::Node> & node)
+  void setHandler(const std::shared_ptr<rclcpp::Node>& node)
   {
     node_ = node;
   }
@@ -43,14 +43,14 @@ public:
   inline void setHeader(std::string frame_id)
   {
     header_.frame_id = frame_id;
-  #if true //directly use RCLCPP api for time stamp generation.
+#if true  // directly use RCLCPP api for time stamp generation.
     header_.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
-  #else
+#else
     std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
     int64 ns = tp.time_since_epoch().count();
     header_.stamp.sec = ns / 1000000000;
     header_.stamp.nanosec = ns % 1000000000;
-  #endif
+#endif
   }
 
   inline void setHeader(std_msgs::msg::Header header)
@@ -76,6 +76,7 @@ public:
   {
     return locked_header_;
   }
+
 private:
   std::shared_ptr<rclcpp::Node> node_;
   std_msgs::msg::Header header_;

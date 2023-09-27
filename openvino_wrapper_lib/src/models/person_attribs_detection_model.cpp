@@ -21,13 +21,14 @@
 #include "openvino_wrapper_lib/models/person_attribs_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Person Attributes Detection Network
-Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
+Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(const std::string& label_loc,
+                                                                 const std::string& model_loc, int max_batch_size)
+  : BaseModel(label_loc, model_loc, max_batch_size)
+{
+}
 
-bool Models::PersonAttribsDetectionModel::updateLayerProperty(
-  std::shared_ptr<ov::Model>& model)
-{ 
+bool Models::PersonAttribsDetectionModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
+{
   slog::info << "Checking INPUTs for model " << getModelName() << slog::endl;
   auto input_info_map = model->inputs();
   if (input_info_map.size() != 1) {
@@ -36,11 +37,9 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   ov::preprocess::PrePostProcessor ppp = ov::preprocess::PrePostProcessor(model);
   input_tensor_name_ = model->input().get_any_name();
   ov::preprocess::InputInfo& input_info = ppp.input(input_tensor_name_);
-  const ov::Layout tensor_layout{"NCHW"};
-  input_info.tensor().
-    set_element_type(ov::element::u8).
-    set_layout(tensor_layout);
- 
+  const ov::Layout tensor_layout{ "NCHW" };
+  input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
+
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   auto output_info_map = model->outputs();
   if (output_info_map.size() != 3) {
@@ -49,7 +48,7 @@ bool Models::PersonAttribsDetectionModel::updateLayerProperty(
 
   model = ppp.build();
   addInputInfo(ModelAttribute::DefaultInputName, input_tensor_name_);
-  addOutputInfo("attributes_output_",output_info_map[0].get_any_name());
+  addOutputInfo("attributes_output_", output_info_map[0].get_any_name());
   addOutputInfo("top_output_", output_info_map[1].get_any_name());
   addOutputInfo("bottom_output_", output_info_map[2].get_any_name());
 

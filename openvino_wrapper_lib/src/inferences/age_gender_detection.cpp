@@ -25,35 +25,30 @@
 #include "openvino_wrapper_lib/outputs/base_output.hpp"
 
 // AgeGenderResult
-openvino_wrapper_lib::AgeGenderResult::AgeGenderResult(const cv::Rect & location)
-: Result(location)
+openvino_wrapper_lib::AgeGenderResult::AgeGenderResult(const cv::Rect& location) : Result(location)
 {
 }
 
 // AgeGender Detection
-openvino_wrapper_lib::AgeGenderDetection::AgeGenderDetection()
-: openvino_wrapper_lib::BaseInference()
+openvino_wrapper_lib::AgeGenderDetection::AgeGenderDetection() : openvino_wrapper_lib::BaseInference()
 {
 }
 
 openvino_wrapper_lib::AgeGenderDetection::~AgeGenderDetection() = default;
 
-void openvino_wrapper_lib::AgeGenderDetection::loadNetwork(
-  std::shared_ptr<Models::AgeGenderDetectionModel> network)
+void openvino_wrapper_lib::AgeGenderDetection::loadNetwork(std::shared_ptr<Models::AgeGenderDetectionModel> network)
 {
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-bool openvino_wrapper_lib::AgeGenderDetection::enqueue(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+bool openvino_wrapper_lib::AgeGenderDetection::enqueue(const cv::Mat& frame, const cv::Rect& input_frame_loc)
 {
   if (getEnqueuedNum() == 0) {
     results_.clear();
   }
-  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<float>(
-    frame, input_frame_loc, 1, getResultsLength(), valid_model_->getInputName());
+  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<float>(frame, input_frame_loc, 1, getResultsLength(),
+                                                                     valid_model_->getInputName());
   if (!succeed) {
     return false;
   }
@@ -89,8 +84,7 @@ int openvino_wrapper_lib::AgeGenderDetection::getResultsLength() const
   return static_cast<int>(results_.size());
 }
 
-const openvino_wrapper_lib::Result *
-openvino_wrapper_lib::AgeGenderDetection::getLocationResult(int idx) const
+const openvino_wrapper_lib::Result* openvino_wrapper_lib::AgeGenderDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
@@ -100,20 +94,19 @@ const std::string openvino_wrapper_lib::AgeGenderDetection::getName() const
   return valid_model_->getModelCategory();
 }
 
-void openvino_wrapper_lib::AgeGenderDetection::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+void openvino_wrapper_lib::AgeGenderDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
 }
 
-const std::vector<cv::Rect> openvino_wrapper_lib::AgeGenderDetection::getFilteredROIs(
-  const std::string filter_conditions) const
+const std::vector<cv::Rect>
+openvino_wrapper_lib::AgeGenderDetection::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!filter_conditions.empty()) {
-    slog::err << "Age gender detection does not support filtering now! " <<
-      "Filter conditions: " << filter_conditions << slog::endl;
+    slog::err << "Age gender detection does not support filtering now! "
+              << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
   for (auto res : results_) {

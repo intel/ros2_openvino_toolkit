@@ -29,7 +29,7 @@ namespace Models
 class ObjectSegmentationModel : public BaseModel
 {
 public:
-  ObjectSegmentationModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectSegmentationModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
   inline int getMaxProposalCount() const
   {
     return max_proposal_count_;
@@ -39,12 +39,9 @@ public:
     return object_size_;
   }
 
-  bool enqueue(const std::shared_ptr<Engines::Engine> & ,const cv::Mat &,
-    const cv::Rect & ) override;
+  bool enqueue(const std::shared_ptr<Engines::Engine>&, const cv::Mat&, const cv::Rect&) override;
 
-  bool matToBlob(
-    const cv::Mat & , const cv::Rect &, float ,
-    int , const std::shared_ptr<Engines::Engine> & );
+  bool matToBlob(const cv::Mat&, const cv::Rect&, float, int, const std::shared_ptr<Engines::Engine>&);
 
   /**
    * @brief Get the name of this segmentation model.

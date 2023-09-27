@@ -39,27 +39,28 @@ class ModelAttribute
 {
 public:
   using Ptr = std::shared_ptr<ModelAttribute>;
-  const char* DefaultInputName {"input0"};
+  const char* DefaultInputName{ "input0" };
   const char* DefaultOutputName = "output0";
-  struct ModelAttr {
-    // Input Tensor Size 
+  struct ModelAttr
+  {
+    // Input Tensor Size
     int input_height = 0;
     int input_width = 0;
 
-    //Input/Output Tensor Info
-    int input_tensor_count = 1;  // The number of input tensors
-    int output_tensor_count = 1; // The number of output tensors
-    bool has_confidence_output = true; //Yolov5~7 have a float for confidence, while yolov8 hasn't.
-    bool need_transpose = false; // If the output tensor needs transpose
-    int max_proposal_count = 0; // The max number of objects in inference output tensor
-    int object_size = 0; //The size of each object in inference output tensor
+    // Input/Output Tensor Info
+    int input_tensor_count = 1;         // The number of input tensors
+    int output_tensor_count = 1;        // The number of output tensors
+    bool has_confidence_output = true;  // Yolov5~7 have a float for confidence, while yolov8 hasn't.
+    bool need_transpose = false;        // If the output tensor needs transpose
+    int max_proposal_count = 0;         // The max number of objects in inference output tensor
+    int object_size = 0;                // The size of each object in inference output tensor
     std::map<std::string, std::string> input_names;
     std::map<std::string, std::string> output_names;
 
     std::string model_name;
     std::vector<std::string> labels;
   };
-  
+
   ModelAttribute(const std::string model_name)
   {
     attr_.model_name = model_name;
@@ -67,8 +68,8 @@ public:
 
   inline bool isVerified()
   {
-    return (attr_.max_proposal_count > 0 && attr_.object_size > 0 && attr_.input_height > 0
-      && attr_.input_width > 0 && attr_.input_names.empty() && attr_.output_names.empty());
+    return (attr_.max_proposal_count > 0 && attr_.object_size > 0 && attr_.input_height > 0 && attr_.input_width > 0 &&
+            attr_.input_names.empty() && attr_.output_names.empty());
   }
   inline void printAttribute()
   {
@@ -80,50 +81,50 @@ public:
     slog::info << "| input_width: " << attr_.input_width << slog::endl;
     slog::info << "| input_tensor_count: " << attr_.input_tensor_count << slog::endl;
     slog::info << "| output_tensor_count: " << attr_.output_tensor_count << slog::endl;
-    slog::info << "| need_transpose (max_proposal_count < object_size): " << std::boolalpha
-               << attr_.need_transpose << slog::endl;
-    slog::info << "| has_confidence_output: " << std::boolalpha << attr_.has_confidence_output <<
-      slog::endl;
+    slog::info << "| need_transpose (max_proposal_count < object_size): " << std::boolalpha << attr_.need_transpose
+               << slog::endl;
+    slog::info << "| has_confidence_output: " << std::boolalpha << attr_.has_confidence_output << slog::endl;
 
     slog::info << "| input_names: " << slog::endl;
-    for (auto & item: attr_.input_names) {
+    for (auto& item : attr_.input_names) {
       slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
     }
     slog::info << "| output_names: " << slog::endl;
-    for (auto & item: attr_.output_names) {
+    for (auto& item : attr_.output_names) {
       slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
     }
 
     slog::info << "| lables:" << slog::endl;
-    for (size_t i = 0; i<attr_.labels.size(); i++){
-      if (i % 8 == 0 ) slog::info << "|    ";
-      slog::info  << "[" <<  i << ":" << attr_.labels[i] << "]";
-      if (i % 8 == 7) slog::info << slog::endl;
+    for (size_t i = 0; i < attr_.labels.size(); i++) {
+      if (i % 8 == 0)
+        slog::info << "|    ";
+      slog::info << "[" << i << ":" << attr_.labels[i] << "]";
+      if (i % 8 == 7)
+        slog::info << slog::endl;
     }
     slog::info << slog::endl;
 
-    if(attr_.max_proposal_count <= 0 || attr_.object_size <= 0 || attr_.input_height <= 0
-      || attr_.input_width <= 0 || attr_.input_names.empty() || attr_.output_names.empty()){
+    if (attr_.max_proposal_count <= 0 || attr_.object_size <= 0 || attr_.input_height <= 0 || attr_.input_width <= 0 ||
+        attr_.input_names.empty() || attr_.output_names.empty()) {
       slog::info << "--------" << slog::endl;
       slog::warn << "Not all attributes are set correctly! not 0 or empty is allowed in"
-        << " the above list." << slog::endl;
+                 << " the above list." << slog::endl;
     }
-    if( attr_.input_tensor_count != static_cast<int>(attr_.input_names.size())){
+    if (attr_.input_tensor_count != static_cast<int>(attr_.input_names.size())) {
       slog::info << "--------" << slog::endl;
-      slog::warn << "The count of input_tensor(s) is not aligned with input names!"
-        << slog::endl;
+      slog::warn << "The count of input_tensor(s) is not aligned with input names!" << slog::endl;
     }
-    if( attr_.output_tensor_count != static_cast<int>(attr_.output_names.size())){
+    if (attr_.output_tensor_count != static_cast<int>(attr_.output_names.size())) {
       slog::info << "--------" << slog::endl;
-      slog::warn << "The count of output_tensor(s) is not aligned with output names!"
-        << slog::endl;
+      slog::warn << "The count of output_tensor(s) is not aligned with output names!" << slog::endl;
     }
     slog::info << "-------------------- Attributes for Model <End>----------------------" << slog::endl;
   }
 
-  virtual bool updateLayerProperty(
-    const std::shared_ptr<ov::Model>&)
-  { return false; }
+  virtual bool updateLayerProperty(const std::shared_ptr<ov::Model>&)
+  {
+    return false;
+  }
 
   inline std::string getModelName() const
   {
@@ -138,22 +139,22 @@ public:
   inline std::string getInputName(std::string name = "input0") const
   {
     auto it = attr_.input_names.find(name);
-    if(it == attr_.input_names.end()){
+    if (it == attr_.input_names.end()) {
       slog::warn << "No input named: " << name << slog::endl;
       return std::string("");
     }
-    
+
     return it->second;
   }
 
   inline std::string getOutputName(std::string name = "output0") const
   {
     auto it = attr_.output_names.find(name);
-    if(it == attr_.output_names.end()){
+    if (it == attr_.output_names.end()) {
       slog::warn << "No output named: " << name << slog::endl;
       return std::string("");
     }
-    
+
     return it->second;
   }
 
@@ -170,7 +171,7 @@ public:
   inline void loadLabelsFromFile(const std::string file_path)
   {
     std::ifstream input_file(file_path);
-    for(std::string name; std::getline(input_file, name);){
+    for (std::string name; std::getline(input_file, name);) {
       attr_.labels.push_back(name);
     }
   }
@@ -265,13 +266,13 @@ public:
     return attr_.need_transpose;
   }
 
-  inline bool _renameMapKeyByValue(std::map<std::string, std::string>& map,
-    const std::string& value, const std::string& new_key)
+  inline bool _renameMapKeyByValue(std::map<std::string, std::string>& map, const std::string& value,
+                                   const std::string& new_key)
   {
-    for (auto& item: map){
+    for (auto& item : map) {
       auto n = item.second.find(value);
       if (std::string::npos != n) {
-      //if(item.second.contains(value)){
+        // if(item.second.contains(value)){
         auto nh = map.extract(item.first);
         nh.key() = new_key;
         map.insert(std::move(nh));
@@ -291,6 +292,7 @@ public:
   {
     return _renameMapKeyByValue(attr_.input_names, value, new_tag);
   }
+
 protected:
   ModelAttr attr_;
   std::string input_tensor_name_;
@@ -304,9 +306,7 @@ class SSDModelAttr : public ModelAttribute
 public:
   explicit SSDModelAttr(const std::string model_name = "SSDNet-like");
 
-  bool updateLayerProperty(
-    const std::shared_ptr<ov::Model>&);
-
+  bool updateLayerProperty(const std::shared_ptr<ov::Model>&);
 };
 
 }  // namespace Models

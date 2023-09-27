@@ -28,11 +28,12 @@ namespace Models
  * @brief This class generates the face detection model.
  */
 #pragma pack(1)
-    typedef struct Resize {
-        cv::Mat resized_image;
-        int dw{};
-        int dh{};
-    } Resize_t;
+typedef struct Resize
+{
+  cv::Mat resized_image;
+  int dw{};
+  int dh{};
+} Resize_t;
 #pragma pack()
 
 class ObjectDetectionYolov5Model : public ObjectDetectionModel
@@ -40,18 +41,14 @@ class ObjectDetectionYolov5Model : public ObjectDetectionModel
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
-  bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false) override;
+  bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                    std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results,
+                    const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false) override;
 
-  bool enqueue(
-    const std::shared_ptr<Engines::Engine> & engine,
-    const cv::Mat & frame,
-    const cv::Rect & input_frame_loc) override;
+  bool enqueue(const std::shared_ptr<Engines::Engine>& engine, const cv::Mat& frame,
+               const cv::Rect& input_frame_loc) override;
 
   /**
    * @brief Get the name of this detection model.
