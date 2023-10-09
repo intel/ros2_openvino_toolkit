@@ -65,9 +65,10 @@ public:
     std::string model;
     std::string model_type;
     std::string label;
-    int batch;
+    int batch = 1;
     float confidence_threshold = 0.5;
     bool enable_roi_constraint = false;
+    float nms_threshold = 0.45;
   };
 
   struct FilterRawData

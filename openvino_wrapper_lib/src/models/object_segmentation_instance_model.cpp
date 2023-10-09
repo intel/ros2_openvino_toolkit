@@ -31,6 +31,18 @@ Models::ObjectSegmentationInstanceModel::ObjectSegmentationInstanceModel(const s
                                                                          int max_batch_size)
   : BaseModel(label_loc, model_loc, max_batch_size)
 {
+  setDefaultConfig();
+}
+
+Models::ObjectSegmentationInstanceModel::ObjectSegmentationInstanceModel(
+    const Params::ParamManager::InferenceRawData & config)
+    : BaseModel(config)
+{
+  setDefaultConfig();
+}
+
+void Models::ObjectSegmentationInstanceModel::setDefaultConfig()
+{
   setHasConfidenceOutput(false);
   setKeepInputShapeRatio(true);
   setCountOfInputs(1);
@@ -160,7 +172,8 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
     std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results, const float& confidence_thresh,
     const bool& enable_roi_constraint)
 {
-  const float NMS_THRESHOLD = 0.45;  //  threshold for removing overlapping bounding boxes
+  const float NMS_THRESHOLD = config_.nms_threshold;   //  threshold for removing overlapping bounding boxes
+  slog::debug << "NMS_THRESHOLD=" << NMS_THRESHOLD << slog::endl;
 
   ov::InferRequest request = engine->getRequest();
   std::string det_output = getOutputName("detection");

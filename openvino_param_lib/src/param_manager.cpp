@@ -94,6 +94,7 @@ void operator>>(const YAML::Node& node, ParamManager::InferenceRawData& infer)
   YAML_PARSE(node, "batch", infer.batch)
   YAML_PARSE(node, "confidence_threshold", infer.confidence_threshold)
   YAML_PARSE(node, "enable_roi_constraint", infer.enable_roi_constraint)
+  YAML_PARSE(node, "nms_threshold", infer.nms_threshold)
   if (infer.model_type.size() == 0) {
     infer.model_type = "SSD";
   }
@@ -193,6 +194,7 @@ void ParamManager::print() const
       slog::info << "\t\tBatch: " << infer.batch << slog::endl;
       slog::info << "\t\tConfidence_threshold: " << infer.confidence_threshold << slog::endl;
       slog::info << "\t\tEnable_roi_constraint: " << infer.enable_roi_constraint << slog::endl;
+      slog::info << "\t\tNMS_threshold: " << infer.nms_threshold << slog::endl;
     }
 
     slog::info << "\tConnections: " << slog::endl;

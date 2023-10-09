@@ -361,7 +361,7 @@ PipelineManager::createObjectSegmentationInstance(const Params::ParamManager::In
     model = std::make_shared<Models::ObjectSegmentationInstanceMaskrcnnModel>(infer.label, infer.model, infer.batch);
   } else {
     slog::info << "Model Typle: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
-    model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer.label, infer.model, infer.batch);
+    model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer);
   }
   model->modelInit();
   slog::info << "Instance Segmentation model initialized." << slog::endl;

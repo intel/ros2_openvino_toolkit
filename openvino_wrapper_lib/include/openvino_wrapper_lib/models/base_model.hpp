@@ -30,6 +30,7 @@
 #include <fstream>
 
 #include <openvino/openvino.hpp>
+#include <openvino_param_lib/param_manager.hpp>
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino_wrapper_lib/models/attributes/base_attribute.hpp"
 
@@ -64,6 +65,13 @@ public:
    * @return Whether the input device is successfully turned on.
    */
   BaseModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+
+  /**
+   * @brief Initialize the class with given external parameters. It requires some items should
+   * be set, such as: [lable path, model path, batch size]
+   * @param[in] config the configuration structure to be set to the model class.
+   */
+  BaseModel(const Params::ParamManager::InferenceRawData& config);
 
   /**
    * @brief Get the maximum batch size of the model.
@@ -167,6 +175,10 @@ protected:
   {
     return expected_frame_size_;
   }
+
+protected:
+  // config_ archives the model configuration from extermal YAML file
+  Params::ParamManager::InferenceRawData config_;
 
 private:
   int max_batch_size_;

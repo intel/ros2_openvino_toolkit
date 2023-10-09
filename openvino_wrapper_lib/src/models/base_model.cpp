@@ -39,6 +39,13 @@ Models::BaseModel::BaseModel(const std::string& label_loc, const std::string& mo
   }
 }
 
+Models::BaseModel::BaseModel(
+  const Params::ParamManager::InferenceRawData& config)
+: BaseModel(config.label, config.model, config.batch)
+{
+  config_ = config;
+}
+
 void Models::BaseModel::modelInit()
 {
   slog::info << "Loading network files" << model_loc_ << slog::endl;

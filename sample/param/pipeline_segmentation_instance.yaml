@@ -15,6 +15,7 @@ Pipelines:
       engine: CPU #"HETERO:CPU,GPU," #"HETERO:CPU,GPU,MYRIAD"
       batch: 1
       confidence_threshold: 0.5
+      nms_threshold: 0.5
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
     - left: StandardCamera
