@@ -35,6 +35,7 @@ class ObjectSegmentationInstanceModel : public BaseModel
 
 public:
   ObjectSegmentationInstanceModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
+  ObjectSegmentationInstanceModel(const Params::ParamManager::InferenceRawData& config);
 
   virtual bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
                             std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results,
@@ -48,6 +49,9 @@ public:
    */
   const std::string getModelCategory() const override;
   virtual bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+
+private:
+  void setDefaultConfig();
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_SEGMENTATION_INSTANCE_MODEL_HPP_
