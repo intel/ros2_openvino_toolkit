@@ -291,13 +291,17 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
     slog::debug << "Mask-Ratio (Mask Tensor to Input Tensor): " << mask_rx << "x" << mask_ry << slog::endl;
     int mask_x = int(mask_rx * vx);
     int mask_y = int(mask_ry * vy);
-    int mask_w = int(mask_rx * vw);
-    int mask_h = int(mask_ry * vh);
-    if (mask_x + mask_w >= MASK_WIDTH) {
-      mask_w = MASK_WIDTH - 1;
+    int mask_w = std::ceil(mask_rx * vw);  // ensuring mask_w > 0 by std::ceil (rather than int())
+    int mask_h = std::ceil(mask_ry * vh);  // ensuring mask_h > 0 by std::ceil (rather than int())
+
+    if (mask_w + mask_x >= MASK_WIDTH) {
+      mask_w = MASK_WIDTH - mask_x - 1;
     }
-    if (mask_y + mask_h >= MASK_HEIGHT) {
-      mask_h = MASK_HEIGHT - 1;
+    if (mask_h + mask_y >= MASK_HEIGHT) {
+      mask_h = MASK_HEIGHT - mask_y - 1;
+    }
+    if (mask_w <= 0 || mask_h <= 0) {
+      break;
     }
     cv::Rect roi{ mask_x, mask_y, mask_w, mask_h };
     slog::debug << "Mask ROI:" << roi << slog::endl;
