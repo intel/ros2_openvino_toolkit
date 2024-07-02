@@ -27,7 +27,7 @@ jobs:
     #   - https://gh.io/supported-runners-and-hardware-resources
     #   - https://gh.io/using-larger-runners (GitHub.com only)
     # Consider using larger runners or machines with greater resources for possible analysis time improvements.
-    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-22.04' }}
     timeout-minutes: ${{ (matrix.language == 'swift' && 120) || 360 }}
     permissions:
       # required for all workflows
@@ -45,7 +45,7 @@ jobs:
       matrix:
         include:
         - language: c-cpp
-          build-mode: autobuild
+          build-mode: manual
         - language: python
           build-mode: none
         # CodeQL supports the following values keywords for 'language': 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
@@ -82,12 +82,18 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
-        echo 'If you are using a "manual" build mode for one or more of the' \
-          'languages you are analyzing, replace this with the commands to build' \
-          'your code, for example:'
-        echo '  make bootstrap'
-        echo '  make release'
-        exit 1
+            df -h
+            sudo docker rmi $(docker image ls -aq) || true
+            sudo swapoff /swapfile || true
+            sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc  || true
+            mkdir -p ../workspace
+            cp -r ${GITHUB_WORKSPACE}/.ci_local_test/ros2_openvino_toolkit_test ../workspace
+            cp -r ${GITHUB_WORKSPACE}  ../workspace/ros2_openvino_toolkit_test
+            ls ${GITHUB_WORKSPACE}/docker/Dockerfile
+            cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace/ros2_openvino_toolkit_test
+            ls ../workspace/ros2_openvino_toolkit_test/Dockerfile
+            cd ../workspace/ros2_openvino_toolkit_test && ./docker_run.sh
+
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
