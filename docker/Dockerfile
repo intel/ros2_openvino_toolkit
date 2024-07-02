@@ -2,11 +2,10 @@
 
 ARG ROS_PRE_INSTALLED_PKG
 ARG BUILD_FOLDER
-ARG VERSION
 FROM osrf/ros:${ROS_PRE_INSTALLED_PKG}
 VOLUME [${BUILD_FOLDER}, "/root/catkin_ws"]
 
-
+ARG VERSION
 # setting proxy env --option 
 # If needed, enable the below ENV setting by correct proxies.
 # ENV HTTP_PROXY="your_proxy"
