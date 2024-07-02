@@ -13,9 +13,9 @@ name: "CodeQL"
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "codeql-enable" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "codeql-enable" ]
   schedule:
     - cron: '41 23 * * 3'
 
@@ -93,7 +93,7 @@ jobs:
             cp ${GITHUB_WORKSPACE}/docker/Dockerfile ../workspace/ros2_openvino_toolkit_test
             ls ../workspace/ros2_openvino_toolkit_test/Dockerfile
             cd ../workspace/ros2_openvino_toolkit_test
-            docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic  -t ros2_openvino_docker:01 .
+            docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic --build-arg BUILD_FOLDER=. -t ros2_openvino_docker:01 .
 
 
     - name: Perform CodeQL Analysis
