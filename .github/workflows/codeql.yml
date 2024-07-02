@@ -95,9 +95,10 @@ jobs:
             cd ../workspace/ros2_openvino_toolkit_test
             docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic -t ros2_openvino_docker:01 .
             docker run --name temp_ov ros2_openvino_docker:01
+            docker ps
             docker cp temp_ov:/root/catkin_ws/install ~/work/_temp/codeql_databases/cpp
             docker rm temp_ov
-            ls -l ~/work/_temp/codeql_databases/
+            tree ~/work/_temp/codeql_databases/
 
 
     - name: Perform CodeQL Analysis
