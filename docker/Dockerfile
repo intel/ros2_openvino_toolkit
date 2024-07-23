@@ -1,9 +1,11 @@
 # ros2 openvino toolkit env master f1b1ca4d914186a1881b87f103be9c6e910c9d80
 
 ARG ROS_PRE_INSTALLED_PKG
+ARG BUILD_FOLDER
 FROM osrf/ros:${ROS_PRE_INSTALLED_PKG}
-ARG VERSION
+VOLUME [${BUILD_FOLDER}, "/root/catkin_ws"]
 
+ARG VERSION
 # setting proxy env --option 
 # If needed, enable the below ENV setting by correct proxies.
 # ENV HTTP_PROXY="your_proxy"
