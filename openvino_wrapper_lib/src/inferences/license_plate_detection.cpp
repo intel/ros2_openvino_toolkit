@@ -30,14 +30,11 @@ openvino_wrapper_lib::LicensePlateDetectionResult::LicensePlateDetectionResult(
 : Result(location) {}
 
 // LicensePlateDetection
-openvino_wrapper_lib::LicensePlateDetection::LicensePlateDetection()
-: openvino_wrapper_lib::BaseInference() {}
-
-openvino_wrapper_lib::LicensePlateDetection::~LicensePlateDetection() = default;
 void openvino_wrapper_lib::LicensePlateDetection::loadNetwork(
-  const std::shared_ptr<Models::LicensePlateDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::LicensePlateDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 

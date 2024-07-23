@@ -26,12 +26,6 @@
 #include "openvino_wrapper_lib/outputs/image_window_output.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 
-Outputs::ImageWindowOutput::ImageWindowOutput(const std::string & output_name, int focal_length)
-: BaseOutput(output_name), focal_length_(focal_length)
-{
-  cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
-}
-
 void Outputs::ImageWindowOutput::feedFrame(const cv::Mat & frame)
 {
   // frame_ = frame;

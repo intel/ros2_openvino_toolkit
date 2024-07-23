@@ -33,25 +33,24 @@ openvino_wrapper_lib::ObjectDetectionResult::ObjectDetectionResult(const cv::Rec
 }
 
 // ObjectDetection
-openvino_wrapper_lib::ObjectDetection::ObjectDetection(
-  bool enable_roi_constraint,
-  double show_output_thresh)
-: show_output_thresh_(show_output_thresh),
-  enable_roi_constraint_(enable_roi_constraint), openvino_wrapper_lib::BaseInference()
+void openvino_wrapper_lib::ObjectDetection::init(
+  const Params::ParamManager::InferenceRawData &val)
 {
-  result_filter_ = std::make_shared<Filter>();
-  result_filter_->init();
+    show_output_thresh_ = val.confidence_threshold;
+    enable_roi_constraint_ = val.enable_roi_constraint;
+
+    result_filter_ = std::make_shared<Filter>();
+    result_filter_->init();
 }
 
-openvino_wrapper_lib::ObjectDetection::~ObjectDetection() = default;
-
 void openvino_wrapper_lib::ObjectDetection::loadNetwork(
-  std::shared_ptr<Models::ObjectDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::ObjectDetectionModel>(network);
 
   setMaxBatchSize(network->getMaxBatchSize());
 }
+
 bool openvino_wrapper_lib::ObjectDetection::enqueue(
   const cv::Mat & frame,
   const cv::Rect & input_frame_loc)

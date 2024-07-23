@@ -25,18 +25,24 @@
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/outputs/rviz_output.hpp"
 
-Outputs::RvizOutput::RvizOutput(std::string output_name, const rclcpp::Node::SharedPtr node)
-: BaseOutput(output_name)
-{
+
+void Outputs::RvizOutput::initialize(
+  const std::string &name, 
+  rclcpp::Node::SharedPtr parent_node)
+{ 
+  output_name_ = name;
+  const rclcpp::Node::SharedPtr node = parent_node;
+
   if(node != nullptr){
     node_ = node;
   } else {
-    node_ = rclcpp::Node::make_shared(output_name + "_image_publisher");
+    node_ = rclcpp::Node::make_shared(output_name_ + "_image_publisher");
   }
   image_topic_ = nullptr;
   pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>(
     "/openvino_toolkit/" + output_name_ + "/images", 16);
-  image_window_output_ = std::make_shared<Outputs::ImageWindowOutput>(output_name_, 950);
+  image_window_output_ = std::make_shared<Outputs::ImageWindowOutput>();
+  image_window_output_->initialize(output_name_, 950);
 }
 
 void Outputs::RvizOutput::feedFrame(const cv::Mat & frame)

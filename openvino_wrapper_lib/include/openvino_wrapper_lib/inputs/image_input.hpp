@@ -32,6 +32,7 @@ namespace Input
 class Image : public BaseInputDevice
 {
 public:
+  Image() {};
   explicit Image(const std::string &);
   /**
    * @brief Read an image file from the file path.
@@ -39,6 +40,14 @@ public:
    * @return Whether the input device is successfully turned on.
    */
   bool initialize() override;
+
+  /**
+   * @brief Read an image file from the file path.
+   * @param[in] An image file path.
+   * @return Whether the input device is successfully setup.
+   */
+  bool initialize(const std::string &file) override {file_.assign(file); return initialize();};
+
   /**
    * @brief Initialize the input device with given width and height.
    * No implementation for Image class.

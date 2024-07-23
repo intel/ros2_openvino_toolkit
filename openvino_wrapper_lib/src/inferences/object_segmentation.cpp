@@ -35,18 +35,17 @@ openvino_wrapper_lib::ObjectSegmentationResult::ObjectSegmentationResult(const c
 }
 
 // ObjectSegmentation
-openvino_wrapper_lib::ObjectSegmentation::ObjectSegmentation(double show_output_thresh)
-    : show_output_thresh_(show_output_thresh), openvino_wrapper_lib::BaseInference()
+void openvino_wrapper_lib::ObjectSegmentation::init(
+  const Params::ParamManager::InferenceRawData &val)
 {
+    show_output_thresh_ = val.confidence_threshold;
 }
 
-openvino_wrapper_lib::ObjectSegmentation::~ObjectSegmentation() = default;
-
 void openvino_wrapper_lib::ObjectSegmentation::loadNetwork(
-    const std::shared_ptr<Models::ObjectSegmentationModel> network)
+    const std::shared_ptr<Models::BaseModel> network)
 {
-  slog::info << "Loading Network: " << network->getModelCategory() << slog::endl;
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::ObjectSegmentationModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
@@ -235,3 +234,4 @@ const std::vector<cv::Rect> openvino_wrapper_lib::ObjectSegmentation::getFiltere
   std::vector<cv::Rect> filtered_rois;
   return filtered_rois;
 }
+

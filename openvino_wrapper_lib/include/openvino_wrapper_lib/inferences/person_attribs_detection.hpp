@@ -72,12 +72,17 @@ class PersonAttribsDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::PersonAttribsDetectionResult;
-  explicit PersonAttribsDetection(double);
-  ~PersonAttribsDetection() override;
+  
+  PersonAttribsDetection() {};
+  ~PersonAttribsDetection() override {}
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
   /**
    * @brief Load the person attributes detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::PersonAttribsDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

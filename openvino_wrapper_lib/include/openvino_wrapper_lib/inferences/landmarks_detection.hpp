@@ -54,12 +54,12 @@ class LandmarksDetection : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::LandmarksDetectionResult;
-  LandmarksDetection();
-  ~LandmarksDetection() override;
+  LandmarksDetection() {};
+  ~LandmarksDetection() override {};
   /**
    * @brief Load the landmarks detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::LandmarksDetectionModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

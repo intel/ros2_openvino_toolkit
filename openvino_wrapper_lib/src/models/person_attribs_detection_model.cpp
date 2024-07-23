@@ -21,10 +21,6 @@
 #include "openvino_wrapper_lib/models/person_attribs_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Person Attributes Detection Network
-Models::PersonAttribsDetectionModel::PersonAttribsDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 bool Models::PersonAttribsDetectionModel::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 { 

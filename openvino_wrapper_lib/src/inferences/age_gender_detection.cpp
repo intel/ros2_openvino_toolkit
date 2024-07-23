@@ -30,18 +30,11 @@ openvino_wrapper_lib::AgeGenderResult::AgeGenderResult(const cv::Rect & location
 {
 }
 
-// AgeGender Detection
-openvino_wrapper_lib::AgeGenderDetection::AgeGenderDetection()
-: openvino_wrapper_lib::BaseInference()
-{
-}
-
-openvino_wrapper_lib::AgeGenderDetection::~AgeGenderDetection() = default;
-
 void openvino_wrapper_lib::AgeGenderDetection::loadNetwork(
-  std::shared_ptr<Models::AgeGenderDetectionModel> network)
+  const std::shared_ptr<Models::BaseModel> network)
 {
-  valid_model_ = network;
+  valid_model_ = std::dynamic_pointer_cast<Models::AgeGenderDetectionModel>(network);
+
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
