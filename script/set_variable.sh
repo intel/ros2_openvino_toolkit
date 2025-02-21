@@ -14,5 +14,5 @@ elif [ "$openvino_version" == "binary" ]; then
 else
   echo "openvino version error"
 fi
-echo "model_downloader="$model_downloader
-echo "model_optimizer="$model_optimizer
+echo "model_downloader=""$model_downloader"
+echo "model_optimizer=""$model_optimizer"
