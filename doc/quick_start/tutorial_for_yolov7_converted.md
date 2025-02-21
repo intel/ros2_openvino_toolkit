@@ -15,8 +15,8 @@ files using the OpenVINO model optimizer. This method can help OpenVINO users op
 ## Reference Document
 |Doc|Link|
 |---|---|
-|OpenVINO|[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
-|YOLOv7|[yolov7](https://github.com/WongKinYiu/yolov7)|
+|OpenVINO transition guide|[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
+|YOLOv7 documentation |[yolov7](https://github.com/WongKinYiu/yolov7)|
 
 # Convert Weight File to ONNX
 * Copy YOLOv7 Repository from GitHub

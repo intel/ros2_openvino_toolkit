@@ -78,7 +78,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
  sudo cp /root/ros2_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/vehicle-license-plate-detection/output/intel/vehicle-license-plate-detection-barrier-0106/FP32
 ```
 
-* If the model (tensorflow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
+* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi)need to be converted to intermediate representation (For example the model for object detection)
   * ssd_mobilenet_v2_coco
   ```
   cd /opt/openvino_toolkit/models/
@@ -98,7 +98,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   sudo python3 /opt/intel/openvino_2021/deployment_tools/open_model_zoo/tools/downloader/converter.py --name=yolo-v2-tf --mo /opt/intel/openvino_2021/deployment_tools/model_optimizer/mo.py
   ```
 
-* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the paramter like model path, label path, inputs are right.
+* Before launch, check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml, make sure the parameter like model path, label path, inputs are right.
   * run face detection sample code input from StandardCamera.
   ```
   ros2 launch dynamic_vino_sample pipeline_people.launch.py
@@ -133,7 +133,7 @@ sudo python3 downloader.py --name person-attributes-recognition-crossroad-0230 -
   ```
 
 # More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 

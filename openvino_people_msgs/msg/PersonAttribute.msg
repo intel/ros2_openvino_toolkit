@@ -12,6 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# This message can represent a peron's attributes
+# This message can represent a person's attributes
 string attribute  					# person attributes
 sensor_msgs/RegionOfInterest roi    # region of interest
