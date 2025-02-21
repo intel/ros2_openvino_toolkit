@@ -22,7 +22,7 @@
 #include <random>
 #include <iostream>
 
-#include <inference_engine.hpp>
+//#include <inference_engine.hpp>
 #include <openvino/openvino.hpp>
 
 #ifndef UNUSED
