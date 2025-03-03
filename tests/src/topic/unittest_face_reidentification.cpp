@@ -79,7 +79,7 @@ TEST(UnitTestFaceReidentification, testFaceDetection)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>(
-        "/ros2_openvino_toolkit/face_detection", rclcpp::QoS(1), openvino_face_detection_callback);
+        "ros2_openvino_toolkit/face_detection", rclcpp::QoS(1), openvino_face_detection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -107,7 +107,7 @@ TEST(UnitTestFaceReidentification, testLandmarkDetection)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::LandmarkStamped>(
-        "/ros2_openvino_toolkit/detected_landmarks", qos, openvino_landmark_detection_callback);
+        "ros2_openvino_toolkit/detected_landmarks", qos, openvino_landmark_detection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -135,7 +135,7 @@ TEST(UnitTestFaceReidentification, testReidentification)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::ReidentificationStamped>(
-        "/ros2_openvino_toolkit/reidentified_faces", qos, openvino_face_reidentification_callback);
+        "ros2_openvino_toolkit/reidentified_faces", qos, openvino_face_reidentification_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 

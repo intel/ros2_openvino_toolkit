@@ -71,7 +71,7 @@ TEST(UnitTestObjectDetection, testObjectDetection)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("/ros2_openvino_toolkit/detected_objects",
+    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("ros2_openvino_toolkit/detected_objects",
                                                                             qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));

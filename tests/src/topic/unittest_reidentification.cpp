@@ -76,7 +76,7 @@ TEST(UnitTestPersonReidentification, testReidentification)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::ReidentificationStamped>(
-        "/ros2_openvino_toolkit/reidentified_persons", qos, openvino_reidentification_callback);
+        "ros2_openvino_toolkit/reidentified_persons", qos, openvino_reidentification_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 

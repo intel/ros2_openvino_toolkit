@@ -41,7 +41,7 @@ template <typename T>
 void PipelineProcessingServer<T>::initPipelineService()
 {
   service_ =
-      create_service<T>("/openvino_toolkit/pipeline_service", std::bind(&PipelineProcessingServer::cbService, this,
+      create_service<T>("openvino_toolkit/pipeline_service", std::bind(&PipelineProcessingServer::cbService, this,
                                                                         std::placeholders::_1, std::placeholders::_2));
 }
 

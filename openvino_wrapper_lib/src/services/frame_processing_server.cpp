@@ -55,7 +55,7 @@ void FrameProcessingServer<T>::initService(const std::string& config_path)
     PipelineManager::getInstance().createPipeline(p);
   }
 
-  service_ = create_service<T>("/openvino_toolkit/service", std::bind(&FrameProcessingServer::cbService, this,
+  service_ = create_service<T>("openvino_toolkit/service", std::bind(&FrameProcessingServer::cbService, this,
                                                                       std::placeholders::_1, std::placeholders::_2));
 }
 

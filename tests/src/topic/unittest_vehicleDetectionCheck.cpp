@@ -77,7 +77,7 @@ TEST(UnitTestPersonReidentification, testReidentification)
 
   {
     auto sub1 = node->create_subscription<object_msgs::msg::LicensePlateStamped>(
-        "/ros2_openvino_toolkit/detected_license_plates", qos, openvino_vehicle_callback);
+        "ros2_openvino_toolkit/detected_license_plates", qos, openvino_vehicle_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 

@@ -33,7 +33,7 @@ Outputs::RvizOutput::RvizOutput(std::string output_name, const rclcpp::Node::Sha
     node_ = rclcpp::Node::make_shared(output_name + "_image_publisher");
   }
   image_topic_ = nullptr;
-  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>("/openvino_toolkit/" + output_name_ + "/images", 16);
+  pub_image_ = node_->create_publisher<sensor_msgs::msg::Image>("openvino_toolkit/" + output_name_ + "/images", 16);
   image_window_output_ = std::make_shared<Outputs::ImageWindowOutput>(output_name_, 950);
 }
 

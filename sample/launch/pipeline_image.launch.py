@@ -35,17 +35,18 @@ def generate_launch_description():
         launch_ros.actions.Node(
             package='openvino_node',
             executable='pipeline_with_params',
+            #namespace="<namespace>",
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
-                ('/openvino_toolkit/people/faces',
-                 '/ros2_openvino_toolkit/face_detection'),
-                ('/openvino_toolkit/people/emotions',
-                 '/ros2_openvino_toolkit/emotions_recognition'),
-                ('/openvino_toolkit/people/headposes',
-                 '/ros2_openvino_toolkit/headposes_estimation'),
-                ('/openvino_toolkit/people/age_genders',
-                 '/ros2_openvino_toolkit/people/age_genders_Recognition'),
-                ('/openvino_toolkit/people/images', '/ros2_openvino_toolkit/image_rviz')],
+                ('openvino_toolkit/people/faces',
+                 'ros2_openvino_toolkit/face_detection'),
+                ('openvino_toolkit/people/emotions',
+                 'ros2_openvino_toolkit/emotions_recognition'),
+                ('openvino_toolkit/people/headposes',
+                 'ros2_openvino_toolkit/headposes_estimation'),
+                ('openvino_toolkit/people/age_genders',
+                 'ros2_openvino_toolkit/people/age_genders_Recognition'),
+                ('openvino_toolkit/people/images', 'ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 
         # Rviz
