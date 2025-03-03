@@ -3,16 +3,15 @@
 mkdir -p /opt/openvino_toolkit/models
 #apt install -y python-pip
 apt install -y python3.8-venv
-cd ~ && python3 -m venv openvino_env && source openvino_env/bin/activate
+cd ~ && python3 -m venv openvino_env
+#shellcheck source=/dev/null
+source openvino_env/bin/activate
 python -m pip install --upgrade pip
-pip install openvino-dev[tensorflow2,onnx]==2022.3
-
+pip install "openvino-dev[tensorflow2,onnx]==2022.3"
 
 #Download the optimized Intermediate Representation (IR) of model (execute once)
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list && omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
-
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list && omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
-
 
 #Copy label files (execute once)
 cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
@@ -27,4 +26,3 @@ cp /opt/openvino_toolkit/models/convert/public/mask_rcnn_inception_resnet_v2_atr
 
 cd /root/test_cases/ && ./yolov5_model_download.sh
 cd /root/test_cases/ && ./yolov8_model_download.sh
-
