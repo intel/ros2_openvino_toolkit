@@ -24,7 +24,7 @@
 # Overview
 ## ROS2 Version Supported
 
-|Branch Name|ROS2 Version Supported|Openvino Version|OS Version|
+|Branch Name|ROS2 Version Supported|OpenVINO Version|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|
 |[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Galactic, Foxy, Humble|V2022.1, V2022.2, V2022.3|Ubuntu 20.04, Ubuntu 22.04|
 |[dashing](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Dashing|V2022.1, V2022.2, V2022.3|Ubuntu 18.04|
@@ -50,12 +50,12 @@
 |**OS**|Mandatory|We only tested this project under Ubuntu distros. It is recommended to install the corresponding Ubuntu Distro according to the ROS distro that you select to use. **For example: Ubuntu 18.04 for dashing, Ubuntu 20.04 for Foxy and Galactic, Ubuntu 22.04 for Humble.**|
 |**ROS2**|Mandatory|We have already supported active ROS distros (Humble, Galactic, Foxy and Dashing (deprecated)). Choose the one matching your needs. You may find the corresponding branch from the table above in section [**ROS2 Version Supported**](#ros2-version-supported).|
 |**OpenVINO**|Mandatory|The version of OpenVINO toolkit is decided by the OS and ROS2 distros you use. See the table above in Section [**ROS2 Version Supported**](#ros2-version-supported).|
-|**Realsense Camera**|Optional|Realsense Camera is optional, you may choose these alternatives as the input: Standard Camera, ROS Image Topic, Video/Image File or RTSP camera.|
+|**RealSense Camera**|Optional|RealSense Camera is optional, you may choose these alternatives as the input: Standard Camera, ROS Image Topic, Video/Image File or RTSP camera.|
 
 # Introduction
 ## Design Architecture
 <p><details><summary>Architecture Design</summary>
-From the view of hirarchical architecture design, the package is divided into different functional components, as shown in below picture. 
+From the view of hierarchical architecture design, the package is divided into different functional components, as shown in below picture. 
 
 ![OpenVINO_Architecture](./data/images/design_arch.PNG "OpenVINO RunTime Architecture")
 
@@ -83,8 +83,8 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>ROS Input & Output</summary>
 
-- **Diversal Input resources** are data resources to be infered and analyzed with the OpenVINO framework.
-- **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inferrence results.
+- **Diverse Input resources** are data resources to be inferred and analyzed with the OpenVINO framework.
+- **ROS interfaces and outputs** currently include _Topic_ and _service_. Natively, RViz output and CV image window output are also supported by refactoring topic message and inference results.
 </details>
 </p>
 
@@ -92,7 +92,7 @@ See more from [here](https://github.com/openvinotoolkit/openvino) for Intel Open
 <details>
 <summary>Optimized Models</summary>
 
-- **Optimized Models** provided by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, Tensorflow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization. It also supports graph freeze and graph summarize along with dynamic input freezing.
+- **Optimized Models** provided by Model Optimizer component of Intel® OpenVINO™ toolkit. Imports trained models from various frameworks (Caffe*, TensorFlow*, MxNet*, ONNX*, Kaldi*) and converts them to a unified intermediate representation file. It also optimizes topologies through node merging, horizontal fusion, eliminating batch normalization, and quantization. It also supports graph freeze and graph summarize along with dynamic input freezing.
 </details>
 </p>
 </details></p>
@@ -103,7 +103,7 @@ From the view of logic implementation, the package introduces the definitions of
 
 ![Logic_Flow](./data/images/impletation_logic.PNG "OpenVINO RunTime Logic Flow")
 
-Once a corresponding program is launched with a specified .yaml config file passed in the .launch file or via commandline, _**parameter manager**_ analyzes the configurations about pipeline and the whole framework, then shares the parsed configuration information with pipeline procedure. A _**pipeline instance**_ is created by following the configuration info and is added into _**pipeline manager**_ for lifecycle control and inference action triggering.
+Once a corresponding program is launched with a specified .yaml config file passed in the .launch file or via command line, _**parameter manager**_ analyzes the configurations about pipeline and the whole framework, then shares the parsed configuration information with pipeline procedure. A _**pipeline instance**_ is created by following the configuration info and is added into _**pipeline manager**_ for lifecycle control and inference action triggering.
 
 The contents in **.yaml config file** should be well structured and follow the supported rules and entity names. Please see [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for how to create or edit the config files.
 
@@ -111,7 +111,7 @@ The contents in **.yaml config file** should be well structured and follow the s
 <details>
 <summary>Pipeline</summary>
 
-**Pipeline** fulfills the whole data handling process: initiliazing Input Component for image data gathering and formating; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
+**Pipeline** fulfills the whole data handling process: initializing Input Component for image data gathering and formatting; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
 </details>
 </p>
 
@@ -235,7 +235,7 @@ For the snapshot of demo results, refer to the following picture.
 
 # Installation and Launching
 ## Deploy in Local Environment
-* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & lauching instructions.
+* Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 ## Deploy in Docker
@@ -274,7 +274,7 @@ For the snapshot of demo results, refer to the following picture.
 * Report questions, issues and suggestions, using: [issue](https://github.com/intel/ros2_openvino_toolkit/issues).
 
 # More Information
-* ROS2 OpenVINO discription written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
+* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw 
 
 ###### *Any security issue should be reported using process at https://01.org/security*
 

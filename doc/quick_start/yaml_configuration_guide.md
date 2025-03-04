@@ -58,16 +58,16 @@ Currently, options for inputs are:
 |Input Option|Description|Configuration|
 |--------------------|------------------------------------------------------------------|-----------------------------------------|
 |StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|```inputs: [StandardCamera]```|
-|RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
+|RealSenseCamera| Intel® RealSense™ RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
 |RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|```inputs: [Image]```|
 |Video| Any video file which can be parsed by openCV.|```inputs: [Video]```|
 |IpCamera| Any RTSP server which can push video stream.|```inputs: [IpCamera]```|
 
-**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IpCamera input.
+**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IP Camera input.
 
 ### Specify input_path
-The input_path need to be specified when input is Image, Video and Ipcamera. 
+The input_path need to be specified when input is Image, Video and IP Camera. 
 
 |Input Option|Configuration|
 |--------------------|------------------------------------------------------------------|
@@ -85,11 +85,11 @@ The name of inference engine need to be specified here. Currently, the inference
 |-----------------------|------------------------------------------------------------------|
 |FaceDetection|Object Detection task applied to face recognition using a sequence of neural networks.|
 |EmotionRecognition| Emotion recognition based on detected face image.|
-|AgeGenderRecognition| Age and gener recognition based on detected face image.|
+|AgeGenderRecognition| Age and gender recognition based on detected face image.|
 |HeadPoseEstimation| Head pose estimation based on detected face image.|
-|ObjectDetection| object detection based on SSD-based trained models.|
+|ObjectDetection| Object detection based on SSD-based trained models.|
 |VehicleDetection| Vehicle and passenger detection based on Intel models.|
-|ObjectSegmentation| object detection and segmentation.|
+|ObjectSegmentation| Object detection and segmentation.|
 |ObjectSegmentationMaskrcnn| object segmentation based on Maskrcnn model.|
 
 * #### model
