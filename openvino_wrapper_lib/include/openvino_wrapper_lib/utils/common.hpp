@@ -22,7 +22,6 @@
 #include <random>
 #include <iostream>
 
-#include <inference_engine.hpp>
 #include <openvino/openvino.hpp>
 
 #ifndef UNUSED
@@ -46,42 +45,41 @@ constexpr std::size_t arraySize(const T (&)[N]) noexcept
 // We need ADL to work in order to print these objects using slog.
 // So instead, we define wrapper classes and operator<< for those classes.
 
-class PrintableIeVersion
+class PrintableOvVersion
 {
 public:
-  using ref_type = const InferenceEngine::Version&;
+  using ref_type = const ov::Version&;
 
-  PrintableIeVersion(ref_type version) : version(version)
+  PrintableOvVersion(ref_type version) : version(version)
   {
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const PrintableIeVersion& p)
+  friend std::ostream& operator<<(std::ostream& os, const PrintableOvVersion& p)
   {
     ref_type version = p.version;
 
-    return os << "\t" << version.description << " version ......... " << IE_VERSION_MAJOR << "." << IE_VERSION_MINOR
-              << "\n\tBuild ........... " << IE_VERSION_PATCH;
+    return os << "\t" << version.description << " version ......... " << version.buildNumber;
   }
 
 private:
   ref_type version;
 };
 
-inline PrintableIeVersion printable(PrintableIeVersion::ref_type version)
+inline PrintableOvVersion printable(PrintableOvVersion::ref_type version)
 {
   return { version };
 }
 
-class PrintableIeVersionMap
+class PrintableOvVersionMap
 {
 public:
-  using ref_type = const std::map<std::string, InferenceEngine::Version>&;
+  using ref_type = const std::map<std::string, ov::Version>&;
 
-  PrintableIeVersionMap(ref_type versions) : versions(versions)
+  PrintableOvVersionMap(ref_type versions) : versions(versions)
   {
   }
 
-  friend std::ostream& operator<<(std::ostream& os, const PrintableIeVersionMap& p)
+  friend std::ostream& operator<<(std::ostream& os, const PrintableOvVersionMap& p)
   {
     ref_type versions = p.versions;
 
@@ -96,7 +94,7 @@ private:
   ref_type versions;
 };
 
-inline PrintableIeVersionMap printable(PrintableIeVersionMap::ref_type versions)
+inline PrintableOvVersionMap printable(PrintableOvVersionMap::ref_type versions)
 {
   return { versions };
 }
@@ -147,24 +145,23 @@ static UNUSED const Color CITYSCAPES_COLORS[] = {
   { 32, 11, 119 },  { 0, 74, 111 },   { 81, 0, 81 }
 };
 
-static std::vector<std::pair<std::string, InferenceEngine::InferenceEngineProfileInfo>>
-perfCountersSorted(std::map<std::string, InferenceEngine::InferenceEngineProfileInfo> perfMap)
+static std::vector<std::pair<std::string, ov::ProfilingInfo>>
+perfCountersSorted(std::map<std::string, ov::ProfilingInfo> perfMap)
 {
-  using perfItem = std::pair<std::string, InferenceEngine::InferenceEngineProfileInfo>;
+  using perfItem = std::pair<std::string, ov::ProfilingInfo>;
   std::vector<perfItem> sorted;
   for (auto& kvp : perfMap)
     sorted.push_back(kvp);
 
   std::stable_sort(sorted.begin(), sorted.end(), [](const perfItem& l, const perfItem& r) {
-    return l.second.execution_index < r.second.execution_index;
+    return l.second.real_time.count() < r.second.real_time.count();
   });
 
   return sorted;
 }
 
-static UNUSED void
-printPerformanceCounts(const std::map<std::string, InferenceEngine::InferenceEngineProfileInfo>& performanceMap,
-                       std::ostream& stream, const std::string& deviceName, bool bshowHeader = true)
+static UNUSED void printPerformanceCounts(const std::map<std::string, ov::ProfilingInfo>& performanceMap,
+                                          std::ostream& stream, const std::string& deviceName, bool bshowHeader = true)
 {
   long long totalTime = 0;
   // Print performance counts
@@ -185,22 +182,22 @@ printPerformanceCounts(const std::map<std::string, InferenceEngine::InferenceEng
 
     stream << std::setw(maxLayerName) << std::left << toPrint;
     switch (it.second.status) {
-      case InferenceEngine::InferenceEngineProfileInfo::EXECUTED:
+      case ov::ProfilingInfo::Status::EXECUTED:
         stream << std::setw(15) << std::left << "EXECUTED";
         break;
-      case InferenceEngine::InferenceEngineProfileInfo::NOT_RUN:
+      case ov::ProfilingInfo::Status::NOT_RUN:
         stream << std::setw(15) << std::left << "NOT_RUN";
         break;
-      case InferenceEngine::InferenceEngineProfileInfo::OPTIMIZED_OUT:
+      case ov::ProfilingInfo::Status::OPTIMIZED_OUT:
         stream << std::setw(15) << std::left << "OPTIMIZED_OUT";
         break;
     }
-    stream << std::setw(30) << std::left << "layerType: " + std::string(it.second.layer_type) + " ";
-    stream << std::setw(20) << std::left << "realTime: " + std::to_string(it.second.realTime_uSec);
-    stream << std::setw(20) << std::left << "cpu: " + std::to_string(it.second.cpu_uSec);
+    stream << std::setw(30) << std::left << "layerType: " + std::string(it.second.node_type) + " ";
+    stream << std::setw(20) << std::left << "realTime: " + std::to_string(it.second.real_time.count());
+    stream << std::setw(20) << std::left << "cpu: " + std::to_string(it.second.cpu_time.count());
     stream << " execType: " << it.second.exec_type << std::endl;
-    if (it.second.realTime_uSec > 0) {
-      totalTime += it.second.realTime_uSec;
+    if (it.second.real_time.count() > 0) {
+      totalTime += it.second.real_time.count();
     }
   }
   stream << std::setw(20) << std::left << "Total time: " + std::to_string(totalTime) << " microseconds" << std::endl;
@@ -209,24 +206,23 @@ printPerformanceCounts(const std::map<std::string, InferenceEngine::InferenceEng
   std::cout << std::endl;
 }
 
-static UNUSED void printPerformanceCounts(InferenceEngine::InferRequest request, std::ostream& stream,
-                                          std::string deviceName, bool bshowHeader = true)
+static UNUSED void printPerformanceCounts(ov::InferRequest request, std::ostream& stream, std::string deviceName,
+                                          bool bshowHeader = true)
 {
-  auto performanceMap = request.GetPerformanceCounts();
-  printPerformanceCounts(performanceMap, stream, deviceName, bshowHeader);
+  auto performanceMap = request.get_profiling_info();
+  //printPerformanceCounts(performanceMap, stream, deviceName, bshowHeader);
 }
 
-inline std::map<std::string, std::string> getMapFullDevicesNames(InferenceEngine::Core& ie,
-                                                                 std::vector<std::string> devices)
+inline std::map<std::string, std::string> getMapFullDevicesNames(ov::Core& core, std::vector<std::string> devices)
 {
   std::map<std::string, std::string> devicesMap;
-  InferenceEngine::Parameter p;
+  ov::Any p;
   for (std::string& deviceName : devices) {
     if (deviceName != "") {
       try {
-        p = ie.GetMetric(deviceName, METRIC_KEY(FULL_DEVICE_NAME));
-        devicesMap.insert(std::pair<std::string, std::string>(deviceName, p.as<std::string>()));
-      } catch (InferenceEngine::Exception&) {
+        std::string fullDeviceName = core.get_property(deviceName, ov::device::full_name);
+        devicesMap.insert(std::pair<std::string, std::string>(deviceName, fullDeviceName));
+      } catch (ov::Exception&) {
       }
     }
   }
@@ -243,114 +239,64 @@ inline std::string getFullDeviceName(std::map<std::string, std::string>& devices
   }
 }
 
-inline std::string getFullDeviceName(InferenceEngine::Core& ie, std::string device)
+inline std::string getFullDeviceName(ov::Core& core, std::string device)
 {
-  InferenceEngine::Parameter p;
+  ov::Any p;
   try {
-    p = ie.GetMetric(device, METRIC_KEY(FULL_DEVICE_NAME));
-    return p.as<std::string>();
-  } catch (InferenceEngine::Exception&) {
+    return core.get_property(device, ov::device::full_name);
+  } catch (ov::Exception&) {
     return "";
   }
 }
 
-inline std::size_t getTensorWidth(const InferenceEngine::TensorDesc& desc)
+inline std::size_t getTensorWidth(const ov::Tensor& tensor)
 {
-  const auto& layout = desc.getLayout();
-  const auto& dims = desc.getDims();
-  const auto& size = dims.size();
-  if ((size >= 2) && (layout == InferenceEngine::Layout::NCHW || layout == InferenceEngine::Layout::NHWC ||
-                      layout == InferenceEngine::Layout::NCDHW || layout == InferenceEngine::Layout::NDHWC ||
-                      layout == InferenceEngine::Layout::OIHW || layout == InferenceEngine::Layout::CHW ||
-                      layout == InferenceEngine::Layout::HW)) {
-    // Regardless of layout, dimensions are stored in fixed order
-    return dims.back();
+  const auto& shape = tensor.get_shape();
+  if (shape.size() >= 2) {
+    return shape.back();
   } else {
     throw std::runtime_error("Tensor does not have width dimension");
   }
   return 0;
 }
 
-inline std::size_t getTensorHeight(const InferenceEngine::TensorDesc& desc)
+inline std::size_t getTensorHeight(const ov::Tensor& tensor)
 {
-  const auto& layout = desc.getLayout();
-  const auto& dims = desc.getDims();
-  const auto& size = dims.size();
-  if ((size >= 2) && (layout == InferenceEngine::Layout::NCHW || layout == InferenceEngine::Layout::NHWC ||
-                      layout == InferenceEngine::Layout::NCDHW || layout == InferenceEngine::Layout::NDHWC ||
-                      layout == InferenceEngine::Layout::OIHW || layout == InferenceEngine::Layout::CHW ||
-                      layout == InferenceEngine::Layout::HW)) {
-    // Regardless of layout, dimensions are stored in fixed order
-    return dims.at(size - 2);
+  const auto& shape = tensor.get_shape();
+  if (shape.size() >= 2) {
+    return shape.at(shape.size() - 2);
   } else {
     throw std::runtime_error("Tensor does not have height dimension");
   }
   return 0;
 }
 
-inline std::size_t getTensorChannels(const InferenceEngine::TensorDesc& desc)
+inline std::size_t getTensorChannels(const ov::Tensor& tensor)
 {
-  const auto& layout = desc.getLayout();
-  if (layout == InferenceEngine::Layout::NCHW || layout == InferenceEngine::Layout::NHWC ||
-      layout == InferenceEngine::Layout::NCDHW || layout == InferenceEngine::Layout::NDHWC ||
-      layout == InferenceEngine::Layout::C || layout == InferenceEngine::Layout::CHW ||
-      layout == InferenceEngine::Layout::NC || layout == InferenceEngine::Layout::CN) {
-    // Regardless of layout, dimensions are stored in fixed order
-    const auto& dims = desc.getDims();
-    switch (desc.getLayoutByDims(dims)) {
-      case InferenceEngine::Layout::C:
-        return dims.at(0);
-      case InferenceEngine::Layout::NC:
-        return dims.at(1);
-      case InferenceEngine::Layout::CHW:
-        return dims.at(0);
-      case InferenceEngine::Layout::NCHW:
-        return dims.at(1);
-      case InferenceEngine::Layout::NCDHW:
-        return dims.at(1);
-      case InferenceEngine::Layout::SCALAR:   // [[fallthrough]]
-      case InferenceEngine::Layout::BLOCKED:  // [[fallthrough]]
-      default:
-        throw std::runtime_error("Tensor does not have channels dimension");
-    }
+  const auto& shape = tensor.get_shape();
+  if (shape.size() >= 3) {
+    return shape.at(1);
   } else {
     throw std::runtime_error("Tensor does not have channels dimension");
   }
   return 0;
 }
 
-inline std::size_t getTensorBatch(const InferenceEngine::TensorDesc& desc)
+inline std::size_t getTensorBatch(const ov::Tensor& tensor)
 {
-  const auto& layout = desc.getLayout();
-  if (layout == InferenceEngine::Layout::NCHW || layout == InferenceEngine::Layout::NHWC ||
-      layout == InferenceEngine::Layout::NCDHW || layout == InferenceEngine::Layout::NDHWC ||
-      layout == InferenceEngine::Layout::NC || layout == InferenceEngine::Layout::CN) {
-    // Regardless of layout, dimensions are stored in fixed order
-    const auto& dims = desc.getDims();
-    switch (desc.getLayoutByDims(dims)) {
-      case InferenceEngine::Layout::NC:
-        return dims.at(0);
-      case InferenceEngine::Layout::NCHW:
-        return dims.at(0);
-      case InferenceEngine::Layout::NCDHW:
-        return dims.at(0);
-      case InferenceEngine::Layout::CHW:      // [[fallthrough]]
-      case InferenceEngine::Layout::C:        // [[fallthrough]]
-      case InferenceEngine::Layout::SCALAR:   // [[fallthrough]]
-      case InferenceEngine::Layout::BLOCKED:  // [[fallthrough]]
-      default:
-        throw std::runtime_error("Tensor does not have channels dimension");
-    }
+  const auto& shape = tensor.get_shape();
+  if (shape.size() >= 4) {
+    return shape.at(0);
   } else {
-    throw std::runtime_error("Tensor does not have channels dimension");
+    throw std::runtime_error("Tensor does not have batch dimension");
   }
   return 0;
 }
 
 inline void showAvailableDevices()
 {
-  InferenceEngine::Core ie;
-  std::vector<std::string> devices = ie.GetAvailableDevices();
+  ov::Core core;
+  std::vector<std::string> devices = core.get_available_devices();
 
   std::cout << std::endl;
   std::cout << "Available target devices:";
@@ -377,6 +323,6 @@ static inline ov::Layout getLayoutFromShape(const ov::Shape& shape)
   } else if (shape.size() == 4) {
     return (shape[1] >= 1 && shape[1] <= 4) ? "NCHW" : "NHWC";
   } else {
-    throw std::runtime_error("Usupported " + std::to_string(shape.size()) + "D shape");
+    throw std::runtime_error("Unsupported " + std::to_string(shape.size()) + "D shape");
   }
 }
