@@ -68,7 +68,7 @@ if(OpenCV_FOUND)
     message(STATUS "OpenCV_INCLUDE_DIRS=${OpenCV_INCLUDE_DIRS}")
     message(STATUS "OpenCV_LIBS=${OpenCV_LIBS}")
 else()
-    message(STATUS "OPENCV is disabled or not found, " ${PROJECT_NAME} " skiped")
+    message(STATUS "OPENCV is disabled or not found, " ${PROJECT_NAME} " skipped")
     return()
 endif()
 

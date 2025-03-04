@@ -7,10 +7,12 @@ then
 else
     export ros2_branch=$1
 fi
-source /root/test_cases/config.sh $ros2_branch
+#shellcheck source=/dev/null
+source /root/test_cases/config.sh "$ros2_branch"
 
 cd /root/catkin_ws && colcon build --symlink-install
-cd /root/catkin_ws && source ./install/local_setup.bash
+# shellcheck source=/dev/null 
+source ./install/local_setup.bash
 
 apt-get update
 # apt-get install -y ros-$ros2_branch-diagnostic-updater
@@ -31,6 +33,5 @@ result=$?
 echo "Test ENV:" && df -h && free -g
 if [ $result -ne 0 ]
 then
-        exit -1
+        exit 1
 fi
-

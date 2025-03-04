@@ -14,8 +14,8 @@ This document describes a method to convert YOLOv5 nano PyTorch weight files wit
 ## Reference Document
 |Doc|Link|
 |---|---|
-|OpenVINO|[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
-|YOLOv5|[yolov5](https://github.com/ultralytics/yolov5)|
+|OpenVINO transition guide |[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
+|YOLOv5 documentation |[yolov5](https://github.com/ultralytics/yolov5)|
 
 # Convert Weight File to ONNX
 * Copy YOLOv5 Repository from GitHub

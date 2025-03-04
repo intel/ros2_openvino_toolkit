@@ -1,8 +1,8 @@
 
 
-The Jenkinsfile Introduce:
+Jenkins file Introduction:
 
-1. The jenkins matchine would scan the ROS2_Openvion project regularly.
+1. The Jenkins machine would scan the ROS2_OpenVINO project regularly.
 
 it would trigger test when scan the PR or other change.
 
