@@ -46,7 +46,7 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name, const rclcpp::N
   pub_person_reid_ = node_->create_publisher<object_msgs::msg::ReidentificationStamped>(
       "/openvino_toolkit/" + output_name_ + "/reidentified_persons", 16);
   pub_segmented_object_ = node_->create_publisher<object_msgs::msg::ObjectsInMasks>(
-      "/openvino_toolkit/" + output_name_ + "/segmented_obejcts", 16);
+      "/openvino_toolkit/" + output_name_ + "/segmented_objects", 16);
   pub_detected_object_ = node_->create_publisher<object_msgs::msg::ObjectsInBoxes>(
       "/openvino_toolkit/" + output_name_ + "/detected_objects", 16);
   pub_face_ =

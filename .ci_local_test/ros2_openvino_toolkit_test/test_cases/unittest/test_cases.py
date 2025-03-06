@@ -15,7 +15,7 @@ class Test_Cases(unittest.TestCase):
             sleep(3)
             print(f"{topic} {name}.log")
             subprocess.Popen([f"ros2 topic echo {topic} > {name}.log &"], shell=True)
-            if name == "segmented_obejcts":
+            if name == "segmented_objects":
                 subprocess.Popen([f"ros2 topic echo {topic} >> {name}.log &"], shell=True)
         kill_ros2_process()
         print(f"kill the test process done")
@@ -60,7 +60,7 @@ class Test_Cases(unittest.TestCase):
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
 
     def test_4_pipeline_segmentation_ci(self):
-        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        topic_ls = ["/ros2_openvino_toolkit/segmented_objects"]
         launch_file = f"pipeline_segmentation_ci_test.py"
         log_file = f"/root/test_cases/log/pipeline_segmentation_test_ci.log"
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
@@ -80,7 +80,7 @@ class Test_Cases(unittest.TestCase):
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
 
     def test_7_pipeline_segmentation_image_ci(self):
-        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        topic_ls = ["/ros2_openvino_toolkit/segmented_objects"]
         launch_file = f"pipeline_segmentation_image_ci_test.py"
         log_file = f"/root/test_cases/log/pipeline_segmentation_image_test_ci.log"
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
@@ -98,7 +98,7 @@ class Test_Cases(unittest.TestCase):
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
 
     def test_10_pipeline_segmentation_instance_ci(self):
-        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        topic_ls = ["/ros2_openvino_toolkit/segmented_objects"]
         launch_file = f"pipeline_segmentation_instance_ci_test.py"
         log_file = f"/root/test_cases/log/pipeline_segmentation_instance.log"
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)
@@ -106,7 +106,7 @@ class Test_Cases(unittest.TestCase):
 
     @unittest.skip("skip case")
     def test_9_pipeline_segmentation_maskrcnn_ci(self):
-        topic_ls = ["/ros2_openvino_toolkit/segmented_obejcts"]
+        topic_ls = ["/ros2_openvino_toolkit/segmented_objects"]
         launch_file = f"pipeline_segmentation_maskrcnn_ci_test.py"
         log_file = f"/root/test_cases/log/pipeline_segmentation_maskrcnn_test_ci.log"
         self.test_pipeline(launch_file, log_file, topic_list=topic_ls)

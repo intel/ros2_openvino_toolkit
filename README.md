@@ -182,8 +182,8 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([object_msgs:msg:AgeGenderStamped](../../../object_msgs/msg/AgeGenderStamped.msg))|
 |Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([object_msgs:msg:HeadPoseStamped](../../../object_msgs/msg/HeadPoseStamped.msg))|
 |Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Object Segmentation|```/ros2_openvino_toolkit/segmented_obejcts```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
-|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_obejcts```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
+|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
 |Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](../../../object_msgs/msg/ReidentificationStamped.msg))|
 |Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](../../../object_msgs/msg/PersonAttributeStamped.msg))|
 |Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](../../../object_msgs/msg/LicensePlateStamped.msg))|
