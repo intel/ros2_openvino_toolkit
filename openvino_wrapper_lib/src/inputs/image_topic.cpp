@@ -22,7 +22,7 @@
 #include "openvino_wrapper_lib/inputs/image_topic.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 
-#define INPUT_TOPIC "/openvino_toolkit/image_raw"
+#define INPUT_TOPIC "openvino_toolkit/image_raw"
 
 Input::ImageTopic::ImageTopic(rclcpp::Node::SharedPtr node) : node_(node)
 {

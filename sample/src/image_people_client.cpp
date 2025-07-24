@@ -38,7 +38,7 @@ int main(int argc, char** argv)
 
   std::string image_path = argv[1];
 
-  auto client = node->create_client<object_msgs::srv::People>("/openvino_toolkit/service");
+  auto client = node->create_client<object_msgs::srv::People>("openvino_toolkit/service");
   auto request = std::make_shared<object_msgs::srv::People::Request>();
   request->image_path = image_path;
 

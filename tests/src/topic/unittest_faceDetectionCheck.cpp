@@ -79,7 +79,7 @@ TEST(UnitTestFaceDetection, testFaceDetection)
   executor.add_node(node);
 
   {
-    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("/ros2_openvino_toolkit/face_detection",
+    auto sub1 = node->create_subscription<object_msgs::msg::ObjectsInBoxes>("ros2_openvino_toolkit/face_detection",
                                                                             qos, openvino_faceDetection_callback);
 
     executor.spin_once(std::chrono::seconds(0));
@@ -108,7 +108,7 @@ TEST(UnitTestFaceDetection, testEmotionDetection)
 
   {
     auto sub2 = node->create_subscription<object_msgs::msg::EmotionsStamped>(
-        "/ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
+        "ros2_openvino_toolkit/emotions_recognition", qos, openvino_emotionRecognition_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -135,7 +135,7 @@ TEST(UnitTestFaceDetection, testageGenderDetection)
 
   {
     auto sub3 = node->create_subscription<object_msgs::msg::AgeGenderStamped>(
-        "/ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
+        "ros2_openvino_toolkit/age_genders_Recognition", qos, openvino_ageGender_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 
@@ -162,7 +162,7 @@ TEST(UnitTestFaceDetection, testheadPoseDetection)
 
   {
     auto sub4 = node->create_subscription<object_msgs::msg::HeadPoseStamped>(
-        "/ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
+        "ros2_openvino_toolkit/headposes_estimation", qos, openvino_headPose_callback);
 
     executor.spin_once(std::chrono::seconds(0));
 

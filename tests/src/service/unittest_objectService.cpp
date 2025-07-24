@@ -36,7 +36,7 @@ TEST(UnitTestObject, testObject)
 {
   auto node = rclcpp::Node::make_shared("openvino_object_service_test");
 
-  auto client = node->create_client<object_msgs::srv::DetectObject>("/openvino_toolkit/service");
+  auto client = node->create_client<object_msgs::srv::DetectObject>("openvino_toolkit/service");
 
   ASSERT_TRUE(client->wait_for_service(std::chrono::seconds(20)));
 

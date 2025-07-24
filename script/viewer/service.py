@@ -47,7 +47,7 @@ def usage():
 
 rclpy.init(args=None)
 node = rclpy.create_node('pipeline_client')
-cli = node.create_client(PipelineSrv, '/openvino_toolkit/pipeline_service')
+cli = node.create_client(PipelineSrv, 'openvino_toolkit/pipeline_service')
 
 
 if __name__ == "__main__":
