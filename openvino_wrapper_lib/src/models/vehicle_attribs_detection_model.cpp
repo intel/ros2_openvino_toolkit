@@ -20,10 +20,6 @@
 #include "openvino_wrapper_lib/models/vehicle_attribs_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Vehicle Attributes Detection Network
-Models::VehicleAttribsDetectionModel::VehicleAttribsDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 bool Models::VehicleAttribsDetectionModel::updateLayerProperty(
   std::shared_ptr<ov::Model>& model)
 {

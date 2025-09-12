@@ -62,11 +62,18 @@ namespace Outputs
  * visitor pattern to perform different operations to different inference
  * result with different output device
  */
+
+
 class BaseOutput
 {
 public:
-  explicit BaseOutput(std::string output_name)
-  : output_name_(output_name) {}
+  BaseOutput() {};
+
+  virtual void initialize(const std::string &name, 
+    rclcpp::Node::SharedPtr parent_node = nullptr)
+  { 
+    output_name_ = name;
+  }
   /**
    * @brief Generate output content according to the license plate detection result.
    */

@@ -20,10 +20,6 @@
 #include "openvino_wrapper_lib/models/face_reidentification_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Face Reidentification Network
-Models::FaceReidentificationModel::FaceReidentificationModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 void Models::FaceReidentificationModel::setLayerProperty(
   InferenceEngine::CNNNetwork& model)
 {

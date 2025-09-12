@@ -27,9 +27,54 @@
 #include <mutex>
 #include <set>
 #include <string>
+#include <stdexcept>
 #include <vector>
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/engines/engine_manager.hpp"
+#include "openvino_wrapper_lib/vino_factory.hpp"
+
+
+template<typename ... Args>
+std::string string_format( const std::string& format, Args ... args )
+{
+    int size_s = std::snprintf( nullptr, 0, format.c_str(), args ... ) + 1; // Extra space for '\0'
+    if( size_s <= 0 ){ throw std::runtime_error( "Error during formatting." ); }
+    auto size = static_cast<size_t>( size_s );
+    std::unique_ptr<char[]> buf( new char[ size ] );
+    std::snprintf( buf.get(), size, format.c_str(), args ... );
+    return std::string( buf.get(), buf.get() + size - 1 ); // We don't want the '\0' inside
+}
+
+#define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
+#define REG_INPUT(BASE, name, key)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+
+#define trace(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#define REG_MODEL_FACTORY         VinoFactory<std::string, Models::BaseModel>
+#define REG_MODEL(BASE, name, key)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(key)
+#define REG_MODEL_TYPE(BASE, name, ...)     static REG_MODEL_FACTORY::TReg<Models::BASE> gs_model_##name(string_format("%s", __VA_ARGS__))
+
+
+
+#define REG_INFERENCE_FACTORY  VinoFactory<std::string, openvino_wrapper_lib::BaseInference>
+#define REG_INFERENCE(T, name, key)  static REG_INFERENCE_FACTORY::TReg<openvino_wrapper_lib::T> gs_inference_##name(key)
+
+#define REG_OUTPUT_FACTORY    VinoFactory<std::string, Outputs::BaseOutput>
+#define REG_OUTPUT(BASE, name, key) static REG_OUTPUT_FACTORY::TReg<Outputs::BASE> gs_output_##name(key)
+
+// REG_INPUT(class name,         search key(in this case is string type),             expand variable suffix)
+// eg: 
+// #define REG_INPUT_FACTORY     VinoFactory<std::string, Input::BaseInputDevice>
+// #define REG_INPUT(BASE, key, name)  static REG_INPUT_FACTORY::TReg<Input::BASE> gs_input_##name(key)
+
+// REG_INPUT(ImageClass, "JPG", jpg)
+// REG_INPUT(ImageClass, "PNG", png)
+//         VinoFactory<std::string, Input::BaseInputDevice>::TReg<Input::BASE> gs_input_IMG
+//              
+//         Viriable type:      VinoFactory<std::string, Input::BaseInputDevice>::TReg<Input::ImageClass>
+//         Viriable name:      gs_input_jpg,    gs_input_png
+//         search keys:       "JPG",            "PNG"
+
+
 
 /**
  * @class PipelineManager
@@ -112,32 +157,6 @@ private:
   parseOutput(const PipelineData & pdata);
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>
   parseInference(const Params::ParamManager::PipelineRawData & params);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createAgeGenderRecognition(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createEmotionRecognition(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createHeadPoseEstimation(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentation(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectSegmentationMaskrcnn(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonReidentification(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createPersonAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLandmarksDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createFaceReidentification(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData & infer);
-  std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createLicensePlateDetection(const Params::ParamManager::InferenceRawData & infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
   Engines::EngineManager engine_manager_;

@@ -49,6 +49,8 @@ public:
     std::map<std::string, std::string> output_names;
     std::vector<std::string> labels;
   };
+
+  ModelAttribute() {};
   
   ModelAttribute(const std::string model_name)
   {

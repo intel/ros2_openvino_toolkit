@@ -32,6 +32,7 @@ namespace Input
 class Video : public BaseInputDevice
 {
 public:
+  Video() {};
   explicit Video(const std::string &);
   /**
    * @brief Read a video file from the file path.
@@ -39,6 +40,12 @@ public:
    * @return Whether the input device is successfully turned on.
    */
   bool initialize() override;
+  /**
+   * @brief Read a video file from the file path.
+   * @param[in] An video file path.
+   * @return Whether the input device is successfully setup.
+   */
+  bool initialize(const std::string &video) override {video_.assign(video); return initialize();};
   /**
    * @brief Initialize the input device with given width and height.
    * No implementation for Video class.

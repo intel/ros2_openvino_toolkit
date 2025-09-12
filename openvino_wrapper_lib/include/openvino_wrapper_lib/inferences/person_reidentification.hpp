@@ -52,12 +52,16 @@ class PersonReidentification : public BaseInference
 {
 public:
   using Result = openvino_wrapper_lib::PersonReidentificationResult;
-  explicit PersonReidentification(double);
-  ~PersonReidentification() override;
+  PersonReidentification() {};
+  ~PersonReidentification() override {}
+  /**
+   * @brief initialize params
+   */
+  void init(const Params::ParamManager::InferenceRawData &val) override;
   /**
    * @brief Load the face detection model.
    */
-  void loadNetwork(std::shared_ptr<Models::PersonReidentificationModel>);
+  void loadNetwork(const std::shared_ptr<Models::BaseModel>) override;
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

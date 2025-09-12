@@ -33,7 +33,23 @@ namespace Outputs
 class ImageWindowOutput : public BaseOutput
 {
 public:
-  explicit ImageWindowOutput(const std::string & output_name, int focal_length = 950);
+  ImageWindowOutput() {};
+
+  void initialize(const std::string &name, 
+    rclcpp::Node::SharedPtr parent_node = nullptr)override
+  { 
+    output_name_ = name;
+    focal_length_ = 950;
+    cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
+  }
+
+  void initialize(const std::string &name, int focal_length, 
+    rclcpp::Node::SharedPtr parent_node = nullptr)
+  { 
+    output_name_ = name;
+    focal_length_ = focal_length;
+    cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
+  }
 
   /**
    * @brief Calculate the camera matrix of a frame for image

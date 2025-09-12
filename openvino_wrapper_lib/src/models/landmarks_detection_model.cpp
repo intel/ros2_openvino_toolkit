@@ -20,10 +20,6 @@
 #include "openvino_wrapper_lib/models/landmarks_detection_model.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 // Validated Landmarks Detection Network
-Models::LandmarksDetectionModel::LandmarksDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: BaseModel(label_loc, model_loc, max_batch_size) {}
-
 void Models::LandmarksDetectionModel::setLayerProperty(
   InferenceEngine::CNNNetwork& model)
 {

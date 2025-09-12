@@ -40,7 +40,7 @@ class ObjectDetectionYolov5Model : public ObjectDetectionModel
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov5Model() {};
 
   bool fetchResults(
     const std::shared_ptr<Engines::Engine> & engine,

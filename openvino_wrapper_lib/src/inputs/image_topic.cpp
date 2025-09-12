@@ -25,11 +25,6 @@
 #define INPUT_TOPIC "/openvino_toolkit/image_raw"
 
 
-Input::ImageTopic::ImageTopic(rclcpp::Node::SharedPtr node)
-: node_(node)
-{
-}
-
 bool Input::ImageTopic::initialize()
 {
   slog::debug << "before Image Topic init" << slog::endl;

@@ -38,7 +38,11 @@ namespace Outputs
 class RvizOutput : public BaseOutput
 {
 public:
-  explicit RvizOutput(std::string output_name, const rclcpp::Node::SharedPtr node=nullptr);
+  RvizOutput() {};
+
+  void initialize(const std::string &name, 
+    rclcpp::Node::SharedPtr parent_node = nullptr)override;
+
   /**
    * @brief Construct frame for rviz
    * @param[in] A frame.
