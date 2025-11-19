@@ -100,10 +100,10 @@ int main(int argc, char* argv[])
     rclcpp::shutdown();
 
   } catch (const std::exception& error) {
-    slog::err << error.what() << slog::endl;
+    slog::err << "Pipeline error: " << error.what() << slog::endl;
     return -2;
   } catch (...) {
-    slog::err << "Unknown/internal exception happened." << slog::endl;
+    slog::err << "Pipeline error: Unknown/internal exception happened." << slog::endl;
     return -3;
   }
 
