@@ -16,10 +16,9 @@ function run_container()
         docker rm -f ros2_openvino_container
     fi
 
-    # Removing some docker image ..
-    # Using jenkins server ros2_openvino_toolkit code instead of git clone code.
-    cd "$work_dir" && sed -i '/RUN git clone -b ros2/d' Dockerfile
-    cd "$work_dir" && sed -i '/RUN git clone -b ros2_jazzy/d' Dockerfile
+    # Removing ros2_openvino_toolkit git clone from Dockerfile
+    # We'll copy it from the host instead (to test local changes)
+    cd "$work_dir" && sed -i '/RUN git clone.*ros2_openvino_toolkit/d' Dockerfile
     # add the jpg for test.
     cd "$work_dir" && sed -i '/^WORKDIR \/root\/ros2_ws$/a COPY jpg /root/jpg' Dockerfile || \
     cd "$work_dir" && sed -i '/^WORKDIR \/root\/catkin_ws$/a COPY jpg /root/jpg' Dockerfile
