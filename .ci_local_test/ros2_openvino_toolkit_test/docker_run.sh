@@ -45,7 +45,10 @@ function run_container()
     # Ensure test_cases directory and scripts have proper permissions
     chmod -R 755 "$work_dir"/test_cases
     
-    docker run -i --privileged=true --device=/dev/dri -v "$work_dir"/ros2_openvino_toolkit:/root/${WORKSPACE_DIR}/src/ros2_openvino_toolkit  -v "$HOME"/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v "$work_dir"/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "chown -R root:root /root/test_cases && cd /root/test_cases && ./run.sh ${ROS_DISTRO}"
+    # Create container and copy test files instead of mounting to avoid permission issues
+    docker create -i --privileged=true --device=/dev/dri -v "$work_dir"/ros2_openvino_toolkit:/root/${WORKSPACE_DIR}/src/ros2_openvino_toolkit -v "$HOME"/.Xauthority:/root/.Xauthority -e GDK_SCALE --name ros2_openvino_container ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh ${ROS_DISTRO}"
+    docker cp "$work_dir"/test_cases ros2_openvino_container:/root/
+    docker start -ai ros2_openvino_container
 }
 
 if ! run_container; then 
