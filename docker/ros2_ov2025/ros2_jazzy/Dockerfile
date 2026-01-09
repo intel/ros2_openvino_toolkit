@@ -25,19 +25,13 @@ RUN apt update && \
     # Add OpenVINO GPG key and repository
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /etc/apt/trusted.gpg.d/intel.gpg && \
     echo "deb https://apt.repos.intel.com/openvino ubuntu24 main" | tee /etc/apt/sources.list.d/intel-openvino.list && \
+    # Add librealsense GPG key and repository
+    mkdir -p /etc/apt/keyrings && \
+    curl -sSf https://librealsense.realsenseai.com/Debian/librealsense.pgp | gpg --dearmor -o /etc/apt/keyrings/librealsense.pgp && \
+    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | tee /etc/apt/sources.list.d/librealsense.list && \
     apt update && \
-    apt-get install -y openvino-2025.4.0 && \
+    apt-get install -y openvino-2025.4.0 librealsense2-dev librealsense2-utils && \
     rm -rf /var/lib/apt/lists/*
-
-# Build librealsense2
-WORKDIR /root/
-RUN git clone --branch v2.57.5 --single-branch https://github.com/IntelRealSense/librealsense.git && \
-    cd librealsense && \
-    mkdir build && \
-    cd build && \
-    cmake ../ && \
-    make uninstall && make clean && make -j7 && make install && \
-    rm -rf /root/librealsense
 
 # build ros2 openvino toolkit
 WORKDIR /root

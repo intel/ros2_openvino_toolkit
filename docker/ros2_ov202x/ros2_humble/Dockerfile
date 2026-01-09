@@ -38,8 +38,8 @@ RUN apt update && \
 # install librealsense2
 # Reference : https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
 RUN mkdir -p /etc/apt/keyrings && \
-    curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | tee /etc/apt/keyrings/librealsense.pgp > /dev/null && \
-    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo `lsb_release -cs` main" | \
+    curl -sSf https://librealsense.realsenseai.com/Debian/librealsense.pgp | tee /etc/apt/keyrings/librealsense.pgp > /dev/null && \
+    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | \
     tee /etc/apt/sources.list.d/librealsense.list && \ 
     apt-get update && \ 
     apt-get install -y --no-install-recommends \

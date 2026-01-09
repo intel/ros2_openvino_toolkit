@@ -19,10 +19,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ubuntu-version: [ubuntu-20.04, ubuntu-22.04, ubuntu-24.04]
+        ubuntu-version: [ubuntu-22.04, ubuntu-24.04]
         include:
-          - ubuntu-version: ubuntu-20.04
-            dockerfile: docker/Dockerfile
           - ubuntu-version: ubuntu-22.04
             dockerfile: docker/ros2_ov202x/ros2_humble/Dockerfile
           - ubuntu-version: ubuntu-24.04
