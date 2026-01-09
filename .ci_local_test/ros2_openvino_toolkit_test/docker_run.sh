@@ -19,12 +19,29 @@ function run_container()
     # Removing some docker image ..
     # Using jenkins server ros2_openvino_toolkit code instead of git clone code.
     cd "$work_dir" && sed -i '/RUN git clone -b ros2/d' Dockerfile
+    cd "$work_dir" && sed -i '/RUN git clone -b ros2_jazzy/d' Dockerfile
     # add the jpg for test.
-    cd "$work_dir" && sed -i '$i COPY jpg /root/jpg' Dockerfile
+    cd "$work_dir" && sed -i '/^WORKDIR \/root\/ros2_ws$/a COPY jpg /root/jpg' Dockerfile || \
+    cd "$work_dir" && sed -i '/^WORKDIR \/root\/catkin_ws$/a COPY jpg /root/jpg' Dockerfile
 
-    cd "$work_dir" && docker build --build-arg ROS_PRE_INSTALLED_PKG=galactic-desktop --build-arg VERSION=galactic  -t ros2_openvino_docker:01 .
+    # Detect ROS distro from Dockerfile
+    if grep -q "ros:jazzy" Dockerfile; then
+        ROS_DISTRO="jazzy"
+        WORKSPACE_DIR="ros2_ws"
+    elif grep -q "ros:humble" Dockerfile; then
+        ROS_DISTRO="humble"
+        WORKSPACE_DIR="ros2_ws"
+    elif grep -q "ros:galactic" Dockerfile; then
+        ROS_DISTRO="galactic"
+        WORKSPACE_DIR="catkin_ws"
+    else
+        ROS_DISTRO="galactic"
+        WORKSPACE_DIR="catkin_ws"
+    fi
+
+    cd "$work_dir" && docker build --build-arg ROS_PRE_INSTALLED_PKG=${ROS_DISTRO}-desktop --build-arg VERSION=${ROS_DISTRO}  -t ros2_openvino_docker:01 .
     cd "$work_dir" && docker images
-    docker run -i --privileged=true --device=/dev/dri -v "$work_dir"/ros2_openvino_toolkit:/root/catkin_ws/src/ros2_openvino_toolkit  -v "$HOME"/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v "$work_dir"/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh galactic"
+    docker run -i --privileged=true --device=/dev/dri -v "$work_dir"/ros2_openvino_toolkit:/root/${WORKSPACE_DIR}/src/ros2_openvino_toolkit  -v "$HOME"/.Xauthority:/root/.Xauthority -e GDK_SCALE  -v "$work_dir"/test_cases:/root/test_cases --name ros2_openvino_container  ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh ${ROS_DISTRO}"
 }
 
 if ! run_container; then 

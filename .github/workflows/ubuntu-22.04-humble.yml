@@ -1,7 +1,5 @@
 name: Ubuntu-22.04-Humble-CI
 
-# Controls when the action will run. Triggers the workflow on push or pull request
-# events but only for the ros2 branch
 on:
   push:
     branches: [ "ros2" ]
@@ -10,25 +8,20 @@ on:
 
 permissions: read-all
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-22.04
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-    - uses: actions/checkout@v3
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-    # install ros2 humble
-    - uses: ros-tooling/setup-ros@v0.7
+    - name: install ros2 humble
+      uses: ros-tooling/setup-ros@v0.7
       with:
         required-ros-distributions: humble
     - run: "source /opt/ros/humble/setup.bash && ros2 run --help"
 
-    # install openvino 2024.6
     - name: install openvino 2024.6
       run: |
         # https://docs.openvino.ai/2024/get-started/install-openvino/install-openvino-archive-linux.html
@@ -40,7 +33,6 @@ jobs:
         source /opt/intel/openvino_2024/setupvars.sh
         ls -lh /opt/intel/openvino_2024
 
-    # install librealsense2
     - name: install librealsense2
       run: |
         # https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
@@ -50,7 +42,6 @@ jobs:
         sudo apt-get update && sudo apt-get install -y librealsense2-dev librealsense2
         dpkg -l |grep realsense
 
-    # build ros2 openvino toolkit
     - name: build ros2 openvino toolkit
       run: |
         mkdir -p ~/ros2_ws/src
