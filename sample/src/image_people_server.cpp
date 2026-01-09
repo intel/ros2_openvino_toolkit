@@ -44,7 +44,8 @@ int main(int argc, char** argv)
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   } catch (...) {
-    std::cout << "[ERROR] [service_people_detection]: " << "exception caught" << std::endl;
+    std::cout << "[ERROR] [service_people_detection]: " 
+              << "exception caught" << std::endl;
   }
 
   return 0;
