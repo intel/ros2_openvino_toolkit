@@ -31,7 +31,7 @@ RUN apt update && \
 
 # Build librealsense2
 WORKDIR /root/
-RUN git clone --branch v2.55.1 --single-branch https://github.com/IntelRealSense/librealsense.git && \
+RUN git clone --branch v2.57.5 --single-branch https://github.com/IntelRealSense/librealsense.git && \
     cd librealsense && \
     mkdir build && \
     cd build && \

@@ -62,9 +62,9 @@ double openvino_wrapper_lib::Tracker::calcSimilarity(const std::vector<float>& f
                                                      const std::vector<float>& feature_b)
 {
   if (feature_a.size() != feature_b.size()) {
-    slog::err << "cosine similarity can't be called for vectors of different lengths: " << "feature_a size = "
-              << std::to_string(feature_a.size()) << "feature_b size = " << std::to_string(feature_b.size())
-              << slog::endl;
+    slog::err << "cosine similarity can't be called for vectors of different lengths: "
+              << "feature_a size = " << std::to_string(feature_a.size())
+              << "feature_b size = " << std::to_string(feature_b.size()) << slog::endl;
   }
   float mul_sum, denom_a, denom_b, value_a, value_b;
   mul_sum = denom_a = denom_b = value_a = value_b = 0;

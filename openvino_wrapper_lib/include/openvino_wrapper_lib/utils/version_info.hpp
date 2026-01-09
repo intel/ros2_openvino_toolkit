@@ -53,8 +53,10 @@ static std::ostream& operator<<(std::ostream& os, const ov::Version& version)
 {
   os << "\n\tAPI version ............ ";
   os << OPENVINO_VERSION_MAJOR << "." << OPENVINO_VERSION_MINOR << "." << OPENVINO_VERSION_PATCH;
-  os << "\n\t" << "Build .................. " << version.buildNumber;
-  os << "\n\t" << "Description ............ " << version.description;
+  os << "\n\t"
+     << "Build .................. " << version.buildNumber;
+  os << "\n\t"
+     << "Description ............ " << version.description;
 
   return os;
 }

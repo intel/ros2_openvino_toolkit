@@ -198,8 +198,8 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(std::shared_ptr<ov::Mo
           "supported.");
   }
   if (outHeight == 0 || outWidth == 0) {
-    slog::err << "output_height or output_width is not set, please check the MaskOutput Info " << "is set correctly."
-              << slog::endl;
+    slog::err << "output_height or output_width is not set, please check the MaskOutput Info "
+              << "is set correctly." << slog::endl;
     return false;
   }
 
