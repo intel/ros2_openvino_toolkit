@@ -44,7 +44,7 @@ int main(int argc, char** argv)
   } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   } catch (...) {
-    std::cout << "[ERROR] [frame_processing_server]: " 
+    std::cout << "[ERROR] [frame_processing_server]: "
               << "exception caught" << std::endl;
   }
 

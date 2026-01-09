@@ -41,8 +41,9 @@ jobs:
         # https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-archive-linux.html
         sudo apt update && sudo apt install -y curl wget gnupg2 lsb-release
         wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2025.4/linux/openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64.tgz
-        tar -xf l_openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64.tgz
-        sudo mv l_openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64 /opt/intel/openvino_2025
+        tar -xf openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64.tgz
+        sudo mkdir -p /opt/intel
+        sudo mv openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64 /opt/intel/openvino_2025
         source /opt/intel/openvino_2025/setupvars.sh
         ls -lh /opt/intel/openvino_2025
 
