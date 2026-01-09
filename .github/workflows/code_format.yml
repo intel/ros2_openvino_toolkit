@@ -1,3 +1,4 @@
+# This workflow checks code formatting using clang-format on push and pull request events to the master and ros2 branches.
 
 name: Code_Format_Check
 

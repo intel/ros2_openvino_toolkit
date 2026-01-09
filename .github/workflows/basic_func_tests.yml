@@ -1,35 +1,20 @@
-# This is a basic workflow to help you get started with Actions
+# GitHub Actions workflow file to run basic functional tests for ros2_openvino_toolkit on multiple Ubuntu versions
 
 name: Basic_Func_CI 
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
   push:
     branches: [ "master", "ros2" ]
   pull_request:
     branches: [ "master", "ros2" ]
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # Removed the old artifacts
-  remove-old-artifacts:
-    runs-on: ubuntu-20.04
-    timeout-minutes: 10
-    steps:
-    - name: Remove old artifacts
-      uses: c-hive/gha-remove-artifacts@v1
-      with:
-        age: '15 days'
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
+
     runs-on: ${{ matrix.ubuntu-version }}
     strategy:
       matrix:
@@ -41,11 +26,11 @@ jobs:
             dockerfile: docker/ros2_ov202x/ros2_humble/Dockerfile
           - ubuntu-version: ubuntu-24.04
             dockerfile: docker/ros2_ov2025/ros2_jazzy/Dockerfile
-    # Steps represent a sequence of tasks that will be executed as part of the job
+
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
-      # Runs a set of commands using the runners shell
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: ros2_openvino_toolkit_test
         run: |
             df -h
