@@ -12,25 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch face detection and rviz."""
+"""
+ROS 2 Test Launch File: Semantic Segmentation Pipeline Test
+
+Launches the OpenVINO semantic segmentation pipeline for automated testing.
+"""
 
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-import launch_ros.actions
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('openvino_test'), 'param',
-                                'pipeline_segmentation_test.yaml')
+    """Generate launch description for semantic segmentation test."""
+
+    # Get test package share directory
+    test_package_dir = get_package_share_directory('openvino_test')
+    default_yaml = os.path.join(test_package_dir, 'param', 'pipeline_segmentation_test.yaml')
+
     return LaunchDescription([
-        # Openvino detection
-        launch_ros.actions.Node(
-            package='openvino_node', node_executable='pipeline_with_params',
-            arguments=['-config', default_yaml],
+        # Declare launch argument for YAML configuration
+        DeclareLaunchArgument(
+            name='yaml_path',
+            default_value=default_yaml,
+            description='Path to test YAML configuration file'
+        ),
+
+        # OpenVINO semantic segmentation test node
+        Node(
+            package='openvino_node',
+            executable='pipeline_with_params',
+            name='openvino_test_pipeline',
+            arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/segmentation/segmented_objects',
-                 '/ros2_openvino_toolkit/segmented_objects')],
-            output='screen'),
+                 '/ros2_openvino_toolkit/segmented_objects'),
+            ],
+            output='screen'
+        ),
     ])

@@ -41,20 +41,21 @@ Pipelines:
     - name: face_detection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/face-detection-adas-0001/FP32/face-detection-adas-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: /opt/openvino_toolkit/data/labels/face_detection/face_detection-adas-0001.labels
     - name: age_gender_detection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: /opt/openvino_toolkit/data/labels/age_gender/age_gender-recognition-retail-0013.labels
     - name: emotion_detection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: /opt/openvino_toolkit/data/labels/emotion/emotions-recognition-retail-0003.labels
     - name: head_pose_detection
       model: /opt/intel/computer_vision_sdk/deployment_tools/intel_models/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
-  outputs: [ImageWindow, RosTopic]
+      label: /opt/openvino_toolkit/data/labels/head_pose/head-pose-estimation-adas-0001.labels
+  #outputs: [ImageWindow, RosTopic]
+  outputs: [RosTopic, RViz]
   confidence_threshold: 0.2
   connects:
     - left: StandardCamera
@@ -73,6 +74,4 @@ Common:
   input_path: /file
   custom_cpu_library: okok
   enable_performance_count: true
-
-  
 

@@ -47,7 +47,7 @@ Models::BaseModel::BaseModel(const Params::ParamManager::InferenceRawData& confi
 
 void Models::BaseModel::modelInit()
 {
-  slog::info << "Loading network files" << model_loc_ << slog::endl;
+  slog::info << "Loading network files: " << model_loc_ << slog::endl;
   slog::info << label_loc_ << slog::endl;
 
   // Read network model

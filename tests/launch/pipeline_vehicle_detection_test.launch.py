@@ -12,28 +12,48 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch face detection and rviz."""
+"""
+ROS 2 Test Launch File: Vehicle Detection Pipeline Test
+
+Launches the OpenVINO vehicle detection pipeline for automated testing.
+"""
 
 import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-import launch_ros.actions
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('openvino_test'), 'param',
-                                'pipeline_vehicle_detection_test.yaml')
+    """Generate launch description for vehicle detection test."""
+
+    # Get test package share directory
+    test_package_dir = get_package_share_directory('openvino_test')
+    default_yaml = os.path.join(test_package_dir, 'param', 'pipeline_vehicle_detection_test.yaml')
+
     return LaunchDescription([
-        # Openvino detection
-        launch_ros.actions.Node(
-            package='openvino_node', node_executable='pipeline_with_params',
-            arguments=['-config', default_yaml],
+        # Declare launch argument for YAML configuration
+        DeclareLaunchArgument(
+            name='yaml_path',
+            default_value=default_yaml,
+            description='Path to test YAML configuration file'
+        ),
+
+        # OpenVINO vehicle detection test node
+        Node(
+            package='openvino_node',
+            executable='pipeline_with_params',
+            name='openvino_test_pipeline',
+            arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/object/detected_license_plates',
                  '/ros2_openvino_toolkit/detected_license_plates'),
                 ('/openvino_toolkit/object/detected_vehicles_attribs',
-                 '/ros2_openvino_toolkit/detected_vehicles_attribs')],
-            output='screen'),
-
+                 '/ros2_openvino_toolkit/detected_vehicles_attribs'),
+            ],
+            output='screen'
+        ),
     ])

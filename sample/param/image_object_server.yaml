@@ -4,9 +4,9 @@ Pipelines:
   input_path: to/be/set/image_path
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/convert/public/ssdlite_mobilenet_v2/FP16/ssdlite_mobilenet_v2.xml
+      model: <OPENVINO_NODE_SHARE>/models/convert/public/ssdlite_mobilenet_v2/FP16/ssdlite_mobilenet_v2.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: <OPENVINO_DATA>/labels/object_detection/mobilenet-ssd.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame

@@ -21,7 +21,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "cv_bridge/cv_bridge.h"
+#include "cv_bridge/cv_bridge.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
 #include "openvino_wrapper_lib/outputs/rviz_output.hpp"
 

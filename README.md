@@ -26,6 +26,7 @@
 
 |Branch Name|ROS2 Version Supported|OpenVINO Version|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|
+|[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
 |[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Galactic, Foxy, Humble|V2022.1, V2022.2, V2022.3|Ubuntu 20.04, Ubuntu 22.04|
 |[dashing](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Dashing|V2022.1, V2022.2, V2022.3|Ubuntu 18.04|
 |[foxy-ov2021.4](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Foxy|V2021.4|Ubuntu 20.04|
@@ -41,6 +42,7 @@
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
+* [x] **Intel NPU (Neural Processing Unit) Support** - Hardware acceleration for Intel Core Ultra processors
 
 # Prerequisite
 
@@ -234,6 +236,38 @@ For the snapshot of demo results, refer to the following picture.
 </details></p>
 
 # Installation and Launching
+
+## New Features in ROS2 Jazzy Branch
+This branch introduces several improvements for enhanced usability and maintainability:
+
+### 1. **Unified Path Management System**
+All YAML configuration files now use environment variable placeholders for consistent path resolution:
+- `<OPENVINO_NODE_SHARE>` → System OpenVINO models directory (`/opt/openvino_toolkit`)
+- `<OPENVINO_DATA>` → Package data directory for labels and images
+
+This makes configurations portable across different installations and environments.
+
+### 2. **Launch Helper Utilities**
+New [launch_helpers.py](./sample/launch/launch_helpers.py) module provides automatic path resolution:
+- Dynamically resolves placeholder paths at launch time
+- Creates temporary resolved YAML files
+- Simplifies launch file implementation
+
+### 3. **Intel NPU Support**
+Native support for Intel Neural Processing Unit (NPU) acceleration:
+- Available on Intel Core Ultra processors
+- Set `engine: NPU` in YAML configuration files
+- Optimized for low-power inference workloads
+- Compatible with Intel optimized models (FP16)
+
+### 4. **Enhanced Visualization**
+- Improved RViz2 integration with conditional launching
+- Added timer delays for proper initialization
+- Updated launch files with viewer arguments
+
+### 5. **Image Installation**
+Sample images are now properly installed to the package share directory, enabling static image pipeline testing out-of-the-box.
+
 ## Deploy in Local Environment
 * Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.

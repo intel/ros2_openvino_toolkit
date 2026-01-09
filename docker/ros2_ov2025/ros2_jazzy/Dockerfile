@@ -26,7 +26,7 @@ RUN apt update && \
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /etc/apt/trusted.gpg.d/intel.gpg && \
     echo "deb https://apt.repos.intel.com/openvino ubuntu24 main" | tee /etc/apt/sources.list.d/intel-openvino.list && \
     apt update && \
-    apt-get install -y openvino-2025.2.0 && \
+    apt-get install -y openvino-2025.4.0 && \
     rm -rf /var/lib/apt/lists/*
 
 # Build librealsense2

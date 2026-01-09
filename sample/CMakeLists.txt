@@ -283,6 +283,18 @@ install(DIRECTORY
   DESTINATION share/${PROJECT_NAME}/
 )
 
+# Install data/labels files.
+install(DIRECTORY
+  ../data/labels
+  DESTINATION share/${PROJECT_NAME}/data/
+)
+
+# Install data/images files.
+install(DIRECTORY
+  ../data/images
+  DESTINATION share/${PROJECT_NAME}/data/
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()

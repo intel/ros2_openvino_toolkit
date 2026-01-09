@@ -143,7 +143,7 @@ bool openvino_wrapper_lib::Tracker::saveTracksToFile(std::string filepath)
     outfile << "\n";
   }
   outfile.close();
-  slog::info << "sucessfully save tracks into file: " << filepath << slog::endl;
+  slog::info << "successfully save tracks into file: " << filepath << slog::endl;
   return true;
 }
 
@@ -171,6 +171,6 @@ bool openvino_wrapper_lib::Tracker::loadTracksFromFile(std::string filepath)
     recorded_tracks_[track_id] = track;
   }
   infile.close();
-  slog::info << "sucessfully load tracks from file: " << filepath << slog::endl;
+  slog::info << "successfully load tracks from file: " << filepath << slog::endl;
   return true;
 }

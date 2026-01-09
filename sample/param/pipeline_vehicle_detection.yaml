@@ -3,32 +3,32 @@ Pipelines:
   inputs: [StandardCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32/vehicle-license-plate-detection-barrier-0106.labels
+      label: <OPENVINO_DATA>/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels
       batch: 1
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: VehicleAttribsDetection
-      model: /opt/openvino_toolkit/models/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: <OPENVINO_DATA>/labels/vehicle-attributes-recognition/vehicle-attributes-recognition-barrier-0039.labels
       batch: 1
     - name: LicensePlateDetection
-      model: /opt/openvino_toolkit/models/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
+      label: <OPENVINO_DATA>/labels/license-plate-recognition/license-plate-recognition-barrier-0001.labels
       batch: 1
-  outputs: [ImageWindow, RViz, RosTopic]
+  outputs: [RViz, RosTopic]
   connects:
     - left: StandardCamera
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
     - left: ObjectDetection
-      right: [ImageWindow, RosTopic, RViz] 
+      right: [RosTopic, RViz]
     - left: VehicleAttribsDetection
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosTopic, RViz]
     - left: LicensePlateDetection
-      right: [ImageWindow, RosTopic, RViz]
+      right: [RosTopic, RViz]
 
 OpenvinoCommon:
