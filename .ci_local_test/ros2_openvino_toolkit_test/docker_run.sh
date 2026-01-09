@@ -5,13 +5,13 @@ export work_dir=$PWD
 
 function run_container() 
 { 
-    if docker images -q ros2_openvino_docker:01 &>/dev/null; then
+    if [ -n "$(docker images -q ros2_openvino_docker:01)" ]; then
         echo "The container ros2_openvino_docker:01 image exists"
         docker rmi -f ros2_openvino_docker:01
     fi
 
     docker ps -a | grep ros2_openvino_container
-    if docker ps -aq -f name=ros2_openvino_container; then
+    if [ -n "$(docker ps -aq -f name=ros2_openvino_container)" ]; then
         echo "The container ros2_openvino_container exists. Removing the container..."
         docker rm -f ros2_openvino_container
     fi
@@ -41,13 +41,27 @@ function run_container()
     cd "$work_dir" && docker build --build-arg ROS_PRE_INSTALLED_PKG=${ROS_DISTRO}-desktop --build-arg VERSION=${ROS_DISTRO}  -t ros2_openvino_docker:01 .
     cd "$work_dir" && docker images
     
-    # Ensure test_cases directory and scripts have proper permissions
-    chmod -R 755 "$work_dir"/test_cases
+    # Create container in detached mode
+    docker create -i --privileged=true --device=/dev/dri \
+        -v "$work_dir"/ros2_openvino_toolkit:/root/${WORKSPACE_DIR}/src/ros2_openvino_toolkit \
+        -v "$HOME"/.Xauthority:/root/.Xauthority \
+        -e GDK_SCALE \
+        --name ros2_openvino_container \
+        ros2_openvino_docker:01 \
+        bash
     
-    # Create container and copy test files instead of mounting to avoid permission issues
-    docker create -i --privileged=true --device=/dev/dri -v "$work_dir"/ros2_openvino_toolkit:/root/${WORKSPACE_DIR}/src/ros2_openvino_toolkit -v "$HOME"/.Xauthority:/root/.Xauthority -e GDK_SCALE --name ros2_openvino_container ros2_openvino_docker:01 bash -c "cd /root/test_cases && ./run.sh ${ROS_DISTRO}"
+    # Copy test files into container
     docker cp "$work_dir"/test_cases ros2_openvino_container:/root/
-    docker start -ai ros2_openvino_container
+    
+    # Start container and fix permissions inside (critical for GitHub Actions)
+    docker start ros2_openvino_container
+    docker exec ros2_openvino_container chmod -R a+rx /root/test_cases
+    
+    # Run tests
+    docker exec -i ros2_openvino_container bash -c "cd /root/test_cases && ./run.sh ${ROS_DISTRO}"
+    
+    # Stop container (keeps it for debugging)
+    docker stop ros2_openvino_container
 }
 
 if ! run_container; then 
