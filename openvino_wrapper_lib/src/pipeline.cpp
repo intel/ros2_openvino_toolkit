@@ -150,9 +150,8 @@ bool Pipeline::isLegalConnect(const std::string parent, const std::string child)
 {
   int parent_order = getCatagoryOrder(parent);
   int child_order = getCatagoryOrder(child);
-  slog::info << "Checking connection into pipeline:[" << parent << "(" << parent_order << ")"
-             << "<-->" << child << "(" << child_order << ")"
-             << "]" << slog::endl;
+  slog::info << "Checking connection into pipeline:[" << parent << "(" << parent_order << ")" << "<-->" << child << "("
+             << child_order << ")" << "]" << slog::endl;
   return (parent_order != kCatagoryOrder_Unknown) && (child_order != kCatagoryOrder_Unknown) &&
          (parent_order <= child_order);
 }

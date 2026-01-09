@@ -107,8 +107,8 @@ public:
     if (attr_.max_proposal_count <= 0 || attr_.object_size <= 0 || attr_.input_height <= 0 || attr_.input_width <= 0 ||
         attr_.input_names.empty() || attr_.output_names.empty()) {
       slog::info << "--------" << slog::endl;
-      slog::warn << "Not all attributes are set correctly! not 0 or empty is allowed in"
-                 << " the above list." << slog::endl;
+      slog::warn << "Not all attributes are set correctly! not 0 or empty is allowed in" << " the above list."
+                 << slog::endl;
     }
     if (attr_.input_tensor_count != static_cast<int>(attr_.input_names.size())) {
       slog::info << "--------" << slog::endl;

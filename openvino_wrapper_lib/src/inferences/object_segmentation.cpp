@@ -209,8 +209,8 @@ const std::vector<cv::Rect>
 openvino_wrapper_lib::ObjectSegmentation::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!filter_conditions.empty()) {
-    slog::err << "Object segmentation does not support filtering now! "
-              << "Filter conditions: " << filter_conditions << slog::endl;
+    slog::err << "Object segmentation does not support filtering now! " << "Filter conditions: " << filter_conditions
+              << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
   return filtered_rois;

@@ -26,18 +26,25 @@ jobs:
       uses: c-hive/gha-remove-artifacts@v1
       with:
         age: '15 days'
-  pre-commit:
+  code-format-check:
     # The type of runner that the job will run on
     runs-on: ubuntu-22.04
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      # Runs a set of commands using the runners shell
-      - name: code_format_check
+      # Install clang-format
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install clang-format -y
+      # Run clang-format on all C++ files
+      - name: Run clang-format
         run: |
-            sudo apt-get install clang-format -y
-            find . -name '*.h' -or -name '*.hpp' -or -name '*.cpp' | xargs clang-format -i -style=file
-            git diff --exit-code
+            find . -type f \( -name '*.h' -o -name '*.hpp' -o -name '*.cpp' \) \
+              ! -path "*/build/*" ! -path "*/install/*" ! -path "*/log/*" \
+              -exec clang-format -i -style=file {} \;
+      # Check if any files were modified
+      - name: Check for formatting changes
+        run: |
+            git diff --exit-code || (echo "Code formatting issues detected. Please run clang-format locally." && exit 1)
 
 
