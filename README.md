@@ -26,7 +26,7 @@
 
 |Branch Name|ROS2 Version Supported|OpenVINO Version|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|
-|[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
+|[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
 |[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Galactic, Foxy, Humble|V2022.1, V2022.2, V2022.3|Ubuntu 20.04, Ubuntu 22.04|
 |[dashing](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Dashing|V2022.1, V2022.2, V2022.3|Ubuntu 18.04|
 |[foxy-ov2021.4](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Foxy|V2021.4|Ubuntu 20.04|
