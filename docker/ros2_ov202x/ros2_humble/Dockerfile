@@ -15,8 +15,8 @@ LABEL maintainer="Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com
 
 SHELL ["/bin/bash", "-c"]
 
-# Define build argument for OpenVINO version (2025.0.0 , 2024.6.0, 2023.3.0)
-ARG OPENVINO_VERSION=2025.0.0
+# Define build argument for OpenVINO version (2025.2.0 , 2024.6.0, 2023.3.0)
+ARG OPENVINO_VERSION=2025.2.0
 
 # Extract the major version from the full version string
 ENV OPENVINO_MAJOR_VERSION=${OPENVINO_VERSION%%.*}
@@ -26,7 +26,11 @@ ENV OPENVINO_MAJOR_VERSION=${OPENVINO_VERSION%%.*}
 RUN apt update && \
     apt install -y --no-install-recommends wget curl gnupg2 lsb-release software-properties-common apt-transport-https nano && \ 
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /etc/apt/trusted.gpg.d/intel.gpg && \
-    echo "deb https://apt.repos.intel.com/openvino/${OPENVINO_MAJOR_VERSION} ubuntu22 main" | tee /etc/apt/sources.list.d/intel-openvino-${OPENVINO_MAJOR_VERSION}.list && \
+    if [ "$OPENVINO_MAJOR_VERSION" = "2025" ]; then \
+        echo "deb https://apt.repos.intel.com/openvino ubuntu22 main" > /etc/apt/sources.list.d/intel-openvino.list; \
+    else \
+        echo "deb https://apt.repos.intel.com/openvino/${OPENVINO_MAJOR_VERSION} ubuntu22 main" > /etc/apt/sources.list.d/intel-openvino-${OPENVINO_MAJOR_VERSION}.list; \
+    fi && \
     apt update && \
     apt-get install -y openvino-${OPENVINO_VERSION} && \
     rm -rf /var/lib/apt/lists/*
@@ -34,8 +38,8 @@ RUN apt update && \
 # install librealsense2
 # Reference : https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md
 RUN mkdir -p /etc/apt/keyrings && \
-    curl -sSf https://librealsense.intel.com/Debian/librealsense.pgp | tee /etc/apt/keyrings/librealsense.pgp > /dev/null && \
-    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.intel.com/Debian/apt-repo `lsb_release -cs` main" | \
+    curl -sSf https://librealsense.realsenseai.com/Debian/librealsense.pgp | tee /etc/apt/keyrings/librealsense.pgp > /dev/null && \
+    echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | \
     tee /etc/apt/sources.list.d/librealsense.list && \ 
     apt-get update && \ 
     apt-get install -y --no-install-recommends \

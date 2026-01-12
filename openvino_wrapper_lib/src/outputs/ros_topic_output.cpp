@@ -23,7 +23,7 @@
 #include "openvino_wrapper_lib/outputs/ros_topic_output.hpp"
 #include "openvino_wrapper_lib/pipeline_params.hpp"
 #include "openvino_wrapper_lib/pipeline.hpp"
-#include "cv_bridge/cv_bridge.h"
+#include "cv_bridge/cv_bridge.hpp"
 
 Outputs::RosTopicOutput::RosTopicOutput(std::string output_name, const rclcpp::Node::SharedPtr node)
   : BaseOutput(output_name)

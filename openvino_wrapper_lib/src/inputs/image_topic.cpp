@@ -17,7 +17,7 @@
  * @file image_topic.cpp
  */
 
-#include <cv_bridge/cv_bridge.h>
+#include <cv_bridge/cv_bridge.hpp>
 #include <memory>
 #include "openvino_wrapper_lib/inputs/image_topic.hpp"
 #include "openvino_wrapper_lib/slog.hpp"

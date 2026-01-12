@@ -210,7 +210,7 @@ static UNUSED void printPerformanceCounts(ov::InferRequest request, std::ostream
                                           bool bshowHeader = true)
 {
   auto performanceMap = request.get_profiling_info();
-  //printPerformanceCounts(performanceMap, stream, deviceName, bshowHeader);
+  // printPerformanceCounts(performanceMap, stream, deviceName, bshowHeader);
 }
 
 inline std::map<std::string, std::string> getMapFullDevicesNames(ov::Core& core, std::vector<std::string> devices)

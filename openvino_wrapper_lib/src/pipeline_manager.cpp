@@ -127,7 +127,7 @@ PipelineManager::parseInputDevice(const PipelineData& pdata)
 {
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> inputs;
   for (auto& name : pdata.params.inputs) {
-    slog::info << "Parsing InputDvice: " << name << slog::endl;
+    slog::info << "Parsing InputDevice: " << name << slog::endl;
     std::shared_ptr<Input::BaseInputDevice> device = nullptr;
     if (name == kInputType_RealSenseCamera) {
       device = std::make_shared<Input::RealSenseCamera>();

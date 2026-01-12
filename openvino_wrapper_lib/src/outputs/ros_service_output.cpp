@@ -21,7 +21,7 @@
 #include <string>
 #include <memory>
 #include "openvino_wrapper_lib/outputs/ros_service_output.hpp"
-#include "cv_bridge/cv_bridge.h"
+#include "cv_bridge/cv_bridge.hpp"
 
 void Outputs::RosServiceOutput::setServiceResponse(std::shared_ptr<object_msgs::srv::DetectObject::Response> response)
 {

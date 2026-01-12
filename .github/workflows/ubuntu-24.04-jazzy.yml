@@ -1,0 +1,55 @@
+name: Ubuntu-24.04-Jazzy-CI
+
+on:
+  push:
+    branches: [ "ros2" ]
+  pull_request:
+    branches: [ "ros2" ]
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: install ros2 jazzy
+      uses: ros-tooling/setup-ros@v0.7
+      with:
+        required-ros-distributions: jazzy
+    - run: "source /opt/ros/jazzy/setup.bash && ros2 run --help"
+
+    - name: install openvino 2025.4
+      run: |
+        # https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-archive-linux.html
+        sudo apt update && sudo apt install -y curl wget gnupg2 lsb-release
+        wget https://storage.openvinotoolkit.org/repositories/openvino/packages/2025.4/linux/openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64.tgz
+        tar -xf openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64.tgz
+        sudo mkdir -p /opt/intel
+        sudo mv openvino_toolkit_ubuntu24_2025.4.0.20398.8fdad55727d_x86_64 /opt/intel/openvino_2025
+        source /opt/intel/openvino_2025/setupvars.sh
+        ls -lh /opt/intel/openvino_2025
+
+    - name: install librealsense2
+      run: |
+        # Install from Intel apt repository for Ubuntu 24.04 (noble)
+        sudo mkdir -p /etc/apt/keyrings
+        curl -sSf https://librealsense.realsenseai.com/Debian/librealsense.pgp | sudo tee /etc/apt/keyrings/librealsense.pgp > /dev/null
+        echo "deb [signed-by=/etc/apt/keyrings/librealsense.pgp] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/librealsense.list
+        sudo apt-get update
+        sudo apt-get install -y librealsense2-dev librealsense2-utils
+
+    - name: build ros2 openvino toolkit
+      run: |
+        mkdir -p ~/ros2_ws/src
+        env
+        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src
+        cd ~/ros2_ws/src
+        git clone https://github.com/intel/ros2_object_msgs.git
+        cd ros2_object_msgs && git checkout ros2 && cd ~/ros2_ws/
+        source /opt/ros/jazzy/setup.bash
+        source /opt/intel/openvino_2025/setupvars.sh
+        colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

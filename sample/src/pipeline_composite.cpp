@@ -46,7 +46,7 @@
 #include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
-//#include "utility.hpp"
+// #include "utility.hpp"
 
 void signalHandler(int signum)
 {

@@ -1,11 +1,11 @@
 # ROS2 OpenVINO Toolkit Docker Image
 
-This repository contains a Dockerfile for building a Docker image with ROS2 and the OpenVINO toolkit. The image is based on the `osrf/ros:humble-desktop` base image and includes additional tools and libraries for working with OpenVINO and librealsense.
+This repository contains a Dockerfile for building a Docker image with ROS2 and the OpenVINO toolkit. The image is based on the `osrf/ros:jazzy-desktop` base image and includes additional tools and libraries for working with OpenVINO and librealsense.
 
 ## Features
 
-- ROS2 Humble Desktop
-- OpenVINO Toolkit (version configurable supports 2025.x, 2024.x, 2023.3)
+- ROS2 Jazzy Desktop
+- OpenVINO Toolkit version 2025.2.0
 - librealsense2
 - User setup with `sudo` privileges
   
@@ -16,24 +16,17 @@ This repository contains a Dockerfile for building a Docker image with ROS2 and 
 
 ## Building the Docker Image
   
-To build the Docker image, use the following command. You can specify the OpenVINO version using the `--build-arg` option. The default version is `2025.2.0`.
+To build the Docker image, use the following command. The default OpenVINO version is `2025.2.0`.
 
 ```bash
-docker build --build-arg  OPENVINO_VERSION=2025.2.0  -t  ros2_openvino_image  .
+docker build -t  ros2_openvino_image  .
 
 ```
-
-Replace `2025.2.0` with the desired OPENVINO version if needed, for example to build `OpenVINO 2024.6`, use the following command,
-
-```bash
-docker build --build-arg  OPENVINO_VERSION=2024.6.0  -t  ros2_openvino_image  .
-
-```  
 
 if you are behind a proxy server use the following command,
 
 ```bash
-docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" --build-arg  OPENVINO_VERSION=2024.6.0  -t  ros2_openvino_image  .
+docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" -t  ros2_openvino_image  .
 
 ```
 ## Download the Models from OpenVINO Model Zoo (OMZ)

@@ -28,6 +28,7 @@ add_library(${PROJECT_NAME} SHARED
 ament_target_dependencies(${PROJECT_NAME}
   "yaml_cpp_vendor"
 )
+target_link_libraries(${PROJECT_NAME} /usr/lib/x86_64-linux-gnu/libyaml-cpp.so)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
