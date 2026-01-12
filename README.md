@@ -26,7 +26,7 @@
 
 |Branch Name|ROS2 Version Supported|OpenVINO Version|OS Version|
 |-----------------------|-----------------------|--------------------------------|----------------------|
-|[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
+|[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
 |[ros2](https://github.com/intel/ros2_openvino_toolkit/tree/ros2)|Galactic, Foxy, Humble|V2022.1, V2022.2, V2022.3|Ubuntu 20.04, Ubuntu 22.04|
 |[dashing](https://github.com/intel/ros2_openvino_toolkit/tree/dashing)|Dashing|V2022.1, V2022.2, V2022.3|Ubuntu 18.04|
 |[foxy-ov2021.4](https://github.com/intel/ros2_openvino_toolkit/tree/foxy)|Foxy|V2021.4|Ubuntu 20.04|
@@ -42,7 +42,9 @@
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
-* [x] **Intel NPU (Neural Processing Unit) Support** - Hardware acceleration for Intel Core Ultra processors
+ 
+## Intel NPU Support
+* Intel® Core™ Ultra processors feature hardware acceleration through the Intel Neural Processing Unit (NPU), optimizing AI workloads and enhancing overall performance.
 
 # Prerequisite
 
@@ -237,7 +239,7 @@ For the snapshot of demo results, refer to the following picture.
 
 # Installation and Launching
 
-## New Features in ROS2 Jazzy Branch
+## New Features in ROS2 Jazzy
 This branch introduces several improvements for enhanced usability and maintainability:
 
 ### 1. **Unified Path Management System**
