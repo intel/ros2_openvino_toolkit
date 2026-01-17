@@ -30,7 +30,6 @@ bool Input::RealSenseCamera::initialize(size_t width, size_t height)
   if (3 * width != 4 * height) {
     slog::err << "The aspect ratio must be 4:3 when using RealSense camera" << slog::endl;
     throw std::runtime_error("The aspect ratio must be 4:3 when using RealSense camera!");
-    return false;
   }
 
   auto devSerialNumber = getCameraSN();
@@ -63,7 +62,11 @@ bool Input::RealSenseCamera::read(cv::Mat* frame)
     cv::Mat(cv::Size(static_cast<int>(getWidth()), static_cast<int>(getHeight())), CV_8UC3,
             const_cast<void*>(color_frame.get_data()), cv::Mat::AUTO_STEP)
         .copyTo(*frame);
+  } catch (const std::exception& e) {
+    slog::err << "RealSense camera read error: " << e.what() << slog::endl;
+    return false;
   } catch (...) {
+    slog::err << "RealSense camera read error: unknown exception" << slog::endl;
     return false;
   }
 

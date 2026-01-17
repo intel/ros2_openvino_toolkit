@@ -41,11 +41,12 @@ int main(int argc, char** argv)
     auto node = std::make_shared<vino_service::FrameProcessingServer<object_msgs::srv::People>>(
         "service_people_detection", config_path);
     rclcpp::spin(node);
-  } catch (std::exception& e) {
-    std::cout << e.what() << std::endl;
+  } catch (const std::exception& e) {
+    slog::err << "[service_people_detection] Error: " << e.what() << slog::endl;
+    return -1;
   } catch (...) {
-    std::cout << "[ERROR] [service_people_detection]: "
-              << "exception caught" << std::endl;
+    slog::err << "[service_people_detection] Error: Unknown exception caught" << slog::endl;
+    return -1;
   }
 
   return 0;

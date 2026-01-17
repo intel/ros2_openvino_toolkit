@@ -41,11 +41,12 @@ int main(int argc, char** argv)
     auto node = std::make_shared<vino_service::FrameProcessingServer<object_msgs::srv::DetectObject>>(service_name,
                                                                                                       config_path);
     rclcpp::spin(node);
-  } catch (std::exception& e) {
-    std::cout << e.what() << std::endl;
+  } catch (const std::exception& e) {
+    slog::err << "[frame_processing_server] Error: " << e.what() << slog::endl;
+    return -1;
   } catch (...) {
-    std::cout << "[ERROR] [frame_processing_server]: "
-              << "exception caught" << std::endl;
+    slog::err << "[frame_processing_server] Error: Unknown exception caught" << slog::endl;
+    return -1;
   }
 
   return 0;

@@ -38,7 +38,6 @@ int main(int argc, char* argv[])
     std::string config = getConfigPath(argc, argv);
     if (config.empty()) {
       throw std::runtime_error("Config File is not correctly set.");
-      return -1;
     }
 
     Params::ParamManager::getInstance().parse(config);
@@ -47,11 +46,11 @@ int main(int argc, char* argv[])
     slog::info << "print again, should same as above....." << slog::endl;
     Params::ParamManager::getInstance().print();
   } catch (const std::exception& error) {
-    slog::err << error.what() << slog::endl;
+    slog::err << "Error: " << error.what() << slog::endl;
     return -1;
   } catch (...) {
     slog::err << "Unknown/internal exception happened." << slog::endl;
-    return -2;
+    return -1;
   }
 
   return 0;
