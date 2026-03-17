@@ -162,18 +162,25 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(std::shared_ptr<ov::Mo
   ov::Shape input_dims = input_info_map[0].get_shape();
 
   ov::Layout tensor_layout = ov::Layout("NCHW");
-  ov::Layout expect_layout = ov::Layout("NHWC");
-  setInputHeight(input_dims[2]);
-  setInputWidth(input_dims[3]);
-  if (input_dims[1] == 3)
-    expect_layout = ov::Layout("NCHW");
-  else if (input_dims[3] == 3)
-    expect_layout = ov::Layout("NHWC");
-  else
+  ov::Layout model_layout = ov::Layout("NCHW");
+  if (input_dims[1] == 3) {
+    // NCHW: [N, C, H, W]
+    model_layout = ov::Layout("NCHW");
+    setInputHeight(input_dims[2]);
+    setInputWidth(input_dims[3]);
+  } else if (input_dims[3] == 3) {
+    // NHWC: [N, H, W, C]
+    model_layout = ov::Layout("NHWC");
+    setInputHeight(input_dims[1]);
+    setInputWidth(input_dims[2]);
+  } else {
     slog::warn << "unexpect input shape " << input_dims << slog::endl;
+    setInputHeight(input_dims[2]);
+    setInputWidth(input_dims[3]);
+  }
 
   input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
-  input_info.preprocess().convert_layout(expect_layout).resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
+  ppp.input(input_tensor_name_).model().set_layout(model_layout);
 
   slog::info << "Checking OUTPUTs for model " << getModelName() << slog::endl;
   auto outputs_info = model->outputs();
