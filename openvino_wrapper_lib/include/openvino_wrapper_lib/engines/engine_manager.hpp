@@ -25,6 +25,9 @@
 #include "openvino_wrapper_lib/engines/engine.hpp"
 #include "openvino/openvino.hpp"
 
+// Forward-declare VADisplay so callers don't need va/va.h just to include this header.
+typedef void* VADisplay;
+
 namespace Engines
 {
 /**
@@ -39,6 +42,23 @@ public:
    * @return The shared pointer of created Engine instance.
    */
   std::shared_ptr<Engine> createEngine(const std::string&, const std::shared_ptr<Models::BaseModel>&);
+
+  /**
+   * @brief Create a VA-surface-aware Engine.
+   *
+   * The model's PPP is configured with:
+   *   - input memory_type = GPU_SURFACE (NV12 VASurfaceID)
+   *   - color format = NV12_TWO_PLANES
+   *   - no CPU resize — the VEBOX/SFC already produces the right resolution.
+   *
+   * @param device  OV device string, e.g. "GPU".
+   * @param model   The model (updateLayerProperty must have been called).
+   * @param va_dpy  VADisplay from the process-global VaDisplayHolder.
+   * @return        Engine whose InferRequest accepts VASurfaceTensors.
+   */
+  std::shared_ptr<Engine> createVaEngine(const std::string& device,
+                                         const std::shared_ptr<Models::BaseModel>& model,
+                                         VADisplay va_dpy);
 
 private:
 #if (defined(USE_OLD_E_PLUGIN_API))

@@ -49,12 +49,25 @@ public:
    */
   Engine(ov::InferRequest&);
   /**
+   * @brief Using an Inference Request + owning CompiledModel (for remote-context
+   * access, e.g. VAContext for zero-copy VA surface inference).
+   */
+  Engine(ov::CompiledModel compiled_model);
+  /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
    */
   inline ov::InferRequest& getRequest()
   {
     return request_;
+  }
+  /**
+   * @brief Get the compiled model (may be empty if constructed without one).
+   * Useful to obtain the remote context: getCompiledModel().get_context().
+   */
+  inline ov::CompiledModel& getCompiledModel()
+  {
+    return compiled_model_;
   }
   /**
    * @brief Set a callback function for the infer request.
@@ -68,6 +81,7 @@ public:
   }
 
 private:
+  ov::CompiledModel compiled_model_;  // may be empty (default-constructed)
   ov::InferRequest request_;
 };
 }  // namespace Engines

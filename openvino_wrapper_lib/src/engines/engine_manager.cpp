@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2022 Intel Corporation
+// Copyright (c) 2018-2026 Intel Corporation
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,8 @@
 #include "openvino_wrapper_lib/utils/version_info.hpp"
 #include <openvino_param_lib/param_manager.hpp>
 #include <openvino/openvino.hpp>
+#include <openvino/runtime/intel_gpu/ocl/va.hpp>
+#include <openvino/core/preprocess/pre_post_process.hpp>
 #if (defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
@@ -45,6 +47,63 @@ Engines::EngineManager::createEngine_V2022(const std::string& device, const std:
   ov::InferRequest infer_request = executable_network.create_infer_request();
 
   return std::make_shared<Engines::Engine>(infer_request);
+}
+
+std::shared_ptr<Engines::Engine>
+Engines::EngineManager::createVaEngine(const std::string& device,
+                                       const std::shared_ptr<Models::BaseModel>& model,
+                                       VADisplay va_dpy)
+{
+  // Re-read the raw (pre-PPP) model so we can apply a VA-specific PPP
+  // independently of the CPU PPP that updateLayerProperty already applied.
+  ov::Core core;
+  auto raw_model = core.read_model(model->getModelPath());
+
+  // Build VA context from the producer's VADisplay (shared via VaDisplayHolder).
+  ov::intel_gpu::ocl::VAContext va_ctx(core, va_dpy);
+
+  // Model input size after the VEBOX/SFC scaling negotiation.
+  const int net_h = model->getInputHeight();
+  const int net_w = model->getInputWidth();
+
+  if (net_h <= 0 || net_w <= 0) {
+    throw std::runtime_error(
+      "createVaEngine: model input size not set — call modelInit() first");
+  }
+
+  // Reshape to [1, net_h, net_w, 3] NHWC then let PPP handle NV12→RGB/BGR.
+  // NV12_TWO_PLANES expects separate Y and UV inputs; the spatial shape is the
+  // Y-plane shape (net_h × net_w).
+  raw_model->reshape({ 1, net_h, net_w, 3 });
+
+  ov::preprocess::PrePostProcessor ppp(raw_model);
+
+  // Tensor arrives as NV12 split into Y + UV planes directly from the VA surface.
+  ppp.input()
+    .tensor()
+    .set_element_type(ov::element::u8)
+    .set_color_format(ov::preprocess::ColorFormat::NV12_TWO_PLANES, { "Y", "UV" })
+    .set_memory_type(ov::intel_gpu::memory_type::surface)  // "GPU_SURFACE"
+    .set_layout(ov::Layout("NHWC"))
+    .set_spatial_static_shape(net_h, net_w);
+
+  ppp.input().model().set_layout("NCHW");
+
+  ppp.input().preprocess()
+    .convert_element_type(ov::element::f32)
+    .convert_color(ov::preprocess::ColorFormat::BGR)
+    .scale({ 255.f, 255.f, 255.f });
+
+  ppp.output().tensor().set_element_type(ov::element::f32);
+
+  auto built_model = ppp.build();
+
+  // Compile against the VAContext so OV uses the VA display's OpenCL queue.
+  ov::CompiledModel compiled = core.compile_model(built_model, va_ctx);
+  slog::info << "[EngineManager] VA surface engine compiled for " << device
+             << " — input " << net_w << "×" << net_h << " NV12 GPU_SURFACE" << slog::endl;
+
+  return std::make_shared<Engines::Engine>(std::move(compiled));
 }
 
 #if (defined(USE_OLD_E_PLUGIN_API))

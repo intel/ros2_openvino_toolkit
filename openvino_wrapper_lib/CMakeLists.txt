@@ -67,6 +67,20 @@ find_package(class_loader REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
+find_package(icamera_usm QUIET)  # optional — VA surface zero-copy path
+
+# libva / libva-drm for VA surface zero-copy path (optional).
+find_package(PkgConfig QUIET)
+if(PkgConfig_FOUND)
+  pkg_check_modules(LIBVA QUIET libva libva-drm)
+endif()
+if(LIBVA_FOUND AND icamera_usm_FOUND)
+  message(STATUS "openvino_wrapper_lib: VA surface path enabled (libva + icamera_usm)")
+  set(OVW_HAS_VA TRUE)
+else()
+  message(STATUS "openvino_wrapper_lib: VA surface path disabled (libva=${LIBVA_FOUND}, icamera_usm=${icamera_usm_FOUND})")
+  set(OVW_HAS_VA FALSE)
+endif()
 
 if("${CMAKE_BUILD_TYPE}" STREQUAL "")
     message(STATUS "CMAKE_BUILD_TYPE not defined, 'Release' will be used")
@@ -169,7 +183,11 @@ if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} openvino::runtime)
+if(realsense2_FOUND)
+  set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} openvino::runtime)
+else()
+  set(DEPENDENCIES ${OpenCV_LIBS} openvino::runtime)
+endif()
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
@@ -196,7 +214,6 @@ add_library(${PROJECT_NAME} SHARED
         #src/inferences/face_reidentification.cpp
         src/inferences/vehicle_attribs_detection.cpp
         src/inferences/license_plate_detection.cpp
-        src/inputs/realsense_camera.cpp
         src/inputs/image_topic.cpp
         src/inputs/standard_camera.cpp
         src/inputs/ip_camera.cpp
@@ -228,6 +245,20 @@ add_library(${PROJECT_NAME} SHARED
         src/outputs/ros_service_output.cpp
 )
 
+if(OVW_HAS_VA)
+  target_sources(${PROJECT_NAME} PRIVATE
+    src/inputs/va_surface_topic.cpp
+    src/va_pipeline.cpp
+  )
+  target_include_directories(${PROJECT_NAME} PRIVATE ${LIBVA_INCLUDE_DIRS})
+  target_link_libraries(${PROJECT_NAME} ${LIBVA_LIBRARIES})
+  target_compile_definitions(${PROJECT_NAME} PRIVATE OVW_HAS_VA=1)
+endif()
+
+if(realsense2_FOUND)
+  target_sources(${PROJECT_NAME} PRIVATE src/inputs/realsense_camera.cpp)
+endif()
+
 target_link_libraries(${PROJECT_NAME} ${DEPENDENCIES})
 
 ament_target_dependencies(${PROJECT_NAME}
@@ -239,11 +270,18 @@ ament_target_dependencies(${PROJECT_NAME}
   "openvino_msgs"
   "ament_index_cpp"
   "class_loader"
-  "realsense2"
   "cv_bridge"
   "openvino_param_lib"
   "yaml_cpp_vendor"
 )
+
+if(realsense2_FOUND)
+  ament_target_dependencies(${PROJECT_NAME} "realsense2")
+endif()
+
+if(OVW_HAS_VA)
+  ament_target_dependencies(${PROJECT_NAME} "icamera_usm")
+endif()
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)

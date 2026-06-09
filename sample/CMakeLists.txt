@@ -43,7 +43,10 @@ find_package(object_msgs REQUIRED)
 find_package(openvino_msgs REQUIRED)
 find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(realsense2 REQUIRED)
+find_package(realsense2 QUIET)
+if(NOT realsense2_FOUND)
+  message(STATUS "sample: realsense2 not found — composable_pipeline will not link it")
+endif()
 find_package(rclcpp_components)
 
 # Compiler Defense Flags
@@ -138,8 +141,10 @@ ament_target_dependencies(pipeline_with_params
   "openvino_param_lib"
   "OpenCV"
   "yaml_cpp_vendor"
-  "realsense2"
 )
+if(realsense2_FOUND)
+  ament_target_dependencies(pipeline_with_params "realsense2")
+endif()
 
 # Add Pipeline Composition version
 add_library(composable_pipeline SHARED
@@ -161,8 +166,10 @@ ament_target_dependencies(composable_pipeline
   "openvino_param_lib"
   "OpenCV"
   "yaml_cpp_vendor"
-  "realsense2"
 )
+if(realsense2_FOUND)
+  ament_target_dependencies(composable_pipeline "realsense2")
+endif()
 rclcpp_components_register_nodes(composable_pipeline "ComposablePipeline")
 
 add_executable(image_object_server

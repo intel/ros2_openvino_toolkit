@@ -111,6 +111,12 @@ public:
   {
     return model_;
   }
+  /// Path to the .xml file — needed by createVaEngine to re-read the raw model
+  /// before applying VA-specific PPP (independent of the CPU PPP already applied).
+  inline const std::string& getModelPath() const
+  {
+    return model_loc_;
+  }
 
 protected:
   /**

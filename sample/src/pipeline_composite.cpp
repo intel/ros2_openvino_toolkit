@@ -62,8 +62,10 @@ class ComposablePipeline : public rclcpp::Node
 {
 public:
   ComposablePipeline(const rclcpp::NodeOptions& node_options = rclcpp::NodeOptions())
-    : rclcpp::Node("composable_pipeline", "/", node_options)
+    : rclcpp::Node("composable_pipeline", "/",
+                   rclcpp::NodeOptions(node_options).use_intra_process_comms(true))
   {
+    declare_parameter("config", "");
     initPipeline();
   }
   virtual ~ComposablePipeline() = default;
@@ -94,9 +96,14 @@ private:
 
   std::string getConfigPath()
   {
-    // TODO: Fix api for humble
-    // return declare_parameter("config").get<rclcpp::PARAMETER_STRING>();
-    return "";
+    auto cfg = get_parameter("config").as_string();
+    if (cfg.empty()) {
+      RCLCPP_ERROR(get_logger(),
+        "ComposablePipeline: 'config' parameter not set. "
+        "Pass config:=/path/to/pipeline.yaml to the composable node.");
+      throw std::runtime_error("'config' parameter is required but not set.");
+    }
+    return cfg;
   }
 };
 
