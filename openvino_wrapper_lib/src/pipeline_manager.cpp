@@ -61,6 +61,13 @@
 #include "openvino_wrapper_lib/inputs/standard_camera.hpp"
 #include "openvino_wrapper_lib/inputs/ip_camera.hpp"
 #include "openvino_wrapper_lib/inputs/video_input.hpp"
+#ifdef OVW_HAS_VA
+#include "openvino_wrapper_lib/inputs/va_surface_topic.hpp"
+#include "openvino_wrapper_lib/va_pipeline.hpp"
+#include "openvino_wrapper_lib/inferences/va_surface_inference.hpp"
+#include "openvino_wrapper_lib/inferences/object_detection.hpp"
+#include "va_display_holder.hpp"
+#endif
 #include "openvino_wrapper_lib/outputs/image_window_output.hpp"
 #include "openvino_wrapper_lib/outputs/ros_topic_output.hpp"
 #include "openvino_wrapper_lib/outputs/rviz_output.hpp"
@@ -77,7 +84,15 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(const Params::ParamMan
     throw std::logic_error("The name of pipeline won't be empty!");
   }
 
-  std::shared_ptr<Pipeline> pipeline = std::make_shared<Pipeline>(params.name);
+  // Use VaPipeline when the input is VaSurfaceTopic for zero-copy GPU path.
+#ifdef OVW_HAS_VA
+  bool use_va = (!params.inputs.empty() && params.inputs[0] == kInputType_VaSurface);
+#else
+  bool use_va = false;
+#endif
+  std::shared_ptr<Pipeline> pipeline = use_va
+      ? std::static_pointer_cast<Pipeline>(std::make_shared<VaPipeline>(params.name))
+      : std::make_shared<Pipeline>(params.name);
   pipeline->getParameters()->update(params);
 
   PipelineData data;
@@ -104,10 +119,76 @@ std::shared_ptr<Pipeline> PipelineManager::createPipeline(const Params::ParamMan
     pipeline->add(it->first, it->second);
   }
 
-  auto infers = parseInference(params);
+  auto infers = parseInference(params, use_va);
   for (auto it = infers.begin(); it != infers.end(); ++it) {
     pipeline->add(it->first, it->second);
   }
+
+#ifdef OVW_HAS_VA
+  // For the VA surface zero-copy path: replace each inference's engine with a
+  // VAContext-compiled engine (NV12 GPU_SURFACE input), wrap in VaSurfaceInference,
+  // and register with the VaPipeline so runOnce() skips the CPU read() path.
+  if (use_va) {
+    auto* va_pipeline = static_cast<VaPipeline*>(pipeline.get());
+    VADisplay va_dpy = icamera_usm::VaDisplayHolder::get();
+    for (auto& [name, infer_ptr] : infers) {
+      // Re-create a VA engine using the model that was already loaded.
+      // BaseInference::getEngine() gives us access to the underlying model
+      // via getCompiledModel() — but we need a fresh model from params.
+      // Find the matching infer params to rebuild with VA engine.
+      for (auto& infer_param : params.infers) {
+        if (infer_param.name != name) continue;
+        // Build the model (same as createObjectDetection but VA engine).
+        // Only ObjectDetection inferences have a VA path today.
+        if (infer_param.model_type != kInferTpye_ObjectDetectionTypeYolov8 &&
+            infer_param.model_type != kInferTpye_ObjectDetectionTypeYolov5) {
+          slog::warn << "VA surface path: no VA engine support for model type '"
+                     << infer_param.model_type << "' — skipping" << slog::endl;
+          break;
+        }
+        // Do NOT call modelInit() on va_model — that would initialize a second
+        // ov::Core for the GPU plugin, which causes heap corruption alongside
+        // the core already held by the first inference's BaseModel::engine.
+        // Instead, get the input dimensions from the already-initialized
+        // inference and pass them directly to createVaEngine.
+        auto* od_infer = dynamic_cast<openvino_wrapper_lib::ObjectDetection*>(infer_ptr.get());
+        if (!od_infer || !od_infer->getValidModel()) {
+          slog::warn << "VA wiring: could not get valid model from inference '" << name
+                     << "' — skipping VA engine" << slog::endl;
+          break;
+        }
+        const int net_h = od_infer->getValidModel()->getInputHeight();
+        const int net_w = od_infer->getValidModel()->getInputWidth();
+        auto va_engine = engine_manager_.createVaEngine(infer_param.engine, infer_param.model,
+                                                        net_h, net_w, va_dpy);
+        // Wrap the existing ObjectDetection in VaSurfaceInference using the VA engine.
+        auto va_infer = std::make_shared<openvino_wrapper_lib::VaSurfaceInference>(infer_ptr);
+        va_infer->loadEngine(va_engine);
+        va_infer->setExpectedSize(net_w, net_h);  // for size-check in enqueueVaSurface
+        va_pipeline->addVaInference(name, va_infer);
+        slog::info << "VA surface inference registered for '" << name << "'" << slog::endl;
+        break;
+      }
+    }
+
+    // Publish InferRequirements so the VEBOX/SFC reconfigures its output to
+    // the model's expected size (net_h × net_w NV12).  The PPP cannot resize
+    // GPU_SURFACE tensors — the surface MUST arrive at the correct size.
+    // transient_local QoS means late-joining camera nodes still get the message.
+    auto* va_in = va_pipeline->vaInput();
+    if (va_in) {
+      // Collect required dimensions from the first registered VA inference.
+      for (auto& [name, va_inf] : va_pipeline->vaInferences()) {
+        va_in->publishRequirements(
+            va_inf->getExpectedWidth(), va_inf->getExpectedHeight(), "NV12");
+        slog::info << "Published InferRequirements: "
+                   << va_inf->getExpectedWidth() << "x" << va_inf->getExpectedHeight()
+                   << " NV12 for VEBOX reconfiguration" << slog::endl;
+        break;
+      }
+    }
+  }
+#endif
 
   slog::info << "Updating connections ..." << slog::endl;
   for (auto it = params.connects.begin(); it != params.connects.end(); ++it) {
@@ -139,6 +220,15 @@ PipelineManager::parseInputDevice(const PipelineData& pdata)
       }
     } else if (name == kInputType_CameraTopic || name == kInputType_ImageTopic) {
       device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
+#ifdef OVW_HAS_VA
+    } else if (name == kInputType_VaSurface) {
+      // topic  = /openvino_toolkit/va/frame  (remapped in launch to camera ns)
+      // req_topic = /openvino_toolkit/va/infer_requirements (remapped in launch)
+      device = std::make_shared<Input::VaSurfaceTopic>(
+          pdata.parent_node,
+          "/openvino_toolkit/va/frame",
+          "/openvino_toolkit/va/infer_requirements");
+#endif
     } else if (name == kInputType_Video) {
       if (pdata.params.input_meta != "") {
         device = std::make_shared<Input::Video>(pdata.params.input_meta);
@@ -188,7 +278,8 @@ std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> PipelineManager::par
 }
 
 std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>
-PipelineManager::parseInference(const Params::ParamManager::PipelineRawData& params)
+PipelineManager::parseInference(const Params::ParamManager::PipelineRawData& params,
+                                 bool skip_engine)
 {
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>> inferences;
   for (auto& infer : params.infers) {
@@ -207,7 +298,7 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData& par
     } else if (infer.name == kInferTpye_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
     } else if (infer.name == kInferTpye_ObjectDetection) {
-      object = createObjectDetection(infer);
+      object = createObjectDetection(infer, skip_engine);
     } else if (infer.name == kInferTpye_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
     } else if (infer.name == kInferTpye_ObjectSegmentationMaskrcnn) {
@@ -286,7 +377,8 @@ PipelineManager::createHeadPoseEstimation(const Params::ParamManager::InferenceR
 }
 
 std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawData& infer)
+PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawData& infer,
+                                        bool skip_engine)
 {
   std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
   std::shared_ptr<openvino_wrapper_lib::ObjectDetection> object_inference_ptr;
@@ -309,10 +401,11 @@ PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawD
       infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
   slog::debug << "for test in createObjectDetection(), before modelInit()" << slog::endl;
   object_detection_model->modelInit();
-  auto object_detection_engine = engine_manager_.createEngine(infer.engine, object_detection_model);
-  slog::debug << "for test in createObjectDetection(), before loadNetwork" << slog::endl;
   object_inference_ptr->loadNetwork(object_detection_model);
-  object_inference_ptr->loadEngine(object_detection_engine);
+  if (!skip_engine) {
+    auto object_detection_engine = engine_manager_.createEngine(infer.engine, object_detection_model);
+    object_inference_ptr->loadEngine(object_detection_engine);
+  }
   slog::debug << "for test in createObjectDetection(), OK" << slog::endl;
   return object_inference_ptr;
 }

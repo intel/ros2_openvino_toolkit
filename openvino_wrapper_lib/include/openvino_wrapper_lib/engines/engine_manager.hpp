@@ -56,8 +56,12 @@ public:
    * @param va_dpy  VADisplay from the process-global VaDisplayHolder.
    * @return        Engine whose InferRequest accepts VASurfaceTensors.
    */
+  /// Create a VA-surface engine from raw model path and known input dimensions.
+  /// Does NOT call modelInit() — dimensions must be obtained from an already-
+  /// initialized inference so we never create a second ov::Core for GPU.
   std::shared_ptr<Engine> createVaEngine(const std::string& device,
-                                         const std::shared_ptr<Models::BaseModel>& model,
+                                         const std::string& model_path,
+                                         int net_h, int net_w,
                                          VADisplay va_dpy);
 
 private:

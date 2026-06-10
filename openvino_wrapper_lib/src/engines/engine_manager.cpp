@@ -51,59 +51,58 @@ Engines::EngineManager::createEngine_V2022(const std::string& device, const std:
 
 std::shared_ptr<Engines::Engine>
 Engines::EngineManager::createVaEngine(const std::string& device,
-                                       const std::shared_ptr<Models::BaseModel>& model,
+                                       const std::string& model_path,
+                                       int net_h, int net_w,
                                        VADisplay va_dpy)
 {
-  // Re-read the raw (pre-PPP) model so we can apply a VA-specific PPP
-  // independently of the CPU PPP that updateLayerProperty already applied.
-  ov::Core core;
-  auto raw_model = core.read_model(model->getModelPath());
-
-  // Build VA context from the producer's VADisplay (shared via VaDisplayHolder).
-  ov::intel_gpu::ocl::VAContext va_ctx(core, va_dpy);
-
-  // Model input size after the VEBOX/SFC scaling negotiation.
-  const int net_h = model->getInputHeight();
-  const int net_w = model->getInputWidth();
-
   if (net_h <= 0 || net_w <= 0) {
     throw std::runtime_error(
-      "createVaEngine: model input size not set — call modelInit() first");
+      "createVaEngine: model input dimensions are zero — ensure the inference "
+      "is fully initialized before calling createVaEngine");
   }
 
-  // Reshape to [1, net_h, net_w, 3] NHWC then let PPP handle NV12→RGB/BGR.
-  // NV12_TWO_PLANES expects separate Y and UV inputs; the spatial shape is the
-  // Y-plane shape (net_h × net_w).
-  raw_model->reshape({ 1, net_h, net_w, 3 });
+  // Use a dedicated ov::Core for the VA engine — separate from any CPU/normal
+  // GPU engines so contexts don't conflict.
+  ov::Core va_core;
+  ov::intel_gpu::ocl::VAContext va_ctx(va_core, va_dpy);
+
+  // For NV12_TWO_PLANES PPP the model's *network* input shape stays as the
+  // original NCHW [1,3,H,W] exported by ONNX — PPP injects the NV12 tensors
+  // before it.  Do NOT reshape to NHWC [1,H,W,3] here.
+  // (The dynamic-shape model is already [1,3,-1,-1]; fix spatial dims only.)
+  auto raw_model = va_core.read_model(model_path);
+  raw_model->reshape({{ raw_model->input().get_any_name(),
+                        ov::PartialShape{1, 3, net_h, net_w} }});
 
   ov::preprocess::PrePostProcessor ppp(raw_model);
 
-  // Tensor arrives as NV12 split into Y + UV planes directly from the VA surface.
+  // Two-plane NV12 VA surface — VEBOX/SFC pre-scales to net_h×net_w via
+  // InferRequirements so no resize is needed (OV GPU plugin doesn't support
+  // resize() for GPU_SURFACE tensors).
   ppp.input()
     .tensor()
     .set_element_type(ov::element::u8)
-    .set_color_format(ov::preprocess::ColorFormat::NV12_TWO_PLANES, { "Y", "UV" })
-    .set_memory_type(ov::intel_gpu::memory_type::surface)  // "GPU_SURFACE"
-    .set_layout(ov::Layout("NHWC"))
-    .set_spatial_static_shape(net_h, net_w);
-
-  ppp.input().model().set_layout("NCHW");
+    .set_color_format(ov::preprocess::ColorFormat::NV12_TWO_PLANES, { "y", "uv" })
+    .set_memory_type(ov::intel_gpu::memory_type::surface);
 
   ppp.input().preprocess()
-    .convert_element_type(ov::element::f32)
-    .convert_color(ov::preprocess::ColorFormat::BGR)
-    .scale({ 255.f, 255.f, 255.f });
+    .convert_color(ov::preprocess::ColorFormat::BGR);
+
+  ppp.input().model().set_layout("NCHW");
 
   ppp.output().tensor().set_element_type(ov::element::f32);
 
   auto built_model = ppp.build();
 
   // Compile against the VAContext so OV uses the VA display's OpenCL queue.
-  ov::CompiledModel compiled = core.compile_model(built_model, va_ctx);
+  ov::CompiledModel compiled = va_core.compile_model(built_model, va_ctx);
   slog::info << "[EngineManager] VA surface engine compiled for " << device
              << " — input " << net_w << "×" << net_h << " NV12 GPU_SURFACE" << slog::endl;
 
-  return std::make_shared<Engines::Engine>(std::move(compiled));
+  // Store va_core inside Engine so the GPU plugin and VA context stay alive
+  // for the lifetime of inference.  Destroying va_core would tear down the
+  // GPU plugin context and cause SIGSEGV inside infer() after ~200+ frames.
+  return std::make_shared<Engines::Engine>(std::move(va_core), std::move(compiled));
 }
 
 #if (defined(USE_OLD_E_PLUGIN_API))

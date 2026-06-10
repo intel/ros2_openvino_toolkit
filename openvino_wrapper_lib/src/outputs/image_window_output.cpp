@@ -29,7 +29,9 @@
 Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& output_name, int focal_length)
   : BaseOutput(output_name), focal_length_(focal_length)
 {
-  cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
+  if (std::getenv("DISPLAY") && std::string(std::getenv("DISPLAY")) != "") {
+    cv::namedWindow(output_name_, cv::WINDOW_AUTOSIZE);
+  }
 }
 
 void Outputs::ImageWindowOutput::feedFrame(const cv::Mat& frame)

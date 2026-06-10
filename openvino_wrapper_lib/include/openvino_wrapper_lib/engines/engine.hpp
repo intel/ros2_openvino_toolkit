@@ -51,8 +51,10 @@ public:
   /**
    * @brief Using an Inference Request + owning CompiledModel (for remote-context
    * access, e.g. VAContext for zero-copy VA surface inference).
+   * @p core is kept alive so the GPU plugin is not unloaded while the model
+   * is in use (destroying ov::Core triggers plugin cleanup).
    */
-  Engine(ov::CompiledModel compiled_model);
+  Engine(ov::Core core, ov::CompiledModel compiled_model);
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
@@ -81,6 +83,7 @@ public:
   }
 
 private:
+  ov::Core          core_;            // kept alive to prevent GPU plugin teardown
   ov::CompiledModel compiled_model_;  // may be empty (default-constructed)
   ov::InferRequest request_;
 };

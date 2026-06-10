@@ -41,6 +41,7 @@ const char kInputType_CameraTopic[] = "RealSenseCameraTopic";
 const char kInputType_ImageTopic[] = "ImageTopic";
 const char kInputType_RealSenseCamera[] = "RealSenseCamera";
 const char kInputType_ServiceImage[] = "ServiceImage";
+const char kInputType_VaSurface[] = "VaSurfaceTopic";
 
 const char kOutputTpye_RViz[] = "RViz";
 const char kOutputTpye_ImageWindow[] = "ImageWindow";

@@ -24,7 +24,9 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <string>
+#include <unordered_map>
 #include <vector>
 
 #include <va/va.h>
@@ -33,6 +35,7 @@
 
 #include "openvino_wrapper_lib/inferences/base_inference.hpp"
 #include "openvino_wrapper_lib/inputs/va_surface_holder.hpp"
+#include "va_display_holder.hpp"
 
 namespace openvino_wrapper_lib
 {
@@ -54,6 +57,12 @@ public:
     if (wrapped_) setMaxBatchSize(wrapped_->getMaxBatchSize());
   }
 
+  /// Set the expected VA surface dimensions (model input size).
+  /// Frames that arrive at a different size are skipped during VEBOX reconfiguration.
+  void setExpectedSize(uint32_t w, uint32_t h) { expected_w_ = w; expected_h_ = h; }
+  uint32_t getExpectedWidth()  const { return expected_w_; }
+  uint32_t getExpectedHeight() const { return expected_h_; }
+
   // ── VA surface path ────────────────────────────────────────────────────────
 
   /**
@@ -71,26 +80,80 @@ public:
     auto eng = getEngine();
     if (!eng) return false;
 
-    // Recover the VAContext from the compiled model's remote context.
-    auto va_ctx = eng->getCompiledModel()
-                      .get_context()
-                      .as<ov::intel_gpu::ocl::VAContext>();
+    // Skip frames that haven't been scaled to the model's expected size yet.
+    // After InferRequirements is published, the VEBOX reconfigures but a few
+    // frames at the old resolution may still be in flight.
+    if (expected_w_ > 0 && expected_h_ > 0) {
+      if (holder.width != expected_w_ || holder.height != expected_h_) {
+        return false;  // silent skip — VEBOX not yet reconfigured
+      }
+    }
 
-    // create_tensor_nv12 returns (y_tensor, uv_tensor) — zero-copy wrappers
-    // over the VA surface's OpenCL image planes.
-    auto [y_t, uv_t] = va_ctx.create_tensor_nv12(
-        holder.height, holder.width,
-        static_cast<VASurfaceID>(holder.va_surface_id));
+    // Recover the VAContext from the compiled model's remote context.
+    fprintf(stderr, "[VaSurfInf] get_context start\n");
+    auto& compiled = eng->getCompiledModel();
+    // Log input names once for diagnostics.
+    static bool names_logged = false;
+    if (!names_logged) {
+      names_logged = true;
+      for (size_t i = 0; i < compiled.inputs().size(); ++i)
+        fprintf(stderr, "[VaSurfInf] compiled input[%zu] = \"%s\"\n",
+                i, compiled.input(i).get_any_name().c_str());
+    }
+    auto va_ctx = compiled.get_context().as<ov::intel_gpu::ocl::VAContext>();
+    fprintf(stderr, "[VaSurfInf] create_tensor_nv12 h=%u w=%u surf=%u\n",
+            holder.height, holder.width, holder.va_surface_id);
+
+    // Release previous VA surface tensors before acquiring new ones.
+    // Each create_tensor_nv12 acquires the surface as a CL media interop object;
+    // the driver may have a per-surface acquisition limit.
+    last_y_t_  = ov::Tensor{};
+    last_uv_t_ = ov::Tensor{};
+
+    // Reuse cached tensors for each VASurfaceID — avoids repeated
+    // clCreateFromVA_APIMediaSurfaceINTEL / clReleaseMemObject cycles which
+    // exhaust a driver-side resource after ~285 calls.
+    VASurfaceID surf_id = static_cast<VASurfaceID>(holder.va_surface_id);
+    auto cache_it = surface_tensors_.find(surf_id);
+    if (cache_it == surface_tensors_.end()) {
+      auto [new_y, new_uv] = va_ctx.create_tensor_nv12(
+          holder.height, holder.width, surf_id);
+      surface_tensors_[surf_id] = {new_y, new_uv};
+      cache_it = surface_tensors_.find(surf_id);
+      fprintf(stderr, "[VaSurfInf] cached new tensor for surf=%u\n", surf_id);
+    }
+    auto& [y_t, uv_t] = cache_it->second;
+    fprintf(stderr, "[VaSurfInf] create_tensor_nv12 OK (cached) — set_tensor\n");
+
+    last_y_t_  = y_t;
+    last_uv_t_ = uv_t;
 
     ov::InferRequest& req = eng->getRequest();
-    req.set_input_tensor(0, y_t);
-    req.set_input_tensor(1, uv_t);
+    // Bind via compiled model port objects — the only stable binding path for
+    // VASurfaceTensors (string names and positional index are both unreliable).
+    auto& cm = eng->getCompiledModel();
+    req.set_tensor(cm.input(0), y_t);
+    req.set_tensor(cm.input(1), uv_t);
+    fprintf(stderr, "[VaSurfInf] set_input_tensor OK\n");
 
     enqueued_frames_ = 1;
+    submitted_ = false;  // reset; set to true in submitRequest
     return true;
   }
 
   // ── BaseInference delegation ───────────────────────────────────────────────
+
+  // Override loadEngine so the wrapped inference shares the VA engine.
+  // This means wrapped_->fetchResults() → valid_model_->fetchResults(va_engine)
+  // reads the output tensor from the completed VA inference request — correct.
+  void loadEngine(const std::shared_ptr<Engines::Engine> engine) override
+  {
+    BaseInference::loadEngine(engine);
+    if (wrapped_) wrapped_->loadEngine(engine);
+    // Pre-build the surface→tensor cache once the engine (and thus the
+    // compiled model with its VAContext) is known.
+    surface_tensors_.clear();
+  }
 
   bool enqueue(const cv::Mat& frame, const cv::Rect& loc) override
   {
@@ -99,24 +162,54 @@ public:
 
   bool submitRequest() override
   {
-    // For the VA path the engine is already set on this object; submitRequest
-    // calls engine_->getRequest().start_async() via the base class.
-    return BaseInference::submitRequest();
+    // Use synchronous infer() for the VA path so the GPU kernel completes
+    // before returning — this ensures the VA surface isn't recycled by VEBOX
+    // while the GPU is still reading it (no separate wait() needed).
+    // Hold conversionMutex() during infer() to prevent VEBOX from touching
+    // any VA surface concurrently with the iHD GPU kernel (driver-level
+    // conflict on the shared VA display's OpenCL queue).
+    auto eng = getEngine();
+    if (!eng || !enqueued_frames_) return false;
+    enqueued_frames_ = 0;
+    results_fetched_ = false;
+    fprintf(stderr, "[VaSurfInf] infer() start\n");
+    {
+      std::lock_guard<std::mutex> lk(icamera_usm::VaDisplayHolder::conversionMutex());
+      eng->getRequest().infer();
+    }
+    fprintf(stderr, "[VaSurfInf] infer() done\n");
+    submitted_ = true;
+    if (wrapped_) wrapped_->resetFetchState();
+    return true;
   }
 
   bool fetchResults() override
   {
-    // Wait on our own request, then delegate result parsing to wrapped_.
+    // Only wait if we actually submitted a request this round.
+    // If enqueueVaSurface failed (e.g. wrong size during VEBOX reconfiguration)
+    // submitted_ will be false and calling wait() on an un-started InferRequest
+    // causes a SIGSEGV.
+    if (!submitted_) return false;
+    submitted_ = false;
+
+    // infer() in submitRequest() already blocked until completion —
+    // no need to wait() again.
+    auto eng = getEngine();
+    (void)eng;
+
+    // BaseInference::fetchResults() flips results_fetched_.
+    fprintf(stderr, "[VaSurfInf] BaseInference::fetchResults\n");
     bool ok = BaseInference::fetchResults();
+    fprintf(stderr, "[VaSurfInf] BaseInference::fetchResults done ok=%d\n", (int)ok);
     if (!ok || !wrapped_) return ok;
 
-    // Copy the output tensor from our engine into the wrapped inference engine
-    // so its fetchResults() can parse it.
-    if (getEngine() && wrapped_->getEngine()) {
-      auto out = getEngine()->getRequest().get_output_tensor();
-      wrapped_->getEngine()->getRequest().set_output_tensor(out);
-    }
-    return wrapped_->fetchResults();
+    // The wrapped ObjectDetection shares the same VA engine (set by loadEngine
+    // override above), so valid_model_->fetchResults(va_engine, ...) reads the
+    // output tensor from the completed request — no tensor copy needed.
+    fprintf(stderr, "[VaSurfInf] wrapped_->fetchResults\n");
+    bool r = wrapped_->fetchResults();
+    fprintf(stderr, "[VaSurfInf] wrapped_->fetchResults done r=%d\n", (int)r);
+    return r;
   }
 
   void observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output) override
@@ -146,6 +239,15 @@ public:
 
 private:
   std::shared_ptr<BaseInference> wrapped_;
+  uint32_t expected_w_ = 0;
+  uint32_t expected_h_ = 0;
+  bool submitted_ = false;  // true only between submitRequest and fetchResults
+  // Keep last-frame tensors alive until after infer() to prevent premature CL release.
+  ov::Tensor last_y_t_;
+  ov::Tensor last_uv_t_;
+  // Cache VASurfaceID → (y_tensor, uv_tensor) so create_tensor_nv12 is only
+  // called once per surface (avoids CL media-interop resource exhaustion).
+  std::unordered_map<VASurfaceID, std::pair<ov::Tensor, ov::Tensor>> surface_tensors_;
 };
 
 }  // namespace openvino_wrapper_lib

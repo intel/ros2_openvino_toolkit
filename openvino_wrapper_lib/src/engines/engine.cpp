@@ -26,10 +26,12 @@ Engines::Engine::Engine(InferenceEngine::InferencePlugin plg, const Models::Base
 }
 #endif
 
-Engines::Engine::Engine(ov::CompiledModel compiled_model)
-  : compiled_model_(std::move(compiled_model))
+Engines::Engine::Engine(ov::Core core, ov::CompiledModel compiled_model)
+  : core_(std::move(core)), compiled_model_(std::move(compiled_model))
 {
+  fprintf(stderr, "[Engine] create_infer_request start\n");
   request_ = compiled_model_.create_infer_request();
+  fprintf(stderr, "[Engine] create_infer_request done\n");
 }
 
 Engines::Engine::Engine(ov::InferRequest& request)

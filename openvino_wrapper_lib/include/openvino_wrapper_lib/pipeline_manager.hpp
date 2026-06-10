@@ -106,7 +106,8 @@ private:
   std::map<std::string, std::shared_ptr<Input::BaseInputDevice>> parseInputDevice(const PipelineData& params);
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> parseOutput(const PipelineData& pdata);
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>
-  parseInference(const Params::ParamManager::PipelineRawData& params);
+  parseInference(const Params::ParamManager::PipelineRawData& params,
+                 bool skip_engine = false);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createFaceDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
@@ -116,7 +117,8 @@ private:
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createHeadPoseEstimation(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
-  createObjectDetection(const Params::ParamManager::InferenceRawData& infer);
+  createObjectDetection(const Params::ParamManager::InferenceRawData& infer,
+                         bool skip_engine = false);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createObjectSegmentation(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>

@@ -84,9 +84,13 @@ public:
    */
   void compileVaEngines(const std::string& device, VADisplay va_dpy);
 
-private:
-  Input::VaSurfaceTopic* vaInput() const;
+  Input::VaSurfaceTopic* vaInput();
 
+  /// Read-only access to registered VA inferences (for pipeline_manager post-setup).
+  const std::map<std::string, std::shared_ptr<openvino_wrapper_lib::VaSurfaceInference>>&
+  vaInferences() const { return va_inferences_; }
+
+private:
   // VA-aware inferences registered via addVaInference().
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::VaSurfaceInference>>
       va_inferences_;

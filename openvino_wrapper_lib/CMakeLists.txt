@@ -250,9 +250,27 @@ if(OVW_HAS_VA)
     src/inputs/va_surface_topic.cpp
     src/va_pipeline.cpp
   )
-  target_include_directories(${PROJECT_NAME} PRIVATE ${LIBVA_INCLUDE_DIRS})
+  # icamera_usm exports include/icamera_usm/ for msg headers, but library
+  # headers (va_display_holder.hpp etc.) live in include/ — add parent dir.
+  foreach(_icu_dir ${icamera_usm_INCLUDE_DIRS})
+    get_filename_component(_icu_parent "${_icu_dir}" DIRECTORY)
+    list(APPEND _icu_parent_dirs "${_icu_parent}")
+  endforeach()
+  list(REMOVE_DUPLICATES _icu_parent_dirs)
+  target_include_directories(${PROJECT_NAME} PRIVATE ${LIBVA_INCLUDE_DIRS} ${_icu_parent_dirs})
   target_link_libraries(${PROJECT_NAME} ${LIBVA_LIBRARIES})
-  target_compile_definitions(${PROJECT_NAME} PRIVATE OVW_HAS_VA=1)
+  # icamera_usm_component.so contains VaDisplayHolder::get() implementation but
+  # is not exported as a cmake target — link it directly.
+  find_library(_icamera_usm_component_lib icamera_usm_component
+    PATHS "${icamera_usm_DIR}/../../../lib"
+    NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH
+  )
+  if(_icamera_usm_component_lib)
+    target_link_libraries(${PROJECT_NAME} "${_icamera_usm_component_lib}")
+  else()
+    message(WARNING "Could not find libicamera_usm_component.so — VaDisplayHolder symbols may be unresolved")
+  endif()
+  target_compile_definitions(${PROJECT_NAME} PRIVATE OVW_HAS_VA=1 ICAMERA_USM_HAS_LIBVA=1)
 endif()
 
 if(realsense2_FOUND)

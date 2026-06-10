@@ -28,7 +28,7 @@ void VaPipeline::addVaInference(
   va_inferences_[name] = std::move(inf);
 }
 
-Input::VaSurfaceTopic* VaPipeline::vaInput() const
+Input::VaSurfaceTopic* VaPipeline::vaInput()
 {
   auto* raw = dynamic_cast<Input::VaSurfaceTopic*>(getInputDevice().get());
   return raw;
@@ -61,18 +61,19 @@ void VaPipeline::runOnce()
     return;
   }
 
-  if (!va_in->hasVaSurface()) return;
-
   openvino_wrapper_lib::VaSurfaceHolder holder;
   if (!va_in->readVaSurface(&holder)) return;
 
   // Enqueue + submit for every registered VA inference.
   for (auto& [name, inf_ptr] : va_inferences_) {
     if (holder.hasVaSurface()) {
+      fprintf(stderr, "[VaPipeline] enqueueVaSurface surf_id=%u %ux%u\n",
+              holder.va_surface_id, holder.width, holder.height);
       if (!inf_ptr->enqueueVaSurface(holder)) {
         slog::warn << "VaPipeline: enqueueVaSurface failed for " << name << slog::endl;
         continue;
       }
+      fprintf(stderr, "[VaPipeline] enqueueVaSurface OK — calling submitRequest\n");
     } else if (!holder.cpu_mat.empty()) {
       // Inter-process fallback.
       inf_ptr->enqueue(holder.cpu_mat,
@@ -81,6 +82,7 @@ void VaPipeline::runOnce()
       continue;
     }
     inf_ptr->submitRequest();
+    fprintf(stderr, "[VaPipeline] submitRequest OK\n");
   }
 
   // Feed cpu_mat to outputs for annotation / display.
@@ -92,9 +94,18 @@ void VaPipeline::runOnce()
 
   // Wait, collect results, route to outputs.
   for (auto& [name, inf_ptr] : va_inferences_) {
+    fprintf(stderr, "[VaPipeline] fetchResults start\n");
     inf_ptr->fetchResults();
-    for (auto& [oname, out_ptr] : getOutputHandle()) {
-      inf_ptr->observeOutput(out_ptr);
+    fprintf(stderr, "[VaPipeline] fetchResults done\n");
+    // observeOutput calls handleOutput() which requires a CPU BGR frame
+    // (for annotation / RViz image publishing).  Skip when there is no
+    // cpu_mat — i.e. pure VA surface path with no CPU decode.
+    if (!holder.cpu_mat.empty()) {
+      for (auto& [oname, out_ptr] : getOutputHandle()) {
+        fprintf(stderr, "[VaPipeline] observeOutput %s\n", oname.c_str());
+        inf_ptr->observeOutput(out_ptr);
+        fprintf(stderr, "[VaPipeline] observeOutput %s done\n", oname.c_str());
+      }
     }
   }
 }

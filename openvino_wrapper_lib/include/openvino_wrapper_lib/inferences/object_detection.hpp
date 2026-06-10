@@ -143,6 +143,9 @@ public:
    * @brief Load the face detection model.
    */
   void loadNetwork(std::shared_ptr<Models::ObjectDetectionModel>);
+  /// Return the loaded model (needed by VA wiring to read input dimensions
+  /// without calling modelInit() a second time).
+  std::shared_ptr<Models::ObjectDetectionModel> getValidModel() const { return valid_model_; }
   /**
    * @brief Enqueue a frame to this class.
    * The frame will be buffered but not infered yet.

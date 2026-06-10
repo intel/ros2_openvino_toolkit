@@ -97,7 +97,7 @@ public:
    * @brief load the Engine instance that contains the request for
    * running netwrok on target calculation device.
    */
-  void loadEngine(std::shared_ptr<Engines::Engine> engine);
+  virtual void loadEngine(std::shared_ptr<Engines::Engine> engine);
   /**
    * @brief Get the loaded Engine instance.
    * @return The loaded Engine instance.
@@ -154,6 +154,9 @@ public:
    * @return Whether the Inference object fetches a result this time
    */
   virtual bool fetchResults();
+  /// Reset the fetch state so the next fetchResults() call actually reads
+  /// output tensors.  Used by VaSurfaceInference to keep wrapped_ in sync.
+  void resetFetchState() { results_fetched_ = false; }
   /**
    * @brief Get the length of the buffer result array.
    */

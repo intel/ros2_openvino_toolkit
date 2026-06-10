@@ -86,7 +86,7 @@ public:
    * @brief Do the inference once.
    * Data flow from input device to inference network, then to output device.
    */
-  void runOnce();
+  virtual void runOnce();
 
   void callback(const std::string& detection_name);
   /**
