@@ -204,7 +204,7 @@ void ParamManager::print() const
     }
   }
 
-  // Pring Common Info
+  // Print Common Info
   slog::info << "Common:" << slog::endl;
   slog::info << "\tcamera_topic: " << common_.camera_topic << slog::endl;
   slog::info << "\tcustom_cpu_library: " << common_.custom_cpu_library << slog::endl;
