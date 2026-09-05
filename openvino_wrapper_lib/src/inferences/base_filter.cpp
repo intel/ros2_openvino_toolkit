@@ -110,7 +110,7 @@ bool openvino_wrapper_lib::BaseFilter::stringCompare(
   } else if (!op.compare("!=")) {
     return target.compare(candidate);
   } else {
-    slog::err << "Invalid operator " << op << " for label comparsion" << slog::endl;
+    slog::err << "Invalid operator " << op << " for label comparison" << slog::endl;
     return false;
   }
 }
@@ -127,7 +127,7 @@ bool openvino_wrapper_lib::BaseFilter::floatCompare(
   } else if (!op.compare(">")) {
     return candidate > target;
   } else {
-    slog::err << "Invalid operator " << op << " for confidence comparsion" << slog::endl;
+    slog::err << "Invalid operator " << op << " for confidence comparison" << slog::endl;
     return false;
   }
 }

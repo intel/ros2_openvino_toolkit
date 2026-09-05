@@ -53,61 +53,61 @@ public:
   /**
    * @brief Generate image window output content according to
    * the license plate detection result.
-   * @param[in] A license plate detection result objetc.
+   * @param[in] A license plate detection result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::LicensePlateDetectionResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the vehicle attributes detection result.
-   * @param[in] A vehicle attributes detection result objetc.
+   * @param[in] A vehicle attributes detection result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::VehicleAttribsDetectionResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the face reidentification result.
-   * @param[in] A face reidentification result objetc.
+   * @param[in] A face reidentification result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::FaceReidentificationResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the landmarks detection result.
-   * @param[in] A landmarks detection result objetc.
+   * @param[in] A landmarks detection result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::LandmarksDetectionResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the person attributes detection result.
-   * @param[in] A person attributes detection result objetc.
+   * @param[in] A person attributes detection result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the person reidentification result.
-   * @param[in] A person reidentification result objetc.
+   * @param[in] A person reidentification result object.
    */
   void accept(
     const std::vector<openvino_wrapper_lib::PersonReidentificationResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the object segmentation result.
-   * @param[in] An obejct segmentation result objetc.
+   * @param[in] An object segmentation result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the object segmentation maskrcnn result.
-   * @param[in] An obejct segmentation result objetc.
+   * @param[in] An object segmentation result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult> &) override;
   /**
    * @brief Generate image window output content according to
    * the face detection result.
-   * @param[in] A face detection result objetc.
+   * @param[in] A face detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult> &) override;
   /**
@@ -119,19 +119,19 @@ public:
   /**
    * @brief Generate image window output content according to
    * the emotion detection result.
-   * @param[in] A emotion detection result objetc.
+   * @param[in] A emotion detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::EmotionsResult> &) override;
   /**
    * @brief Generate image window output content according to
-   * the age and gender detection result.
-   * @param[in] A head pose detection result objetc.
+   * the head pose detection result.
+   * @param[in] A head pose detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::HeadPoseResult> &) override;
   /**
    * @brief Generate image window output content according to
-   * the headpose detection result.
-   * @param[in] An age gender detection result objetc.
+   * the age and gender detection result.
+   * @param[in] An age gender detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::AgeGenderResult> &) override;
 
@@ -143,7 +143,7 @@ private:
    */
   cv::Point calcAxis(cv::Mat r, double cx, double cy, double cz, cv::Point cp);
   /**
-   * @brief Calculte the rotation transform from the rotation pose.
+   * @brief Calculate the rotation transform from the rotation pose.
    * @param[in] yaw Yaw rotation value.
    * @param[in] pitch Pitch rotation value.
    * @param[in] roll Roll rotation value.
