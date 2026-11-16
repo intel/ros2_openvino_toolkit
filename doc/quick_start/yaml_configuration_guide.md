@@ -86,7 +86,7 @@ The input_path need to be specified when input is Image, Video and IP Camera.
 |IpCamera|```input_path: "rtsp://localhost/test"```|
 
 ### Specify infers
-The Inference Engine is a set of C++ classes to provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
+The Inference Engine is a set of C++ classes that provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
 
 * #### name
 The name of inference engine need to be specified here. Currently, the inference feature list is supported:

@@ -1,7 +1,7 @@
 # Tutorial_For_yolov5_Converted
 
 # Introduction
-This document describes a method to convert YOLOv5 nano PyTorch weight files with the. pt extension to ONNX weight files, and a method to convert ONNX weight files to IR files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv5n for deployment in practical applications.
+This document describes a method to convert YOLOv5 nano PyTorch weight files with the .pt extension to ONNX weight files, and a method to convert ONNX weight files to IR files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv5n for deployment in practical applications.
 
 ## Reference Phrase
 |Term|Description|
