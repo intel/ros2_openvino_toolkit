@@ -5,7 +5,7 @@ This repository contains a Dockerfile for building a Docker image with ROS2 and 
 ## Features
 
 - ROS2 Jazzy Desktop
-- OpenVINO Toolkit version 2025.2.0
+- OpenVINO Toolkit version 2025.4.0
 - librealsense2
 - User setup with `sudo` privileges
   
@@ -16,7 +16,7 @@ This repository contains a Dockerfile for building a Docker image with ROS2 and 
 
 ## Building the Docker Image
   
-To build the Docker image, use the following command. The default OpenVINO version is `2025.2.0`.
+To build the Docker image, use the following command. The image installs OpenVINO `2025.4.0`.
 
 ```bash
 docker build -t  ros2_openvino_image  .

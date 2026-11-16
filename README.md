@@ -114,7 +114,7 @@ The contents in **.yaml config file** should be well structured and follow the s
 <details>
 <summary>Pipeline</summary>
 
-**Pipeline** fulfills the whole data handling process: initializing Input Component for image data gathering and formatting; building up the structured inference network and passing the formatted data through the inference network; transfering the inference results and handling output, etc.
+**Pipeline** fulfills the whole data handling process: initializing Input Component for image data gathering and formatting; building up the structured inference network and passing the formatted data through the inference network; transferring the inference results and handling output, etc.
 </details>
 </p>
 
@@ -162,10 +162,10 @@ Currently, the corresponding relation of supported inference features, models us
 |Object Detection| Object detection based on SSD-based trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)|[mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mobilenet-ssd)<br>[yolov5](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/111-yolov5-quantization-migration)<br>[yolov7](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/226-yolov7-optimization)<br>[yolov8](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[ssdlite_mobilenet_v2](https://github.com/openvinotoolkit/open_model_zoo/tree/2024.6.0/models/public/ssdlite_mobilenet_v2)|
 |Vehicle and License Detection| Vehicle and license detection based on Intel models.|[pipeline_vehicle_detection.yaml](./sample/param/pipeline_vehicle_detection.yaml)|[vehicle-license-plate-detection-barrier-0106](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-license-plate-detection-barrier-0106)<br>[vehicle-attributes-recognition-barrier-0039](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-attributes-recognition-barrier-0039)<br>[license-plate-recognition-barrier-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/license-plate-recognition-barrier-0001)|
 |Object Segmentation - Semantic| semantic segmentation, assign a class label to each pixel in an image. |[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)|
-| Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_segmentation_instance.launch.yaml](./sample/param/pipeline_segmentation_instance.yaml) | [yolov8-seg](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+| Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_segmentation_instance.yaml](./sample/param/pipeline_segmentation_instance.yaml) | [yolov8-seg](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
 |Person Attributes| Person attributes based on object detection.|[pipeline_person_attributes.yaml](./sample/param/pipeline_person_attributes.yaml)|[person-attributes-recognition-crossroad-0230](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-attributes-recognition-crossroad-0230)<br>[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)|
-|Person Reidentification|Person reidentification based on object detection.|[pipeline_person_reidentification.yaml](./sample/param/pipeline_reidentification.yaml)|[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)<br>[person-reidentification-retail-0277](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-reidentification-retail-0277)|
-|Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.[_Deprecated, it is recommended to use `object segementation - instance` for first try._]|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+|Person Reidentification|Person reidentification based on object detection.|[pipeline_reidentification.yaml](./sample/param/pipeline_reidentification.yaml)|[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)<br>[person-reidentification-retail-0277](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-reidentification-retail-0277)|
+|Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.[_Deprecated, it is recommended to use `object segmentation - instance` for first try._]|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
 </details>
 </p>
 
@@ -290,7 +290,7 @@ Sample images are now properly installed to the package share directory, enablin
 * [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)
 * [What is the canonical C++ API for interacting with ROS?](https://docs.ros2.org/latest/api/rclcpp/)
 <p><details><summary> How to change logging level?</summary>
-  This project provides to logging levels: *DEBUG* & *INFO*.<br>
+  This project provides two logging levels: *DEBUG* & *INFO*.<br>
   You may follow the steps to change logging level:<br>
 
   - Update ./openvino_wrapper_lib/CMakeLists.txt by uncommenting (for DEBUG level) or commenting (for INFO level) this line:
@@ -298,7 +298,7 @@ Sample images are now properly installed to the package share directory, enablin
     #add_definitions(-DLOG_LEVEL_DEBUG)
     ```
   - Rebuild project<br>
-    Refer corresponding quick-start documents to rebuild this project. e.g.:<br>
+    Refer to the corresponding quick-start documents to rebuild this project. e.g.:<br>
     ```code
     source /opt/ros/<ros-distro>/setup.bash
     colcon build --symlink-install
