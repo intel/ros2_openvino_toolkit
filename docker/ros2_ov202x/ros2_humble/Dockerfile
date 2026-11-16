@@ -65,7 +65,7 @@ USER ubuntu
 RUN mkdir -p ros2_ws/src
 WORKDIR /home/ubuntu/ros2_ws/src
 RUN git clone https://github.com/intel/ros2_object_msgs.git
-RUN git clone -b ros2 https://github.com/intel/ros2_openvino_toolkit.git 
+RUN git clone -b ros2_humble https://github.com/intel/ros2_openvino_toolkit.git 
 RUN git clone -b humble https://github.com/ros-perception/vision_opencv.git
 WORKDIR /home/ubuntu/ros2_ws
 RUN source /opt/ros/humble/setup.bash \
