@@ -26,7 +26,7 @@ source openvino_env/bin/activate
 ```
 
  #### Train
-Train YOLOv8n on the COCO128 dataset for 100 epochs at image size 640. For a full list of available arguments seethe Configuration page.
+Train YOLOv8n on the COCO128 dataset for 100 epochs at image size 640. For a full list of available arguments see the Configuration page.
 YOLOv8 may be used directly in the Command Line Interface (CLI) with a `yolo` command:
 
 ```CLI
@@ -40,7 +40,7 @@ yolo detect train data=coco128.yaml model=yolov8n.pt epochs=100 imgsz=640
 
 #### Val
 
-Validate trained YOLOv8n model accuracy on the COCO128 dataset. No argument need to passed as the model retains it's training data and arguments as model attributes.
+Validate trained YOLOv8n model accuracy on the COCO128 dataset. No arguments need to be passed as the model retains its training data and arguments as model attributes.
 ```CLI
 # val official model
 yolo detect val model=yolov8n.pt
