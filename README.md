@@ -52,8 +52,8 @@
 |Prerequisite|Mandatory?|Description|
 |-----------------------|-----------------------|--------------------------------|
 |**Processor**|Mandatory|A platform with Intel processors assembled. (Refer to [here](https://software.intel.com/content/www/us/en/develop/articles/openvino-2020-3-lts-relnotes.html) for the full list of Intel processors supported.)|
-|**OS**|Mandatory|We only tested this project under Ubuntu distros. It is recommended to install the corresponding Ubuntu Distro according to the ROS distro that you select to use. **For example: Ubuntu 18.04 for dashing, Ubuntu 20.04 for Foxy and Galactic, Ubuntu 22.04 for Humble.**|
-|**ROS2**|Mandatory|We have already supported active ROS distros (Humble, Galactic, Foxy and Dashing (deprecated)). Choose the one matching your needs. You may find the corresponding branch from the table above in section [**ROS2 Version Supported**](#ros2-version-supported).|
+|**OS**|Mandatory|Only Ubuntu is tested. Use the Ubuntu release that matches your ROS 2 distribution. **For example: Ubuntu 22.04 for Humble, Ubuntu 24.04 for Jazzy, Ubuntu 26.04 for Lyrical.**|
+|**ROS2**|Mandatory|Choose the distribution matching your OS and check out the corresponding branch from the table in section [**ROS2 Version Supported**](#ros2-version-supported).|
 |**OpenVINO**|Mandatory|The version of OpenVINO toolkit is decided by the OS and ROS2 distros you use. See the table above in Section [**ROS2 Version Supported**](#ros2-version-supported).|
 |**RealSense Camera**|Optional|RealSense Camera is optional, you may choose these alternatives as the input: Standard Camera, ROS Image Topic, Video/Image File or RTSP camera.|
 
@@ -183,15 +183,15 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Inference|Published Topic|
 |---|---|
 |People Detection|```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([object_msgs:msg:EmotionsStamped](../../../object_msgs/msg/EmotionsStamped.msg))|
-|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([object_msgs:msg:AgeGenderStamped](../../../object_msgs/msg/AgeGenderStamped.msg))|
-|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([object_msgs:msg:HeadPoseStamped](../../../object_msgs/msg/HeadPoseStamped.msg))|
+|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([object_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/EmotionsStamped.msg))|
+|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([object_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/AgeGenderStamped.msg))|
+|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([object_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/HeadPoseStamped.msg))|
 |Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
-|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](../../../object_msgs/msg/ObjectsInMasks.msg))|
-|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](../../../object_msgs/msg/ReidentificationStamped.msg))|
-|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](../../../object_msgs/msg/PersonAttributeStamped.msg))|
-|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](../../../object_msgs/msg/LicensePlateStamped.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInMasks.msg))|
+|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInMasks.msg))|
+|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/ReidentificationStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/VehicleAttribsStamped.msg))|
+|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/LicensePlateStamped.msg))|
 </details>
 </p>
 
@@ -206,9 +206,9 @@ Several ROS2 Services are created, expecting to be used in client/server mode, e
 |---|---|
 |Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
 |Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
-|Age Gender Detection Service|```/detect_age_gender```([object_msgs::srv::AgeGender](./object_msgs/srv/AgeGenderSrv.srv))|
-|Headpose Detection Service|```/detect_head_pose```([object_msgs::srv::HeadPose](./object_msgs/srv/HeadPoseSrv.srv))|
-|Emotion Detection Service|```/detect_emotion```([object_msgs::srv::Emotion](./object_msgs/srv/EmotionSrv.srv))|
+|Age Gender Detection Service|```/detect_age_gender```([object_msgs::srv::AgeGender](https://github.com/intel/ros2_object_msgs/blob/master/srv/AgeGenderSrv.srv))|
+|Headpose Detection Service|```/detect_head_pose```([object_msgs::srv::HeadPose](https://github.com/intel/ros2_object_msgs/blob/master/srv/HeadPoseSrv.srv))|
+|Emotion Detection Service|```/detect_emotion```([object_msgs::srv::Emotion](https://github.com/intel/ros2_object_msgs/blob/master/srv/EmotionSrv.srv))|
 </details>
 </p>
 

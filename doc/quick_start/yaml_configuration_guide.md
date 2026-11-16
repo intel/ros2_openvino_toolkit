@@ -97,15 +97,13 @@ The path of model need to be specified here. The scheme below illustrates the ty
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
-**Note:** Currently, only CPU and GPU are supported.</br>
-Target device options are:
+The OpenVINO device the model runs on. Target device options are:
 
-|Target Device|
-|-----------------------|
-|CPU|
-|Intel® Integrated Graphics|
-|FPGA|
-|Intel® Movidius™ Neural Compute Stick|
+|Value|Device|
+|---|---|
+|`CPU`|Intel CPU|
+|`GPU`|Intel integrated or discrete GPU|
+|`NPU`|Intel NPU (Core Ultra processors)|
 
 * #### label
 Currently, this parameter does not work.
