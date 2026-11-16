@@ -240,7 +240,7 @@ For the snapshot of demo results, refer to the following picture.
 
 # Installation and Launching
 
-## New Features in ROS2 Jazzy
+## New Features
 This branch introduces several improvements for enhanced usability and maintainability:
 
 ### 1. **Unified Path Management System**
