@@ -26,7 +26,7 @@ Pipelines:
     - left: ObjectDetection
       right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
     - left: ObjectDetection
-      right: [RosTopic] 
+      right: [RosTopic]
     - left: VehicleAttribsDetection
       right: [RosTopic]
     - left: LicensePlateDetection

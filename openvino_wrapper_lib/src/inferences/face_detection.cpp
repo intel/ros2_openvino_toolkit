@@ -27,15 +27,13 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // FaceDetectionResult
-openvino_wrapper_lib::FaceDetectionResult::FaceDetectionResult(const cv::Rect & location)
-: ObjectDetectionResult(location)
+openvino_wrapper_lib::FaceDetectionResult::FaceDetectionResult(const cv::Rect& location)
+  : ObjectDetectionResult(location)
 {
 }
 
 // FaceDetection
-openvino_wrapper_lib::FaceDetection::FaceDetection(
-  bool enable_roi_constraint,
-  double show_output_thresh)
-: ObjectDetection(enable_roi_constraint, show_output_thresh)
+openvino_wrapper_lib::FaceDetection::FaceDetection(bool enable_roi_constraint, double show_output_thresh)
+  : ObjectDetection(enable_roi_constraint, show_output_thresh)
 {
 }

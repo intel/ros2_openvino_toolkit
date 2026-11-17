@@ -1,0 +1,35 @@
+# This workflow checks code formatting using clang-format on push and pull request events to the main, ros2_humble, ros2_jazzy and ros2_lyrical branches.
+
+name: Code_Format_Check
+
+on:
+  push:
+    branches: [ "main", "ros2_humble", "ros2_jazzy", "ros2_lyrical" ]
+  pull_request:
+    branches: [ "main", "ros2_humble", "ros2_jazzy", "ros2_lyrical" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  code-format-check:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install clang-format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format-14
+
+      - name: Run clang-format check
+        run: |
+          FILES=$(find . -type f \( -name '*.h' -o -name '*.hpp' -o -name '*.cpp' \) \
+            ! -path "*/build/*" ! -path "*/install/*" ! -path "*/log/*")
+
+          clang-format --dry-run --Werror -style=file $FILES
+

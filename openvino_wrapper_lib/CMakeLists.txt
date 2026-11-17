@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(openvino_wrapper_lib)
 
@@ -30,35 +30,36 @@ set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 ####################################
 ## to get verbose log,
 ## then, uncomment below line
-add_definitions(-DLOG_LEVEL_DEBUG)
+#add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
-# environment variable OpenVINO_DIR can be use instead of relaive path to specify location of configuration file
+# OpenVINO_DIR must point to the OpenVINO cmake config (environment variable or -DOpenVINO_DIR=...).
+# See doc/quick_start/getting_started_with_ros2_ov2.0.md, "Build".
 
 find_package(OpenVINO REQUIRED)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(NOT OpenVINO_FOUND)
     message(FATAL_ERROR "")
 endif()
 set(OpenVINO_LIBRARIES openvino::runtime)
 
-# Find OpenCV libray if exists
+# Find OpenCV library if exists
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
 if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(realsense2 QUIET)
-if(NOT (realsense2_FOUND))
-  message(STATUS "\n\n Intel RealSense SDK 2.0 is missing, some features depending on it won't work. \
-    please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
-endif()
+# realsense_camera.hpp includes librealsense2 unconditionally.
+# On Lyrical: sudo apt install ros-lyrical-librealsense2
+find_package(realsense2 REQUIRED)
 
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rcutils)
 find_package(rmw REQUIRED)
+find_package(rmw_implementation REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(object_msgs REQUIRED)
@@ -155,7 +156,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 
 #The below command is commented in order to ignore "colcon test" errors.
 #This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
-#If you concern the inference performence, you can try to get the resource from the follow url and enable the below line.
+#If you concern the inference performance, you can try to get the resource from the follow url and enable the below line.
 #https://github.com/openvinotoolkit/openvino/tree/2018/inference-engine/src/extension/cmake
 #include(feature_defs OPTIONAL)
 
@@ -169,7 +170,7 @@ if(UNIX)
     set(LIB_DL dl)
 endif()
 
-set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} openvino::runtime)
+set(DEPENDENCIES realsense2::realsense2 ${OpenCV_LIBS} openvino::runtime)
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
@@ -189,6 +190,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/head_pose_detection.cpp
         src/inferences/object_segmentation.cpp
         src/inferences/object_segmentation_maskrcnn.cpp
+        src/inferences/object_segmentation_instance.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp
@@ -209,6 +211,8 @@ add_library(${PROJECT_NAME} SHARED
         src/models/head_pose_detection_model.cpp
         src/models/object_segmentation_model.cpp
         src/models/object_segmentation_maskrcnn_model.cpp
+        src/models/object_segmentation_instance_model.cpp
+        src/models/object_segmentation_instance_maskrcnn_model.cpp
         src/models/person_reidentification_model.cpp
         src/models/person_attribs_detection_model.cpp
         #src/models/landmarks_detection_model.cpp
@@ -217,6 +221,7 @@ add_library(${PROJECT_NAME} SHARED
         src/models/license_plate_detection_model.cpp
         src/models/object_detection_ssd_model.cpp
         src/models/object_detection_yolov5_model.cpp
+        src/models/object_detection_yolov8_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp
@@ -224,21 +229,24 @@ add_library(${PROJECT_NAME} SHARED
         src/outputs/ros_service_output.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} ${DEPENDENCIES})
+target_link_libraries(${PROJECT_NAME}
+  ${DEPENDENCIES}
+  rclcpp::rclcpp
+  rmw_implementation::rmw_implementation
+  std_msgs::std_msgs
+  sensor_msgs::sensor_msgs
+  object_msgs::object_msgs
+  openvino_msgs::openvino_msgs
+  ament_index_cpp::ament_index_cpp
+  class_loader::class_loader
+  cv_bridge::cv_bridge
+  openvino_param_lib::openvino_param_lib
+  yaml-cpp
+)
 
-ament_target_dependencies(${PROJECT_NAME}
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "sensor_msgs"
-  "object_msgs"
-  "openvino_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "realsense2"
-  "cv_bridge"
-  "openvino_param_lib"
-  "yaml_cpp_vendor"
+target_include_directories(${PROJECT_NAME} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
 if(BUILD_TESTING)
@@ -254,9 +262,17 @@ install(DIRECTORY include/
 )
 
 install(TARGETS ${PROJECT_NAME}
+  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
+)
+
+ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
+ament_export_dependencies(
+  rclcpp rmw_implementation std_msgs sensor_msgs object_msgs openvino_msgs
+  ament_index_cpp class_loader cv_bridge openvino_param_lib yaml_cpp_vendor
+  OpenCV OpenVINO realsense2
 )
 
 ament_package()

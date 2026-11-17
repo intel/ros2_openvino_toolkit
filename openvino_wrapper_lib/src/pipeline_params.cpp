@@ -23,17 +23,17 @@
 #include <utility>
 #include "openvino_wrapper_lib/pipeline_params.hpp"
 
-PipelineParams::PipelineParams(const std::string & name)
+PipelineParams::PipelineParams(const std::string& name)
 {
   params_.name = name;
 }
 
-PipelineParams::PipelineParams(const Params::ParamManager::PipelineRawData & params)
+PipelineParams::PipelineParams(const Params::ParamManager::PipelineRawData& params)
 {
   params_ = params;
 }
 
-PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineRawData & params)
+PipelineParams& PipelineParams::operator=(const Params::ParamManager::PipelineRawData& params)
 {
   params_.name = params.name;
   params_.infers = params.infers;
@@ -44,7 +44,7 @@ PipelineParams & PipelineParams::operator=(const Params::ParamManager::PipelineR
   return *this;
 }
 
-Params::ParamManager::PipelineRawData PipelineParams::getPipeline(const std::string & name)
+Params::ParamManager::PipelineRawData PipelineParams::getPipeline(const std::string& name)
 {
   return Params::ParamManager::getInstance().getPipeline(name);
 }
@@ -56,12 +56,12 @@ void PipelineParams::update()
   }
 }
 
-void PipelineParams::update(const Params::ParamManager::PipelineRawData & params)
+void PipelineParams::update(const Params::ParamManager::PipelineRawData& params)
 {
   params_ = params;
 }
 
-bool PipelineParams::isOutputTo(std::string & output)
+bool PipelineParams::isOutputTo(std::string& output)
 {
   if (std::find(params_.outputs.begin(), params_.outputs.end(), output) != params_.outputs.end()) {
     return true;
@@ -75,12 +75,10 @@ bool PipelineParams::isGetFps()
   if (params_.inputs.size() == 0) {
     return false;
   }
-  return std::find(params_.inputs.begin(), params_.inputs.end(), kInputType_Image) ==
-         params_.inputs.end();
+  return std::find(params_.inputs.begin(), params_.inputs.end(), kInputType_Image) == params_.inputs.end();
 }
 
-std::string PipelineParams::findFilterConditions(
-  const std::string & input, const std::string & output)
+std::string PipelineParams::findFilterConditions(const std::string& input, const std::string& output)
 {
   for (auto filter : params_.filters) {
     if (!input.compare(filter.input) && !output.compare(filter.output)) {

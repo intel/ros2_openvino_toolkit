@@ -29,7 +29,7 @@ def generate_launch_description():
     default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
-    	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
+    	launch.actions.DeclareLaunchArgument(name='yaml_path', default_value =
                                              os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_segmentation_image_ci.yaml')),
         # Realsense
         # NOTE: Split realsense_node launching from OpenVINO package, which
@@ -42,8 +42,8 @@ def generate_launch_description():
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
-                ('/openvino_toolkit/segmentation/segmented_obejcts',
-                 '/ros2_openvino_toolkit/segmented_obejcts'),
+                ('/openvino_toolkit/segmentation/segmented_objects',
+                 '/ros2_openvino_toolkit/segmented_objects'),
                 ('/openvino_toolkit/segmentation/images', '/ros2_openvino_toolkit/image_rviz')],
             output='screen'),
 

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 project(openvino_msgs)
 
@@ -30,14 +30,13 @@ find_package(builtin_interfaces REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
-find_package(object_msgs REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Connection.msg"
   "msg/PipelineRequest.msg"
   "msg/Pipeline.msg" 
   "srv/PipelineSrv.srv"
-  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs object_msgs geometry_msgs
+  DEPENDENCIES builtin_interfaces std_msgs sensor_msgs geometry_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)

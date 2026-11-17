@@ -43,7 +43,7 @@ namespace openvino_wrapper_lib
 class FaceDetectionResult : public ObjectDetectionResult
 {
 public:
-  explicit FaceDetectionResult(const cv::Rect & location);
+  explicit FaceDetectionResult(const cv::Rect& location);
 };
 
 /**

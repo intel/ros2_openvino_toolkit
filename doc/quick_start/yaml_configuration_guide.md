@@ -2,6 +2,16 @@
 
 The contents in .yaml config file should be well structured and follow the supported rules and entity names.
 
+# Path placeholders
+Write model and data locations with these placeholders instead of absolute paths. The launch files replace them when the node starts.
+
+|Placeholder|Resolved to|
+|---|---|
+|`<OPENVINO_NODE_SHARE>`|Models directory root: `$OPENVINO_TOOLKIT_DIR`, else `~/.local/share/openvino_toolkit`, else `/opt/openvino_toolkit`|
+|`<OPENVINO_DATA>`|Labels and sample images installed with the package (`share/openvino_node/data`)|
+
+When you start the node directly with `ros2 run openvino_node pipeline_with_params -config <file>`, no placeholder is replaced, so use absolute paths in that case.
+
 # Sample
 ## [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
 ```bash
@@ -10,24 +20,24 @@ Pipelines:
   inputs: [StandardCamera]
   infers: 
     - name: FaceDetection
-      model: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.labels
+      label: <OPENVINO_DATA>/labels/face_detection/face-detection-adas-0001.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: AgeGenderRecognition
-      model: /opt/openvino_toolkit/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
     - name: EmotionRecognition
-      model: /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
+      label: <OPENVINO_DATA>/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels
       batch: 16
     - name: HeadPoseEstimation
-      model: /opt/openvino_toolkit/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
@@ -49,7 +59,7 @@ Common:
 ## Interface Description
 
 ### Specify pipeline name
-The name value of this pipeline can be anyone other than null.
+The name value of this pipeline can be anything other than null.
 
 ### Specify inputs
 **Note:** The input parameter can only have one value.</br>
@@ -57,17 +67,17 @@ Currently, options for inputs are:
 
 |Input Option|Description|Configuration|
 |--------------------|------------------------------------------------------------------|-----------------------------------------|
-|StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|```inputs: [StandardCamera]```|
-|RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
+|StandardCamera|Any RGB camera with USB port support. Currently only the first USB camera is used if many are connected.|```inputs: [StandardCamera]```|
+|RealSenseCamera| Intel® RealSense™ RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
 |RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|```inputs: [Image]```|
 |Video| Any video file which can be parsed by openCV.|```inputs: [Video]```|
 |IpCamera| Any RTSP server which can push video stream.|```inputs: [IpCamera]```|
 
-**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IpCamera input.
+**Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IP Camera input.
 
 ### Specify input_path
-The input_path need to be specified when input is Image, Video and Ipcamera. 
+The input_path needs to be specified when the input is Image, Video or IP Camera. 
 
 |Input Option|Configuration|
 |--------------------|------------------------------------------------------------------|
@@ -76,36 +86,39 @@ The input_path need to be specified when input is Image, Video and Ipcamera.
 |IpCamera|```input_path: "rtsp://localhost/test"```|
 
 ### Specify infers
-The Inference Engine is a set of C++ classes to provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
+The Inference Engine is a set of C++ classes that provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
 
 * #### name
-The name of inference engine need to be specified here. Currently, the inference feature list is supported:
+The name of the inference engine needs to be specified here. Currently, the following inference features are supported:
 
 |Inference|Description|
 |-----------------------|------------------------------------------------------------------|
 |FaceDetection|Object Detection task applied to face recognition using a sequence of neural networks.|
 |EmotionRecognition| Emotion recognition based on detected face image.|
-|AgeGenderRecognition| Age and gener recognition based on detected face image.|
+|AgeGenderRecognition| Age and gender recognition based on detected face image.|
 |HeadPoseEstimation| Head pose estimation based on detected face image.|
-|ObjectDetection| object detection based on SSD-based trained models.|
+|ObjectDetection| Object detection based on SSD-based trained models.|
 |VehicleDetection| Vehicle and passenger detection based on Intel models.|
-|ObjectSegmentation| object detection and segmentation.|
+|ObjectSegmentation| Object detection and segmentation.|
 |ObjectSegmentationMaskrcnn| object segmentation based on Maskrcnn model.|
 
 * #### model
-The path of model need to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
+The path of the model needs to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
-**Note:** Currently, only CPU and GPU are supported.</br>
-Target device options are:
+The OpenVINO device the model runs on. Any device name reported by OpenVINO is accepted:
 
-|Target Device|
-|-----------------------|
-|CPU|
-|Intel® Integrated Graphics|
-|FPGA|
-|Intel® Movidius™ Neural Compute Stick|
+|Value|Device|
+|---|---|
+|`CPU`|Intel CPU|
+|`GPU`, `GPU.0`, `GPU.1`|Intel integrated or discrete GPU (`GPU` selects the first one)|
+|`NPU`|Intel NPU (Core Ultra processors)|
+|`AUTO`, `AUTO:GPU,CPU`, `HETERO:GPU,CPU`|OpenVINO virtual devices|
+
+To try a different device without editing the file, pass `device:=<value>` to any sample launch file, e.g. `ros2 launch openvino_node pipeline_image.launch.py device:=NPU`. It replaces the `engine` value of every model in the pipeline.
+
+The device actually used is printed at startup and drawn on the output image next to the FPS.
 
 * #### label
 Currently, this parameter does not work.

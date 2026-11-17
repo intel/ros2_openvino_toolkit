@@ -1,7 +1,7 @@
 # Tutorial_For_yolov5_Converted
 
 # Introduction
-This document describes a method to convert YOLOv5 nano PyTorch weight files with the. pt extension to ONNX weight files, and a method to convert ONNX weight files to IR files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv5n for deployment in practical applications.
+This document describes a method to convert YOLOv5 nano PyTorch weight files with the .pt extension to ONNX weight files, and a method to convert ONNX weight files to IR files using the OpenVINO model optimizer. This method can help OpenVINO users optimize YOLOv5n for deployment in practical applications.
 
 ## Reference Phrase
 |Term|Description|
@@ -14,8 +14,8 @@ This document describes a method to convert YOLOv5 nano PyTorch weight files wit
 ## Reference Document
 |Doc|Link|
 |---|---|
-|OpenVINO|[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
-|YOLOv5|[yolov5](https://github.com/ultralytics/yolov5)|
+|OpenVINO transition guide |[openvino_2_0_transition_guide](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html)|
+|YOLOv5 documentation |[yolov5](https://github.com/ultralytics/yolov5)|
 
 # Convert Weight File to ONNX
 * Copy YOLOv5 Repository from GitHub
@@ -68,8 +68,19 @@ Then we will get three files: yolov5n.xml, yolov5n.bin, and yolov5n.mapping unde
 # Move to the Recommended Model Path
 ```
 cd ~/yolov5/model_convert
-mkdir -p  /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
-sudo cp yolov5n.bin yolov5n.mapping yolov5n.xml /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
+mkdir -p  ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov5n/FP32/
+cp yolov5n.bin yolov5n.mapping yolov5n.xml ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov5n/FP32/
+```
+
+# yolov5 optimize to yolov5-int8
+```
+The yolov5 optimize to yolov5-int8 refer to the link:
+
+https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/111-yolov5-quantization-migration
+
+The installation guide
+https://github.com/openvinotoolkit/openvino_notebooks/blob/main/README.md#-installation-guide
+
 ```
 
 # FAQ

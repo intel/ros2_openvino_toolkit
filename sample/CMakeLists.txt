@@ -10,7 +10,7 @@
 # limitations under the License.
 
 set(OpenVINO_LIBRARIES openvino::runtime)
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 project(openvino_node)
 
 # Default to C++17
@@ -38,13 +38,16 @@ find_package(rcutils)
 find_package(OpenCV REQUIRED)
 find_package(cv_bridge REQUIRED)
 find_package(OpenVINO REQUIRED)
+set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 find_package(openvino_wrapper_lib REQUIRED)
 find_package(object_msgs REQUIRED)
 find_package(openvino_msgs REQUIRED)
 find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 find_package(realsense2 REQUIRED)
-find_package(rclcpp_components)
+find_package(rclcpp_components REQUIRED)
+find_package(class_loader REQUIRED)
+find_package(std_msgs REQUIRED)
 
 # Compiler Defense Flags
 if(UNIX OR APPLE)
@@ -68,12 +71,26 @@ if(OpenCV_FOUND)
     message(STATUS "OpenCV_INCLUDE_DIRS=${OpenCV_INCLUDE_DIRS}")
     message(STATUS "OpenCV_LIBS=${OpenCV_LIBS}")
 else()
-    message(STATUS "OPENCV is disabled or not found, " ${PROJECT_NAME} " skiped")
+    message(STATUS "OPENCV is disabled or not found, " ${PROJECT_NAME} " skipped")
     return()
 endif()
 
-include_directories(include
-  ${yaml_cpp_vendor_DIR}/../../../opt/yaml_cpp_vendor/include)
+include_directories(include)
+
+set(SAMPLE_LIBS
+  dl
+  rclcpp::rclcpp
+  ament_index_cpp::ament_index_cpp
+  class_loader::class_loader
+  std_msgs::std_msgs
+  object_msgs::object_msgs
+  openvino_msgs::openvino_msgs
+  openvino_param_lib::openvino_param_lib
+  openvino_wrapper_lib::openvino_wrapper_lib
+  openvino::runtime
+  ${OpenCV_LIBS}
+  yaml-cpp
+)
 
 if( BUILD_SAMPLE_NAME AND NOT ${BUILD_SAMPLE_NAME} STREQUAL ${PROJECT_NAME} )
     message(STATUS "SAMPLE ${PROJECT_NAME} SKIPPED")
@@ -110,140 +127,54 @@ add_executable(vino_param_sample
   src/parameters.cpp
 )
 target_link_libraries(vino_param_sample
-  dl
+  ${SAMPLE_LIBS}
   )
-
-ament_target_dependencies(vino_param_sample
-  "openvino_param_lib"
-  "openvino_wrapper_lib"
-  "yaml_cpp_vendor"
-)
 
 add_executable(pipeline_with_params
   src/pipeline_with_params.cpp
 )
 target_link_libraries(pipeline_with_params
-  dl
+  ${SAMPLE_LIBS}
+  realsense2::realsense2
   )
-ament_target_dependencies(pipeline_with_params
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-  "yaml_cpp_vendor"
-  "realsense2"
-)
 
 # Add Pipeline Composition version
 add_library(composable_pipeline SHARED
   src/pipeline_composite.cpp)
 target_link_libraries(composable_pipeline
-  dl
+  ${SAMPLE_LIBS}
+  rclcpp_components::component
+  realsense2::realsense2
   )
-ament_target_dependencies(composable_pipeline
-  "rclcpp"
-  "rmw_implementation"
-  "rclcpp_components"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-  "yaml_cpp_vendor"
-  "realsense2"
-)
 rclcpp_components_register_nodes(composable_pipeline "ComposablePipeline")
 
 add_executable(image_object_server
   src/image_object_server.cpp
 )
 target_link_libraries(image_object_server
-  dl
+  ${SAMPLE_LIBS}
   )
-ament_target_dependencies(image_object_server
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-)
 
 add_executable(image_people_server
   src/image_people_server.cpp
 )
 target_link_libraries(image_people_server
-  dl
+  ${SAMPLE_LIBS}
   )
-ament_target_dependencies(image_people_server
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-)
 
 add_executable(image_object_client
   src/image_object_client.cpp
 )
 target_link_libraries(image_object_client
-  dl
+  ${SAMPLE_LIBS}
   )
-ament_target_dependencies(image_object_client
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-)
 
 add_executable(image_people_client
   src/image_people_client.cpp
 )
 target_link_libraries(image_people_client
-  dl
+  ${SAMPLE_LIBS}
   )
-ament_target_dependencies(image_people_client
-  "rclcpp"
-  "rmw_implementation"
-  "std_msgs"
-  "object_msgs"
-  "ament_index_cpp"
-  "class_loader"
-  "openvino_wrapper_lib"
-  "OpenVINO"
-  "openvino_msgs"
-  "openvino_param_lib"
-  "OpenCV"
-)
 
 install(TARGETS vino_param_sample
   DESTINATION lib/${PROJECT_NAME})
@@ -265,6 +196,9 @@ install(TARGETS image_object_client
 install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
+install(PROGRAMS ../script/download_models.sh
+  DESTINATION lib/${PROJECT_NAME})
+
 install(TARGETS composable_pipeline
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
@@ -281,6 +215,18 @@ install(DIRECTORY
 install(DIRECTORY
   launch
   DESTINATION share/${PROJECT_NAME}/
+)
+
+# Install data/labels files.
+install(DIRECTORY
+  ../data/labels
+  DESTINATION share/${PROJECT_NAME}/data/
+)
+
+# Install data/images files.
+install(DIRECTORY
+  ../data/images
+  DESTINATION share/${PROJECT_NAME}/data/
 )
 
 if(BUILD_TESTING)

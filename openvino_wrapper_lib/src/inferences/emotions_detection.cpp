@@ -18,7 +18,7 @@
  * @file emotions_recognition.cpp
  */
 
-#include <memory> 
+#include <memory>
 #include <string>
 #include <vector>
 #include <openvino/openvino.hpp>
@@ -27,35 +27,30 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // EmotionsResult
-openvino_wrapper_lib::EmotionsResult::EmotionsResult(const cv::Rect & location)
-: Result(location)
+openvino_wrapper_lib::EmotionsResult::EmotionsResult(const cv::Rect& location) : Result(location)
 {
 }
 
 // Emotions Detection
-openvino_wrapper_lib::EmotionsDetection::EmotionsDetection()
-: openvino_wrapper_lib::BaseInference()
+openvino_wrapper_lib::EmotionsDetection::EmotionsDetection() : openvino_wrapper_lib::BaseInference()
 {
 }
 
 openvino_wrapper_lib::EmotionsDetection::~EmotionsDetection() = default;
 
-void openvino_wrapper_lib::EmotionsDetection::loadNetwork(
-  const std::shared_ptr<Models::EmotionDetectionModel> network)
+void openvino_wrapper_lib::EmotionsDetection::loadNetwork(const std::shared_ptr<Models::EmotionDetectionModel> network)
 {
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-bool openvino_wrapper_lib::EmotionsDetection::enqueue(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+bool openvino_wrapper_lib::EmotionsDetection::enqueue(const cv::Mat& frame, const cv::Rect& input_frame_loc)
 {
   if (getEnqueuedNum() == 0) {
     results_.clear();
   }
-  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<float>(
-    frame, input_frame_loc, 1, getResultsLength(), valid_model_->getInputName());
+  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<float>(frame, input_frame_loc, 1, getResultsLength(),
+                                                                     valid_model_->getInputName());
   if (!succeed) {
     slog::err << "Failed enqueue Emotion frame." << slog::endl;
     // TODO(weizhi): throw an error here
@@ -86,13 +81,12 @@ bool openvino_wrapper_lib::EmotionsDetection::fetchResults()
   ov::Shape shape = emotions_tensor.get_shape();
   int64 num_of_channels = shape[1];
   if (num_of_channels != label_length) {
-    slog::err << "Output size (" << num_of_channels <<
-      ") of the Emotions Recognition network is not equal " <<
-      "to used emotions vector size (" << label_length << ")" << slog::endl;
+    slog::err << "Output size (" << num_of_channels << ") of the Emotions Recognition network is not equal "
+              << "to used emotions vector size (" << label_length << ")" << slog::endl;
     throw std::logic_error("Output size (" + std::to_string(num_of_channels) +
-            ") of the Emotions Recognition network is not equal "
-            "to used emotions vector size (" +
-            std::to_string(label_length) + ")");
+                           ") of the Emotions Recognition network is not equal "
+                           "to used emotions vector size (" +
+                           std::to_string(label_length) + ")");
   }
 
   /** we identify an index of the most probable emotion in output array
@@ -100,8 +94,7 @@ bool openvino_wrapper_lib::EmotionsDetection::fetchResults()
   auto emotions_values = emotions_tensor.data<float>();
   for (int idx = 0; idx < results_.size(); ++idx) {
     auto output_idx_pos = emotions_values + label_length * idx;
-    int64 max_prob_emotion_idx =
-      std::max_element(output_idx_pos, output_idx_pos + label_length) - output_idx_pos;
+    int64 max_prob_emotion_idx = std::max_element(output_idx_pos, output_idx_pos + label_length) - output_idx_pos;
     results_[idx].label_ = valid_model_->getLabels()[max_prob_emotion_idx];
   }
 
@@ -113,8 +106,7 @@ int openvino_wrapper_lib::EmotionsDetection::getResultsLength() const
   return static_cast<int>(results_.size());
 }
 
-const openvino_wrapper_lib::Result *
-openvino_wrapper_lib::EmotionsDetection::getLocationResult(int idx) const
+const openvino_wrapper_lib::Result* openvino_wrapper_lib::EmotionsDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
@@ -124,20 +116,19 @@ const std::string openvino_wrapper_lib::EmotionsDetection::getName() const
   return valid_model_->getModelCategory();
 }
 
-void openvino_wrapper_lib::EmotionsDetection::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+void openvino_wrapper_lib::EmotionsDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
 }
 
-const std::vector<cv::Rect> openvino_wrapper_lib::EmotionsDetection::getFilteredROIs(
-  const std::string filter_conditions) const
+const std::vector<cv::Rect>
+openvino_wrapper_lib::EmotionsDetection::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!filter_conditions.empty()) {
-    slog::err << "Emotion detection does not support filtering now! " <<
-      "Filter conditions: " << filter_conditions << slog::endl;
+    slog::err << "Emotion detection does not support filtering now! "
+              << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
   for (auto res : results_) {

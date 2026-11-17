@@ -18,6 +18,7 @@ limitations under the License.
   <version>0.9.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
+  <maintainer email="jayabalaji.sathiyamoorthi@intel.com">Jayabalaji Sathiyamoorthi</maintainer>
   <author email="chao1.li@intel.com">Chao Li</author>
   <author email="yang1.lu@intel.com">Yang Lu</author>
   <author email="zhenzhenx.ren@intel.com">Rachel Ren</author>
@@ -37,6 +38,7 @@ limitations under the License.
   <build_depend>openvino_param_lib</build_depend>
   <build_depend>cv_bridge</build_depend>
   <build_depend>object_msgs</build_depend>
+  <build_depend>openvino_msgs</build_depend>
   <build_depend>realsense2</build_depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>

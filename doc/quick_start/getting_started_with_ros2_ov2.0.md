@@ -1,135 +1,107 @@
-# ROS2_OpenVINO_Toolkit
+# Getting Started (ROS 2 Lyrical, Ubuntu 26.04)
 
-**NOTE:**
-Below steps have been tested on **Ubuntu 20.04** and **Ubuntu 22.04**.
-Supported ROS2 versions include foxy,galactic and humble.
+This guide builds the toolkit and runs a first demo. It targets the `ros2_lyrical` branch. For other ROS 2 distributions, use the matching branch listed in the [README](../../README.md#ros2-version-supported).
 
-## 1. Environment Setup
-For ROS2 foxy and galactic on ubuntu 20.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_foxy_install_guide](https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html) & [ROS_galactic_install_guide](https://docs.ros.org/en/galactic/Installation/Ubuntu-Install-Debians.html)
+|Step|What you do|
+|---|---|
+|1|[Install the prerequisites](#1-install-the-prerequisites)|
+|2|[Get the sources](#2-get-the-sources)|
+|3|[Build](#3-build)|
+|4|[Download the models](#4-download-the-models)|
+|5|[Run a demo](#5-run-a-demo)|
 
-  * Install Intel® OpenVINO™ Toolkit Version: 2022.3.</br>
-  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2022.3/openvino_docs_install_guides_installing_openvino_apt.html#doxid-openvino-docs-install-guides-installing-openvino-apt)
-    * Install from an achive file. Both runtime and development tool are needed, `pip` is recommended for installing the development tool.</br>
-    Refer to: [OpenVINO_devtool_install_guide](https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/download.html)
+## 1. Install the prerequisites
 
-  * Install Intel® RealSense™ SDK.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
+|Component|Install|
+|---|---|
+|ROS 2 Lyrical|[Install guide](https://docs.ros.org/en/lyrical/Installation/Ubuntu-Install-Debs.html)|
+|Build tools and ROS packages|`sudo apt install python3-colcon-common-extensions ros-lyrical-cv-bridge ros-lyrical-librealsense2 ros-lyrical-yaml-cpp-vendor ros-lyrical-rviz2 ros-lyrical-rqt-image-view libopencv-dev`|
+|OpenVINO 2026.1 (runtime)|`python3 -m venv ~/openvino_env && ~/openvino_env/bin/pip install openvino`|
 
-For ROS2 humble on ubuntu 22.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_humble_install_guide](https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html)
+Notes:
+* `ros-lyrical-librealsense2` is needed to build even if you do not own a RealSense camera.
+* `ros-lyrical-rviz2` and `ros-lyrical-rqt-image-view` are only needed for the visualization options (`viewer:=rviz2` or `viewer:=rqt`).
+* Do not activate the OpenVINO virtual environment while building. Its Python does not contain the ROS build tools. The build only needs the path to OpenVINO (see step 3).
+* Any other OpenVINO installation works as well, as long as `OpenVINO_DIR` points to its CMake files (for the apt or archive packages this is `<install_dir>/runtime/cmake`).
 
-  * Install Intel® OpenVINO™ Toolkit Latest Version by Source.</br>
-  Refer to: [OpenVINO_install_guide](https://github.com/openvinotoolkit/openvino/wiki/BuildingCode)
+## 2. Get the sources
 
-  * Install Intel®  RealSense™ SDK by Source.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
-
-## 2. Building and Installation
-* Install ROS2_OpenVINO_Toolkit packages
-```
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
-git clone https://github.com/intel/ros2_openvino_toolkit -b ros2
+```bash
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
+git clone https://github.com/intel/ros2_openvino_toolkit -b ros2_lyrical
 git clone https://github.com/intel/ros2_object_msgs
-git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2-development
-git clone https://github.com/ros-perception/vision_opencv.git -b <ROS2_VERSION>
-```
-* Install dependencies
-```
-sudo apt-get install ros-<ROS2_VERSION>-diagnostic-updater
-sudo apt install python3-colcon-common-extensions
-```
-* Build package
-```
-source /opt/ros/<ROS2_VERSION>/setup.bash 
-source <OpenVINO_INSTALL_DIR>/setupvars.sh
-cd ~/catkin_ws
-colcon build --symlink-install
-source ./install/local_setup.bash
 ```
 
-## 3. Running the Demo
-### Install OpenVINO 2022.3 by PIP
-OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.</br>
-Refer to: [OMZtool_guide](https://pypi.org/project/openvino-dev/)
+## 3. Build
 
-* See all available models
-```
-omz_downloader --print_all
-```
-
-* Download the optimized Intermediate Representation (IR) of model (execute once), for example:
-```
-cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
-omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
+```bash
+cd ~/ros2_ws
+source /opt/ros/lyrical/setup.bash
+export OpenVINO_DIR=$(~/openvino_env/bin/python3 -c "import openvino, os; print(os.path.join(os.path.dirname(openvino.__file__), 'cmake'))")
+colcon build
+source install/setup.bash
 ```
 
-* If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to intermediate representation (such as the model for object detection):
-```
-cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
-omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
-```
-### Install OpenVINO 2022.3 by source code
-* See all available models
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --print_all
+`OpenVINO_DIR` is only needed at build time. The OpenVINO library path is embedded in the binaries, so you do not need to activate the virtual environment to run the demos.
+
+## 4. Download the models
+
+```bash
+ros2 run openvino_node download_models.sh
 ```
 
-* Download the optimized Intermediate Representation (IR) of models (execute once), for example:
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --list download_model.lst -o /opt/openvino_toolkit/models/
-```
+This downloads the pre-converted models used by the face / people demos (face detection, age and gender, emotion, head pose) to `~/.local/share/openvino_toolkit/models/intel/`.
 
-* If the model (tensorflow, caffe, MXNet, ONNX, Kaldi) need to be converted to Intermediate Representation (such as the model for object detection):
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 converter.py --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
-```
+|Command|Result|
+|---|---|
+|`ros2 run openvino_node download_models.sh --all`|All Intel models supported by the script|
+|`ros2 run openvino_node download_models.sh face-detection-adas-0001/FP16`|Only the listed `<name>/<precision>` models|
 
-* Copy label files (execute once)
-**Note**:Need to make label_dirs if skip steps for set output_dirs above.
-```
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
+To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloading **and** before launching:
+
+```bash
+export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before lauching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guidance](./yaml_configuration_guide.md) for detailed configuration guidance.
-  * run face detection sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_people.launch.py
-  ```
-  * run person reidentification sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_reidentification.launch.py
-  ```
-  * run face detection sample code input from Image.
-  ```
-  ros2 launch openvino_node pipeline_image.launch.py
-  ```
-  * run object segmentation sample code input from RealSenseCameraTopic.
-  ```
-  ros2 launch openvino_node pipeline_segmentation.launch.py
-  ```
-  * run vehicle detection sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_vehicle_detection.launch.py
-  ```
-  * run person attributes sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_person_attributes.launch.py
-  ```
+Models that need conversion (for example YOLO) are not covered by this script. See the [YOLOv5](./tutorial_for_yolov5_converted.md), [YOLOv7](./tutorial_for_yolov7_converted.md) and [YOLOv8](./tutorial_for_yolov8_converted.md) tutorials.
 
-# More Information
-* ROS2 OpenVINO discription writen in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+## 5. Run a demo
 
-###### *Any security issue should be reported using process at https://01.org/security*
+```bash
+ros2 launch openvino_node pipeline_image.launch.py
+```
 
+This runs face detection, age / gender, emotion and head pose estimation on a sample image and opens `rqt_image_view` with the annotated result.
+
+Useful launch arguments:
+
+|Argument|Example|Description|
+|---|---|---|
+|`device`|`device:=GPU`|Run all models on this OpenVINO device (`CPU`, `GPU`, `NPU`, `AUTO`, ...). Defaults to the `engine:` values in the YAML file. Available on all sample launch files.|
+|`viewer`|`viewer:=none`|`rqt` (default), `rviz2` or `none`. Only on launch files that open a viewer.|
+|`yaml_path`|`yaml_path:=/path/to/my.yaml`|Use your own pipeline file. Use absolute paths in it, placeholders are not replaced.|
+
+The device each model actually runs on is printed at startup (`Engine created: requested device=GPU, executing on=GPU.0`) and drawn on the output image next to the FPS.
+
+### Other demos
+
+|Demo|Command|
+|---|---|
+|Face / people analytics, camera input|`ros2 launch openvino_node pipeline_people.launch.py`|
+|Person re-identification, camera input|`ros2 launch openvino_node pipeline_reidentification.launch.py`|
+|Object segmentation|`ros2 launch openvino_node pipeline_segmentation.launch.py`|
+|Vehicle detection|`ros2 launch openvino_node pipeline_vehicle_detection.launch.py`|
+|Person attributes|`ros2 launch openvino_node pipeline_person_attributes.launch.py`|
+
+Each demo needs its own models. If one is missing, the launch prints `WARNING: model not found: <path>` with the exact location it expects. See the [YAML configuration guide](./yaml_configuration_guide.md) to adapt a pipeline.
+
+## Troubleshooting
+
+|Symptom|Cause and fix|
+|---|---|
+|`WARNING: model not found: ...` at launch|The models are not where the launch file looks. Run the download script, or set `OPENVINO_TOOLKIT_DIR` to the folder that contains `models/`.|
+|CMake error `Could not find a package configuration file provided by "OpenVINO"`|`OpenVINO_DIR` is not set. See step 3.|
+|CMake error about `realsense2`|Install `ros-lyrical-librealsense2`.|
+|Symlink "File exists" errors, or packages built against the wrong ROS distribution|The shell still has an old workspace sourced. Open a new terminal, source only `/opt/ros/lyrical/setup.bash`, and remove the `build/`, `install/` and `log/` folders.|
+|Device is shown as `GPU.0`, not `GPU`|Expected. OpenVINO reports the index of the GPU that is used.|
+|The system monitor shows about 0% GPU load while running on GPU|OpenVINO uses the GPU compute engine, which many monitors do not show. Use `intel_gpu_top` and look at the Compute row.|

@@ -32,22 +32,17 @@ class ObjectDetectionSSDModel : public ObjectDetectionModel
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionSSDModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionSSDModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
-  bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false) override;
+  bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                    std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results,
+                    const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false) override;
 
-  bool enqueue(
-    const std::shared_ptr<Engines::Engine> & engine,
-    const cv::Mat & frame,
-    const cv::Rect & input_frame_loc) override;
+  bool enqueue(const std::shared_ptr<Engines::Engine>& engine, const cv::Mat& frame,
+               const cv::Rect& input_frame_loc) override;
 
-  bool matToBlob(
-    const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-    int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
+  bool matToBlob(const cv::Mat& orig_image, const cv::Rect&, float scale_factor, int batch_index,
+                 const std::shared_ptr<Engines::Engine>& engine) override;
 
   /**
    * @brief Get the name of this detection model.
@@ -56,7 +51,6 @@ public:
   const std::string getModelCategory() const override;
 
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_

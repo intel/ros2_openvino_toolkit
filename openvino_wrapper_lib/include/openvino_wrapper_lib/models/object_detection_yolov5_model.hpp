@@ -28,11 +28,12 @@ namespace Models
  * @brief This class generates the face detection model.
  */
 #pragma pack(1)
-    typedef struct Resize {
-        cv::Mat resized_image;
-        int dw{};
-        int dh{};
-    } Resize_t;
+typedef struct Resize
+{
+  cv::Mat resized_image;
+  int dw{};
+  int dh{};
+} Resize_t;
 #pragma pack()
 
 class ObjectDetectionYolov5Model : public ObjectDetectionModel
@@ -40,22 +41,14 @@ class ObjectDetectionYolov5Model : public ObjectDetectionModel
   using Result = openvino_wrapper_lib::ObjectDetectionResult;
 
 public:
-  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  ObjectDetectionYolov5Model(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
-  bool fetchResults(
-    const std::shared_ptr<Engines::Engine> & engine,
-    std::vector<openvino_wrapper_lib::ObjectDetectionResult> & results,
-    const float & confidence_thresh = 0.3,
-    const bool & enable_roi_constraint = false) override;
+  bool fetchResults(const std::shared_ptr<Engines::Engine>& engine,
+                    std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results,
+                    const float& confidence_thresh = 0.3, const bool& enable_roi_constraint = false) override;
 
-  bool enqueue(
-    const std::shared_ptr<Engines::Engine> & engine,
-    const cv::Mat & frame,
-    const cv::Rect & input_frame_loc) override;
-
-  bool matToBlob(
-    const cv::Mat & orig_image, const cv::Rect &, float scale_factor,
-    int batch_index, const std::shared_ptr<Engines::Engine> & engine) override;
+  bool enqueue(const std::shared_ptr<Engines::Engine>& engine, const cv::Mat& frame,
+               const cv::Rect& input_frame_loc) override;
 
   /**
    * @brief Get the name of this detection model.
@@ -63,11 +56,6 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-  static Resize_t pre_process_ov(const cv::Mat &input_image);
-
-  cv::Mat input_image;
-  Resize_t resize_img;
-
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_YOLOV5_MODEL_HPP_

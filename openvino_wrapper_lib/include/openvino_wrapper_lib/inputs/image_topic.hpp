@@ -31,7 +31,7 @@ namespace Input
 {
 /**
  * @class ImageTopic
- * @brief Class for recieving a realsense camera topic as input.
+ * @brief Class for receiving a realsense camera topic as input.
  */
 class ImageTopic : public BaseInputDevice
 {
@@ -39,7 +39,7 @@ public:
   ImageTopic(rclcpp::Node::SharedPtr node = nullptr);
   bool initialize() override;
   bool initialize(size_t width, size_t height) override;
-  bool read(cv::Mat * frame) override;
+  bool read(cv::Mat* frame) override;
 
 private:
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr sub_;

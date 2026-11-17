@@ -38,23 +38,19 @@ public:
    * @brief Create OpenVINO instance by given Engine Name and Network.
    * @return The shared pointer of created Engine instance.
    */
-  std::shared_ptr<Engine> createEngine(
-    const std::string &, const std::shared_ptr<Models::BaseModel> &);
+  std::shared_ptr<Engine> createEngine(const std::string&, const std::shared_ptr<Models::BaseModel>&);
 
 private:
-#if(defined(USE_OLD_E_PLUGIN_API))
+#if (defined(USE_OLD_E_PLUGIN_API))
   std::map<std::string, InferenceEngine::InferencePlugin> plugins_for_devices_;
-  std::unique_ptr<InferenceEngine::InferencePlugin>
-  makePluginByName(
-    const std::string & device_name, const std::string & custom_cpu_library_message,
-    const std::string & custom_cldnn_message, bool performance_message);
-  std::shared_ptr<Engine> createEngine_beforeV2019R2(
-    const std::string &, const std::shared_ptr<Models::BaseModel> &);
+  std::unique_ptr<InferenceEngine::InferencePlugin> makePluginByName(const std::string& device_name,
+                                                                     const std::string& custom_cpu_library_message,
+                                                                     const std::string& custom_cldnn_message,
+                                                                     bool performance_message);
+  std::shared_ptr<Engine> createEngine_beforeV2019R2(const std::string&, const std::shared_ptr<Models::BaseModel>&);
 #endif
 
-  std::shared_ptr<Engine> createEngine_V2022(
-    const std::string &, const std::shared_ptr<Models::BaseModel> &);
-
+  std::shared_ptr<Engine> createEngine_V2022(const std::string&, const std::shared_ptr<Models::BaseModel>&);
 };
 }  // namespace Engines
 

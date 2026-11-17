@@ -27,27 +27,23 @@
 
 namespace vino_service
 {
-template<typename T>
+template <typename T>
 class PipelineProcessingServer : public rclcpp::Node
 {
 public:
-  explicit PipelineProcessingServer(
-    const std::string & service_name);
+  explicit PipelineProcessingServer(const std::string& service_name);
 
 private:
   void initPipelineService();
 
-  void cbService(
-    const std::shared_ptr<typename T::Request> request,
-    std::shared_ptr<typename T::Response> response);
+  void cbService(const std::shared_ptr<typename T::Request> request, std::shared_ptr<typename T::Response> response);
 
-  void setResponse(
-    std::shared_ptr<typename T::Response> response);
+  void setResponse(std::shared_ptr<typename T::Response> response);
 
   void setPipelineByRequest(std::string pipeline_name, PipelineManager::PipelineState state);
 
   std::shared_ptr<rclcpp::Service<T>> service_;
-  std::map<std::string, PipelineManager::PipelineData> * pipelines_;
+  std::map<std::string, PipelineManager::PipelineData>* pipelines_;
   std::string service_name_;
 };
 }  // namespace vino_service

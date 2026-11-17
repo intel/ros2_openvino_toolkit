@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <string>
 #include "openvino_wrapper_lib/models/base_model.hpp"
 #include "openvino/openvino.hpp"
 
@@ -29,13 +30,13 @@ namespace Engines
 /**
  * @class Engine
  * @brief This class manages the instance created for computing Engine hardware
- * (CPU|GPU|MARIAD|HETERO|more). Currently it mainly manages the inference request(s)
+ * (CPU|GPU|MYRIAD|HETERO|more). Currently it mainly manages the inference request(s)
  * and callback function for the Engine instance.
  */
 class Engine
 {
 public:
-#if(defined(USE_OLD_E_PLUGIN_API))
+#if (defined(USE_OLD_E_PLUGIN_API))
   /**
    * DEPRECATED! instead of using Engine(InferenceEngine::InferRequest::Ptr &)
    * @brief Create an NetworkEngine instance
@@ -47,12 +48,23 @@ public:
   /**
    * @brief Using an Inference Request to initialize the inference Engine.
    */
-  Engine(ov::InferRequest &);
+  Engine(ov::InferRequest&);
+  /**
+   * @brief Initialize the engine from an inference request, keeping the compiled model
+   * and the requested device so that the actually used device(s) can be queried.
+   */
+  Engine(ov::InferRequest&, const ov::CompiledModel&, const std::string& requested_device);
+  /**
+   * @brief Get the device(s) this engine is executing on, e.g. "CPU", "GPU.0" or "NPU".
+   * For virtual devices (AUTO/HETERO/MULTI) this reports the actual execution device(s).
+   * Falls back to the requested device name if the plugin can't report it.
+   */
+  std::string getDeviceName() const;
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
    */
-  inline ov::InferRequest & getRequest()
+  inline ov::InferRequest& getRequest()
   {
     return request_;
   }
@@ -61,14 +73,16 @@ public:
    * @param[in] callbackToSet A lambda function as callback function.
    * The callback function will be called when request is finished.
    */
-  template<typename T>
-  void setCompletionCallback(const T & callbackToSet)
+  template <typename T>
+  void setCompletionCallback(const T& callbackToSet)
   {
     request_.set_callback(callbackToSet);
   }
 
 private:
   ov::InferRequest request_;
+  ov::CompiledModel compiled_model_;
+  std::string requested_device_;
 };
 }  // namespace Engines
 

@@ -46,7 +46,7 @@ public:
    * The instance will be created when first call.
    * @return The reference of paramManager class.
    */
-  static ParamManager & getInstance()
+  static ParamManager& getInstance()
   {
     static ParamManager manager_;
     return manager_;
@@ -65,9 +65,10 @@ public:
     std::string model;
     std::string model_type;
     std::string label;
-    int batch;
+    int batch = 1;
     float confidence_threshold = 0.5;
     bool enable_roi_constraint = false;
+    float nms_threshold = 0.45;
   };
 
   struct FilterRawData
@@ -123,9 +124,9 @@ public:
    * @brief Retrieve the specific pipeline parameters by the given pipeline
    * name.
    * @param[in] name: the name of the pipeline to be retrieved.
-   * @return The pipeline paratmeters, or throw a loginc error.
+   * @return The pipeline parameters, or throw a logic error.
    */
-  PipelineRawData getPipeline(const std::string & name) const;
+  PipelineRawData getPipeline(const std::string& name) const;
 
   /**
    * @brief Retrieve common parameters.
@@ -140,8 +141,8 @@ private:
   ParamManager()
   {
   }
-  ParamManager(ParamManager const &);
-  void operator=(ParamManager const &);
+  ParamManager(ParamManager const&);
+  void operator=(ParamManager const&);
 
   std::vector<PipelineRawData> pipelines_;
   CommonRawData common_;

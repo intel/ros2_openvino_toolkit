@@ -3,7 +3,7 @@ Pipelines:
   inputs: [RealSenseCamera]
   infers:
     - name: ObjectDetection
-      model: /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/yolov5n.xml
+      model: <OPENVINO_NODE_SHARE>/models/convert/public/yolov5n/FP32/yolov5n.xml
       model_type: yolov5
       engine: GPU
       label: to/be/set/xxx.labels

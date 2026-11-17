@@ -37,33 +37,32 @@ bool Input::RealSenseCamera::initialize(size_t width, size_t height)
   slog::info << "RealSense Serial number : " << devSerialNumber << slog::endl;
 
   cfg_.enable_device(devSerialNumber);
-  cfg_.enable_stream(RS2_STREAM_COLOR, static_cast<int>(width), static_cast<int>(height),
-    RS2_FORMAT_BGR8, 30);
+  cfg_.enable_stream(RS2_STREAM_COLOR, static_cast<int>(width), static_cast<int>(height), RS2_FORMAT_BGR8, 30);
 
   setInitStatus(pipe_.start(cfg_));
   setWidth(width);
   setHeight(height);
 
-  //bypass RealSense's bug: several captured frames after HW is inited are with wrong data.
+  // bypass RealSense's bug: several captured frames after HW is inited are with wrong data.
   bypassFewFramesOnceInited();
 
   return isInit();
 }
 
-bool Input::RealSenseCamera::read(cv::Mat * frame)
+bool Input::RealSenseCamera::read(cv::Mat* frame)
 {
   if (!isInit()) {
     return false;
   }
 
- try {
+  try {
     rs2::frameset data = pipe_.wait_for_frames();  // Wait for next set of frames from the camera
     rs2::frame color_frame;
     color_frame = data.get_color_frame();
 
     cv::Mat(cv::Size(static_cast<int>(getWidth()), static_cast<int>(getHeight())), CV_8UC3,
-      const_cast<void *>(color_frame.get_data()), cv::Mat::AUTO_STEP)
-      .copyTo(*frame);
+            const_cast<void*>(color_frame.get_data()), cv::Mat::AUTO_STEP)
+        .copyTo(*frame);
   } catch (...) {
     return false;
   }
@@ -88,7 +87,7 @@ std::string Input::RealSenseCamera::getCameraSN()
 
 void Input::RealSenseCamera::bypassFewFramesOnceInited()
 {
-  if(!isInit() || !first_read_){
+  if (!isInit() || !first_read_) {
     return;
   }
 

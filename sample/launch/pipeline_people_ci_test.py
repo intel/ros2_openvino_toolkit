@@ -31,11 +31,11 @@ def generate_launch_description():
     default_rviz = os.path.join(get_package_share_directory('openvino_node'), 'launch',
                                 'rviz/default.rviz')
     return LaunchDescription([
-        launch.actions.DeclareLaunchArgument(name='yaml_path', default_value = 
+        launch.actions.DeclareLaunchArgument(name='yaml_path', default_value =
                                              os.path.join(get_package_share_directory('openvino_node'), 'param','pipeline_people_ci.yaml')),
         # Openvino detection
         launch_ros.actions.Node(
-            package='openvino_node', 
+            package='openvino_node',
             executable='pipeline_with_params',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
@@ -52,7 +52,7 @@ def generate_launch_description():
 
         # Rviz
         #launch_ros.actions.Node(
-            #package='rviz2', 
+            #package='rviz2',
             #executable='rviz2', output='screen',
             #arguments=['--display-config', default_rviz]),
     ])

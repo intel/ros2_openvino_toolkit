@@ -12,25 +12,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Launch face detection and rviz."""
+"""
+ROS 2 test launch file: Object Detection Pipeline Test.
+
+Launches the OpenVINO object detection pipeline for automated testing.
+"""
 
 import os
+import sys
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-import launch_ros.actions
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+
+launch_dir = os.path.dirname(os.path.abspath(__file__))
+if launch_dir not in sys.path:
+    sys.path.insert(0, launch_dir)
+
+import test_launch_helpers  # noqa: E402
 
 
 def generate_launch_description():
-    default_yaml = os.path.join(get_package_share_directory('openvino_test'), 'param',
-                                'pipeline_object_test.yaml')
+    """Generate launch description for object detection test."""
+    # Resolve path placeholders in the test YAML
+    default_yaml = test_launch_helpers.resolve_test_yaml('pipeline_object_test.yaml')
+
     return LaunchDescription([
-        # Openvino detection
-        launch_ros.actions.Node(
-            package='openvino_node', node_executable='pipeline_with_params',
-            arguments=['-config', default_yaml],
+        # Declare launch argument for YAML configuration
+        DeclareLaunchArgument(
+            name='yaml_path',
+            default_value=default_yaml,
+            description='Path to test YAML configuration file'
+        ),
+
+        # OpenVINO object detection test node
+        Node(
+            package='openvino_node',
+            executable='pipeline_with_params',
+            name='openvino_test_pipeline',
+            arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
                 ('/openvino_toolkit/object/detected_objects',
-                 '/ros2_openvino_toolkit/detected_objects')],
-            output='screen'),
+                 '/ros2_openvino_toolkit/detected_objects'),
+            ],
+            output='screen'
+        ),
     ])

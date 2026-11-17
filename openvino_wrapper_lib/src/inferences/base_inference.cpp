@@ -22,8 +22,8 @@
 #include "openvino_wrapper_lib/inferences/base_inference.hpp"
 #include "openvino_wrapper_lib/models/base_model.hpp"
 
- // Result
-openvino_wrapper_lib::Result::Result(const cv::Rect & location)
+// Result
+openvino_wrapper_lib::Result::Result(const cv::Rect& location)
 {
   location_ = location;
 }

@@ -19,7 +19,7 @@
 
 #ifndef OPENVINO_WRAPPER_LIB__MODELS__EMOTION_DETECTION_MODEL_HPP_
 #define OPENVINO_WRAPPER_LIB__MODELS__EMOTION_DETECTION_MODEL_HPP_
- 
+
 #include <string>
 #include "openvino_wrapper_lib/models/base_model.hpp"
 

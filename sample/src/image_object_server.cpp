@@ -25,12 +25,12 @@
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino/openvino.hpp"
-#if(defined(USE_OLD_E_PLUGIN_API))
+#if (defined(USE_OLD_E_PLUGIN_API))
 #include <extension/ext_list.hpp>
 #endif
 #include "utility.hpp"
 
-int main(int argc, char ** argv)
+int main(int argc, char** argv)
 {
   rclcpp::init(argc, argv);
 
@@ -38,14 +38,14 @@ int main(int argc, char ** argv)
 
   try {
     std::string service_name = "frame_processing_server";
-    auto node = std::make_shared<vino_service::FrameProcessingServer
-        <object_msgs::srv::DetectObject>>(service_name, config_path);
+    auto node = std::make_shared<vino_service::FrameProcessingServer<object_msgs::srv::DetectObject>>(service_name,
+                                                                                                      config_path);
     rclcpp::spin(node);
-  } catch (std::exception & e) {
+  } catch (std::exception& e) {
     std::cout << e.what() << std::endl;
   } catch (...) {
-    std::cout << "[ERROR] [frame_processing_server]: " <<
-      "exception caught" << std::endl;
+    std::cout << "[ERROR] [frame_processing_server]: "
+              << "exception caught" << std::endl;
   }
 
   return 0;

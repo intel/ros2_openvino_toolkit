@@ -42,26 +42,30 @@ const char kInputType_ImageTopic[] = "ImageTopic";
 const char kInputType_RealSenseCamera[] = "RealSenseCamera";
 const char kInputType_ServiceImage[] = "ServiceImage";
 
-const char kOutputTpye_RViz[] = "RViz";
-const char kOutputTpye_ImageWindow[] = "ImageWindow";
-const char kOutputTpye_RosTopic[] = "RosTopic";
-const char kOutputTpye_RosService[] = "RosService";
+const char kOutputType_RViz[] = "RViz";
+const char kOutputType_ImageWindow[] = "ImageWindow";
+const char kOutputType_RosTopic[] = "RosTopic";
+const char kOutputType_RosService[] = "RosService";
 
-const char kInferTpye_FaceDetection[] = "FaceDetection";
-const char kInferTpye_AgeGenderRecognition[] = "AgeGenderRecognition";
-const char kInferTpye_EmotionRecognition[] = "EmotionRecognition";
-const char kInferTpye_HeadPoseEstimation[] = "HeadPoseEstimation";
-const char kInferTpye_ObjectDetection[] = "ObjectDetection";
-const char kInferTpye_ObjectSegmentation[] = "ObjectSegmentation";
-const char kInferTpye_ObjectSegmentationMaskrcnn[] = "ObjectSegmentationMaskrcnn";
-const char kInferTpye_ObjectDetectionTypeSSD[] = "SSD";
-const char kInferTpye_ObjectDetectionTypeYolov5[] = "yolov5";
-const char kInferTpye_PersonReidentification[] = "PersonReidentification";
-const char kInferTpye_PersonAttribsDetection[] = "PersonAttribsDetection";
-const char kInferTpye_LandmarksDetection[] = "LandmarksDetection";
-const char kInferTpye_FaceReidentification[] = "FaceReidentification";
-const char kInferTpye_VehicleAttribsDetection[] = "VehicleAttribsDetection";
-const char kInferTpye_LicensePlateDetection[] = "LicensePlateDetection";
+const char kInferType_FaceDetection[] = "FaceDetection";
+const char kInferType_AgeGenderRecognition[] = "AgeGenderRecognition";
+const char kInferType_EmotionRecognition[] = "EmotionRecognition";
+const char kInferType_HeadPoseEstimation[] = "HeadPoseEstimation";
+const char kInferType_ObjectDetection[] = "ObjectDetection";
+const char kInferType_ObjectSegmentation[] = "ObjectSegmentation";
+const char kInferType_ObjectSegmentationMaskrcnn[] = "ObjectSegmentationMaskrcnn";
+const char kInferType_ObjectSegmentationInstance[] = "ObjectSegmentationInstance";
+const char kInferType_ObjectSegmentationTypeYolo[] = "yolo";
+const char kInferType_ObjectSegmentationTypeMaskrcnn[] = "maskrcnn";
+const char kInferType_ObjectDetectionTypeSSD[] = "SSD";
+const char kInferType_ObjectDetectionTypeYolov5[] = "yolov5";
+const char kInferType_ObjectDetectionTypeYolov8[] = "yolov8";
+const char kInferType_PersonReidentification[] = "PersonReidentification";
+const char kInferType_PersonAttribsDetection[] = "PersonAttribsDetection";
+const char kInferType_LandmarksDetection[] = "LandmarksDetection";
+const char kInferType_FaceReidentification[] = "FaceReidentification";
+const char kInferType_VehicleAttribsDetection[] = "VehicleAttribsDetection";
+const char kInferType_LicensePlateDetection[] = "LicensePlateDetection";
 
 /**
  * @class PipelineParams
@@ -71,15 +75,15 @@ const char kInferTpye_LicensePlateDetection[] = "LicensePlateDetection";
 class PipelineParams
 {
 public:
-  explicit PipelineParams(const std::string & name);
-  explicit PipelineParams(const Params::ParamManager::PipelineRawData & params);
-  Params::ParamManager::PipelineRawData getPipeline(const std::string & name);
-  PipelineParams & operator=(const Params::ParamManager::PipelineRawData & params);
+  explicit PipelineParams(const std::string& name);
+  explicit PipelineParams(const Params::ParamManager::PipelineRawData& params);
+  Params::ParamManager::PipelineRawData getPipeline(const std::string& name);
+  PipelineParams& operator=(const Params::ParamManager::PipelineRawData& params);
   void update();
-  void update(const Params::ParamManager::PipelineRawData & params);
-  bool isOutputTo(std::string & name);
+  void update(const Params::ParamManager::PipelineRawData& params);
+  bool isOutputTo(std::string& name);
   bool isGetFps();
-  std::string findFilterConditions(const std::string & input, const std::string & output);
+  std::string findFilterConditions(const std::string& input, const std::string& output);
 
 private:
   Params::ParamManager::PipelineRawData params_;

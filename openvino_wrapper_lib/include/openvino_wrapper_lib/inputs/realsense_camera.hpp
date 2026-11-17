@@ -28,7 +28,7 @@ namespace Input
 {
 /**
  * @class RealSenseCamera
- * @brief Class for recieving a realsense camera as input.
+ * @brief Class for receiving a realsense camera as input.
  */
 class RealSenseCamera : public BaseInputDevice
 {
@@ -48,7 +48,7 @@ public:
    * @brief Read next frame, and give the value to argument frame.
    * @return Whether the next frame is successfully read.
    */
-  bool read(cv::Mat * frame) override;
+  bool read(cv::Mat* frame) override;
 
 private:
   void bypassFewFramesOnceInited();

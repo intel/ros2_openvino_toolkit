@@ -32,7 +32,7 @@ namespace Models
 class HeadPoseDetectionModel : public BaseModel
 {
 public:
-  HeadPoseDetectionModel(const std::string& label_loc, const std::string & model_loc, int batch_size = 1);
+  HeadPoseDetectionModel(const std::string& label_loc, const std::string& model_loc, int batch_size = 1);
 
   /**
    * @brief Get the output angle roll.
@@ -51,8 +51,8 @@ public:
     return output_angle_p_;
   }
   /**
-   * @brief Get the output angle yawl.
-   * @return Yawl value.
+   * @brief Get the output angle yaw.
+   * @return Yaw value.
    */
   inline const std::string getOutputOutputAngleY() const
   {
@@ -64,7 +64,6 @@ public:
    */
   const std::string getModelCategory() const override;
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
-
 
 private:
   std::string output_angle_r_ = "angle_r_fc";

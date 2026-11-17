@@ -29,27 +29,24 @@
 
 namespace vino_service
 {
-template<typename T>
-PipelineProcessingServer<T>::PipelineProcessingServer(
-  const std::string & service_name)
-: Node(service_name),
-  service_name_(service_name)
+template <typename T>
+PipelineProcessingServer<T>::PipelineProcessingServer(const std::string& service_name)
+  : Node(service_name), service_name_(service_name)
 {
   pipelines_ = PipelineManager::getInstance().getPipelinesPtr();
   initPipelineService();
 }
 
-template<typename T>
+template <typename T>
 void PipelineProcessingServer<T>::initPipelineService()
 {
-  service_ = create_service<T>("/openvino_toolkit/pipeline_service",
-      std::bind(&PipelineProcessingServer::cbService, this,
-      std::placeholders::_1, std::placeholders::_2));
+  service_ =
+      create_service<T>("/openvino_toolkit/pipeline_service", std::bind(&PipelineProcessingServer::cbService, this,
+                                                                        std::placeholders::_1, std::placeholders::_2));
 }
 
-template<typename T>
-void PipelineProcessingServer<T>::setResponse(
-  std::shared_ptr<typename T::Response> response)
+template <typename T>
+void PipelineProcessingServer<T>::setResponse(std::shared_ptr<typename T::Response> response)
 {
   for (auto it = pipelines_->begin(); it != pipelines_->end(); ++it) {
     openvino_msgs::msg::Pipeline pipeline_msg;
@@ -57,7 +54,7 @@ void PipelineProcessingServer<T>::setResponse(
     pipeline_msg.running_status = std::to_string(it->second.state);
 
     auto connection_map = it->second.pipeline->getPipelineDetail();
-    for (auto & current_pipe : connection_map) {
+    for (auto& current_pipe : connection_map) {
       openvino_msgs::msg::Connection connection;
       connection.input = current_pipe.first.c_str();
       connection.output = current_pipe.second.c_str();
@@ -66,10 +63,8 @@ void PipelineProcessingServer<T>::setResponse(
     response->pipelines.push_back(pipeline_msg);
   }
 }
-template<typename T>
-void PipelineProcessingServer<T>::setPipelineByRequest(
-  std::string pipeline_name,
-  PipelineManager::PipelineState state)
+template <typename T>
+void PipelineProcessingServer<T>::setPipelineByRequest(std::string pipeline_name, PipelineManager::PipelineState state)
 {
   for (auto it = pipelines_->begin(); it != pipelines_->end(); ++it) {
     if (pipeline_name == it->first) {
@@ -79,15 +74,14 @@ void PipelineProcessingServer<T>::setPipelineByRequest(
   }
 }
 
-template<typename T>
-void PipelineProcessingServer<T>::cbService(
-  const std::shared_ptr<typename T::Request> request,
-  std::shared_ptr<typename T::Response> response)
+template <typename T>
+void PipelineProcessingServer<T>::cbService(const std::shared_ptr<typename T::Request> request,
+                                            std::shared_ptr<typename T::Response> response)
 {
   std::string req_cmd = request->pipeline_request.cmd;
   std::string req_val = request->pipeline_request.value;
-  slog::info << "[PipelineProcessingServer] Pipeline Service get request cmd: " << req_cmd <<
-    " val:" << req_val << slog::endl;
+  slog::info << "[PipelineProcessingServer] Pipeline Service get request cmd: " << req_cmd << " val:" << req_val
+             << slog::endl;
   // Todo set initial state by current state
   PipelineManager::PipelineState state = PipelineManager::PipelineState_ThreadRunning;
   if (req_cmd != "GET_PIPELINE") {
@@ -95,7 +89,9 @@ void PipelineProcessingServer<T>::cbService(
       state = PipelineManager::PipelineState_ThreadStopped;
     } else if (req_cmd == "RUN_PIPELINE") {
       state = PipelineManager::PipelineState_ThreadRunning;
-    } else if (req_cmd == "PAUSE_PIPELINE") {state = PipelineManager::PipelineState_ThreadPasued;}
+    } else if (req_cmd == "PAUSE_PIPELINE") {
+      state = PipelineManager::PipelineState_ThreadPasued;
+    }
     setPipelineByRequest(req_val, state);
   }
   setResponse(response);

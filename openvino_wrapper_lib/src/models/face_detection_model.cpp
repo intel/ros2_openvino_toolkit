@@ -23,9 +23,9 @@
 #include "openvino_wrapper_lib/slog.hpp"
 
 // Validated Face Detection Network
-Models::FaceDetectionModel::FaceDetectionModel(
-  const std::string & label_loc, const std::string & model_loc, int max_batch_size)
-: ObjectDetectionModel(label_loc, model_loc, max_batch_size)
+Models::FaceDetectionModel::FaceDetectionModel(const std::string& label_loc, const std::string& model_loc,
+                                               int max_batch_size)
+  : ObjectDetectionModel(label_loc, model_loc, max_batch_size)
 {
 }
 

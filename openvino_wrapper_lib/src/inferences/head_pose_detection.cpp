@@ -25,35 +25,30 @@
 #include "openvino_wrapper_lib/outputs/base_output.hpp"
 
 // HeadPoseResult
-openvino_wrapper_lib::HeadPoseResult::HeadPoseResult(const cv::Rect & location)
-: Result(location)
+openvino_wrapper_lib::HeadPoseResult::HeadPoseResult(const cv::Rect& location) : Result(location)
 {
 }
 
 // Head Pose Detection
-openvino_wrapper_lib::HeadPoseDetection::HeadPoseDetection()
-: openvino_wrapper_lib::BaseInference()
+openvino_wrapper_lib::HeadPoseDetection::HeadPoseDetection() : openvino_wrapper_lib::BaseInference()
 {
 }
 
 openvino_wrapper_lib::HeadPoseDetection::~HeadPoseDetection() = default;
 
-void openvino_wrapper_lib::HeadPoseDetection::loadNetwork(
-  std::shared_ptr<Models::HeadPoseDetectionModel> network)
+void openvino_wrapper_lib::HeadPoseDetection::loadNetwork(std::shared_ptr<Models::HeadPoseDetectionModel> network)
 {
   valid_model_ = network;
   setMaxBatchSize(network->getMaxBatchSize());
 }
 
-bool openvino_wrapper_lib::HeadPoseDetection::enqueue(
-  const cv::Mat & frame,
-  const cv::Rect & input_frame_loc)
+bool openvino_wrapper_lib::HeadPoseDetection::enqueue(const cv::Mat& frame, const cv::Rect& input_frame_loc)
 {
   if (getEnqueuedNum() == 0) {
     results_.clear();
   }
-  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<uint8_t>(
-    frame, input_frame_loc, 1, getResultsLength(), valid_model_->getInputName());
+  bool succeed = openvino_wrapper_lib::BaseInference::enqueue<uint8_t>(frame, input_frame_loc, 1, getResultsLength(),
+                                                                       valid_model_->getInputName());
   if (!succeed) {
     return false;
   }
@@ -91,8 +86,7 @@ int openvino_wrapper_lib::HeadPoseDetection::getResultsLength() const
   return static_cast<int>(results_.size());
 }
 
-const openvino_wrapper_lib::Result *
-openvino_wrapper_lib::HeadPoseDetection::getLocationResult(int idx) const
+const openvino_wrapper_lib::Result* openvino_wrapper_lib::HeadPoseDetection::getLocationResult(int idx) const
 {
   return &(results_[idx]);
 }
@@ -102,20 +96,19 @@ const std::string openvino_wrapper_lib::HeadPoseDetection::getName() const
   return valid_model_->getModelCategory();
 }
 
-void openvino_wrapper_lib::HeadPoseDetection::observeOutput(
-  const std::shared_ptr<Outputs::BaseOutput> & output)
+void openvino_wrapper_lib::HeadPoseDetection::observeOutput(const std::shared_ptr<Outputs::BaseOutput>& output)
 {
   if (output != nullptr) {
     output->accept(results_);
   }
 }
 
-const std::vector<cv::Rect> openvino_wrapper_lib::HeadPoseDetection::getFilteredROIs(
-  const std::string filter_conditions) const
+const std::vector<cv::Rect>
+openvino_wrapper_lib::HeadPoseDetection::getFilteredROIs(const std::string filter_conditions) const
 {
   if (!filter_conditions.empty()) {
-    slog::err << "Headpose detection does not support filtering now! " <<
-      "Filter conditions: " << filter_conditions << slog::endl;
+    slog::err << "Headpose detection does not support filtering now! "
+              << "Filter conditions: " << filter_conditions << slog::endl;
   }
   std::vector<cv::Rect> filtered_rois;
   for (auto res : results_) {

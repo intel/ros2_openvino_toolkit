@@ -22,7 +22,7 @@
 #include "openvino_wrapper_lib/inputs/video_input.hpp"
 
 // Video
-Input::Video::Video(const std::string & video)
+Input::Video::Video(const std::string& video)
 {
   video_.assign(video);
 }
@@ -47,7 +47,7 @@ bool Input::Video::initialize(size_t width, size_t height)
   return isInit();
 }
 
-bool Input::Video::read(cv::Mat * frame)
+bool Input::Video::read(cv::Mat* frame)
 {
   if (!isInit()) {
     return false;
