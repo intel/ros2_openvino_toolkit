@@ -87,7 +87,7 @@ bool Pipeline::add(const std::string& name, std::shared_ptr<Outputs::BaseOutput>
 
   std::map<std::string, std::shared_ptr<Outputs::BaseOutput>>::iterator it = name_to_output_map_.find(name);
   if (it != name_to_output_map_.end()) {
-    slog::warn << "inferance instance for [" << name << "] already exists, update it with new instance." << slog::endl;
+    slog::warn << "inference instance for [" << name << "] already exists, update it with new instance." << slog::endl;
   }
   name_to_output_map_[name] = output;
   output_names_.insert(name);
@@ -138,7 +138,7 @@ bool Pipeline::add(const std::string& name, std::shared_ptr<openvino_wrapper_lib
   std::map<std::string, std::shared_ptr<openvino_wrapper_lib::BaseInference>>::iterator it =
       name_to_detection_map_.find(name);
   if (it != name_to_detection_map_.end()) {
-    slog::warn << "inferance instance for [" << name << "] already exists, update it with new instance." << slog::endl;
+    slog::warn << "inference instance for [" << name << "] already exists, update it with new instance." << slog::endl;
   } else {
     ++total_inference_;
   }

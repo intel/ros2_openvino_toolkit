@@ -52,31 +52,31 @@ public:
   /**
    * @brief Generate rviz output content according to
    * the face reidentification result.
-   * @param[in] A face reidentification result objetc.
+   * @param[in] A face reidentification result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::FaceReidentificationResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the landmarks detection result.
-   * @param[in] A landmarks detection result objetc.
+   * @param[in] A landmarks detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::LandmarksDetectionResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the person attributes detection result.
-   * @param[in] A person attributes detection result objetc.
+   * @param[in] A person attributes detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::PersonAttribsDetectionResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the person reidentification result.
-   * @param[in] A person reidentification result objetc.
+   * @param[in] A person reidentification result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::PersonReidentificationResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the face detection result.
-   * @param[in] A face detection result objetc.
+   * @param[in] A face detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::FaceDetectionResult>&) override;
   /**
@@ -100,25 +100,25 @@ public:
   /**
    * @brief Generate image window output content according to
    * the object segmentation instance result.
-   * @param[in] An obejct segmentation result objetc.
+   * @param[in] An object segmentation result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the emotion detection result.
-   * @param[in] A emotion detection result objetc.
+   * @param[in] An emotion detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::EmotionsResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the age and gender detection result.
-   * @param[in] A head pose detection result objetc.
+   * @param[in] A head pose detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::HeadPoseResult>&) override;
   /**
    * @brief Generate rviz output content according to
    * the headpose detection result.
-   * @param[in] An age gender detection result objetc.
+   * @param[in] An age gender detection result object.
    */
   void accept(const std::vector<openvino_wrapper_lib::AgeGenderResult>&) override;
 

@@ -92,7 +92,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(const std::shared_ptr<Engines
                                                    std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results,
                                                    const float& confidence_thresh, const bool& enable_roi_constraint)
 {
-  slog::debug << "fetching Infer Resulsts from the given SSD model" << slog::endl;
+  slog::debug << "fetching Infer Results from the given SSD model" << slog::endl;
   if (engine == nullptr) {
     slog::err << "Trying to fetch results from <null> Engines." << slog::endl;
     return false;
@@ -106,7 +106,7 @@ bool Models::ObjectDetectionSSDModel::fetchResults(const std::shared_ptr<Engines
   slog::debug << "Analyzing Detection results..." << slog::endl;
   auto max_proposal_count = getMaxProposalCount();
   auto object_size = getObjectSize();
-  slog::debug << "MaxProprosalCount=" << max_proposal_count << ", ObjectSize=" << object_size << slog::endl;
+  slog::debug << "MaxProposalCount=" << max_proposal_count << ", ObjectSize=" << object_size << slog::endl;
   for (int i = 0; i < max_proposal_count; i++) {
     float image_id = detections[i * object_size + 0];
     if (image_id < 0) {
@@ -170,7 +170,7 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(std::shared_ptr<ov::Mo
   else if (input_dims[3] == 3)
     expect_layout = ov::Layout("NHWC");
   else
-    slog::warn << "unexpect input shape " << input_dims << slog::endl;
+    slog::warn << "unexpected input shape " << input_dims << slog::endl;
 
   input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
   input_info.preprocess().convert_layout(expect_layout).resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);
@@ -232,7 +232,7 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(std::shared_ptr<ov::Mo
   setObjectSize(object_size);
 
   if (output_dims.size() != 4) {
-    slog::warn << "This model is not SSDNet-like, output dimensions shoulld be 4, but was"
+    slog::warn << "This model is not SSDNet-like, output dimensions should be 4, but was"
                << std::to_string(output_dims.size()) << slog::endl;
     return false;
   }

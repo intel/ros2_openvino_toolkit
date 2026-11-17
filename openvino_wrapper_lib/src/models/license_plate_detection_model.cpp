@@ -36,7 +36,7 @@ bool Models::LicensePlateDetectionModel::updateLayerProperty(std::shared_ptr<ov:
 
   auto sequence_input = input_info_map[1];
   if (sequence_input.get_shape()[0] != getMaxSequenceSize()) {
-    throw std::logic_error("License plate detection max sequence size dismatch");
+    throw std::logic_error("License plate detection max sequence size mismatch");
   }
 
   auto output_info_map = model->outputs();

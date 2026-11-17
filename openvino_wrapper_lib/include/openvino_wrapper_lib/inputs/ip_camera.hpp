@@ -28,7 +28,7 @@ namespace Input
 {
 /**
  * @class IpCamera
- * @brief Class for recieving a ip camera as input.
+ * @brief Class for receiving an IP camera as input.
  */
 class IpCamera : public BaseInputDevice
 {

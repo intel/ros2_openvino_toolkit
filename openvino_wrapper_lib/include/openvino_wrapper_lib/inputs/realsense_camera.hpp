@@ -28,7 +28,7 @@ namespace Input
 {
 /**
  * @class RealSenseCamera
- * @brief Class for recieving a realsense camera as input.
+ * @brief Class for receiving a realsense camera as input.
  */
 class RealSenseCamera : public BaseInputDevice
 {

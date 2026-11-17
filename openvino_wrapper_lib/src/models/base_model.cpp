@@ -125,7 +125,7 @@ cv::Mat Models::BaseModel::extendFrameToInputRatio(const cv::Mat orig)
   const float orig_ratio = static_cast<float>(orig_width) / orig_height;
   const float target_ratio = static_cast<float>(target_width) / target_height;
 
-  slog::debug << "extend Ratio: orit_ratio:" << orig_ratio << ", target_ratio:" << target_ratio
+  slog::debug << "extend Ratio: orig_ratio:" << orig_ratio << ", target_ratio:" << target_ratio
               << ", orig_width:" << orig_width << ", orig_height:" << orig_height << slog::endl;
   if (orig_ratio < target_ratio) {
     orig_width = (int)(orig_height * target_ratio);
@@ -148,7 +148,7 @@ bool Models::BaseModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
   inputs_info_ = model->inputs();
   slog::debug << "input size=" << inputs_info_.size() << slog::endl;
   if (inputs_info_.size() != getCountOfInputs()) {
-    slog::warn << "This inference sample should have have " << getCountOfInputs() << " inputs, but we got"
+    slog::warn << "This inference sample should have " << getCountOfInputs() << " inputs, but we got"
                << std::to_string(inputs_info_.size()) << "inputs" << slog::endl;
     throw std::logic_error("input_tensor_count doesn't align!");
     return false;
@@ -163,7 +163,7 @@ bool Models::BaseModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
   outputs_info_ = model->outputs();
   slog::debug << "output size=" << outputs_info_.size() << slog::endl;
   if (outputs_info_.size() != getCountOfOutputs()) {
-    slog::warn << "This inference sample should have have " << getCountOfOutputs() << " outputs, but we got "
+    slog::warn << "This inference sample should have " << getCountOfOutputs() << " outputs, but we got "
                << outputs_info_.size() << "outputs" << slog::endl;
     throw std::logic_error("output_tensor_count doesn't align!");
     return false;

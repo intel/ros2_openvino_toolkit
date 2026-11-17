@@ -33,7 +33,7 @@ bool Input::ImageTopic::initialize()
   slog::debug << "before Image Topic init" << slog::endl;
 
   if (node_ == nullptr) {
-    throw std::runtime_error("Image Topic is not instancialized because of no parent node.");
+    throw std::runtime_error("Image Topic is not instantiated because of no parent node.");
     return false;
   }
   auto qos = rclcpp::QoS(rclcpp::KeepLast(1)).best_effort();

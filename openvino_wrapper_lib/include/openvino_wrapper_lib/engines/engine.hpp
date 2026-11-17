@@ -30,7 +30,7 @@ namespace Engines
 /**
  * @class Engine
  * @brief This class manages the instance created for computing Engine hardware
- * (CPU|GPU|MARIAD|HETERO|more). Currently it mainly manages the inference request(s)
+ * (CPU|GPU|MYRIAD|HETERO|more). Currently it mainly manages the inference request(s)
  * and callback function for the Engine instance.
  */
 class Engine

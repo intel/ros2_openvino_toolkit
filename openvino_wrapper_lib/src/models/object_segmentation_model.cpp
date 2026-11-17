@@ -145,7 +145,7 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(std::shared_ptr<ov::Mo
     setInputWidth(input_shape[2]);
     setInputHeight(input_shape[1]);
   } else
-    slog::warn << "unexpect input shape " << input_shape << slog::endl;
+    slog::warn << "unexpected input shape " << input_shape << slog::endl;
 
   input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout).set_spatial_dynamic_shape();
   input_info.preprocess().convert_layout(expect_layout).resize(ov::preprocess::ResizeAlgorithm::RESIZE_LINEAR);

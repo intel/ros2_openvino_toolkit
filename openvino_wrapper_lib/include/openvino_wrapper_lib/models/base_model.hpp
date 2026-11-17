@@ -68,7 +68,7 @@ public:
 
   /**
    * @brief Initialize the class with given external parameters. It requires some items should
-   * be set, such as: [lable path, model path, batch size]
+   * be set, such as: [label path, model path, batch size]
    * @param[in] config the configuration structure to be set to the model class.
    */
   BaseModel(const Params::ParamManager::InferenceRawData& config);
@@ -114,7 +114,7 @@ public:
 
 protected:
   /**
-   * New infterface to check and update Layer Property
+   * New interface to check and update Layer Property
    * @brief Set the layer property (layer layout, layer precision, etc.).
    * @param[in] network_reader The reader of the network to be set.
    */
@@ -177,7 +177,7 @@ protected:
   }
 
 protected:
-  // config_ archives the model configuration from extermal YAML file
+  // config_ archives the model configuration from external YAML file
   Params::ParamManager::InferenceRawData config_;
 
 private:
