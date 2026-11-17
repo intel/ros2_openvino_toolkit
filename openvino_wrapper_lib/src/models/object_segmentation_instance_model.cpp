@@ -14,7 +14,7 @@
 
 /**
  * @brief a header file with declaration of ObjectSegmentationInstanceModel class
- * By default yolov8 segementation models are supported.
+ * By default yolov8 segmentation models are supported.
  */
 #include <string>
 #include <vector>
@@ -134,7 +134,7 @@ bool Models::ObjectSegmentationInstanceModel::updateLayerProperty(std::shared_pt
       slog::info << "find output tensor - [detection]" << slog::endl;
       retagOutputByValue(output, "detection");
     } else {
-      throw std::logic_error("The shape ofoutput tensers are wrong, must be 4 or 3!");
+      throw std::logic_error("The shape of output tensors is wrong, must be 4 or 3!");
     }
   };
   check_output_and_rename(getOutputName("output0"));

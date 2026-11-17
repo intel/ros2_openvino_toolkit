@@ -23,7 +23,7 @@
 #include <utility>
 #include <map>
 
-#if 0  // in curent versions, these models are not supported any more.
+#if 0  // in current versions, these models are not supported any more.
 #include "openvino_wrapper_lib/inferences/landmarks_detection.hpp"
 #include "openvino_wrapper_lib/inferences/face_reidentification.hpp"
 #include "openvino_wrapper_lib/models/face_reidentification_model.hpp"
@@ -167,13 +167,13 @@ std::map<std::string, std::shared_ptr<Outputs::BaseOutput>> PipelineManager::par
   for (auto& name : pdata.params.outputs) {
     slog::info << "Parsing Output: " << name << slog::endl;
     std::shared_ptr<Outputs::BaseOutput> object = nullptr;
-    if (name == kOutputTpye_RosTopic) {
+    if (name == kOutputType_RosTopic) {
       object = std::make_shared<Outputs::RosTopicOutput>(pdata.params.name, pdata.parent_node);
-    } else if (name == kOutputTpye_ImageWindow) {
+    } else if (name == kOutputType_ImageWindow) {
       object = std::make_shared<Outputs::ImageWindowOutput>(pdata.params.name);
-    } else if (name == kOutputTpye_RViz) {
+    } else if (name == kOutputType_RViz) {
       object = std::make_shared<Outputs::RvizOutput>(pdata.params.name, pdata.parent_node);
-    } else if (name == kOutputTpye_RosService) {
+    } else if (name == kOutputType_RosService) {
       object = std::make_shared<Outputs::RosServiceOutput>(pdata.params.name);
     } else {
       slog::err << "Invalid output name: " << name << slog::endl;
@@ -198,34 +198,34 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData& par
     slog::info << "Parsing Inference: " << infer.name << slog::endl;
     std::shared_ptr<openvino_wrapper_lib::BaseInference> object = nullptr;
 
-    if (infer.name == kInferTpye_FaceDetection) {
+    if (infer.name == kInferType_FaceDetection) {
       object = createFaceDetection(infer);
-    } else if (infer.name == kInferTpye_AgeGenderRecognition) {
+    } else if (infer.name == kInferType_AgeGenderRecognition) {
       object = createAgeGenderRecognition(infer);
-    } else if (infer.name == kInferTpye_EmotionRecognition) {
+    } else if (infer.name == kInferType_EmotionRecognition) {
       object = createEmotionRecognition(infer);
-    } else if (infer.name == kInferTpye_HeadPoseEstimation) {
+    } else if (infer.name == kInferType_HeadPoseEstimation) {
       object = createHeadPoseEstimation(infer);
-    } else if (infer.name == kInferTpye_ObjectDetection) {
+    } else if (infer.name == kInferType_ObjectDetection) {
       object = createObjectDetection(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentation) {
+    } else if (infer.name == kInferType_ObjectSegmentation) {
       object = createObjectSegmentation(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentationMaskrcnn) {
+    } else if (infer.name == kInferType_ObjectSegmentationMaskrcnn) {
       object = createObjectSegmentationMaskrcnn(infer);
-    } else if (infer.name == kInferTpye_ObjectSegmentationInstance) {
+    } else if (infer.name == kInferType_ObjectSegmentationInstance) {
       object = createObjectSegmentationInstance(infer);
-    } else if (infer.name == kInferTpye_PersonReidentification) {
+    } else if (infer.name == kInferType_PersonReidentification) {
       object = createPersonReidentification(infer);
-    } else if (infer.name == kInferTpye_PersonAttribsDetection) {
+    } else if (infer.name == kInferType_PersonAttribsDetection) {
       object = createPersonAttribsDetection(infer);
-    } /*else if (infer.name == kInferTpye_LandmarksDetection) {
+    } /*else if (infer.name == kInferType_LandmarksDetection) {
       object = createLandmarksDetection(infer);
-    } else if (infer.name == kInferTpye_FaceReidentification) {
+    } else if (infer.name == kInferType_FaceReidentification) {
       object = createFaceReidentification(infer);
     } */
-    else if (infer.name == kInferTpye_VehicleAttribsDetection) {
+    else if (infer.name == kInferType_VehicleAttribsDetection) {
       object = createVehicleAttribsDetection(infer);
-    } else if (infer.name == kInferTpye_LicensePlateDetection) {
+    } else if (infer.name == kInferType_LicensePlateDetection) {
       object = createLicensePlateDetection(infer);
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
@@ -291,22 +291,22 @@ PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawD
   std::shared_ptr<Models::ObjectDetectionModel> object_detection_model;
   std::shared_ptr<openvino_wrapper_lib::ObjectDetection> object_inference_ptr;
   slog::debug << "for test in createObjectDetection()" << slog::endl;
-  if (infer.model_type == kInferTpye_ObjectDetectionTypeSSD) {
+  if (infer.model_type == kInferType_ObjectDetectionTypeSSD) {
     object_detection_model = std::make_shared<Models::ObjectDetectionSSDModel>(infer.label, infer.model, infer.batch);
   }
-  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov5) {
+  if (infer.model_type == kInferType_ObjectDetectionTypeYolov5) {
     object_detection_model =
         std::make_shared<Models::ObjectDetectionYolov5Model>(infer.label, infer.model, infer.batch);
   }
 
-  if (infer.model_type == kInferTpye_ObjectDetectionTypeYolov8) {
+  if (infer.model_type == kInferType_ObjectDetectionTypeYolov8) {
     object_detection_model =
         std::make_shared<Models::ObjectDetectionYolov8Model>(infer.label, infer.model, infer.batch);
   }
 
   slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
   object_inference_ptr = std::make_shared<openvino_wrapper_lib::ObjectDetection>(
-      infer.enable_roi_constraint, infer.confidence_threshold);  // To-do theshold configuration
+      infer.enable_roi_constraint, infer.confidence_threshold);  // To-do threshold configuration
   slog::debug << "for test in createObjectDetection(), before modelInit()" << slog::endl;
   object_detection_model->modelInit();
   auto object_detection_engine = engine_manager_.createEngine(infer.engine, object_detection_model);
@@ -356,11 +356,11 @@ std::shared_ptr<openvino_wrapper_lib::BaseInference>
 PipelineManager::createObjectSegmentationInstance(const Params::ParamManager::InferenceRawData& infer)
 {
   std::shared_ptr<Models::ObjectSegmentationInstanceModel> model;
-  if (infer.model_type == kInferTpye_ObjectSegmentationTypeMaskrcnn) {
-    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeMaskrcnn" << slog::endl;
+  if (infer.model_type == kInferType_ObjectSegmentationTypeMaskrcnn) {
+    slog::info << "Model Type: kInferType_ObjectSegmentationTypeMaskrcnn" << slog::endl;
     model = std::make_shared<Models::ObjectSegmentationInstanceMaskrcnnModel>(infer.label, infer.model, infer.batch);
   } else {
-    slog::info << "Model Typle: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
+    slog::info << "Model Type: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
     model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer);
   }
   model->modelInit();
@@ -571,7 +571,7 @@ void PipelineManager::runAll()
       it->second.thread =
           std::make_shared<std::thread>(&PipelineManager::threadPipeline, this, it->second.params.name.c_str());
     }
-#if 0  // DEBUGING
+#if 0  // DEBUGGING
     // Consider of saving CPU loads, the spin thread is moved out from pipeline manager,
     // which is supposed to be handled by the upper-level applications.
     // (see @file pipeline_with_params.cpp for the calling sample.)

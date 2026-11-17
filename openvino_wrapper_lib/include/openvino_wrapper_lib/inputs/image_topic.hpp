@@ -31,7 +31,7 @@ namespace Input
 {
 /**
  * @class ImageTopic
- * @brief Class for recieving a realsense camera topic as input.
+ * @brief Class for receiving a realsense camera topic as input.
  */
 class ImageTopic : public BaseInputDevice
 {

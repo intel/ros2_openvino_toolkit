@@ -75,7 +75,7 @@ public:
   bool isLogicOperator(const std::string&);
 
   /**
-   * @brief Decide whether the an operator has a higher priority than anthor.
+   * @brief Decide whether an operator has a higher priority than another.
    * @param[in] The two operators.
    * @return True if the first operator has higher priority, false if not.
    */
@@ -179,8 +179,8 @@ private:
 
   /**
    * @brief Strip the extra space in a string.
-   * @param[in] A string to be striped.
-   * @return The striped string.
+   * @param[in] A string to be stripped.
+   * @return The stripped string.
    */
   std::string strip(const std::string& str);
 

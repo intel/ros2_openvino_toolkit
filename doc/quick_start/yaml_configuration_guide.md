@@ -49,7 +49,7 @@ Common:
 ## Interface Description
 
 ### Specify pipeline name
-The name value of this pipeline can be anyone other than null.
+The name value of this pipeline can be anything other than null.
 
 ### Specify inputs
 **Note:** The input parameter can only have one value.</br>
@@ -57,7 +57,7 @@ Currently, options for inputs are:
 
 |Input Option|Description|Configuration|
 |--------------------|------------------------------------------------------------------|-----------------------------------------|
-|StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|```inputs: [StandardCamera]```|
+|StandardCamera|Any RGB camera with USB port support. Currently only the first USB camera is used if many are connected.|```inputs: [StandardCamera]```|
 |RealSenseCamera| Intel® RealSense™ RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
 |RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|```inputs: [Image]```|
@@ -67,7 +67,7 @@ Currently, options for inputs are:
 **Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IP Camera input.
 
 ### Specify input_path
-The input_path need to be specified when input is Image, Video and IP Camera. 
+The input_path needs to be specified when the input is Image, Video or IP Camera. 
 
 |Input Option|Configuration|
 |--------------------|------------------------------------------------------------------|
@@ -79,7 +79,7 @@ The input_path need to be specified when input is Image, Video and IP Camera.
 The Inference Engine is a set of C++ classes that provides an API to read the Intermediate Representation, set the input and output formats, and execute the model on devices.
 
 * #### name
-The name of inference engine need to be specified here. Currently, the inference feature list is supported:
+The name of the inference engine needs to be specified here. Currently, the following inference features are supported:
 
 |Inference|Description|
 |-----------------------|------------------------------------------------------------------|
@@ -93,7 +93,7 @@ The name of inference engine need to be specified here. Currently, the inference
 |ObjectSegmentationMaskrcnn| object segmentation based on Maskrcnn model.|
 
 * #### model
-The path of model need to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
+The path of the model needs to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine

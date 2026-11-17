@@ -124,7 +124,7 @@ public:
    * @brief Retrieve the specific pipeline parameters by the given pipeline
    * name.
    * @param[in] name: the name of the pipeline to be retrieved.
-   * @return The pipeline paratmeters, or throw a loginc error.
+   * @return The pipeline parameters, or throw a logic error.
    */
   PipelineRawData getPipeline(const std::string& name) const;
 

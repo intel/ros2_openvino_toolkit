@@ -57,7 +57,7 @@ void wait_for_future(rclcpp::Executor& executor, std::shared_future<bool>& futur
   future_ret = executor.spin_until_future_complete(future, timeout);
   auto elapsed_time = std::chrono::steady_clock::now() - start_time;
   EXPECT_EQ(FutureReturnCode::SUCCESS, future_ret)
-      << "the usb camera don't publish data to topic\n"
+      << "the usb camera doesn't publish data to topic\n"
       << "future failed to be set after: "
       << std::chrono::duration_cast<std::chrono::milliseconds>(elapsed_time).count() << " milliseconds\n";
 }

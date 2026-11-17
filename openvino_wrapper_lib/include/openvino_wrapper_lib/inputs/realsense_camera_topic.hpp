@@ -28,7 +28,7 @@ namespace Input
  * DEPRECATED!
  * Using the new class ImageTopic to handle all image topics.
  * @class RealSenseCameraTopic
- * @brief Class for recieving a realsense camera topic as input.
+ * @brief Class for receiving a realsense camera topic as input.
  */
 typedef ImageTopic RealSenseCameraTopic;
 

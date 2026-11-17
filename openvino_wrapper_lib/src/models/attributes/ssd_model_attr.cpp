@@ -104,7 +104,7 @@ bool Models::SSDModelAttr::updateLayerProperty(const std::shared_ptr<ov::Model>&
   setObjectSize(object_size);
 
   if (output_dims.size() != 4) {
-    slog::warn << "This model is not SSDNet-like, output dimensions shoulld be 4, but was"
+    slog::warn << "This model is not SSDNet-like, output dimensions should be 4, but was"
                << std::to_string(output_dims.size()) << slog::endl;
     return false;
   }

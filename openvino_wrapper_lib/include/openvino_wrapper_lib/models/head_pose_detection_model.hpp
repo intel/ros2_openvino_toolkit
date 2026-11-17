@@ -51,8 +51,8 @@ public:
     return output_angle_p_;
   }
   /**
-   * @brief Get the output angle yawl.
-   * @return Yawl value.
+   * @brief Get the output angle yaw.
+   * @return Yaw value.
    */
   inline const std::string getOutputOutputAngleY() const
   {
