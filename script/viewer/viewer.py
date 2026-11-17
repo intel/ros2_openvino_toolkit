@@ -77,7 +77,7 @@ class Window(QWidget):
         
     def initWindow(self):               
         #set window param
-        print('Waiting for pipeling service...')
+        print('Waiting for pipeline service...')
         self.response = reqPipelineService("GET_PIPELINE","")
         self.window_height = len(self.response.pipelines) * 200 
         self.resize(self.window_width,self.window_height)

@@ -74,7 +74,7 @@ void FrameProcessingServer<T>::cbService(const std::shared_ptr<typename T::Reque
     auto output_handle = p.pipeline->getOutputHandle();
 
     for (auto& pair : output_handle) {
-      if (!pair.first.compare(kOutputTpye_RosService)) {
+      if (!pair.first.compare(kOutputType_RosService)) {
         pair.second->setServiceResponse(response);
         pair.second->clearData();
         return;  // TODO(weizhi) , return directly, suppose only 1 pipeline dealing with 1 request.

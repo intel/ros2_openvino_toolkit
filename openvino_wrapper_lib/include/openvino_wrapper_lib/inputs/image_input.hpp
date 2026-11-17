@@ -27,7 +27,7 @@ namespace Input
 {
 /**
  * @class Image
- * @brief Class for recieving an image file as input.
+ * @brief Class for receiving an image file as input.
  */
 class Image : public BaseInputDevice
 {

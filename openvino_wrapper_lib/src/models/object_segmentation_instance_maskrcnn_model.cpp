@@ -98,7 +98,7 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::updateLayerProperty(std::s
       slog::info << "find output tensor - [detection]" << slog::endl;
       retagOutputByValue(output, "detection");
     } else {
-      throw std::logic_error("The shape ofoutput tensers are wrong, must be 4 or 3!");
+      throw std::logic_error("The shape of output tensors is wrong, must be 4 or 3!");
     }
   };
   check_output_and_rename(getOutputName("output0"));

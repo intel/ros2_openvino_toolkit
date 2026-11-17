@@ -58,7 +58,7 @@ private:
    */
   void updateMatchTrack(int track_id, const std::vector<float>& feature);
   /**
-   * @brief Remove the earlest track from the recorded tracks.
+   * @brief Remove the earliest track from the recorded tracks.
    */
   void removeEarlestTrack();
   /**
@@ -69,7 +69,7 @@ private:
   int addNewTrack(const std::vector<float>& feature);
   /**
    * @brief Calculate the cosine similarity between two features.
-   * @return The simlarity result.
+   * @return The similarity result.
    */
   double calcSimilarity(const std::vector<float>& feature_a, const std::vector<float>& feature_b);
   /**

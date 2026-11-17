@@ -27,7 +27,7 @@ namespace Input
 {
 /**
  * @class Video
- * @brief Class for recieving a video file as input.
+ * @brief Class for receiving a video file as input.
  */
 class Video : public BaseInputDevice
 {

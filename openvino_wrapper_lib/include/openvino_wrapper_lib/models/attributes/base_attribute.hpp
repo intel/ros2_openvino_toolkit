@@ -94,7 +94,7 @@ public:
       slog::info << "|    " << item.first << "-->" << item.second << slog::endl;
     }
 
-    slog::info << "| lables:" << slog::endl;
+    slog::info << "| labels:" << slog::endl;
     for (size_t i = 0; i < attr_.labels.size(); i++) {
       if (i % 8 == 0)
         slog::info << "|    ";

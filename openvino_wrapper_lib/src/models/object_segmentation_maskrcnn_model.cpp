@@ -142,7 +142,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(std::shared_pt
   inputs_info_ = model->inputs();
   slog::debug << "input size=" << inputs_info_.size() << slog::endl;
   if (inputs_info_.size() != 2) {
-    slog::warn << "This inference sample should have have two inputs, but we got" << std::to_string(inputs_info_.size())
+    slog::warn << "This inference sample should have two inputs, but we got" << std::to_string(inputs_info_.size())
                << "inputs" << slog::endl;
     return false;
   }
@@ -190,7 +190,7 @@ bool Models::ObjectSegmentationMaskrcnnModel::updateLayerProperty(std::shared_pt
   outputs_info_ = model->outputs();
   slog::debug << "output size=" << outputs_info_.size() << slog::endl;
   if (outputs_info_.size() != 2) {
-    slog::warn << "This inference sample should have have 2 outputs, but we got" << std::to_string(outputs_info_.size())
+    slog::warn << "This inference sample should have 2 outputs, but we got" << std::to_string(outputs_info_.size())
                << "outputs" << slog::endl;
     return false;
   }

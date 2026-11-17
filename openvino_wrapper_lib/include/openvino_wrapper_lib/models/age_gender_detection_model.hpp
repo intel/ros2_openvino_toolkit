@@ -39,7 +39,7 @@ public:
    */
 
   /**
-   * @brief Get the age from the detection reuslt.
+   * @brief Get the age from the detection result.
    * @return Detected age.
    */
   inline const std::string getOutputAgeName() const
@@ -47,7 +47,7 @@ public:
     return getOutputName("age");
   }
   /**
-   * @brief Get the gender from the detection reuslt.
+   * @brief Get the gender from the detection result.
    * @return Detected gender.
    */
   inline const std::string getOutputGenderName() const

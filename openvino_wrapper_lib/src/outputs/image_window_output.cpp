@@ -138,7 +138,7 @@ void Outputs::ImageWindowOutput::mergeMask(const std::vector<openvino_wrapper_li
 {
   const float alpha = 0.7f;
   // const float MASK_THRESHOLD = 0.5;
-  // only for merged mask mat got from modles::fetchResults()
+  // only for merged mask mat got from models::fetchResults()
   for (unsigned i = 0; i < results.size(); i++) {
     cv::Rect location = results[i].getLocation();
     slog::debug << "Rect:" << location << slog::endl;

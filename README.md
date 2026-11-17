@@ -58,7 +58,7 @@
 # Introduction
 ## Design Architecture
 <p><details><summary>Architecture Design</summary>
-From the view of hierarchical architecture design, the package is divided into different functional components, as shown in below picture. 
+From the view of hierarchical architecture design, the package is divided into different functional components, as shown in the picture below. 
 
 ![OpenVINO_Architecture](./data/images/design_arch.PNG "OpenVINO RunTime Architecture")
 

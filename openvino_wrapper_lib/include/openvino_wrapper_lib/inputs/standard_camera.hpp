@@ -33,7 +33,7 @@ namespace Input
 {
 /**
  * @class StandardCamera
- * @brief Class for recieving a standard camera as input.
+ * @brief Class for receiving a standard camera as input.
  */
 class StandardCamera : public BaseInputDevice
 {

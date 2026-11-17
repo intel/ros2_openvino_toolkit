@@ -1,7 +1,7 @@
 # ROS2_OpenVINO_Toolkit
 
 **NOTE:**
-Below steps have been tested on **Ubuntu 24.04** with ROS2 Jazzy.
+The steps below have been tested on **Ubuntu 24.04** with ROS2 Jazzy.
 For other ROS2 distributions, use the matching branch listed in the [README](../../README.md#ros2-version-supported).
 
 ## 1. Environment Setup
@@ -55,7 +55,7 @@ cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
 omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
 ```
 
-* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) need to be converted to intermediate representation (such as the model for object detection):
+* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) needs to be converted to intermediate representation (such as the model for object detection):
 ```
 cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
 omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
@@ -73,14 +73,14 @@ cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
 sudo python3 downloader.py --list download_model.lst -o /opt/openvino_toolkit/models/
 ```
 
-* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) need to be converted to Intermediate Representation (such as the model for object detection):
+* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) needs to be converted to Intermediate Representation (such as the model for object detection):
 ```
 cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
 sudo python3 converter.py --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
 ```
 
 * Copy label files (execute once)
-**Note**:Need to make label_dirs if skip steps for set output_dirs above.
+**Note**: You need to make label_dirs if you skipped the steps for setting output_dirs above.
 ```
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
 sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/
