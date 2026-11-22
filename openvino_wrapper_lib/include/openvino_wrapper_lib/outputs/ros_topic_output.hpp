@@ -41,7 +41,11 @@
 #include <object_msgs/msg/vehicle_attribs_stamped.hpp>
 #include <object_msgs/msg/license_plate.hpp>
 #include <object_msgs/msg/license_plate_stamped.hpp>
+#include <object_msgs/msg/objects.hpp>
+#include <object_msgs/msg/objects_in_oriented_boxes.hpp>
+#include <object_msgs/msg/objects_with_keypoints.hpp>
 #include <rclcpp/rclcpp.hpp>
+#include <sensor_msgs/msg/image.hpp>
 #include <std_msgs/msg/header.hpp>
 
 #include <memory>
@@ -127,6 +131,30 @@ public:
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&) override;
   /**
    * @brief Generate ros topic information according to
+   * the keypoint detection result.
+   * @param[in] results a bundle of keypoint detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>&) override;
+  /**
+   * @brief Generate ros topic information according to
+   * the oriented object detection result.
+   * @param[in] results a bundle of oriented object detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>&) override;
+  /**
+   * @brief Generate ros topic information according to
+   * the image classification result.
+   * @param[in] results the classes of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>&) override;
+  /**
+   * @brief Generate ros topic information according to
+   * the depth estimation result.
+   * @param[in] results the depth map of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>&) override;
+  /**
+   * @brief Generate ros topic information according to
    * the object detection result.
    * @param[in] results a bundle of object detection results.
    */
@@ -183,6 +211,14 @@ protected:
   std::shared_ptr<object_msgs::msg::AgeGenderStamped> age_gender_topic_;
   rclcpp::Publisher<object_msgs::msg::HeadPoseStamped>::SharedPtr pub_headpose_;
   std::shared_ptr<object_msgs::msg::HeadPoseStamped> headpose_topic_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsWithKeypoints>::SharedPtr pub_keypoints_;
+  std::shared_ptr<object_msgs::msg::ObjectsWithKeypoints> keypoints_topic_;
+  rclcpp::Publisher<object_msgs::msg::ObjectsInOrientedBoxes>::SharedPtr pub_oriented_object_;
+  std::shared_ptr<object_msgs::msg::ObjectsInOrientedBoxes> oriented_objects_topic_;
+  rclcpp::Publisher<object_msgs::msg::Objects>::SharedPtr pub_classified_object_;
+  std::shared_ptr<object_msgs::msg::Objects> classified_objects_topic_;
+  rclcpp::Publisher<sensor_msgs::msg::Image>::SharedPtr pub_depth_image_;
+  std::shared_ptr<sensor_msgs::msg::Image> depth_image_topic_;
 };
 }  // namespace Outputs
 #endif  // OPENVINO_WRAPPER_LIB__OUTPUTS__ROS_TOPIC_OUTPUT_HPP_

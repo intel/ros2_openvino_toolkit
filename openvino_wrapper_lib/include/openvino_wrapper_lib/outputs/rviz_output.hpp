@@ -105,6 +105,30 @@ public:
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&) override;
   /**
    * @brief Generate rviz output content according to
+   * the keypoint detection result.
+   * @param[in] results A bundle of keypoint detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>&) override;
+  /**
+   * @brief Generate rviz output content according to
+   * the oriented object detection result.
+   * @param[in] results A bundle of oriented object detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>&) override;
+  /**
+   * @brief Generate rviz output content according to
+   * the image classification result.
+   * @param[in] results The classes of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>&) override;
+  /**
+   * @brief Generate rviz output content according to
+   * the depth estimation result.
+   * @param[in] results The depth map of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>&) override;
+  /**
+   * @brief Generate rviz output content according to
    * the emotion detection result.
    * @param[in] An emotion detection result object.
    */
