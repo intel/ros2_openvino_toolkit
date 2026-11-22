@@ -252,11 +252,9 @@ install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_server
-  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_people_server
-  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_client
