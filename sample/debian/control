@@ -1,0 +1,66 @@
+Source: ros-jazzy-openvino-node
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               libopencv-dev,
+               openvino-libraries-dev-2025.4.0,
+               ros-jazzy-ament-cmake,
+               ros-jazzy-ament-index-cpp,
+               ros-jazzy-builtin-interfaces,
+               ros-jazzy-class-loader,
+               ros-jazzy-cv-bridge,
+               ros-jazzy-librealsense2,
+               ros-jazzy-object-msgs,
+               ros-jazzy-openvino-msgs,
+               ros-jazzy-openvino-param-lib,
+               ros-jazzy-openvino-wrapper-lib,
+               ros-jazzy-rclcpp,
+               ros-jazzy-rclcpp-components,
+               ros-jazzy-rmw-implementation,
+               ros-jazzy-ros-workspace,
+               ros-jazzy-rosidl-default-generators,
+               ros-jazzy-std-msgs,
+               ros-jazzy-yaml-cpp-vendor
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_openvino_toolkit
+Rules-Requires-Root: no
+
+Package: ros-jazzy-openvino-node
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ca-certificates,
+         curl,
+         libopenvino-ir-frontend-2025.4.0,
+         openvino-libraries-2025.4.0,
+         ros-jazzy-ament-index-cpp,
+         ros-jazzy-builtin-interfaces,
+         ros-jazzy-class-loader,
+         ros-jazzy-cv-bridge,
+         ros-jazzy-launch-ros,
+         ros-jazzy-librealsense2,
+         ros-jazzy-object-msgs,
+         ros-jazzy-openvino-msgs,
+         ros-jazzy-openvino-param-lib,
+         ros-jazzy-openvino-wrapper-lib,
+         ros-jazzy-rclcpp,
+         ros-jazzy-rclcpp-components,
+         ros-jazzy-rmw-implementation,
+         ros-jazzy-ros-workspace,
+         ros-jazzy-ros2launch,
+         ros-jazzy-rosidl-default-runtime,
+         ros-jazzy-sensor-msgs,
+         ros-jazzy-std-msgs,
+         ros-jazzy-yaml-cpp-vendor
+Recommends: intel-opencl-icd,
+            ros-jazzy-rqt-image-view,
+            ros-jazzy-rviz2
+Description: ROS 2 OpenVINO toolkit nodes, launch and parameter files
+ Pipeline and service nodes of the ROS 2 OpenVINO toolkit together with their
+ launch files, YAML pipeline configurations, label files and sample images.
+ Installing this package installs the complete toolkit.
+ .
+ The OpenVINO models are not part of the package. Download them with
+ "ros2 run openvino_node download_models.sh".

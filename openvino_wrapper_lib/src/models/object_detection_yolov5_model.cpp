@@ -116,9 +116,9 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(const std::shared_ptr<Engi
 
   ov::InferRequest request = engine->getRequest();
   std::string output = getOutputName();
-  ov::Tensor output_tensor = request.get_output_tensor();
+  const ov::Tensor& output_tensor = request.get_output_tensor();
   ov::Shape output_shape = output_tensor.get_shape();
-  float* detections = output_tensor.data<float>();
+  auto* detections = output_tensor.data<float>();
   int rows = output_shape.at(1);
   int dimentions = output_shape.at(2);
   Mat output_buffer(output_shape[1], output_shape[2], CV_32F, detections);
@@ -130,7 +130,6 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(const std::shared_ptr<Engi
     rows = output_shape.at(2);
     dimentions = output_shape.at(1);
   }
-  // slog::debug << "AFTER calibration: rows->" << rows << ", dimentions->" << dimentions << slog::endl;
 
   std::vector<cv::Rect> boxes;
   std::vector<int> class_ids;

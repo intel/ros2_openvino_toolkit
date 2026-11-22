@@ -1,12 +1,12 @@
-# This workflow checks code formatting using clang-format on push and pull request events to the main, ros2_humble, ros2_jazzy and ros2_lyrical branches.
+# This workflow checks code formatting using clang-format on push and pull request events to the ros2_jazzy branch.
 
 name: Code_Format_Check
 
 on:
   push:
-    branches: [ "main", "ros2_humble", "ros2_jazzy", "ros2_lyrical" ]
+    branches: [ "ros2_jazzy" ]
   pull_request:
-    branches: [ "main", "ros2_humble", "ros2_jazzy", "ros2_lyrical" ]
+    branches: [ "ros2_jazzy" ]
   workflow_dispatch:
 
 permissions:
@@ -19,7 +19,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Install clang-format
         run: |

@@ -19,7 +19,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt update && \
     apt install -y --no-install-recommends \
     curl wget gnupg2 lsb-release nano software-properties-common \
-    apt-transport-https libyaml-cpp-dev ros-jazzy-libyaml-vendor \
+    apt-transport-https libyaml-cpp-dev ros-jazzy-libyaml-vendor ros-jazzy-cv-bridge \
     libssl-dev libusb-1.0-0-dev libudev-dev pkg-config \
     libgtk-3-dev git cmake build-essential nano && \
     # Add OpenVINO GPG key and repository
@@ -37,9 +37,7 @@ RUN apt update && \
 WORKDIR /root
 RUN mkdir -p ros2_ws/src
 WORKDIR /root/ros2_ws/src
-RUN git clone https://github.com/intel/ros2_object_msgs.git
 RUN git clone -b ros2_jazzy https://github.com/intel/ros2_openvino_toolkit.git
-RUN git clone -b humble https://github.com/ros-perception/vision_opencv.git
 WORKDIR /root/ros2_ws
 RUN source /opt/ros/jazzy/setup.bash \
     && colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

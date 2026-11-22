@@ -1,0 +1,48 @@
+name: Ubuntu-24.04-Jazzy-CI
+
+on:
+  push:
+    branches: [ "ros2_jazzy" ]
+  pull_request:
+    branches: [ "ros2_jazzy" ]
+  workflow_dispatch:
+
+permissions: read-all
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v7
+
+    - name: install ros2 jazzy
+      uses: ros-tooling/setup-ros@v0.7
+      with:
+        required-ros-distributions: jazzy
+    - run: "source /opt/ros/jazzy/setup.bash && ros2 run --help"
+
+    - name: install openvino 2025.4.0
+      run: |
+        # https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-apt.html
+        sudo ./script/packaging/setup_openvino_apt.sh
+        sudo apt-get install -y openvino-libraries-dev-2025.4.0
+
+    - name: install librealsense2
+      run: |
+        # Install from Intel apt repository for Ubuntu 24.04 (noble)
+        sudo mkdir -p /etc/apt/keyrings
+        curl -sSf https://librealsense.realsenseai.com/Debian/librealsenseai.asc | gpg --dearmor | sudo tee /etc/apt/keyrings/librealsenseai.gpg > /dev/null
+        echo "deb [signed-by=/etc/apt/keyrings/librealsenseai.gpg] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/librealsense.list
+        sudo apt-get update
+        sudo apt-get install -y librealsense2-dev librealsense2-utils
+
+    - name: build ros2 openvino toolkit
+      run: |
+        mkdir -p ~/ros2_ws/src
+        env
+        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src
+        cd ~/ros2_ws
+        source /opt/ros/jazzy/setup.bash
+        colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release

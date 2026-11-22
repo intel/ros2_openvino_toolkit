@@ -1,0 +1,28 @@
+Source: ros-jazzy-object-msgs
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               ros-jazzy-ament-cmake,
+               ros-jazzy-geometry-msgs,
+               ros-jazzy-ros-workspace,
+               ros-jazzy-rosidl-default-generators,
+               ros-jazzy-sensor-msgs,
+               ros-jazzy-std-msgs
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_object_msgs
+Rules-Requires-Root: no
+
+Package: ros-jazzy-object-msgs
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ros-jazzy-geometry-msgs,
+         ros-jazzy-ros-workspace,
+         ros-jazzy-rosidl-default-runtime,
+         ros-jazzy-sensor-msgs,
+         ros-jazzy-std-msgs
+Description: ROS 2 message definitions for object inference results
+ Messages and services describing detected, segmented and tracked objects,
+ faces, persons and vehicles. They are used by the ROS 2 OpenVINO toolkit.

@@ -12,17 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5)
 project(openvino_param_lib)
 
 find_package(ament_cmake REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
 
+include_directories(include
+  ${yaml_cpp_vendor_DIR}/../../../opt/yaml_cpp_vendor/include)
+
 add_library(${PROJECT_NAME} SHARED
   src/param_manager.cpp
 )
 
-target_link_libraries(${PROJECT_NAME} yaml-cpp)
+ament_target_dependencies(${PROJECT_NAME}
+  "yaml_cpp_vendor"
+)
+target_link_libraries(${PROJECT_NAME} /usr/lib/x86_64-linux-gnu/libyaml-cpp.so)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
@@ -65,33 +71,23 @@ if(UNIX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
   # Dot not forward c++17 flag to GPU because it is not supported
   set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
+  # Keep a fortify level set by the caller, for example by dpkg-buildflags.
+  if(NOT CMAKE_CXX_FLAGS MATCHES "_FORTIFY_SOURCE")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
+  endif()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
 endif()
 
 # Install nodelet library
-target_include_directories(${PROJECT_NAME} PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>
-)
-
 install(TARGETS ${PROJECT_NAME}
-  EXPORT ${PROJECT_NAME}Targets
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin)
-
-install(EXPORT ${PROJECT_NAME}Targets
-  FILE ${PROJECT_NAME}Targets.cmake
-  NAMESPACE ${PROJECT_NAME}::
-  DESTINATION share/${PROJECT_NAME}/cmake)
 
 # Install header files
 install(DIRECTORY include/
   DESTINATION include)
 
-ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
-ament_export_dependencies(yaml_cpp_vendor)
 ament_export_include_directories(include)
 ament_export_libraries(${PROJECT_NAME})
 

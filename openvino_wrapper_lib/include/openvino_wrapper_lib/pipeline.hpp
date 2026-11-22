@@ -70,10 +70,6 @@ public:
 
   bool add(const std::string& name, std::shared_ptr<Outputs::BaseOutput> output);
   void addConnect(const std::string& parent, const std::string& name);
-  // inline void addFilters(const std::vector<Params::ParamManager::FilterRawData>& filters)
-  // {
-  //   filters_.add(filters);
-  // }
   bool add(const std::string& name, std::shared_ptr<openvino_wrapper_lib::BaseInference> inference);
   /**
    * @brief Add inference network-output device edge to the pipeline.

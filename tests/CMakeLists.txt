@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.5)
 
 project(openvino_test)
 
@@ -26,7 +26,6 @@ set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 ####################################
 
 find_package(OpenVINO)
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
 if(NOT OpenVINO_FOUND)
     message(FATAL_ERROR "")
 endif()
@@ -41,8 +40,7 @@ endif()
 
 find_package(realsense2)
 if(NOT realsense2_FOUND)
-  message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from "
-    "https://github.com/IntelRealSense/librealsense/releases\n\n")
+  message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
 endif()
 
 find_package(ament_cmake REQUIRED)
@@ -118,9 +116,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 
 # Properties->C/C++->General->Additional Include Directories
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${OpenVINO_DIRS}
     ${realsense2_INCLUDE_DIRS}
 )
 
@@ -143,10 +139,6 @@ install(DIRECTORY
 )
 
 if(BUILD_TESTING)
-  # C++ style is enforced with clang-format (see .clang-format and the Code_Format_Check
-  # workflow), which conflicts with the ament cpplint/uncrustify rules.
-  set(ament_cmake_cpplint_FOUND TRUE)
-  set(ament_cmake_uncrustify_FOUND TRUE)
   find_package(ament_lint_auto REQUIRED)
   ament_lint_auto_find_test_dependencies()
 
@@ -156,16 +148,19 @@ if(BUILD_TESTING)
       # Link against OpenVINO first to resolve symbols
       target_link_libraries(${target}
         openvino::runtime
-        rclcpp::rclcpp
-        openvino_param_lib::openvino_param_lib
-        object_msgs::object_msgs
-        openvino_msgs::openvino_msgs
-        ${OpenCV_LIBS}
-        realsense2::realsense2
-        ament_index_cpp::ament_index_cpp
-        yaml-cpp
-        class_loader::class_loader
-        openvino_wrapper_lib::openvino_wrapper_lib)
+        realsense2::realsense2)
+      ament_target_dependencies(${target}
+        "rclcpp"
+        "openvino_param_lib"
+        "object_msgs"
+        "openvino_msgs"
+	      "OpenVINO"
+	      "OpenCV"
+	      "realsense2"
+        "ament_index_cpp"
+        "yaml_cpp_vendor"
+        "class_loader"
+	      "openvino_wrapper_lib")
     endif()
   endmacro()
 

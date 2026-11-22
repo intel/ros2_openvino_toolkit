@@ -1,0 +1,24 @@
+Source: ros-jazzy-openvino-param-lib
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               libyaml-cpp-dev,
+               ros-jazzy-ament-cmake,
+               ros-jazzy-ros-workspace,
+               ros-jazzy-yaml-cpp-vendor
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_openvino_toolkit
+Rules-Requires-Root: no
+
+Package: ros-jazzy-openvino-param-lib
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libyaml-cpp-dev,
+         ros-jazzy-ros-workspace,
+         ros-jazzy-yaml-cpp-vendor
+Description: ROS 2 OpenVINO toolkit parameter management library
+ Library that parses the YAML pipeline configuration files of the ROS 2
+ OpenVINO toolkit. The package also contains the development headers.

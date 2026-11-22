@@ -177,9 +177,9 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
 
   ov::InferRequest request = engine->getRequest();
   std::string det_output = getOutputName("detection");
-  ov::Tensor det_output_tensor = request.get_tensor(det_output);
+  const ov::Tensor det_output_tensor = request.get_tensor(det_output);
   ov::Shape det_output_shape = det_output_tensor.get_shape();
-  float* detections = det_output_tensor.data<float>();
+  auto* detections = det_output_tensor.data<float>();
   int rows = det_output_shape.at(1);
   int dimentions = det_output_shape.at(2);
   cv::Mat output_buffer(det_output_shape[1], det_output_shape[2], CV_32F, detections);
@@ -235,7 +235,7 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
   std::vector<int> nms_result;
   cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
 
-  ov::Tensor mask_output_tensor = request.get_tensor(getOutputName("masks"));
+  const ov::Tensor mask_output_tensor = request.get_tensor(getOutputName("masks"));
   ov::Shape mask_output_shape = mask_output_tensor.get_shape();
   // const ov::Layout mask_layout {"NCHW"}; //must be "NCHW"?
   const auto MASK_CHANNEL = mask_output_shape[1];
@@ -243,7 +243,6 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
   const auto MASK_WIDTH = mask_output_shape[3];   // mask_output_shape[ov::layout::width_idx(mask_layout)];
   slog::debug << "mask_output_shape: " << mask_output_shape << ",MASK_HEIGHT:" << MASK_HEIGHT
               << ", MASK_WIDTH:" << MASK_WIDTH << slog::endl;
-  // cv::Mat proto(32, 25600, CV_32F, mask_output_tensor.data<float>()); //[32,25600]
   cv::Mat proto(MASK_CHANNEL, MASK_HEIGHT * MASK_WIDTH, CV_32F, mask_output_tensor.data<float>());  //[32,25600]
 
   for (int idx : nms_result) {
