@@ -12,12 +12,10 @@ Pipelines:
     - name: VehicleAttribsDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/vehicle-attributes-recognition/vehicle-attributes-recognition-barrier-0039.labels
       batch: 1
     - name: LicensePlateDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/license-plate-recognition/license-plate-recognition-barrier-0001.labels
       batch: 1
   outputs: [RosTopic]
   connects:

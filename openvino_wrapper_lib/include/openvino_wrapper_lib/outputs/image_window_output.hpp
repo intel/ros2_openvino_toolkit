@@ -106,6 +106,30 @@ public:
   void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&) override;
   /**
    * @brief Generate image window output content according to
+   * the keypoint detection result.
+   * @param[in] results A bundle of keypoint detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>&) override;
+  /**
+   * @brief Generate image window output content according to
+   * the oriented object detection result.
+   * @param[in] results A bundle of oriented object detection results.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>&) override;
+  /**
+   * @brief Generate image window output content according to
+   * the image classification result.
+   * @param[in] results The classes of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>&) override;
+  /**
+   * @brief Generate image window output content according to
+   * the depth estimation result.
+   * @param[in] results The depth map of the frame.
+   */
+  void accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>&) override;
+  /**
+   * @brief Generate image window output content according to
    * the face detection result.
    * @param[in] A face detection result object.
    */
@@ -167,9 +191,13 @@ private:
     cv::Point pa_top;     // for person attributes, top position
     cv::Point pa_bottom;  // for person attributes, bottom position
     std::vector<cv::Point> landmarks;
+    std::vector<cv::Point> polygon;                         // for oriented boxes, drawn instead of rect
+    std::vector<std::pair<cv::Point, cv::Point>> skeleton;  // for keypoints, lines between keypoints
   };
 
   std::vector<OutputData> outputs_;
+  std::vector<std::string> text_lines_;  // results of the whole frame, one per line
+  cv::Mat overlay_;                      // image blended into the frame, for example a depth map
   float focal_length_;
   cv::Mat camera_matrix_;
   std::vector<std::vector<int>> colors_ = { { 128, 64, 128 },  { 232, 35, 244 },  { 70, 70, 70 },   { 156, 102, 102 },
