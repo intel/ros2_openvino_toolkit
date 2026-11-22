@@ -43,14 +43,7 @@ public:
   inline void setHeader(std::string frame_id)
   {
     header_.frame_id = frame_id;
-#if true  // directly use RCLCPP api for time stamp generation.
     header_.stamp = rclcpp::Clock(RCL_ROS_TIME).now();
-#else
-    std::chrono::high_resolution_clock::time_point tp = std::chrono::high_resolution_clock::now();
-    int64 ns = tp.time_since_epoch().count();
-    header_.stamp.sec = ns / 1000000000;
-    header_.stamp.nanosec = ns % 1000000000;
-#endif
   }
 
   inline void setHeader(std_msgs::msg::Header header)

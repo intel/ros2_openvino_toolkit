@@ -2,6 +2,16 @@
 
 The contents in .yaml config file should be well structured and follow the supported rules and entity names.
 
+# Path placeholders
+Write model and data locations with these placeholders instead of absolute paths. The launch files replace them when the node starts.
+
+|Placeholder|Resolved to|
+|---|---|
+|`<OPENVINO_NODE_SHARE>`|Models directory root: `$OPENVINO_TOOLKIT_DIR`, else `~/.local/share/openvino_toolkit`, else `/opt/openvino_toolkit`|
+|`<OPENVINO_DATA>`|Labels and sample images installed with the package (`share/openvino_node/data`)|
+
+When you start the node directly with `ros2 run openvino_node pipeline_with_params -config <file>`, no placeholder is replaced, so use absolute paths in that case.
+
 # Sample
 ## [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
 ```bash
@@ -10,24 +20,24 @@ Pipelines:
   inputs: [StandardCamera]
   infers: 
     - name: FaceDetection
-      model: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.labels
+      label: <OPENVINO_DATA>/labels/face_detection/face-detection-adas-0001.labels
       batch: 1
       confidence_threshold: 0.5
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
     - name: AgeGenderRecognition
-      model: /opt/openvino_toolkit/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
     - name: EmotionRecognition
-      model: /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
       engine: CPU
-      label: /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.labels
+      label: <OPENVINO_DATA>/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels
       batch: 16
     - name: HeadPoseEstimation
-      model: /opt/openvino_toolkit/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
+      model: <OPENVINO_NODE_SHARE>/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
       engine: CPU
       label: to/be/set/xxx.labels
       batch: 16
@@ -97,13 +107,18 @@ The path of the model needs to be specified here. The scheme below illustrates t
 ![trained deep learning model](../../data/images/CVSDK_Flow.png "trained deep learning model")
 
 * #### engine
-The OpenVINO device the model runs on. Target device options are:
+The OpenVINO device the model runs on. Any device name reported by OpenVINO is accepted:
 
 |Value|Device|
 |---|---|
 |`CPU`|Intel CPU|
-|`GPU`|Intel integrated or discrete GPU|
+|`GPU`, `GPU.0`, `GPU.1`|Intel integrated or discrete GPU (`GPU` selects the first one)|
 |`NPU`|Intel NPU (Core Ultra processors)|
+|`AUTO`, `AUTO:GPU,CPU`, `HETERO:GPU,CPU`|OpenVINO virtual devices|
+
+To try a different device without editing the file, pass `device:=<value>` to any sample launch file, e.g. `ros2 launch openvino_node pipeline_image.launch.py device:=NPU`. It replaces the `engine` value of every model in the pipeline.
+
+The device actually used is printed at startup and drawn on the output image next to the FPS.
 
 * #### label
 Currently, this parameter does not work.

@@ -1,0 +1,32 @@
+Source: ros-humble-openvino-msgs
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               ros-humble-ament-cmake,
+               ros-humble-builtin-interfaces,
+               ros-humble-geometry-msgs,
+               ros-humble-object-msgs,
+               ros-humble-ros-workspace,
+               ros-humble-rosidl-default-generators,
+               ros-humble-sensor-msgs,
+               ros-humble-std-msgs
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_openvino_toolkit
+Rules-Requires-Root: no
+
+Package: ros-humble-openvino-msgs
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ros-humble-builtin-interfaces,
+         ros-humble-geometry-msgs,
+         ros-humble-object-msgs,
+         ros-humble-ros-workspace,
+         ros-humble-rosidl-default-runtime,
+         ros-humble-sensor-msgs,
+         ros-humble-std-msgs
+Description: ROS 2 OpenVINO toolkit pipeline message definitions
+ Messages and services used to query and control the inference pipelines of
+ the ROS 2 OpenVINO toolkit.

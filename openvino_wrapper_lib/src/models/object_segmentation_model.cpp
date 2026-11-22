@@ -67,7 +67,6 @@ bool Models::ObjectSegmentationModel::matToBlob(const cv::Mat& orig_image, const
     slog::err << "A frame is trying to be enqueued in a NULL Engine." << slog::endl;
     return false;
   }
-#if 1
   const size_t width = getInputWidth();
   const size_t height = getInputHeight();
   const size_t channels = 3;
@@ -84,32 +83,6 @@ bool Models::ObjectSegmentationModel::matToBlob(const cv::Mat& orig_image, const
     ov::Tensor input_tensor = ov::Tensor(ov::element::u8, { 1, height, width, channels }, orig_image.data);
     engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
   }
-#else
-  ov::InferRequest infer_request = engine->getRequest();
-  ov::Tensor input_tensor = infer_request.get_tensor(getInputName());
-  ov::Shape input_shape = input_tensor.get_shape();
-
-  OPENVINO_ASSERT(input_shape.size() == 4);
-  // For frozen graph model:
-  const size_t width = input_shape[2];
-  const size_t height = input_shape[1];
-  const size_t channels = input_shape[3];
-
-  slog::debug << "width is:" << width << slog::endl;
-  slog::debug << "height is:" << height << slog::endl;
-  slog::debug << "channels is:" << channels << slog::endl;
-  slog::debug << "origin channels is:" << orig_image.channels() << slog::endl;
-  slog::debug << "input shape is:" << input_shape << slog::endl;
-
-  if (static_cast<size_t>(orig_image.channels()) != channels) {
-    throw std::runtime_error("The number of channels for net input and image must match");
-  }
-
-  unsigned char* data = input_tensor.data<unsigned char>();
-  cv::Size size = { (int)width, (int)height };
-  cv::Mat resized_image(size, CV_8UC3, data);
-  cv::resize(orig_image, resized_image, size);
-#endif
   return true;
 }
 
@@ -184,9 +157,6 @@ bool Models::ObjectSegmentationModel::updateLayerProperty(std::shared_ptr<ov::Mo
       outWidth = static_cast<int>(outSizeVector[ov::layout::width_idx(outputLayout)]);
       break;
     case 4:
-      // outChannels = outSizeVector[1];
-      // outHeight = outSizeVector[2];
-      // outWidth = outSizeVector[3];
       outputLayout = "NCHW";
       outChannels = static_cast<int>(outSizeVector[ov::layout::channels_idx(outputLayout)]);
       outHeight = static_cast<int>(outSizeVector[ov::layout::height_idx(outputLayout)]);

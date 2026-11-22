@@ -1,0 +1,53 @@
+Source: ros-humble-openvino-wrapper-lib
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               libopencv-dev,
+               openvino-libraries-dev-2025.4.0,
+               ros-humble-ament-cmake,
+               ros-humble-ament-index-cpp,
+               ros-humble-builtin-interfaces,
+               ros-humble-class-loader,
+               ros-humble-cv-bridge,
+               ros-humble-librealsense2,
+               ros-humble-object-msgs,
+               ros-humble-openvino-msgs,
+               ros-humble-openvino-param-lib,
+               ros-humble-rclcpp,
+               ros-humble-rmw-implementation,
+               ros-humble-ros-workspace,
+               ros-humble-rosidl-default-generators,
+               ros-humble-sensor-msgs,
+               ros-humble-std-msgs,
+               ros-humble-yaml-cpp-vendor
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_openvino_toolkit
+Rules-Requires-Root: no
+
+Package: ros-humble-openvino-wrapper-lib
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libopenvino-ir-frontend-2025.4.0,
+         openvino-libraries-2025.4.0,
+         ros-humble-ament-index-cpp,
+         ros-humble-builtin-interfaces,
+         ros-humble-class-loader,
+         ros-humble-cv-bridge,
+         ros-humble-librealsense2,
+         ros-humble-object-msgs,
+         ros-humble-openvino-msgs,
+         ros-humble-openvino-param-lib,
+         ros-humble-rclcpp,
+         ros-humble-rmw-implementation,
+         ros-humble-ros-workspace,
+         ros-humble-rosidl-default-runtime,
+         ros-humble-sensor-msgs,
+         ros-humble-std-msgs,
+         ros-humble-yaml-cpp-vendor
+Description: ROS 2 wrapper library for Intel OpenVINO
+ Library that builds OpenVINO inference pipelines from camera, video, image
+ and ROS topic inputs and publishes the results as ROS 2 topics and services.
+ The package also contains the development headers.

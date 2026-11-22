@@ -5,6 +5,9 @@ microsoft.gpg
 /install
 /log
 /build
+/dist
+/.models
+/.colcon-docker
 __pycache__/
 *.pyc
 *.pyo

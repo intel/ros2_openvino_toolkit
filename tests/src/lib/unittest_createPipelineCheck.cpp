@@ -14,10 +14,12 @@
 
 #include <rclcpp/rclcpp.hpp>
 #include <gtest/gtest.h>
+#include <ament_index_cpp/get_package_share_directory.hpp>
 #include <ament_index_cpp/get_resource.hpp>
 #include <openvino_param_lib/param_manager.hpp>
 
 #include <unistd.h>
+#include <cstdio>
 #include <algorithm>
 #include <chrono>
 #include <fstream>
@@ -36,12 +38,34 @@
 #include "openvino_wrapper_lib/pipeline_manager.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 
+// Returns the path of a copy of the installed test YAML whose path placeholders
+// (<OPENVINO_NODE_SHARE>, <OPENVINO_DATA>, <OPENVINO_TEST_DATA>) are resolved by
+// the same helper the launch files use. Returns the unresolved file on failure.
 std::string getConfigPath(std::string config_file)
 {
   std::string content;
   std::string prefix_path;
   ament_index_cpp::get_resource("packages", "openvino_test", content, &prefix_path);
-  return prefix_path + "/share/openvino_test/param/" + config_file;
+  std::string original = prefix_path + "/share/openvino_test/param/" + config_file;
+
+  const std::string launch_dir = ament_index_cpp::get_package_share_directory("openvino_node") + "/launch";
+  const std::string cmd = "python3 -c \"import sys; sys.path.insert(0, '" + launch_dir +
+                          "'); import launch_helpers; print(launch_helpers.resolve_yaml_paths('" + config_file +
+                          "', 'openvino_test'))\" 2>/dev/null";
+  FILE* pipe = popen(cmd.c_str(), "r");
+  if (pipe == nullptr) {
+    return original;
+  }
+  std::string resolved;
+  char line[4096];
+  while (fgets(line, sizeof(line), pipe) != nullptr) {
+    resolved = line;
+  }
+  pclose(pipe);
+  while (!resolved.empty() && (resolved.back() == '\n' || resolved.back() == '\r')) {
+    resolved.pop_back();
+  }
+  return resolved.empty() ? original : resolved;
 }
 
 TEST(UnitTestCheckPipeline, testCreatePipeline)
@@ -76,6 +100,20 @@ TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
   std::string config_files = "pipeline_object_yolo_test.yaml";
   std::string config_file = getConfigPath(config_files);
   EXPECT_TRUE(std::ifstream(config_file).is_open());
+
+  // YOLOv5 has no pre-converted IR download; skip when the model was not converted locally.
+  std::ifstream yaml(config_file);
+  std::string line;
+  while (std::getline(yaml, line)) {
+    const auto pos = line.find("model:");
+    if (pos != std::string::npos && line.find("model_type:") == std::string::npos) {
+      std::string model = line.substr(pos + 6);
+      model.erase(0, model.find_first_not_of(" \t"));
+      if (!std::ifstream(model).good()) {
+        GTEST_SKIP() << "Model not found, convert it first: " << model;
+      }
+    }
+  }
   ASSERT_NO_THROW({
     Params::ParamManager::getInstance().parse(config_file);
     auto pipelines = Params::ParamManager::getInstance().getPipelines();

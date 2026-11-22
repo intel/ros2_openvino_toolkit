@@ -44,7 +44,7 @@ TEST(UnitTestPeople, testPeople)
 
   auto request = std::make_shared<object_msgs::srv::People::Request>();
 
-  std::string buffer = generate_file_path("data/images/team.jpg");
+  std::string buffer = generate_file_path("data/images/sample_faces.jpg");
   std::cout << buffer << std::endl;
   request->image_path = buffer;
 

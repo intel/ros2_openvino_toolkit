@@ -56,25 +56,6 @@ bool Models::AgeGenderDetectionModel::updateLayerProperty(std::shared_ptr<ov::Mo
     return false;
   }
 
-#if (0)  ///
-  // Check More Configuration:
-  if (gender_output_ptr->getCreatorLayer().lock()->type == "Convolution") {
-    std::swap(age_output_ptr, gender_output_ptr);
-  }
-  if (age_output_ptr->getCreatorLayer().lock()->type != "Convolution") {
-    slog::err << "In Age Gender network, age layer (" << age_output_ptr->getCreatorLayer().lock()->name
-              << ") should be a Convolution, but was: " << age_output_ptr->getCreatorLayer().lock()->type << slog::endl;
-    return false;
-  }
-  if (gender_output_ptr->getCreatorLayer().lock()->type != "SoftMax") {
-    slog::err << "In Age Gender network, gender layer (" << gender_output_ptr->getCreatorLayer().lock()->name
-              << ") should be a SoftMax, but was: " << gender_output_ptr->getCreatorLayer().lock()->type << slog::endl;
-    return false;
-  }
-  slog::info << "Age layer: " << age_output_ptr->getCreatorLayer().lock()->name << slog::endl;
-  slog::info << "Gender layer: " << gender_output_ptr->getCreatorLayer().lock()->name << slog::endl;
-#endif
-
   auto age_output_info = outputs_info_[1];
   ppp.output(age_output_info.get_any_name()).tensor().set_element_type(ov::element::f32).set_layout(tensor_layout);
   auto gender_output_info = outputs_info_[0];

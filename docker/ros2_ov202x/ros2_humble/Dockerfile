@@ -15,24 +15,14 @@ LABEL maintainer="Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com
 
 SHELL ["/bin/bash", "-c"]
 
-# Define build argument for OpenVINO version (2025.2.0 , 2024.6.0, 2023.3.0)
-ARG OPENVINO_VERSION=2025.2.0
-
-# Extract the major version from the full version string
-ENV OPENVINO_MAJOR_VERSION=${OPENVINO_VERSION%%.*}
-
 # install OpenVINO and dependencies
-# https://docs.openvinotoolkit.org/latest/openvino_docs_install_guides_installing_openvino_apt.html
+# https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-apt.html
 RUN apt update && \
     apt install -y --no-install-recommends wget curl gnupg2 lsb-release software-properties-common apt-transport-https nano && \ 
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /etc/apt/trusted.gpg.d/intel.gpg && \
-    if [ "$OPENVINO_MAJOR_VERSION" = "2025" ]; then \
-        echo "deb https://apt.repos.intel.com/openvino ubuntu22 main" > /etc/apt/sources.list.d/intel-openvino.list; \
-    else \
-        echo "deb https://apt.repos.intel.com/openvino/${OPENVINO_MAJOR_VERSION} ubuntu22 main" > /etc/apt/sources.list.d/intel-openvino-${OPENVINO_MAJOR_VERSION}.list; \
-    fi && \
+    echo "deb https://apt.repos.intel.com/openvino ubuntu22 main" > /etc/apt/sources.list.d/intel-openvino.list && \
     apt update && \
-    apt-get install -y openvino-${OPENVINO_VERSION} && \
+    apt-get install -y openvino-2025.4.0 && \
     rm -rf /var/lib/apt/lists/*
 
 # install librealsense2
@@ -64,7 +54,6 @@ USER ubuntu
 # build ros2 openvino toolkit
 RUN mkdir -p ros2_ws/src
 WORKDIR /home/ubuntu/ros2_ws/src
-RUN git clone https://github.com/intel/ros2_object_msgs.git
 RUN git clone -b ros2_humble https://github.com/intel/ros2_openvino_toolkit.git 
 RUN git clone -b humble https://github.com/ros-perception/vision_opencv.git
 WORKDIR /home/ubuntu/ros2_ws

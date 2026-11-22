@@ -440,39 +440,6 @@ PipelineManager::createPersonAttribsDetection(const Params::ParamManager::Infere
 
 #if 0
 std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonReidentification(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model =
-    std::make_shared<Models::PersonReidentificationModel>(infer.model, infer.batch);
-  model->modelInit();
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto reidentification_inference_ptr =
-    std::make_shared<openvino_wrapper_lib::PersonReidentification>(infer.confidence_threshold);
-  reidentification_inference_ptr->loadNetwork(model);
-  reidentification_inference_ptr->loadEngine(engine);
-
-  return reidentification_inference_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createPersonAttribsDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model =
-    std::make_shared<Models::PersonAttribsDetectionModel>(infer.model, infer.batch);
-  
-  model->modelInit();
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto attribs_inference_ptr =
-    std::make_shared<openvino_wrapper_lib::PersonAttribsDetection>(infer.confidence_threshold);
-  attribs_inference_ptr->loadNetwork(model);
-  attribs_inference_ptr->loadEngine(engine);
-
-  return attribs_inference_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
 PipelineManager::createLandmarksDetection(
   const Params::ParamManager::InferenceRawData & infer)
 {
@@ -502,38 +469,6 @@ PipelineManager::createFaceReidentification(
   face_reid_ptr->loadEngine(engine);
 
   return face_reid_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createVehicleAttribsDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model =
-    std::make_shared<Models::VehicleAttribsDetectionModel>(infer.model, infer.batch);
-  model->modelInit();
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto vehicle_attribs_ptr =
-    std::make_shared<openvino_wrapper_lib::VehicleAttribsDetection>();
-  vehicle_attribs_ptr->loadNetwork(model);
-  vehicle_attribs_ptr->loadEngine(engine);
-
-  return vehicle_attribs_ptr;
-}
-
-std::shared_ptr<openvino_wrapper_lib::BaseInference>
-PipelineManager::createLicensePlateDetection(
-  const Params::ParamManager::InferenceRawData & infer)
-{
-  auto model =
-    std::make_shared<Models::LicensePlateDetectionModel>(infer.model, infer.batch);
-  model->modelInit();
-  auto engine = engine_manager_.createEngine(infer.engine, model);
-  auto license_plate_ptr =
-    std::make_shared<openvino_wrapper_lib::LicensePlateDetection>();
-  license_plate_ptr->loadNetwork(model);
-  license_plate_ptr->loadEngine(engine);
-
-  return license_plate_ptr;
 }
 #endif
 
@@ -571,19 +506,9 @@ void PipelineManager::runAll()
       it->second.thread =
           std::make_shared<std::thread>(&PipelineManager::threadPipeline, this, it->second.params.name.c_str());
     }
-#if 0  // DEBUGGING
     // Consider of saving CPU loads, the spin thread is moved out from pipeline manager,
     // which is supposed to be handled by the upper-level applications.
     // (see @file pipeline_with_params.cpp for the calling sample.)
-    if (service_.thread == nullptr) {
-      service_.thread = std::make_shared<std::thread>(&PipelineManager::runService, this);
-    }
-    if (it->second.spin_nodes.size() > 0 && it->second.thread_spin_nodes == nullptr) {
-      it->second.thread_spin_nodes = std::make_shared<std::thread>(
-        &PipelineManager::threadSpinNodes, this,
-        it->second.params.name.c_str());
-    }
-#endif
   }
 }
 

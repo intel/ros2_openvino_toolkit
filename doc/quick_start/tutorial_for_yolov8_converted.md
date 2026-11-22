@@ -66,9 +66,9 @@ yolo export model=yolov8n.pt format=openvino
 ```
 cd yolov8n_openvino_model
 
-mkdir -p  /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+mkdir -p  ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/FP32/yolov8n
 
-sudo cp yolov8* /opt/openvino_toolkit/models/convert/public/FP32/yolov8n
+cp yolov8* ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/FP32/yolov8n
 
 ```
 

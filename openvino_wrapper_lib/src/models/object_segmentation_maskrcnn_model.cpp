@@ -92,39 +92,10 @@ bool Models::ObjectSegmentationMaskrcnnModel::matToBlob(const cv::Mat& orig_imag
     throw std::runtime_error("The number of channels for net input and image must match");
   }
 
-#if 1
-  // input_tensor = ov::Tensor(ov::element::u8, {1, height, width, channels}, resized_image.data);
-  // engine->getRequest().set_tensor(input_tensor_name_, input_tensor);
   unsigned char* data = input_tensor.data<unsigned char>();
   cv::Size size = { (int)width, (int)height };
   cv::Mat resized_image(size, CV_8UC3, data);
   cv::resize(orig_image, resized_image, size);
-#else
-  const auto input_data = input_tensor.data<unsigned char>();
-  cv::Mat resized_image(orig_image);
-  if (static_cast<int>(width) != orig_image.size().width || static_cast<int>(height) != orig_image.size().height) {
-    cv::resize(orig_image, resized_image, cv::Size(width, height));
-  }
-
-  int batchOffset = batch_index * width * height * channels;
-  if (channels == 1) {
-    for (size_t h = 0; h < height; h++) {
-      for (size_t w = 0; w < width; w++) {
-        input_data[batchOffset + h * width + w] = resized_image.at<uchar>(h, w);
-      }
-    }
-  } else if (channels == 3) {
-    for (size_t c = 0; c < channels; c++) {
-      for (size_t h = 0; h < height; h++) {
-        for (size_t w = 0; w < width; w++) {
-          input_data[batchOffset + c * width * height + h * width + w] = resized_image.at<cv::Vec3b>(h, w)[c];
-        }
-      }
-    }
-  } else {
-    throw std::runtime_error("Unsupported number of channels");
-  }
-#endif
 
   return true;
 }

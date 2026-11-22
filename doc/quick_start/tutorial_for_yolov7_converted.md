@@ -71,8 +71,8 @@ Then we will get three files: yolov7.xml, yolov7.bin, and yolov7.mapping under t
 # Move to the Recommended Model Path
 ```
 cd ~/yolov7/model_convert
-mkdir -p  /opt/openvino_toolkit/models/convert/public/yolov7/FP32/
-sudo cp yolov7.bin yolov7.mapping yolov7.xml /opt/openvino_toolkit/models/convert/public/yolov7/FP32/
+mkdir -p  ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov7/FP32/
+cp yolov7.bin yolov7.mapping yolov7.xml ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov7/FP32/
 ```
 
 # yolov7 optimize to yolov7-int8

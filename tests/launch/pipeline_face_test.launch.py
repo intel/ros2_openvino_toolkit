@@ -13,26 +13,30 @@
 # limitations under the License.
 
 """
-ROS 2 Test Launch File: Face Detection Pipeline Test
+ROS 2 test launch file: Face Detection Pipeline Test.
 
 Launches the OpenVINO face detection with analytics pipeline for automated testing.
 """
 
 import os
+import sys
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
+launch_dir = os.path.dirname(os.path.abspath(__file__))
+if launch_dir not in sys.path:
+    sys.path.insert(0, launch_dir)
+
+import test_launch_helpers  # noqa: E402
+
 
 def generate_launch_description():
     """Generate launch description for face detection test."""
-
-    # Get test package share directory
-    test_package_dir = get_package_share_directory('openvino_test')
-    default_yaml = os.path.join(test_package_dir, 'param', 'pipeline_face_test.yaml')
+    # Resolve path placeholders in the test YAML
+    default_yaml = test_launch_helpers.resolve_test_yaml('pipeline_face_test.yaml')
 
     return LaunchDescription([
         # Declare launch argument for YAML configuration
