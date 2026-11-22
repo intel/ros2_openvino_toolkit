@@ -1,3 +1,9 @@
+ros-lyrical-openvino-wrapper-lib (1.0.0-1) resolute; urgency=medium
+
+  * Release 1.0.0.
+
+ -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Sun, 22 Nov 2026 00:00:00 +0000
+
 ros-lyrical-openvino-wrapper-lib (0.9.0-1) resolute; urgency=medium
 
   * Initial Debian packaging.
