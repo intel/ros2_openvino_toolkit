@@ -14,7 +14,7 @@ if [[ "$EUID" -eq 0 ]]; then
   exit 2
 fi
 
-OPENVINO_VERSION="${OPENVINO_VERSION:-2026.4.1}"
+OPENVINO_VERSION="${OPENVINO_VERSION:-2025.4.0}"
 TOOLKIT_DIR="${OPENVINO_TOOLKIT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/openvino_toolkit}"
 VENV_DIR="$TOOLKIT_DIR/venv/ssdlite"
 WORK_DIR="$TOOLKIT_DIR/cache/ssdlite_mobilenet_v2"
