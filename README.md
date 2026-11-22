@@ -49,7 +49,6 @@
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
- 
 ## Intel NPU Support
 * Intel® Core™ Ultra processors feature hardware acceleration through the Intel Neural Processing Unit (NPU), optimizing AI workloads and enhancing overall performance.
 
@@ -367,7 +366,8 @@ make shell
 ros2 run openvino_node download_models.sh
 ros2 launch openvino_node pipeline_image.launch.py device:=CPU
 ```
-* `GPU` needs a driver in the container that supports the GPU of the host. The `intel-opencl-icd` package of Ubuntu 22.04 is installed for that purpose. It does not support recent GPUs such as the one of Intel Core Ultra processors (OpenVINO then reports `no supported devices found`); see the [OpenVINO GPU configuration](https://docs.openvino.ai/2025/get-started/install-openvino/configurations/configurations-intel-gpu.html) for newer drivers.
+* `GPU` needs a driver in the container that supports the GPU of the host. The `intel-opencl-icd` package of Ubuntu 22.04 is installed for that purpose.
+  It does not support recent GPUs such as the one of Intel Core Ultra processors (OpenVINO then reports `no supported devices found`); see the [OpenVINO GPU configuration](https://docs.openvino.ai/2025/get-started/install-openvino/configurations/configurations-intel-gpu.html) for newer drivers.
 * `NPU` needs the [Intel NPU driver](https://github.com/intel/linux-npu-driver) inside the container. It is not installed by these targets.
 
 ## Reference
