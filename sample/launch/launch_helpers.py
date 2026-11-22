@@ -100,14 +100,14 @@ def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     temp_dir = tempfile.mkdtemp(prefix='openvino_')
     resolved_yaml = os.path.join(temp_dir, yaml_filename)
 
-    with open(original_yaml, 'r') as f:
+    with open(original_yaml, 'r', encoding='utf-8') as f:
         yaml_content = f.read()
 
     device = get_device_override()
     if device:
         yaml_content = re.sub(r'^(\s*engine:\s*)\S+', r'\g<1>' + device,
                               yaml_content, flags=re.MULTILINE)
-        print('[launch_helpers] Using inference device: %s' % device)
+        print(f'[launch_helpers] Using inference device: {device}')
 
     yaml_content = yaml_content.replace('<OPENVINO_NODE_SHARE>', toolkit_dir)
     yaml_content = yaml_content.replace(
@@ -115,16 +115,15 @@ def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     yaml_content = yaml_content.replace(
         '<OPENVINO_TEST_DATA>', os.path.join(package_share_dir, 'data'))
 
-    with open(resolved_yaml, 'w') as f:
+    with open(resolved_yaml, 'w', encoding='utf-8') as f:
         f.write(yaml_content)
 
     # Warn early about missing model files instead of failing inside the node.
     for model in re.findall(r'^\s*model:\s*(\S+)', yaml_content, re.MULTILINE):
         if not os.path.isfile(model):
             script = 'export_yolo26.sh' if '/models/yolo26/' in model else 'download_models.sh'
-            print('[launch_helpers] WARNING: model not found: %s\n'
-                  '  Set %s or run: ros2 run openvino_node %s'
-                  % (model, TOOLKIT_DIR_ENV, script))
+            print(f'[launch_helpers] WARNING: model not found: {model}\n'
+                  f'  Set {TOOLKIT_DIR_ENV} or run: ros2 run openvino_node {script}')
 
     return resolved_yaml
 

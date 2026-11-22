@@ -22,7 +22,7 @@ launch_dir = os.path.dirname(os.path.abspath(__file__))
 if launch_dir not in sys.path:
     sys.path.insert(0, launch_dir)
 
-import launch_helpers
+import launch_helpers  # noqa: E402  # pylint: disable=wrong-import-position
 
 
 def generate_launch_description():
