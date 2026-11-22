@@ -28,7 +28,7 @@
 
 |Branch|ROS 2|Ubuntu|OpenVINO|Install method|
 |---|---|---|---|---|
-|[main](https://github.com/intel/ros2_openvino_toolkit/tree/main)|Jazzy (development branch)|24.04|2025.0, 2025.4|See the branch|
+|[main](https://github.com/intel/ros2_openvino_toolkit/tree/main)|Jazzy (development branch)|24.04|2025.4.0|Intel APT|
 |[ros2_lyrical](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_lyrical)|Lyrical (pre-release)|26.04|2026.4.1|Intel APT|
 |[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|24.04|2025.4.0|Intel APT|
 |[ros2_humble](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_humble)|Humble|22.04|2025.4.0|Intel APT|
