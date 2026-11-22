@@ -134,7 +134,6 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(const std::shared_ptr<Engi
   std::vector<cv::Rect> boxes;
   std::vector<int> class_ids;
   std::vector<float> confidences;
-  std::vector<std::string>& labels = getLabels();
 
   for (size_t i = 0; i < rows; i++) {
     float* detection = &detections[i * dimentions];
@@ -180,9 +179,7 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(const std::shared_ptr<Engi
     cv::Rect rec(vx, vy, vw, vh);
     Result result(rec);
     result.setConfidence(confidences[idx]);
-    std::string label = class_ids[idx] < labels.size() ? labels[class_ids[idx]] :
-                                                         std::string("label #") + std::to_string(class_ids[idx]);
-    result.setLabel(label);
+    result.setLabel(getLabel(class_ids[idx]));
     results.push_back(result);
   }
 

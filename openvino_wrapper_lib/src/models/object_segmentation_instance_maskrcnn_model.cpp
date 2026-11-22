@@ -203,10 +203,7 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::fetchResults(
       cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
       Result result(roi);
       result.setConfidence(prob);
-      std::vector<std::string>& labels = getLabels();
-      std::string label =
-          class_id < labels.size() ? labels[class_id] : std::string("label #") + std::to_string(class_id);
-      result.setLabel(label);
+      result.setLabel(getLabel(class_id));
       result.setMask(resized_mask_mat);
       slog::debug << "adding one segmentation Box ..." << slog::endl;
       results.emplace_back(result);
