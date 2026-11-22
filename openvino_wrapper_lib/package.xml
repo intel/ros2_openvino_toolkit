@@ -15,9 +15,10 @@ limitations under the License.
 
 <package format="2">
   <name>openvino_wrapper_lib</name>
-  <version>0.9.0</version>
+  <version>1.0.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
+  <maintainer email="jayabalaji.sathiyamoorthi@intel.com">Jayabalaji Sathiyamoorthi</maintainer>
   <author email="chao1.li@intel.com">Chao Li</author>
   <author email="hongkun.chen@intel.com">Hongkun Chen</author>
   <author email="yang1.lu@intel.com">Yang Lu</author>

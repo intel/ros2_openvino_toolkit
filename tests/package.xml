@@ -15,12 +15,13 @@ limitations under the License.
 
 <package format="2">
   <name>openvino_test</name>
-  <version>0.9.0</version>
+  <version>1.0.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
   <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
   <maintainer email="hongkun.chen@intel.com">Hongkun Chen</maintainer>
   <maintainer email="yang1.lu@intel.com">Yang Lu</maintainer>
+  <maintainer email="jayabalaji.sathiyamoorthi@intel.com">Jayabalaji Sathiyamoorthi</maintainer>
   <license>Apache License 2.0</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>

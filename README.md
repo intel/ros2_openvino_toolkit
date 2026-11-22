@@ -33,7 +33,7 @@
 |[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|24.04|2025.4.0|Intel APT|
 |[ros2_humble](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_humble)|Humble|22.04|2025.4.0|Intel APT|
 
-`main` is the development branch and tracks the Jazzy line. `ros2_jazzy`, `ros2_humble` and `ros2_lyrical` are the maintenance branches of each ROS 2 distribution, and each release is tagged as `<distro>/<version>`, for example `jazzy/0.9.0`. Releases for end-of-life distributions (Dashing, Eloquent, Foxy, Galactic) are kept as `archive/*` tags.
+`main` is the development branch and tracks the Jazzy line. `ros2_jazzy`, `ros2_humble` and `ros2_lyrical` are the maintenance branches of each ROS 2 distribution, and each release is tagged as `<distro>/<version>`, for example `jazzy/1.0.0`. Releases for end-of-life distributions (Dashing, Eloquent, Foxy, Galactic) are kept as `archive/*` tags.
 
 ## Inference Features Supported
 * [x] Object Detection

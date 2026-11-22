@@ -25,6 +25,7 @@ limitations under the License.
   <maintainer email="chao1.li@intel.com">Chao Li</maintainer>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
   <maintainer email="jiawei.wu@intel.com">Jiawei Wu</maintainer>
+  <maintainer email="jayabalaji.sathiyamoorthi@intel.com">Jayabalaji Sathiyamoorthi</maintainer>
   <license>Apache 2.0</license>
 
   <!-- <url type="website">http://wiki.ros.org/movidius_ncs</url> -->
