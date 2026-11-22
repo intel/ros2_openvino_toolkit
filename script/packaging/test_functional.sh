@@ -24,6 +24,16 @@ PIPELINES=(
   "pipeline_segmentation_image_ci_test.py /ros2_openvino_toolkit/segmented_objects"
   "pipeline_vehicle_detection_ci_test.py /ros2_openvino_toolkit/detected_license_plates /ros2_openvino_toolkit/detected_vehicles_attribs"
 )
+# "<launch file> <model> <topic>...", run for the models that export_yolo26.sh has put into the model cache.
+YOLO26_PIPELINES=(
+  "pipeline_yolo26_detection_ci_test.py yolo26n /ros2_openvino_toolkit/detected_objects"
+  "pipeline_yolo26_segmentation_ci_test.py yolo26n-seg /ros2_openvino_toolkit/segmented_objects"
+  "pipeline_yolo26_pose_ci_test.py yolo26n-pose /ros2_openvino_toolkit/detected_keypoints"
+  "pipeline_yolo26_obb_ci_test.py yolo26n-obb /ros2_openvino_toolkit/detected_oriented_objects"
+  "pipeline_yolo26_classification_ci_test.py yolo26n-cls /ros2_openvino_toolkit/classified_objects"
+  "pipeline_yolo26_semantic_ci_test.py yolo26n-sem /ros2_openvino_toolkit/segmented_objects"
+  "pipeline_yolo26_depth_ci_test.py yolo26n-depth /ros2_openvino_toolkit/depth_image"
+)
 
 "$SRC_DIR/script/packaging/install_debs.sh" "$@"
 
@@ -113,14 +123,26 @@ run_pipeline() {
 }
 
 failed=0
+total=0
 for pipeline in "${PIPELINES[@]}"; do
   read -r -a fields <<< "$pipeline"
   echo "== ${fields[0]} on $DEVICE"
+  total=$((total + 1))
   run_pipeline "${fields[@]}" || failed=$((failed + 1))
+done
+for pipeline in "${YOLO26_PIPELINES[@]}"; do
+  read -r -a fields <<< "$pipeline"
+  if [[ ! -s "$toolkit_dir/models/yolo26/${fields[1]}/FP16/${fields[1]}.xml" ]]; then
+    echo "== ${fields[0]} skipped: ${fields[1]} is not exported, see export_yolo26.sh"
+    continue
+  fi
+  echo "== ${fields[0]} on $DEVICE"
+  total=$((total + 1))
+  run_pipeline "${fields[0]}" "${fields[@]:2}" || failed=$((failed + 1))
 done
 
 if [[ $failed -ne 0 ]]; then
-  echo "Functional test failed: $failed of ${#PIPELINES[@]} pipelines." >&2
+  echo "Functional test failed: $failed of $total pipelines." >&2
   exit 1
 fi
-echo "Functional test passed: ${#PIPELINES[@]} pipelines on $DEVICE."
+echo "Functional test passed: $total pipelines on $DEVICE."

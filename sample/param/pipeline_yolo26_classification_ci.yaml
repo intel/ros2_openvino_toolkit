@@ -1,0 +1,19 @@
+Pipelines:
+- name: classification
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_car.png
+  infers:
+    - name: ImageClassification
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.labels
+      batch: 1
+      confidence_threshold: 0.1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ImageClassification]
+    - left: ImageClassification
+      right: [RosTopic]
+
+Common:

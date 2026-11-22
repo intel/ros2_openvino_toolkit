@@ -1,0 +1,20 @@
+Pipelines:
+- name: object
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.xml
+      model_type: yolo26
+      engine: CPU #GPU #NPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.labels
+      batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
+  outputs: [RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosTopic, RViz]
+
+Common:

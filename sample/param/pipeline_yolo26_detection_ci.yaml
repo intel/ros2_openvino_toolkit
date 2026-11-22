@@ -1,0 +1,21 @@
+Pipelines:
+- name: object
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ObjectDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.xml
+      model_type: yolo26
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.labels
+      batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosTopic]
+
+Common:

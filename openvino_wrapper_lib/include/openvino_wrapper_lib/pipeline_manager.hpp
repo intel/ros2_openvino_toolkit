@@ -135,6 +135,12 @@ private:
   createVehicleAttribsDetection(const Params::ParamManager::InferenceRawData& infer);
   std::shared_ptr<openvino_wrapper_lib::BaseInference>
   createLicensePlateDetection(const Params::ParamManager::InferenceRawData& infer);
+  /**
+   * @brief Create an inference of type InferenceT (a ModelInference) with a model of type ModelT.
+   */
+  template <typename InferenceT, typename ModelT>
+  std::shared_ptr<openvino_wrapper_lib::BaseInference>
+  createModelInference(const Params::ParamManager::InferenceRawData& infer);
   std::map<std::string, PipelineData> pipelines_;
   ServiceData service_;
   Engines::EngineManager engine_manager_;
