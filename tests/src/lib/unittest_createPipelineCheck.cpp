@@ -94,14 +94,14 @@ TEST(UnitTestCheckPipeline, testCreatePipeline)
   }
 }
 
-TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
+TEST(UnitTestCheckPipeline, testCreatePipelineYolo26)
 {
-  auto node = rclcpp::Node::make_shared("pipeline_realsense_test");
-  std::string config_files = "pipeline_object_yolo_test.yaml";
+  auto node = rclcpp::Node::make_shared("pipeline_yolo26_test");
+  std::string config_files = "pipeline_yolo26_test.yaml";
   std::string config_file = getConfigPath(config_files);
   EXPECT_TRUE(std::ifstream(config_file).is_open());
 
-  // YOLOv5 has no pre-converted IR download; skip when the model was not converted locally.
+  // The YOLO26 models cannot be downloaded; skip when they were not exported with export_yolo26.sh.
   std::ifstream yaml(config_file);
   std::string line;
   while (std::getline(yaml, line)) {
@@ -110,7 +110,7 @@ TEST(UnitTestCheckPipeline, testCreatePipelineRealsense)
       std::string model = line.substr(pos + 6);
       model.erase(0, model.find_first_not_of(" \t"));
       if (!std::ifstream(model).good()) {
-        GTEST_SKIP() << "Model not found, convert it first: " << model;
+        GTEST_SKIP() << "Model not found, export it first: " << model;
       }
     }
   }
