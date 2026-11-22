@@ -142,7 +142,7 @@ bool openvino_wrapper_lib::ObjectSegmentation::fetchResults()
 
   cv::Mat inImg, resImg, maskImg(output_h, output_w, CV_8UC3);
   cv::Mat colored_mask(output_h, output_w, CV_8UC3);
-  cv::Rect roi = cv::Rect(0, 0, output_w, output_h);
+  cv::Rect roi = valid_model_->getFrameAreaInOutput(cv::Size(output_w, output_h));
 
   for (int rowId = 0; rowId < output_h; ++rowId) {
     for (int colId = 0; colId < output_w; ++colId) {
@@ -151,7 +151,7 @@ bool openvino_wrapper_lib::ObjectSegmentation::fetchResults()
       if (output_des < 2) {  // assume the output is already ArgMax'ed
         classId = static_cast<std::size_t>(detections[rowId * output_w + colId]);
         for (int ch = 0; ch < colored_mask.channels(); ++ch) {
-          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId][ch];
+          colored_mask.at<cv::Vec3b>(rowId, colId)[ch] = colors_[classId % colors_.size()][ch];
         }
       } else {
         for (int chId = 0; chId < output_des; ++chId) {
@@ -177,7 +177,7 @@ bool openvino_wrapper_lib::ObjectSegmentation::fetchResults()
   }
   const float alpha = 0.7f;
   Result result(roi);
-  result.mask_ = colored_mask;
+  result.mask_ = colored_mask(roi);
   found_result = true;
   results_.emplace_back(result);
   return true;

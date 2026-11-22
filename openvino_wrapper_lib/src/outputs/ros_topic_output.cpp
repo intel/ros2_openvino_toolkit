@@ -57,6 +57,14 @@ Outputs::RosTopicOutput::RosTopicOutput(std::string output_name, const rclcpp::N
       "/openvino_toolkit/" + output_name_ + "/age_genders", 16);
   pub_headpose_ = node_->create_publisher<object_msgs::msg::HeadPoseStamped>(
       "/openvino_toolkit/" + output_name_ + "/headposes", 16);
+  pub_keypoints_ = node_->create_publisher<object_msgs::msg::ObjectsWithKeypoints>(
+      "/openvino_toolkit/" + output_name_ + "/detected_keypoints", 16);
+  pub_oriented_object_ = node_->create_publisher<object_msgs::msg::ObjectsInOrientedBoxes>(
+      "/openvino_toolkit/" + output_name_ + "/detected_oriented_objects", 16);
+  pub_classified_object_ = node_->create_publisher<object_msgs::msg::Objects>(
+      "/openvino_toolkit/" + output_name_ + "/classified_objects", 16);
+  pub_depth_image_ =
+      node_->create_publisher<sensor_msgs::msg::Image>("/openvino_toolkit/" + output_name_ + "/depth_image", 16);
   emotions_topic_ = nullptr;
   detected_objects_topic_ = nullptr;
   faces_topic_ = nullptr;
@@ -239,6 +247,64 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Obj
   }
 }
 
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>& results)
+{
+  keypoints_topic_ = std::make_shared<object_msgs::msg::ObjectsWithKeypoints>();
+  for (auto& r : results) {
+    object_msgs::msg::ObjectWithKeypoints object;
+    auto loc = r.getLocation();
+    object.roi.x_offset = loc.x;
+    object.roi.y_offset = loc.y;
+    object.roi.width = loc.width;
+    object.roi.height = loc.height;
+    object.object.object_name = r.getLabel();
+    object.object.probability = r.getConfidence();
+    for (size_t i = 0; i < r.getKeypoints().size(); i++) {
+      object_msgs::msg::Keypoint keypoint;
+      keypoint.x = r.getKeypoints()[i].x;
+      keypoint.y = r.getKeypoints()[i].y;
+      keypoint.confidence = r.getKeypointConfidences()[i];
+      object.keypoints.push_back(keypoint);
+    }
+    keypoints_topic_->objects_vector.push_back(object);
+  }
+}
+
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>& results)
+{
+  oriented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInOrientedBoxes>();
+  object_msgs::msg::ObjectInOrientedBox object;
+  for (auto& r : results) {
+    const cv::RotatedRect& box = r.getBox();
+    object.center_x = box.center.x;
+    object.center_y = box.center.y;
+    object.width = box.size.width;
+    object.height = box.size.height;
+    object.angle = box.angle * CV_PI / 180.0;
+    object.object.object_name = r.getLabel();
+    object.object.probability = r.getConfidence();
+    oriented_objects_topic_->objects_vector.push_back(object);
+  }
+}
+
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>& results)
+{
+  classified_objects_topic_ = std::make_shared<object_msgs::msg::Objects>();
+  object_msgs::msg::Object object;
+  for (auto& r : results) {
+    object.object_name = r.getLabel();
+    object.probability = r.getConfidence();
+    classified_objects_topic_->objects_vector.push_back(object);
+  }
+}
+
+void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>& results)
+{
+  for (auto& r : results) {
+    depth_image_topic_ = cv_bridge::CvImage(std_msgs::msg::Header(), "32FC1", r.getDepth()).toImageMsg();
+  }
+}
+
 void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results)
 {
   detected_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInBoxes>();
@@ -393,5 +459,25 @@ void Outputs::RosTopicOutput::handleOutput()
     headpose_topic_->header = header;
     pub_headpose_->publish(*headpose_topic_);
     headpose_topic_ = nullptr;
+  }
+  if (keypoints_topic_ != nullptr) {
+    keypoints_topic_->header = header;
+    pub_keypoints_->publish(*keypoints_topic_);
+    keypoints_topic_ = nullptr;
+  }
+  if (oriented_objects_topic_ != nullptr) {
+    oriented_objects_topic_->header = header;
+    pub_oriented_object_->publish(*oriented_objects_topic_);
+    oriented_objects_topic_ = nullptr;
+  }
+  if (classified_objects_topic_ != nullptr) {
+    classified_objects_topic_->header = header;
+    pub_classified_object_->publish(*classified_objects_topic_);
+    classified_objects_topic_ = nullptr;
+  }
+  if (depth_image_topic_ != nullptr) {
+    depth_image_topic_->header = header;
+    pub_depth_image_->publish(*depth_image_topic_);
+    depth_image_topic_ = nullptr;
   }
 }
