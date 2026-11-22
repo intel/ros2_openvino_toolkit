@@ -64,7 +64,15 @@ To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloadin
 export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-YOLO26 models are exported with a second script, see the [YOLO26 tutorial](./tutorial_for_yolo26.md). Other models that need conversion (for example `ssdlite_mobilenet_v2` of `pipeline_object.launch.py`) are not covered by the scripts.
+YOLO26 models are exported with a second script, see the [YOLO26 tutorial](./tutorial_for_yolo26.md).
+
+The `ssdlite_mobilenet_v2` model of `pipeline_object.launch.py` and the other SSD object detection samples is converted from the TensorFlow model with a third script:
+
+```bash
+ros2 run openvino_node export_ssdlite_mobilenet_v2.sh
+```
+
+The first run creates a Python virtual environment with the `openvino` package in `~/.local/share/openvino_toolkit/venv/ssdlite`. The model is stored in `~/.local/share/openvino_toolkit/models/convert/public/ssdlite_mobilenet_v2/FP16/`.
 
 ## 5. Run a demo
 

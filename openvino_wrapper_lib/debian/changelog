@@ -7,6 +7,11 @@ ros-jazzy-openvino-wrapper-lib (1.1.0-1) noble; urgency=medium
   * Warn when a label file cannot be read or does not cover a class id.
   * Publish the mask of each segmented object without the masks of the
     objects before it.
+  * Read SSD models converted directly from the TensorFlow Object Detection
+    API (separate detection_boxes, detection_scores and detection_classes
+    outputs).
+  * Run the backbone of these SSD models on the NPU and their
+    post-processing on the CPU when the NPU is requested.
 
  -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Sun, 22 Nov 2026 00:00:00 +0000
 
