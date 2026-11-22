@@ -63,4 +63,5 @@ Description: ROS 2 OpenVINO toolkit nodes, launch and parameter files
  Installing this package installs the complete toolkit.
  .
  The OpenVINO models are not part of the package. Download them with
- "ros2 run openvino_node download_models.sh".
+ "ros2 run openvino_node download_models.sh" and export the YOLO26 models
+ with "ros2 run openvino_node export_yolo26.sh".

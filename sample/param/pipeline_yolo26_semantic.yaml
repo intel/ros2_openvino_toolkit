@@ -1,0 +1,17 @@
+Pipelines:
+- name: semantic
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectSegmentation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-sem/FP16/yolo26n-sem.xml
+      model_type: yolo26
+      engine: CPU #GPU #NPU
+      batch: 1
+  outputs: [RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [RosTopic, RViz]
+
+Common:

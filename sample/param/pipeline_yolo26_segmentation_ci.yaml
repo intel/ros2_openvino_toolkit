@@ -2,22 +2,18 @@ Pipelines:
 - name: segmentation
   inputs: [Image]
   input_path: <OPENVINO_DATA>/images/sample_faces.jpg
-
   infers:
     - name: ObjectSegmentationInstance
-      # for Yolov8 Seg models -----------------
-      model: <OPENVINO_NODE_SHARE>/models/FP32/yolov8n-seg/yolov8n-seg.xml
-      model_type: yolov8
-      label: <OPENVINO_DATA>/labels/object_detection/coco.names
-      engine: CPU #"HETERO:CPU,GPU," #"HETERO:CPU,GPU,NPU"
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.xml
+      model_type: yolo26
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.labels
       batch: 1
       confidence_threshold: 0.5
   outputs: [RosTopic]
   connects:
     - left: Image
       right: [ObjectSegmentationInstance]
-    - left: ObjectSegmentationInstance
-      right: [RosTopic]
     - left: ObjectSegmentationInstance
       right: [RosTopic]
 

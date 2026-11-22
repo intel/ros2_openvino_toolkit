@@ -1,0 +1,19 @@
+Pipelines:
+- name: segmentation
+  inputs: [StandardCamera]
+  infers:
+    - name: ObjectSegmentationInstance
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.xml
+      model_type: yolo26
+      engine: CPU #GPU #NPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic, RViz]
+
+Common:

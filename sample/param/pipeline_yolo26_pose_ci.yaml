@@ -1,0 +1,19 @@
+Pipelines:
+- name: pose
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: KeypointDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-pose/FP16/yolo26n-pose.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-pose/FP16/yolo26n-pose.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [KeypointDetection]
+    - left: KeypointDetection
+      right: [RosTopic]
+
+Common:
