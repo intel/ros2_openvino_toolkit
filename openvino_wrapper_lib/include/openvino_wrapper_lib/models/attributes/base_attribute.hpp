@@ -272,7 +272,6 @@ public:
     for (auto& item : map) {
       auto n = item.second.find(value);
       if (std::string::npos != n) {
-        // if(item.second.contains(value)){
         auto nh = map.extract(item.first);
         nh.key() = new_key;
         map.insert(std::move(nh));

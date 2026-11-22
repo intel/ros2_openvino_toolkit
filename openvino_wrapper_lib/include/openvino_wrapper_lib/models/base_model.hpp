@@ -113,6 +113,8 @@ public:
   }
 
 protected:
+  // Keep the ModelAttribute overload visible next to the one declared below.
+  using ModelAttribute::updateLayerProperty;
   /**
    * New interface to check and update Layer Property
    * @brief Set the layer property (layer layout, layer precision, etc.).

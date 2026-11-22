@@ -30,7 +30,11 @@ else()
   message(STATUS "Create Debug Build.")
 endif()
 
-set(CMAKE_CXX_FLAGS "-fPIE -fPIC -D_FORTIFY_SOURCE=2 -fstack-protector -Wformat -Wformat-security -Wall ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "-fPIE -fPIC -fstack-protector -Wformat -Wformat-security -Wall ${CMAKE_CXX_FLAGS}")
+# Keep a fortify level set by the caller, for example by dpkg-buildflags.
+if(NOT CMAKE_CXX_FLAGS MATCHES "_FORTIFY_SOURCE")
+  set(CMAKE_CXX_FLAGS "-D_FORTIFY_SOURCE=2 ${CMAKE_CXX_FLAGS}")
+endif()
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -115,13 +119,7 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${openvino_wrapper_lib_INCLUDE_DIRS})
 include_directories(${openvino_param_lib_INCLUDE_DIRS})
-include_directories(${OpenVINO_DIRS})
 include_directories(${realsense2_INCLUDE_DIRS})
-
-# Create library file from sources.
-if(UNIX)
-    set(LIB_DL dl)
-endif()
 
 add_executable(vino_param_sample
   src/parameters.cpp

@@ -34,7 +34,6 @@ Outputs::ImageWindowOutput::ImageWindowOutput(const std::string& output_name, in
 
 void Outputs::ImageWindowOutput::feedFrame(const cv::Mat& frame)
 {
-  // frame_ = frame;
   frame_ = frame.clone();
   if (camera_matrix_.empty()) {
     int cx = frame.cols / 2;

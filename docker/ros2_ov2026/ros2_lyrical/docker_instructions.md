@@ -1,11 +1,11 @@
 # ROS 2 Lyrical OpenVINO Toolkit Docker Image
 
-Dockerfile for ROS 2 Lyrical (Ubuntu 26.04) with OpenVINO 2026.1. The image is based on `osrf/ros:lyrical-desktop` and builds the toolkit from the sources of this repository.
+Dockerfile for ROS 2 Lyrical (Ubuntu 26.04) with OpenVINO 2026.4.1. The image is based on `osrf/ros:lyrical-desktop` and builds the toolkit from the sources of this repository.
 
 ## Features
 
 - ROS 2 Lyrical Desktop
-- OpenVINO 2026.1 runtime (pip, in `/opt/openvino_env`)
+- OpenVINO 2026.4.1 (Intel APT repository)
 - librealsense2 (`ros-lyrical-librealsense2`)
 - Intel GPU user-space drivers (OpenCL and Level Zero)
 
@@ -49,7 +49,7 @@ docker run -it --rm --name ros2_openvino_container \
 |`--device /dev/dri`|Give the container access to the Intel GPU|
 |`--group-add video --group-add render`|Allow the container user to use the GPU device nodes|
 
-For a RealSense or USB camera add `--device /dev/video0` (or `-v /dev:/dev --privileged`, which grants broad host access, so use it only when needed). The Intel NPU is available through `--device /dev/accel`.
+For a RealSense or USB camera add `--device /dev/video0` (or `-v /dev:/dev --privileged`, which grants broad host access, so use it only when needed). The Intel NPU is passed with `--device /dev/accel`. It also needs the [Intel NPU driver](https://github.com/intel/linux-npu-driver) inside the container, which the image does not install.
 
 ## Download the models and run a demo
 

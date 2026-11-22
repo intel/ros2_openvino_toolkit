@@ -16,6 +16,8 @@
 * [➤ Installation & Launching](#installation-and-launching)
 	* [Deploy in Local Environment](#deploy-in-local-environment)
 	* [Deploy in Docker](#deploy-in-docker)
+	* [Install from Debian Packages](#install-from-debian-packages)
+	* [Test in a Container](#test-in-a-container)
 * [➤ Reference](#reference)
 * [➤ FAQ](#faq)
 * [➤ Feedback](#feedback)
@@ -26,11 +28,11 @@
 
 Pick the branch that matches your ROS 2 distribution. Each branch carries its own build and run instructions.
 
-|Branch Name|ROS2 Version Supported|OpenVINO Version|OS Version|
-|-----------------------|-----------------------|--------------------------------|----------------------|
-|[ros2_lyrical](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_lyrical)|Lyrical|V2026.1|Ubuntu 26.04|
-|[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|V2025.0, V2025.4|Ubuntu 24.04|
-|[ros2_humble](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_humble)|Humble|V2022.3 or newer|Ubuntu 22.04|
+|Branch|ROS 2|Ubuntu|OpenVINO|Install method|
+|---|---|---|---|---|
+|[ros2_lyrical](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_lyrical)|Lyrical|26.04|2026.4.1|Intel APT|
+|[ros2_jazzy](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_jazzy)|Jazzy|24.04|2025.4.0|Intel APT|
+|[ros2_humble](https://github.com/intel/ros2_openvino_toolkit/tree/ros2_humble)|Humble|22.04|2025.4.0|Intel APT|
 
 Only the active ROS 2 distributions above are maintained. Releases for end-of-life distributions (Dashing, Eloquent, Foxy, Galactic) are kept as `archive/*` tags, for example `git checkout archive/foxy-ov2021.4`.
 
@@ -181,16 +183,16 @@ Specific topic(s) can be generated and published according to the given inferenc
 
 |Inference|Published Topic|
 |---|---|
-|People Detection|```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([object_msgs:msg:EmotionsStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/EmotionsStamped.msg))|
-|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([object_msgs:msg:AgeGenderStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/AgeGenderStamped.msg))|
-|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([object_msgs:msg:HeadPoseStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/HeadPoseStamped.msg))|
-|Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInBoxes.msg))|
-|Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInMasks.msg))|
-|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](https://github.com/intel/ros2_object_msgs/blob/master/msg/ObjectsInMasks.msg))|
-|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/ReidentificationStamped.msg))|
-|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/VehicleAttribsStamped.msg))|
-|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](https://github.com/intel/ros2_object_msgs/blob/master/msg/LicensePlateStamped.msg))|
+|People Detection|```/ros2_openvino_toolkit/face_detection```([object_msgs:msg:ObjectsInBoxes](./object_msgs/msg/ObjectsInBoxes.msg))|
+|Emotion Recognition|```/ros2_openvino_toolkit/emotions_recognition```([object_msgs:msg:EmotionsStamped](./object_msgs/msg/EmotionsStamped.msg))|
+|Age and Gender Recognition|```/ros2_openvino_toolkit/age_genders_Recognition```([object_msgs:msg:AgeGenderStamped](./object_msgs/msg/AgeGenderStamped.msg))|
+|Head Pose Estimation|```/ros2_openvino_toolkit/headposes_estimation```([object_msgs:msg:HeadPoseStamped](./object_msgs/msg/HeadPoseStamped.msg))|
+|Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](./object_msgs/msg/ObjectsInBoxes.msg))|
+|Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](./object_msgs/msg/ObjectsInMasks.msg))|
+|Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](./object_msgs/msg/ObjectsInMasks.msg))|
+|Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](./object_msgs/msg/ReidentificationStamped.msg))|
+|Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](./object_msgs/msg/VehicleAttribsStamped.msg))|
+|Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](./object_msgs/msg/LicensePlateStamped.msg))|
 </details>
 </p>
 
@@ -203,11 +205,11 @@ Several ROS2 Services are created, expecting to be used in client/server mode, e
 
 |Inference|Service|
 |---|---|
-|Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
-|Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](https://github.com/intel/ros2_object_msgs/blob/master/srv/DetectObject.srv))|
-|Age Gender Detection Service|```/detect_age_gender```([object_msgs::srv::AgeGender](https://github.com/intel/ros2_object_msgs/blob/master/srv/AgeGenderSrv.srv))|
-|Headpose Detection Service|```/detect_head_pose```([object_msgs::srv::HeadPose](https://github.com/intel/ros2_object_msgs/blob/master/srv/HeadPoseSrv.srv))|
-|Emotion Detection Service|```/detect_emotion```([object_msgs::srv::Emotion](https://github.com/intel/ros2_object_msgs/blob/master/srv/EmotionSrv.srv))|
+|Object Detection Service|```/detect_object```([object_msgs::srv::DetectObject](./object_msgs/srv/DetectObject.srv))|
+|Face Detection Service|```/detect_face```([object_msgs::srv::DetectObject](./object_msgs/srv/DetectObject.srv))|
+|Age Gender Detection Service|```/detect_age_gender```([object_msgs::srv::AgeGender](./object_msgs/srv/AgeGenderSrv.srv))|
+|Headpose Detection Service|```/detect_head_pose```([object_msgs::srv::HeadPose](./object_msgs/srv/HeadPoseSrv.srv))|
+|Emotion Detection Service|```/detect_emotion```([object_msgs::srv::Emotion](./object_msgs/srv/EmotionSrv.srv))|
 </details>
 </p>
 
@@ -243,16 +245,16 @@ For the snapshot of demo results, refer to the following picture.
 Commands below are for the `ros2_lyrical` branch (Ubuntu 26.04). The full walkthrough, including prerequisites and troubleshooting, is in the [getting started guide](./doc/quick_start/getting_started_with_ros2_ov2.0.md).
 
 ```bash
-# 1. Get the sources
+# 1. Get the sources and install OpenVINO from the Intel APT repository
 mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
 git clone https://github.com/intel/ros2_openvino_toolkit -b ros2_lyrical
-git clone https://github.com/intel/ros2_object_msgs
+sudo ./ros2_openvino_toolkit/script/packaging/setup_openvino_apt.sh
+sudo apt install openvino-libraries-dev-2026.4.1
 
-# 2. Build (OpenVINO_DIR tells CMake where OpenVINO is installed)
+# 2. Build
 cd ~/ros2_ws
 source /opt/ros/lyrical/setup.bash
-export OpenVINO_DIR=$(~/openvino_env/bin/python3 -c "import openvino, os; print(os.path.join(os.path.dirname(openvino.__file__), 'cmake'))")
-colcon build
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 
 # 3. Download the models and run a demo on a sample image
@@ -282,10 +284,50 @@ The YAML files use the placeholders `<OPENVINO_NODE_SHARE>` (the models location
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
 
 ## Deploy in Docker
-* Lyrical: refer to the [Lyrical docker instructions](./docker/ros2_ov2026/ros2_lyrical/docker_instructions.md) for building the image and launching the demos.
-* Jazzy: refer to the [Jazzy docker instructions](./docker/ros2_ov2025/ros2_jazzy/docker_instructions.md).
-* Humble: refer to the [Humble docker instructions](./docker/ros2_ov202x/ros2_humble/docker_instructions.md).
+* Refer to the [Lyrical docker instructions](./docker/ros2_ov2026/ros2_lyrical/docker_instructions.md) for building the image and launching the demos. For Jazzy and Humble, see the `ros2_jazzy` and `ros2_humble` branches.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
+
+## Install from Debian Packages
+The toolkit can be packaged for ROS 2 Lyrical on Ubuntu 26.04 (amd64). The packages are built in a container, so Docker is the only build requirement.
+
+|Package|Content|
+|-----------------------|--------------------------------|
+|`ros-lyrical-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images and `download_models.sh`. Depends on all packages below.|
+|`ros-lyrical-openvino-wrapper-lib`|OpenVINO pipeline library and headers|
+|`ros-lyrical-openvino-param-lib`|YAML parameter library and headers|
+|`ros-lyrical-openvino-msgs`|Pipeline messages and services|
+|`ros-lyrical-object-msgs`|Object messages and services, built from the [object_msgs](./object_msgs) copy in this repository|
+
+* Build the packages. They are written to `dist/`.
+```bash
+make package
+```
+* Install the packages on a system with ROS 2 Lyrical. OpenVINO 2026.4.1 is installed as a dependency from the Intel APT repository, which the first command enables.
+```bash
+sudo ./script/packaging/setup_openvino_apt.sh
+sudo apt install ./dist/*.deb
+source /opt/ros/lyrical/setup.bash
+```
+* Each `lyrical/<version>` release on GitHub also provides the packages as `ros-lyrical-openvino-toolkit_<version>_amd64.tar.gz`. Extract the archive and install the `.deb` files in the same way.
+* The OpenVINO models are not part of the packages. Download them with `ros2 run openvino_node download_models.sh`.
+* `make test` builds the workspace, downloads the models to `.models/` and runs the unit tests in a container. Its colcon output goes to `.colcon-docker/`, separate from the `build/`, `install/` and `log/` of a local `colcon build`. Run `make help` for the other targets, for example `make test-package`, `make build` and `make lint`.
+
+## Test in a Container
+`make test-functional` and `make shell` run the Debian packages in a `ros:lyrical-ros-base` container, so no local ROS 2 installation is needed. Both install the packages from `dist/` (run `make package` first) and use the model cache `.models/` of `make test`.
+
+|Target|Purpose|
+|-----------------------|--------------------------------|
+|`make test-functional`|Runs the CI pipelines (`sample/launch/*_ci_test.py`) of the downloadable models on the sample images. A pipeline passes when it is created, reports no error and publishes on its topics. The OpenVINO device is `CPU`; select another one with, for example, `make test-functional DEVICE=GPU`.|
+|`make shell`|Opens a shell for manual tests. The X11 display, the GPU (`/dev/dri`) and the NPU (`/dev/accel`) of the host are passed to the container, and `intel-opencl-icd` and `rqt_image_view` are installed in addition (variable `SHELL_PACKAGES`).|
+
+```bash
+make shell
+# inside the container
+ros2 run openvino_node download_models.sh
+ros2 launch openvino_node pipeline_image.launch.py device:=CPU
+```
+* `GPU` needs a driver in the container that supports the GPU of the host. The `intel-opencl-icd` package of Ubuntu 26.04 is installed for that purpose.
+* `NPU` needs the [Intel NPU driver](https://github.com/intel/linux-npu-driver) inside the container. It is not installed by these targets.
 
 # Reference
 * Open_model_zoo: Refer to the OpenVINO document for [open_model_zoo](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3) for detailed model structure and demo samples.

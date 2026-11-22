@@ -33,8 +33,8 @@ set(CMAKE_CXX_FLAGS "-std=c++17 ${CMAKE_CXX_FLAGS}")
 #add_definitions(-DLOG_LEVEL_DEBUG)
 ####################################
 
-# OpenVINO_DIR must point to the OpenVINO cmake config (environment variable or -DOpenVINO_DIR=...).
-# See doc/quick_start/getting_started_with_ros2_ov2.0.md, "Build".
+# OpenVINO is found in the default CMake search path when it is installed from the Intel APT repository.
+# See doc/quick_start/getting_started_with_ros2_ov2.0.md, "Get the sources and install OpenVINO".
 
 find_package(OpenVINO REQUIRED)
 set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
@@ -85,7 +85,6 @@ if(NOT(BIN_FOLDER))
 endif()
 
 if(NOT (IE_MAIN_SOURCE_DIR))
-    set(NEED_EXTENSIONS TRUE)
     if(WIN32)
         set(IE_MAIN_SOURCE_DIR ${CMAKE_SOURCE_DIR}/../bin/)
     else()
@@ -154,21 +153,11 @@ endif()
 #remove some build warnings
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-declarations -Wno-unused-result ")
 
-#The below command is commented in order to ignore "colcon test" errors.
-#This maybe impacts CPU's inference tuning, although we tested on Core i7-6700 and got the similar performance.
-#If you concern the inference performance, you can try to get the resource from the follow url and enable the below line.
-#https://github.com/openvinotoolkit/openvino/tree/2018/inference-engine/src/extension/cmake
-#include(feature_defs OPTIONAL)
-
 # Properties->C/C++->General->Additional Include Directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${OpenVINO_INCLUDE_DIRS}
 )
-
-if(UNIX)
-    set(LIB_DL dl)
-endif()
 
 set(DEPENDENCIES realsense2::realsense2 ${OpenCV_LIBS} openvino::runtime)
 

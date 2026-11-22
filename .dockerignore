@@ -2,3 +2,6 @@
 build
 install
 log
+dist
+.models
+.colcon-docker

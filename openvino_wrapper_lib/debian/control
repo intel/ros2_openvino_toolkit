@@ -1,0 +1,53 @@
+Source: ros-lyrical-openvino-wrapper-lib
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               libopencv-dev,
+               openvino-libraries-dev-2026.4.1,
+               ros-lyrical-ament-cmake,
+               ros-lyrical-ament-index-cpp,
+               ros-lyrical-builtin-interfaces,
+               ros-lyrical-class-loader,
+               ros-lyrical-cv-bridge,
+               ros-lyrical-librealsense2,
+               ros-lyrical-object-msgs,
+               ros-lyrical-openvino-msgs,
+               ros-lyrical-openvino-param-lib,
+               ros-lyrical-rclcpp,
+               ros-lyrical-rmw-implementation,
+               ros-lyrical-ros-workspace,
+               ros-lyrical-rosidl-default-generators,
+               ros-lyrical-sensor-msgs,
+               ros-lyrical-std-msgs,
+               ros-lyrical-yaml-cpp-vendor
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_openvino_toolkit
+Rules-Requires-Root: no
+
+Package: ros-lyrical-openvino-wrapper-lib
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         libopenvino-ir-frontend-2026.4.1,
+         openvino-libraries-2026.4.1,
+         ros-lyrical-ament-index-cpp,
+         ros-lyrical-builtin-interfaces,
+         ros-lyrical-class-loader,
+         ros-lyrical-cv-bridge,
+         ros-lyrical-librealsense2,
+         ros-lyrical-object-msgs,
+         ros-lyrical-openvino-msgs,
+         ros-lyrical-openvino-param-lib,
+         ros-lyrical-rclcpp,
+         ros-lyrical-rmw-implementation,
+         ros-lyrical-ros-workspace,
+         ros-lyrical-rosidl-default-runtime,
+         ros-lyrical-sensor-msgs,
+         ros-lyrical-std-msgs,
+         ros-lyrical-yaml-cpp-vendor
+Description: ROS 2 wrapper library for Intel OpenVINO
+ Library that builds OpenVINO inference pipelines from camera, video, image
+ and ROS topic inputs and publishes the results as ROS 2 topics and services.
+ The package also contains the development headers.

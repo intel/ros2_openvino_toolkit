@@ -118,9 +118,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 
 # Properties->C/C++->General->Additional Include Directories
 include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}/common/format_reader
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${OpenVINO_DIRS}
     ${realsense2_INCLUDE_DIRS}
 )
 

@@ -1,0 +1,28 @@
+Source: ros-lyrical-object-msgs
+Section: misc
+Priority: optional
+Maintainer: Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>
+Build-Depends: debhelper-compat (= 13),
+               cmake,
+               ros-lyrical-ament-cmake,
+               ros-lyrical-geometry-msgs,
+               ros-lyrical-ros-workspace,
+               ros-lyrical-rosidl-default-generators,
+               ros-lyrical-sensor-msgs,
+               ros-lyrical-std-msgs
+Standards-Version: 4.7.2
+Homepage: https://github.com/intel/ros2_object_msgs
+Rules-Requires-Root: no
+
+Package: ros-lyrical-object-msgs
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         ros-lyrical-geometry-msgs,
+         ros-lyrical-ros-workspace,
+         ros-lyrical-rosidl-default-runtime,
+         ros-lyrical-sensor-msgs,
+         ros-lyrical-std-msgs
+Description: ROS 2 message definitions for object inference results
+ Messages and services describing detected, segmented and tracked objects,
+ faces, persons and vehicles. They are used by the ROS 2 OpenVINO toolkit.

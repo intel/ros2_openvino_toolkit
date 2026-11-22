@@ -130,7 +130,6 @@ bool Models::ObjectDetectionYolov5Model::fetchResults(const std::shared_ptr<Engi
     rows = output_shape.at(2);
     dimentions = output_shape.at(1);
   }
-  // slog::debug << "AFTER calibration: rows->" << rows << ", dimentions->" << dimentions << slog::endl;
 
   std::vector<cv::Rect> boxes;
   std::vector<int> class_ids;
