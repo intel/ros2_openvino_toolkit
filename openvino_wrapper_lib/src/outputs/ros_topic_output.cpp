@@ -198,8 +198,8 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Obj
 void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationMaskrcnnResult>& results)
 {
   segmented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInMasks>();
-  object_msgs::msg::ObjectInMask object;
   for (auto& r : results) {
+    object_msgs::msg::ObjectInMask object;
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
@@ -220,8 +220,8 @@ void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::Obj
 void Outputs::RosTopicOutput::accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results)
 {
   segmented_objects_topic_ = std::make_shared<object_msgs::msg::ObjectsInMasks>();
-  object_msgs::msg::ObjectInMask object;
   for (auto& r : results) {
+    object_msgs::msg::ObjectInMask object;
     auto loc = r.getLocation();
     object.roi.x_offset = loc.x;
     object.roi.y_offset = loc.y;
