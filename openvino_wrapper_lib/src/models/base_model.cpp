@@ -21,6 +21,7 @@
 #include <string>
 #include <memory>
 #include <algorithm>
+#include <cmath>
 #include <iostream>
 #include <unistd.h>
 #include "openvino_wrapper_lib/models/base_model.hpp"
@@ -171,8 +172,23 @@ bool Models::BaseModel::updateLayerProperty(std::shared_ptr<ov::Model>& model)
 
   for (int i = 0; i < getCountOfOutputs(); i++) {
     std::string name{ "output" };
+    // The output tensors of Ultralytics exports have no names.
+    if (outputs_info_[i].get_names().empty()) {
+      outputs_info_[i].set_names({ name + std::to_string(i) });
+    }
     addOutputInfo(name + std::to_string(i), outputs_info_[i].get_any_name());
   }
 
   return true;
+}
+
+cv::Rect Models::BaseModel::getFrameAreaInOutput(const cv::Size& output_size) const
+{
+  if (!isKeepInputRatio()) {
+    return cv::Rect(cv::Point(0, 0), output_size);
+  }
+  const int width = std::lround(frame_size_.width / frame_resize_ratio_width_ * output_size.width / getInputWidth());
+  const int height =
+      std::lround(frame_size_.height / frame_resize_ratio_height_ * output_size.height / getInputHeight());
+  return cv::Rect(0, 0, std::clamp(width, 1, output_size.width), std::clamp(height, 1, output_size.height));
 }

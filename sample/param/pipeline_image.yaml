@@ -13,7 +13,6 @@ Pipelines:
     - name: AgeGenderRecognition
       model: <OPENVINO_NODE_SHARE>/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/age-gender-recognition/age-gender-recognition-retail-0013.labels
       batch: 16
     - name: EmotionRecognition
       model: <OPENVINO_NODE_SHARE>/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
@@ -23,7 +22,6 @@ Pipelines:
     - name: HeadPoseEstimation
       model: <OPENVINO_NODE_SHARE>/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/head-pose-estimation/head-pose-estimation-adas-0001.labels
       batch: 16
   outputs: [RosTopic, RViz]
   connects:

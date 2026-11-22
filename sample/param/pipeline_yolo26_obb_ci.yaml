@@ -1,0 +1,19 @@
+Pipelines:
+- name: obb
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/expressway.jpg
+  infers:
+    - name: OrientedObjectDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-obb/FP16/yolo26n-obb.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-obb/FP16/yolo26n-obb.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [OrientedObjectDetection]
+    - left: OrientedObjectDetection
+      right: [RosTopic]
+
+Common:

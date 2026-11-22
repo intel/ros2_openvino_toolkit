@@ -19,6 +19,8 @@ for package in object_msgs openvino_msgs openvino_param_lib openvino_wrapper_lib
   ros2 pkg prefix "$package"
 done
 ros2 interface show object_msgs/msg/ObjectsInBoxes > /dev/null
+ros2 interface show object_msgs/msg/ObjectsWithKeypoints > /dev/null
+ros2 interface show object_msgs/msg/ObjectsInOrientedBoxes > /dev/null
 ros2 interface show openvino_msgs/srv/PipelineSrv > /dev/null
 ros2 pkg executables openvino_node | grep pipeline_with_params
 ros2 launch openvino_node pipeline_image.launch.py --show-args

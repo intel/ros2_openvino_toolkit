@@ -1,0 +1,18 @@
+Pipelines:
+- name: semantic
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/road-segmentation.png
+  infers:
+    - name: ObjectSegmentation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-sem/FP16/yolo26n-sem.xml
+      model_type: yolo26
+      engine: CPU
+      batch: 1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+
+Common:

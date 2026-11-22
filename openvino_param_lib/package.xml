@@ -18,7 +18,7 @@ limitations under the License.
 
 <package format="2">
   <name>openvino_param_lib</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <description>Library for ROS2 OpenVINO parameter management</description>
   <maintainer email="wei.zhi.liu@intel.com">Weizhi Liu</maintainer>
   <maintainer email="chao1.li@intel.com">Chao Li</maintainer>

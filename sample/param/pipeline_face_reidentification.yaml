@@ -12,12 +12,10 @@ Pipelines:
     - name: LandmarksDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/landmarks-regression-retail-0009/FP32/landmarks-regression-retail-0009.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/landmarks-regression/landmarks-regression-retail-0009.labels
       batch: 1
     - name: FaceReidentification
       model: <OPENVINO_NODE_SHARE>/models/intel/face-reidentification-retail-0095/FP32/face-reidentification-retail-0095.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/face-reidentification/face-reidentification-retail-0095.labels
       batch: 1
       confidence_threshold: 0.9
   outputs: [RosTopic, RViz]

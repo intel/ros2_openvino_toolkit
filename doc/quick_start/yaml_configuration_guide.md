@@ -2,7 +2,7 @@
 
 The contents in .yaml config file should be well structured and follow the supported rules and entity names.
 
-# Path placeholders
+## Path placeholders
 Write model and data locations with these placeholders instead of absolute paths. The launch files replace them when the node starts.
 
 |Placeholder|Resolved to|
@@ -12,8 +12,8 @@ Write model and data locations with these placeholders instead of absolute paths
 
 When you start the node directly with `ros2 run openvino_node pipeline_with_params -config <file>`, no placeholder is replaced, so use absolute paths in that case.
 
-# Sample
-## [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
+## Sample
+### [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
 ```bash
 Pipelines:
 - name: people
@@ -29,7 +29,6 @@ Pipelines:
     - name: AgeGenderRecognition
       model: <OPENVINO_NODE_SHARE>/models/intel/age-gender-recognition-retail-0013/FP32/age-gender-recognition-retail-0013.xml
       engine: CPU
-      label: to/be/set/xxx.labels
       batch: 16
     - name: EmotionRecognition
       model: <OPENVINO_NODE_SHARE>/models/intel/emotions-recognition-retail-0003/FP32/emotions-recognition-retail-0003.xml
@@ -39,7 +38,6 @@ Pipelines:
     - name: HeadPoseEstimation
       model: <OPENVINO_NODE_SHARE>/models/intel/head-pose-estimation-adas-0001/FP32/head-pose-estimation-adas-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
       batch: 16
   outputs: [ImageWindow, RosTopic, RViz]
   connects:
@@ -77,7 +75,7 @@ Currently, options for inputs are:
 **Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IP Camera input.
 
 ### Specify input_path
-The input_path needs to be specified when the input is Image, Video or IP Camera. 
+The input_path needs to be specified when the input is Image, Video or IP Camera.
 
 |Input Option|Configuration|
 |--------------------|------------------------------------------------------------------|
@@ -97,10 +95,26 @@ The name of the inference engine needs to be specified here. Currently, the foll
 |EmotionRecognition| Emotion recognition based on detected face image.|
 |AgeGenderRecognition| Age and gender recognition based on detected face image.|
 |HeadPoseEstimation| Head pose estimation based on detected face image.|
-|ObjectDetection| Object detection based on SSD-based trained models.|
+|ObjectDetection| Object detection based on SSD-based or YOLO26 trained models.|
 |VehicleDetection| Vehicle and passenger detection based on Intel models.|
-|ObjectSegmentation| Object detection and segmentation.|
+|ObjectSegmentation| Semantic segmentation, a class for each pixel.|
+|ObjectSegmentationInstance| Object detection with a mask for each object.|
 |ObjectSegmentationMaskrcnn| object segmentation based on Maskrcnn model.|
+|KeypointDetection| Detection of persons and their body keypoints, based on YOLO26 pose models.|
+|OrientedObjectDetection| Object detection with rotated bounding boxes, based on YOLO26 OBB models.|
+|ImageClassification| Classification of the whole frame, based on YOLO26 classification models.|
+|DepthEstimation| Depth of each pixel of the frame, based on YOLO26 depth models.|
+
+* #### model_type
+The kind of model, for the inferences that support several kinds. Without it, `SSD` is used.
+
+|Inference|Values|
+|---|---|
+|ObjectDetection|`SSD` (default), `yolo26`, `yolov5`, `yolov8`|
+|ObjectSegmentation|`yolo26`; any other value selects the Open Model Zoo models|
+|ObjectSegmentationInstance|`yolo26`, `maskrcnn`; any other value selects the YOLOv8 segmentation output|
+
+See the [YOLO26 tutorial](./tutorial_for_yolo26.md) for the `yolo26` models.
 
 * #### model
 The path of the model needs to be specified here. The scheme below illustrates the typical workflow for deploying a trained deep learning model.
@@ -121,10 +135,12 @@ To try a different device without editing the file, pass `device:=<value>` to an
 The device actually used is printed at startup and drawn on the output image next to the FPS.
 
 * #### label
-Currently, this parameter does not work.
+The file with the class names of the model, one per line, where line N (starting at 0) is the name of class id N. It is used by FaceDetection, ObjectDetection, EmotionRecognition, ObjectSegmentationInstance, ObjectSegmentationMaskrcnn, KeypointDetection, OrientedObjectDetection and ImageClassification; the other inferences do not need it.
+
+The file must match the model. For example, `ssdlite_mobilenet_v2` is trained on COCO and needs `coco_91cl_bkgr.labels`; with a Pascal VOC list a person is reported as `aeroplane`. A warning is printed at start-up when the file cannot be read, and at run time when the model reports a class id that the file does not cover.
 
 * #### batch
-Enable dynamic batch size for the inference engine net. 
+Enable dynamic batch size for the inference engine net.
 
 ### Specify outputs
 **Note:** The output parameter can be one or more.</br>

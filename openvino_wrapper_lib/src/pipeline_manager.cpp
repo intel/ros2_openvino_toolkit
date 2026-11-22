@@ -48,12 +48,19 @@
 #include "openvino_wrapper_lib/models/head_pose_detection_model.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov5_model.hpp"
 #include "openvino_wrapper_lib/models/object_detection_yolov8_model.hpp"
+#include "openvino_wrapper_lib/models/object_detection_yolo26_model.hpp"
 #include "openvino_wrapper_lib/models/object_detection_ssd_model.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation_instance.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_model.hpp"
+#include "openvino_wrapper_lib/models/object_segmentation_yolo26_model.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_instance_model.hpp"
 #include "openvino_wrapper_lib/models/object_segmentation_instance_maskrcnn_model.hpp"
+#include "openvino_wrapper_lib/models/object_segmentation_instance_yolo26_model.hpp"
+#include "openvino_wrapper_lib/models/keypoint_detection_yolo26_model.hpp"
+#include "openvino_wrapper_lib/models/oriented_object_detection_yolo26_model.hpp"
+#include "openvino_wrapper_lib/models/image_classification_yolo26_model.hpp"
+#include "openvino_wrapper_lib/models/depth_estimation_yolo26_model.hpp"
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino_wrapper_lib/inputs/realsense_camera.hpp"
@@ -227,6 +234,17 @@ PipelineManager::parseInference(const Params::ParamManager::PipelineRawData& par
       object = createVehicleAttribsDetection(infer);
     } else if (infer.name == kInferType_LicensePlateDetection) {
       object = createLicensePlateDetection(infer);
+    } else if (infer.name == kInferType_KeypointDetection) {
+      object =
+          createModelInference<openvino_wrapper_lib::KeypointDetection, Models::KeypointDetectionYolo26Model>(infer);
+    } else if (infer.name == kInferType_OrientedObjectDetection) {
+      object = createModelInference<openvino_wrapper_lib::OrientedObjectDetection,
+                                    Models::OrientedObjectDetectionYolo26Model>(infer);
+    } else if (infer.name == kInferType_ImageClassification) {
+      object = createModelInference<openvino_wrapper_lib::ImageClassification, Models::ImageClassificationYolo26Model>(
+          infer);
+    } else if (infer.name == kInferType_DepthEstimation) {
+      object = createModelInference<openvino_wrapper_lib::DepthEstimation, Models::DepthEstimationYolo26Model>(infer);
     } else {
       slog::err << "Invalid inference name: " << infer.name << slog::endl;
     }
@@ -293,15 +311,17 @@ PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawD
   slog::debug << "for test in createObjectDetection()" << slog::endl;
   if (infer.model_type == kInferType_ObjectDetectionTypeSSD) {
     object_detection_model = std::make_shared<Models::ObjectDetectionSSDModel>(infer.label, infer.model, infer.batch);
-  }
-  if (infer.model_type == kInferType_ObjectDetectionTypeYolov5) {
+  } else if (infer.model_type == kInferType_ObjectDetectionTypeYolov5) {
     object_detection_model =
         std::make_shared<Models::ObjectDetectionYolov5Model>(infer.label, infer.model, infer.batch);
-  }
-
-  if (infer.model_type == kInferType_ObjectDetectionTypeYolov8) {
+  } else if (infer.model_type == kInferType_ObjectDetectionTypeYolov8) {
     object_detection_model =
         std::make_shared<Models::ObjectDetectionYolov8Model>(infer.label, infer.model, infer.batch);
+  } else if (infer.model_type == kInferType_ModelTypeYolo26) {
+    object_detection_model =
+        std::make_shared<Models::ObjectDetectionYolo26Model>(infer.label, infer.model, infer.batch);
+  } else {
+    throw std::logic_error("Unknown model_type for " + infer.name + ": " + infer.model_type);
   }
 
   slog::debug << "for test in createObjectDetection(), Created SSDModel" << slog::endl;
@@ -320,7 +340,12 @@ PipelineManager::createObjectDetection(const Params::ParamManager::InferenceRawD
 std::shared_ptr<openvino_wrapper_lib::BaseInference>
 PipelineManager::createObjectSegmentation(const Params::ParamManager::InferenceRawData& infer)
 {
-  auto model = std::make_shared<Models::ObjectSegmentationModel>(infer.label, infer.model, infer.batch);
+  std::shared_ptr<Models::ObjectSegmentationModel> model;
+  if (infer.model_type == kInferType_ModelTypeYolo26) {
+    model = std::make_shared<Models::ObjectSegmentationYolo26Model>(infer.label, infer.model, infer.batch);
+  } else {
+    model = std::make_shared<Models::ObjectSegmentationModel>(infer.label, infer.model, infer.batch);
+  }
   model->modelInit();
   slog::info << "Segmentation model initialized." << slog::endl;
   auto engine = engine_manager_.createEngine(infer.engine, model);
@@ -359,6 +384,9 @@ PipelineManager::createObjectSegmentationInstance(const Params::ParamManager::In
   if (infer.model_type == kInferType_ObjectSegmentationTypeMaskrcnn) {
     slog::info << "Model Type: kInferType_ObjectSegmentationTypeMaskrcnn" << slog::endl;
     model = std::make_shared<Models::ObjectSegmentationInstanceMaskrcnnModel>(infer.label, infer.model, infer.batch);
+  } else if (infer.model_type == kInferType_ModelTypeYolo26) {
+    slog::info << "Model Type: kInferType_ModelTypeYolo26" << slog::endl;
+    model = std::make_shared<Models::ObjectSegmentationInstanceYolo26Model>(infer);
   } else {
     slog::info << "Model Type: kInferType_ObjectSegmentationTypeYolo" << slog::endl;
     model = std::make_shared<Models::ObjectSegmentationInstanceModel>(infer);
@@ -436,6 +464,20 @@ PipelineManager::createPersonAttribsDetection(const Params::ParamManager::Infere
   attribs_inference_ptr->loadEngine(engine);
 
   return attribs_inference_ptr;
+}
+
+template <typename InferenceT, typename ModelT>
+std::shared_ptr<openvino_wrapper_lib::BaseInference>
+PipelineManager::createModelInference(const Params::ParamManager::InferenceRawData& infer)
+{
+  auto model = std::make_shared<ModelT>(infer);
+  model->modelInit();
+  auto engine = engine_manager_.createEngine(infer.engine, model);
+  auto inference = std::make_shared<InferenceT>(infer.confidence_threshold);
+  inference->loadNetwork(model);
+  inference->loadEngine(engine);
+
+  return inference;
 }
 
 #if 0

@@ -1,0 +1,20 @@
+Pipelines:
+- name: segmentation
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ObjectSegmentationInstance
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.xml
+      model_type: yolo26
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic]
+
+Common:

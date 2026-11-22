@@ -170,8 +170,7 @@ bool openvino_wrapper_lib::ObjectSegmentationMaskrcnn::fetchResults()
       cv::resize(mask_mat, resized_mask_mat, cv::Size(box_width, box_height));
       Result result(roi);
       result.confidence_ = prob;
-      std::vector<std::string>& labels = valid_model_->getLabels();
-      result.label_ = class_id < labels.size() ? labels[class_id] : std::string("label #") + std::to_string(class_id);
+      result.label_ = valid_model_->getLabel(class_id);
       result.mask_ = resized_mask_mat;
       found_result = true;
       slog::debug << "adding one segmentation Box ..." << slog::endl;

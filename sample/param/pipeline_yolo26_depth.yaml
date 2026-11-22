@@ -1,0 +1,16 @@
+Pipelines:
+- name: depth
+  inputs: [StandardCamera]
+  infers:
+    - name: DepthEstimation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-depth/FP16/yolo26n-depth.xml
+      engine: CPU #GPU #NPU
+      batch: 1
+  outputs: [RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [DepthEstimation]
+    - left: DepthEstimation
+      right: [RosTopic, RViz]
+
+Common:

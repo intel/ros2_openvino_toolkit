@@ -14,6 +14,7 @@
 #ifndef OPENVINO_WRAPPER_LIB__MODELS__OBJECT_SEGMENTATION_INSTANCE_MODEL_HPP_
 #define OPENVINO_WRAPPER_LIB__MODELS__OBJECT_SEGMENTATION_INSTANCE_MODEL_HPP_
 #include <string>
+#include <vector>
 #include <openvino/openvino.hpp>
 #include "openvino_wrapper_lib/models/base_model.hpp"
 
@@ -49,6 +50,16 @@ public:
    */
   const std::string getModelCategory() const override;
   virtual bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+
+protected:
+  /**
+   * @brief Decode the detection output into boxes (in input tensor coordinates), class ids,
+   * confidences and mask coefficients.
+   * @return The indices of the detections to keep.
+   */
+  virtual std::vector<int> decodeDetections(ov::InferRequest& request, float confidence_thresh,
+                                            std::vector<cv::Rect>& boxes, std::vector<int>& class_ids,
+                                            std::vector<float>& confidences, std::vector<cv::Mat>& mask_confs);
 
 private:
   void setDefaultConfig();

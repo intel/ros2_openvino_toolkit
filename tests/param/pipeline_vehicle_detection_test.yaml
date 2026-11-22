@@ -12,12 +12,10 @@ Pipelines:
     - name: VehicleAttribsDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/vehicle-attributes-recognition-barrier-0039/FP32/vehicle-attributes-recognition-barrier-0039.xml
       engine: CPU
-      label: to/be/set/xxx.labels
       batch: 1
     - name: LicensePlateDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/license-plate-recognition-barrier-0001/FP32/license-plate-recognition-barrier-0001.xml
       engine: CPU
-      label: to/be/set/xxx.labels
       batch: 1
   outputs: [RosTopic]
   connects:
@@ -26,7 +24,7 @@ Pipelines:
     - left: ObjectDetection
       right: [{VehicleAttribsDetection: label == vehicle && confidence >= 0.8}, {LicensePlateDetection: label == license && confidence >= 0.8}]
     - left: ObjectDetection
-      right: [RosTopic] 
+      right: [RosTopic]
     - left: VehicleAttribsDetection
       right: [RosTopic]
     - left: LicensePlateDetection

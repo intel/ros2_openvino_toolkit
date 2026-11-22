@@ -37,7 +37,9 @@ void operator>>(const YAML::Node& node, ParamManager::CommonRawData& common);
 
 #define YAML_PARSE(node, key, val)                                                                                     \
   try {                                                                                                                \
-    node[key] >> val;                                                                                                  \
+    if (node[key].IsDefined()) {                                                                                       \
+      node[key] >> val;                                                                                                \
+    }                                                                                                                  \
   } catch (const YAML::Exception& e) {                                                                                 \
     slog::warn << e.msg << slog::endl;                                                                                 \
   } catch (...) {                                                                                                      \

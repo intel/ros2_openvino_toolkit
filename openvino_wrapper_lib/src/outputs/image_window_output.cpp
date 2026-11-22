@@ -283,6 +283,73 @@ void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::
   }
 }
 
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>& results)
+{
+  // Keypoint pairs of the COCO person skeleton, used when the model has its 17 keypoints.
+  static const std::vector<std::pair<int, int>> coco_skeleton = {
+    { 15, 13 }, { 13, 11 }, { 16, 14 }, { 14, 12 }, { 11, 12 }, { 5, 11 }, { 6, 12 }, { 5, 6 }, { 5, 7 }, { 6, 8 },
+    { 7, 9 },   { 8, 10 },  { 1, 2 },   { 0, 1 },   { 0, 2 },   { 1, 3 },  { 2, 4 },  { 3, 5 }, { 4, 6 }
+  };
+  const float min_confidence = 0.5f;
+
+  for (const auto& result : results) {
+    OutputData& output = outputs_[findOutput(result.getLocation())];
+    output.rect = result.getLocation();
+    std::ostringstream ostream;
+    ostream << "[" << std::fixed << std::setprecision(3) << result.getConfidence() << "][" << result.getLabel() << "]";
+    output.desc += ostream.str();
+
+    const auto& keypoints = result.getKeypoints();
+    const auto& confidences = result.getKeypointConfidences();
+    for (size_t i = 0; i < keypoints.size(); i++) {
+      if (confidences[i] >= min_confidence) {
+        output.landmarks.push_back(keypoints[i]);
+      }
+    }
+    if (keypoints.size() == 17) {
+      for (const auto& [from, to] : coco_skeleton) {
+        if (confidences[from] >= min_confidence && confidences[to] >= min_confidence) {
+          output.skeleton.emplace_back(keypoints[from], keypoints[to]);
+        }
+      }
+    }
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>& results)
+{
+  for (const auto& result : results) {
+    OutputData& output = outputs_[findOutput(result.getLocation())];
+    output.rect = result.getLocation();
+    std::ostringstream ostream;
+    ostream << "[" << std::fixed << std::setprecision(3) << result.getConfidence() << "][" << result.getLabel() << "]";
+    output.desc += ostream.str();
+
+    cv::Point2f corners[4];
+    result.getBox().points(corners);
+    output.polygon.assign(corners, corners + 4);
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>& results)
+{
+  for (const auto& result : results) {
+    std::ostringstream ostream;
+    ostream << std::fixed << std::setprecision(3) << result.getConfidence() << " " << result.getLabel();
+    text_lines_.push_back(ostream.str());
+  }
+}
+
+void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>& results)
+{
+  for (const auto& result : results) {
+    cv::Mat normalized;
+    cv::normalize(result.getDepth(), normalized, 0, 255, cv::NORM_MINMAX, CV_8U);
+    // Near is bright, far is dark.
+    cv::applyColorMap(255 - normalized, overlay_, cv::COLORMAP_INFERNO);
+  }
+}
+
 void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::EmotionsResult>& results)
 {
   for (unsigned i = 0; i < results.size(); i++) {
@@ -364,6 +431,11 @@ void Outputs::ImageWindowOutput::accept(const std::vector<openvino_wrapper_lib::
 
 void Outputs::ImageWindowOutput::decorateFrame()
 {
+  if (!overlay_.empty() && overlay_.size() == frame_.size()) {
+    cv::addWeighted(overlay_, 0.7, frame_, 0.3, 0, frame_);
+  }
+  overlay_.release();
+
   std::stringstream ss;
   if (getPipeline()->getParameters()->isGetFps()) {
     ss << "FPS: " << getPipeline()->getFPS() << "  ";
@@ -375,10 +447,22 @@ void Outputs::ImageWindowOutput::decorateFrame()
   if (!ss.str().empty()) {
     cv::putText(frame_, ss.str(), cv::Point2f(0, 65), cv::FONT_HERSHEY_TRIPLEX, 0.5, cv::Scalar(255, 0, 0));
   }
+  for (size_t i = 0; i < text_lines_.size(); i++) {
+    cv::putText(frame_, text_lines_[i], cv::Point2f(0, 90 + 20 * i), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
+                cv::Scalar(255, 0, 0));
+  }
+  text_lines_.clear();
   for (auto o : outputs_) {
     auto new_y = std::max(15, o.rect.y - 15);
     cv::putText(frame_, o.desc, cv::Point2f(o.rect.x, new_y), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8, o.scalar);
-    cv::rectangle(frame_, o.rect, o.scalar, 1);
+    if (o.polygon.empty()) {
+      cv::rectangle(frame_, o.rect, o.scalar, 1);
+    } else {
+      cv::polylines(frame_, o.polygon, true, o.scalar, 1);
+    }
+    for (const auto& line : o.skeleton) {
+      cv::line(frame_, line.first, line.second, cv::Scalar(0, 255, 0), 2);
+    }
     if (o.pa_top != o.pa_bottom) {
       cv::circle(frame_, o.pa_top, 3, cv::Scalar(255, 0, 0), 2);
       cv::circle(frame_, o.pa_bottom, 3, cv::Scalar(0, 255, 0), 2);

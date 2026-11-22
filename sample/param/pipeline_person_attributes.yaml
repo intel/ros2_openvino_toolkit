@@ -12,7 +12,6 @@ Pipelines:
     - name: PersonAttribsDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/person-attributes-recognition-crossroad-0230/FP32/person-attributes-recognition-crossroad-0230.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/person-attributes-recognition/person-attributes-recognition-crossroad-0230.labels
       batch: 1
       confidence_threshold: 0.5
   outputs: [RViz, RosTopic]

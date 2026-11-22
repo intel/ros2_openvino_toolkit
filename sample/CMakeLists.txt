@@ -252,11 +252,9 @@ install(TARGETS pipeline_with_params
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_server
-  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_people_server
-  RUNTIME DESTINATION bin
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS image_object_client
@@ -265,7 +263,7 @@ install(TARGETS image_object_client
 install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
-install(PROGRAMS ../script/download_models.sh
+install(PROGRAMS ../script/download_models.sh ../script/export_yolo26.sh ../script/export_ssdlite_mobilenet_v2.sh
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS composable_pipeline
