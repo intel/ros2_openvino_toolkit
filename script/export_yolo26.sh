@@ -19,7 +19,7 @@ set -euo pipefail
 
 ULTRALYTICS_VERSION="${ULTRALYTICS_VERSION:-8.4.216}"
 # Same release as OPENVINO_VERSION in the Makefile, so that the runtime can read the exported IR.
-OPENVINO_VERSION="${OPENVINO_VERSION:-2026.4.1}"
+OPENVINO_VERSION="${OPENVINO_VERSION:-2025.4.0}"
 TOOLKIT_DIR="${OPENVINO_TOOLKIT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/openvino_toolkit}"
 DEST="$TOOLKIT_DIR/models/yolo26"
 VENV_DIR="$TOOLKIT_DIR/venv/yolo26"
