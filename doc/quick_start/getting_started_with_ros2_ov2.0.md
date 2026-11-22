@@ -64,7 +64,7 @@ To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloadin
 export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-Models that need conversion (for example YOLO) are not covered by this script. See the [YOLOv5](./tutorial_for_yolov5_converted.md), [YOLOv7](./tutorial_for_yolov7_converted.md) and [YOLOv8](./tutorial_for_yolov8_converted.md) tutorials.
+YOLO26 models are exported with a second script, see the [YOLO26 tutorial](./tutorial_for_yolo26.md). Other models that need conversion (for example `ssdlite_mobilenet_v2` of `pipeline_object.launch.py`) are not covered by the scripts.
 
 ## 5. Run a demo
 
@@ -93,6 +93,7 @@ The device each model actually runs on is printed at startup (`Engine created: r
 |Object segmentation|`ros2 launch openvino_node pipeline_segmentation.launch.py`|
 |Vehicle detection|`ros2 launch openvino_node pipeline_vehicle_detection.launch.py`|
 |Person attributes|`ros2 launch openvino_node pipeline_person_attributes.launch.py`|
+|YOLO26: detection, instance and semantic segmentation, keypoints, oriented boxes, classification, depth|`ros2 launch openvino_node pipeline_yolo26_detection.launch.py`, see the [YOLO26 tutorial](./tutorial_for_yolo26.md)|
 
 Each demo needs its own models. If one is missing, the launch prints `WARNING: model not found: <path>` with the exact location it expects. See the [YAML configuration guide](./yaml_configuration_guide.md) to adapt a pipeline.
 
@@ -100,7 +101,8 @@ Each demo needs its own models. If one is missing, the launch prints `WARNING: m
 
 |Symptom|Cause and fix|
 |---|---|
-|`WARNING: model not found: ...` at launch|The models are not where the launch file looks. Run the download script, or set `OPENVINO_TOOLKIT_DIR` to the folder that contains `models/`.|
+|`WARNING: model not found: ...` at launch|The models are not where the launch file looks. Run the script named in the warning, or set `OPENVINO_TOOLKIT_DIR` to the folder that contains `models/`.|
+|`No labels loaded from ...` or `Class id ... is outside the ... labels` at start-up|The `label:` file of the YAML file is missing or belongs to another model. The results then show class ids or wrong names. Use the label file that matches the model.|
 |CMake error `Could not find a package configuration file provided by "OpenVINO"`|The OpenVINO development files are not installed. See step 2.|
 |CMake error about `realsense2`|Install `ros-lyrical-librealsense2`.|
 |Symlink "File exists" errors, or packages built against the wrong ROS distribution|The shell still has an old workspace sourced. Open a new terminal, source only `/opt/ros/lyrical/setup.bash`, and remove the `build/`, `install/` and `log/` folders.|
