@@ -386,8 +386,7 @@ std::string Models::ObjectDetectionSSDModel::prepareForDevice(const std::string&
     return device;
   }
   if (!resize_loop_removed_) {
-    slog::warn << "The TensorFlow pre-processing of this model cannot run on " << device << ", using CPU"
-               << slog::endl;
+    slog::warn << "The TensorFlow pre-processing of this model cannot run on " << device << ", using CPU" << slog::endl;
     return "CPU";
   }
 
@@ -398,8 +397,7 @@ std::string Models::ObjectDetectionSSDModel::prepareForDevice(const std::string&
   // pre-processing before it stays on the CPU: on the NPU it gave no detections.
   std::shared_ptr<ov::Node> image_input;
   for (const auto& op : model_->get_ordered_ops()) {
-    if (upstream.count(op.get()) != 0 && from_input.count(op.get()) != 0 &&
-        op->get_output_element_type(0).is_real()) {
+    if (upstream.count(op.get()) != 0 && from_input.count(op.get()) != 0 && op->get_output_element_type(0).is_real()) {
       image_input = op;
       break;
     }

@@ -2,7 +2,7 @@
 
 The contents in .yaml config file should be well structured and follow the supported rules and entity names.
 
-# Path placeholders
+## Path placeholders
 Write model and data locations with these placeholders instead of absolute paths. The launch files replace them when the node starts.
 
 |Placeholder|Resolved to|
@@ -12,8 +12,8 @@ Write model and data locations with these placeholders instead of absolute paths
 
 When you start the node directly with `ros2 run openvino_node pipeline_with_params -config <file>`, no placeholder is replaced, so use absolute paths in that case.
 
-# Sample
-## [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
+## Sample
+### [pipeline_people.yaml](../../sample/param/pipeline_people.yaml)
 ```bash
 Pipelines:
 - name: people
@@ -75,7 +75,7 @@ Currently, options for inputs are:
 **Note:** Please refer to this opensource repo [RTSP_server_install_guide](https://github.com/EasyDarwin/EasyDarwin) to install RTSP server for IP Camera input.
 
 ### Specify input_path
-The input_path needs to be specified when the input is Image, Video or IP Camera. 
+The input_path needs to be specified when the input is Image, Video or IP Camera.
 
 |Input Option|Configuration|
 |--------------------|------------------------------------------------------------------|
@@ -140,7 +140,7 @@ The file with the class names of the model, one per line, where line N (starting
 The file must match the model. For example, `ssdlite_mobilenet_v2` is trained on COCO and needs `coco_91cl_bkgr.labels`; with a Pascal VOC list a person is reported as `aeroplane`. A warning is printed at start-up when the file cannot be read, and at run time when the model reports a class id that the file does not cover.
 
 * #### batch
-Enable dynamic batch size for the inference engine net. 
+Enable dynamic batch size for the inference engine net.
 
 ### Specify outputs
 **Note:** The output parameter can be one or more.</br>
