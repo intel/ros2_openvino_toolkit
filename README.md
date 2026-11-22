@@ -42,6 +42,10 @@
 * [x] Emotion Recognition
 * [x] Head Pose Estimation
 * [x] Object Segmentation (Semantic & Instance)
+* [x] Keypoint Detection (Pose Estimation)
+* [x] Oriented Object Detection (OBB)
+* [x] Image Classification
+* [x] Depth Estimation
 * [x] Person Re-Identification
 * [x] Vehicle Attribute Detection
 * [x] Vehicle License Plate Detection
@@ -161,10 +165,14 @@ Currently, the corresponding relation of supported inference features, models us
 |Emotion Recognition| Emotion recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[emotions-recognition-retail-0003](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/emotions-recognition-retail-0003)|
 |Age & Gender Recognition| Age and gender recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[age-gender-recognition-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/age-gender-recognition-retail-0013)|
 |Head Pose Estimation| Head pose estimation based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[head-pose-estimation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/head-pose-estimation-adas-0001)|
-|Object Detection| Object detection based on SSD-based trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)|[mobilenet-ssd](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mobilenet-ssd)<br>[yolov5](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/111-yolov5-quantization-migration)<br>[yolov7](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/226-yolov7-optimization)<br>[yolov8](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[ssdlite_mobilenet_v2](https://github.com/openvinotoolkit/open_model_zoo/tree/2024.6.0/models/public/ssdlite_mobilenet_v2)|
+|Object Detection| Object detection based on SSD-based or YOLO26 trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)<br>[pipeline_yolo26_detection.yaml](./sample/param/pipeline_yolo26_detection.yaml)|[ssdlite_mobilenet_v2](https://github.com/openvinotoolkit/open_model_zoo/tree/2024.6.0/models/public/ssdlite_mobilenet_v2)<br>[yolo26](./doc/quick_start/tutorial_for_yolo26.md)|
 |Vehicle and License Detection| Vehicle and license detection based on Intel models.|[pipeline_vehicle_detection.yaml](./sample/param/pipeline_vehicle_detection.yaml)|[vehicle-license-plate-detection-barrier-0106](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-license-plate-detection-barrier-0106)<br>[vehicle-attributes-recognition-barrier-0039](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-attributes-recognition-barrier-0039)<br>[license-plate-recognition-barrier-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/license-plate-recognition-barrier-0001)|
-|Object Segmentation - Semantic| semantic segmentation, assign a class label to each pixel in an image. |[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)|
-| Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_segmentation_instance.yaml](./sample/param/pipeline_segmentation_instance.yaml) | [yolov8-seg](https://github.com/openvinotoolkit/openvino_notebooks/tree/main/notebooks/230-yolov8-optimization)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+|Object Segmentation - Semantic| semantic segmentation, assign a class label to each pixel in an image. |[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)<br>[pipeline_yolo26_semantic.yaml](./sample/param/pipeline_yolo26_semantic.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)<br>[yolo26-sem](./doc/quick_start/tutorial_for_yolo26.md)|
+| Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_yolo26_segmentation.yaml](./sample/param/pipeline_yolo26_segmentation.yaml) | [yolo26-seg](./doc/quick_start/tutorial_for_yolo26.md)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
+|Keypoint Detection| Detection of persons and their body keypoints (pose estimation).|[pipeline_yolo26_pose.yaml](./sample/param/pipeline_yolo26_pose.yaml)|[yolo26-pose](./doc/quick_start/tutorial_for_yolo26.md)|
+|Oriented Object Detection| Object detection with rotated bounding boxes (OBB).|[pipeline_yolo26_obb.yaml](./sample/param/pipeline_yolo26_obb.yaml)|[yolo26-obb](./doc/quick_start/tutorial_for_yolo26.md)|
+|Image Classification| Classification of the whole image.|[pipeline_yolo26_classification.yaml](./sample/param/pipeline_yolo26_classification.yaml)|[yolo26-cls](./doc/quick_start/tutorial_for_yolo26.md)|
+|Depth Estimation| Estimation of the depth of each pixel of an image.|[pipeline_yolo26_depth.yaml](./sample/param/pipeline_yolo26_depth.yaml)|[yolo26-depth](./doc/quick_start/tutorial_for_yolo26.md)|
 |Person Attributes| Person attributes based on object detection.|[pipeline_person_attributes.yaml](./sample/param/pipeline_person_attributes.yaml)|[person-attributes-recognition-crossroad-0230](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-attributes-recognition-crossroad-0230)<br>[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)|
 |Person Reidentification|Person reidentification based on object detection.|[pipeline_reidentification.yaml](./sample/param/pipeline_reidentification.yaml)|[person-detection-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-detection-retail-0013)<br>[person-reidentification-retail-0277](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/person-reidentification-retail-0277)|
 |Object Segmentation Maskrcnn| Object segmentation and detection based on maskrcnn model.[_Deprecated, it is recommended to use `object segmentation - instance` for first try._]|[pipeline_segmentation_maskrcnn.yaml](./sample/param/pipeline_segmentation_maskrcnn.yaml)|[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
@@ -189,6 +197,10 @@ Specific topic(s) can be generated and published according to the given inferenc
 |Object Detection|```/ros2_openvino_toolkit/detected_objects```([object_msgs::msg::ObjectsInBoxes](./object_msgs/msg/ObjectsInBoxes.msg))|
 |Object Segmentation|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](./object_msgs/msg/ObjectsInMasks.msg))|
 |Object Segmentation Maskrcnn|```/ros2_openvino_toolkit/segmented_objects```([object_msgs::msg::ObjectsInMasks](./object_msgs/msg/ObjectsInMasks.msg))|
+|Keypoint Detection|```/ros2_openvino_toolkit/detected_keypoints```([object_msgs::msg::ObjectsWithKeypoints](./object_msgs/msg/ObjectsWithKeypoints.msg))|
+|Oriented Object Detection|```/ros2_openvino_toolkit/detected_oriented_objects```([object_msgs::msg::ObjectsInOrientedBoxes](./object_msgs/msg/ObjectsInOrientedBoxes.msg))|
+|Image Classification|```/ros2_openvino_toolkit/classified_objects```([object_msgs::msg::Objects](./object_msgs/msg/Objects.msg))|
+|Depth Estimation|```/ros2_openvino_toolkit/depth_image```([sensor_msgs::msg::Image](https://docs.ros.org/en/api/sensor_msgs/html/msg/Image.html))|
 |Person Reidentification|```/ros2_openvino_toolkit/reidentified_persons```([object_msgs::msg::ReidentificationStamped](./object_msgs/msg/ReidentificationStamped.msg))|
 |Vehicle Detection|```/ros2_openvino_toolkit/detected_vehicles_attribs```([object_msgs::msg::VehicleAttribsStamped](./object_msgs/msg/VehicleAttribsStamped.msg))|
 |Vehicle License Detection|```/ros2_openvino_toolkit/detected_license_plates```([object_msgs::msg::LicensePlateStamped](./object_msgs/msg/LicensePlateStamped.msg))|
@@ -278,6 +290,17 @@ The device each model actually runs on is printed at startup (`Engine created: r
 
 The YAML files use the placeholders `<OPENVINO_NODE_SHARE>` (the models location above) and `<OPENVINO_DATA>` (labels and images). The launch files resolve them at start-up with [launch_helpers.py](./sample/launch/launch_helpers.py), so no path needs to be edited.
 
+### YOLO26 pipelines
+[Ultralytics YOLO26](https://docs.ultralytics.com/models/yolo26/) models run in pipelines for object detection, instance segmentation, keypoint detection, oriented bounding boxes, classification, semantic segmentation and depth estimation. The models are exported on your machine by a script, which needs about 2 GB for a Python environment. They are licensed by Ultralytics under AGPL-3.0 and are not part of this repository.
+
+```bash
+ros2 run openvino_node export_yolo26.sh --tasks detect,pose
+ros2 launch openvino_node pipeline_yolo26_detection.launch.py
+ros2 launch openvino_node pipeline_yolo26_pose.launch.py device:=GPU
+```
+
+See the [YOLO26 tutorial](./doc/quick_start/tutorial_for_yolo26.md) for all tasks, topics and options.
+
 ## Deploy in Local Environment
 * Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
@@ -291,7 +314,7 @@ The toolkit can be packaged for ROS 2 Jazzy on Ubuntu 24.04 (amd64). The package
 
 |Package|Content|
 |-----------------------|--------------------------------|
-|`ros-jazzy-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images and `download_models.sh`. Depends on all packages below.|
+|`ros-jazzy-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images, `download_models.sh` and `export_yolo26.sh`. Depends on all packages below.|
 |`ros-jazzy-openvino-wrapper-lib`|OpenVINO pipeline library and headers|
 |`ros-jazzy-openvino-param-lib`|YAML parameter library and headers|
 |`ros-jazzy-openvino-msgs`|Pipeline messages and services|
@@ -308,7 +331,7 @@ sudo apt install ./dist/*.deb
 source /opt/ros/jazzy/setup.bash
 ```
 * Each `jazzy/<version>` release on GitHub also provides the packages as `ros-jazzy-openvino-toolkit_<version>_amd64.tar.gz`. Extract the archive and install the `.deb` files in the same way.
-* The OpenVINO models are not part of the packages. Download the pre-converted Intel models with `ros2 run openvino_node download_models.sh`; see [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for the models that need conversion.
+* The OpenVINO models are not part of the packages. Download them with `ros2 run openvino_node download_models.sh` and export the YOLO26 models with `ros2 run openvino_node export_yolo26.sh`.
 * `make test` builds the workspace, downloads the models to `.models/` and runs the unit tests in a container. Its colcon output goes to `.colcon-docker/`, separate from the `build/`, `install/` and `log/` of a local `colcon build`. Run `make help` for the other targets, for example `make test-package`, `make build` and `make lint`.
 
 ## Test in a Container
@@ -316,7 +339,7 @@ source /opt/ros/jazzy/setup.bash
 
 |Target|Purpose|
 |-----------------------|--------------------------------|
-|`make test-functional`|Runs the CI pipelines (`sample/launch/*_ci_test.py`) of the downloadable models on the sample images. A pipeline passes when it is created, reports no error and publishes on its topics. The OpenVINO device is `CPU`; select another one with, for example, `make test-functional DEVICE=GPU`.|
+|`make test-functional`|Runs the CI pipelines (`sample/launch/*_ci_test.py`) of the downloadable models on the sample images, and those of the YOLO26 models that are in `.models/` (see the [YOLO26 tutorial](./doc/quick_start/tutorial_for_yolo26.md#4-test)). A pipeline passes when it is created, reports no error and publishes on its topics. The OpenVINO device is `CPU`; select another one with, for example, `make test-functional DEVICE=GPU`.|
 |`make shell`|Opens a shell for manual tests. The X11 display, the GPU (`/dev/dri`) and the NPU (`/dev/accel`) of the host are passed to the container, and `intel-opencl-icd` and `rqt_image_view` are installed in addition (variable `SHELL_PACKAGES`).|
 
 ```bash
@@ -333,7 +356,7 @@ ros2 launch openvino_node pipeline_image.launch.py device:=CPU
 * OpenVINO api 2.0: Refer to the OpenVINO document for [OpenVINO_api_2.0](https://docs.openvino.ai/latest/openvino_2_0_transition_guide.html) for latest api 2.0 transition guide.
 
 # FAQ
-* How to get the IR file for [yolov5](./doc/quick_start/tutorial_for_yolov5_converted.md) | [yolov7](./doc/quick_start/tutorial_for_yolov7_converted.md) | [yolov8](./doc/quick_start/tutorial_for_yolov8_converted.md) ?
+* How to get and run the [YOLO26](./doc/quick_start/tutorial_for_yolo26.md) models?
 * [How to build OpenVINO by source?](https://github.com/openvinotoolkit/openvino/wiki#how-to-build)
 * [How to build RealSense by source?](https://github.com/IntelRealSense/librealsense/blob/master/doc/installation.md)
 * [What is the basic command of Docker CLI?](https://docs.docker.com/engine/reference/commandline/docker/)

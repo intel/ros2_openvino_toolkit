@@ -30,7 +30,7 @@ docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" -t  r
 
 ```
 ## Download the Models
-Run the download script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the pre-converted Intel models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. Models that need conversion (for example YOLO) are not covered by the script, see the tutorials in [doc/quick_start](../../../doc/quick_start).
+Run the download script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the pre-converted Intel models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). Other models that need conversion (SSD-lite, ...) are not downloaded by the scripts.
 
 ```bash
 source /root/ros2_ws/install/setup.bash
