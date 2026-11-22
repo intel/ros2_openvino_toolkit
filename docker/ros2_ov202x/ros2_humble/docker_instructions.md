@@ -30,7 +30,7 @@ docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" -t  r
 
 ```
 ## Download the Models
-Run the download script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the pre-converted Intel models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). Other models that need conversion (SSD-lite, ...) are not downloaded by the scripts.
+Run the download script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the pre-converted Intel models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). The `ssdlite_mobilenet_v2` model of the SSD object detection samples is converted with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`. Other models that need conversion (Mask R-CNN, DeepLabv3, ...) are not covered by the scripts.
 
 ```bash
 source /home/ubuntu/ros2_ws/install/setup.bash

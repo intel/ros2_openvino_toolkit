@@ -113,6 +113,15 @@ public:
   }
 
   /**
+   * @brief Adapt the model to the requested device before compilation.
+   * @return The device to compile the model on.
+   */
+  virtual std::string prepareForDevice(const std::string& device)
+  {
+    return device;
+  }
+
+  /**
    * @brief Get the part of an output map that covers the frame, which excludes the padding added
    * to the frame when the input shape ratio is kept.
    * @param[in] output_size The size of the output map.
