@@ -115,7 +115,6 @@ bool Models::ObjectDetectionSSDModel::fetchResults(const std::shared_ptr<Engines
 
     cv::Rect r;
     auto label_num = static_cast<int>(detections[i * object_size + 1]);
-    std::vector<std::string>& labels = getLabels();
     auto frame_size = getFrameSize();
     r.x = static_cast<int>(detections[i * object_size + 3] * frame_size.width);
     r.y = static_cast<int>(detections[i * object_size + 4] * frame_size.height);
@@ -127,13 +126,11 @@ bool Models::ObjectDetectionSSDModel::fetchResults(const std::shared_ptr<Engines
     }
 
     openvino_wrapper_lib::ObjectDetectionResult result(r);
-    std::string label =
-        label_num < labels.size() ? labels[label_num] : std::string("label #") + std::to_string(label_num);
-    result.setLabel(label);
     float confidence = detections[i * object_size + 2];
     if (confidence <= confidence_thresh) {
       continue;
     }
+    result.setLabel(getLabel(label_num));
     result.setConfidence(confidence);
 
     results.emplace_back(result);

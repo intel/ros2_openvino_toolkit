@@ -12,7 +12,6 @@ Pipelines:
     - name: PersonReidentification
       model: <OPENVINO_NODE_SHARE>/models/intel/person-reidentification-retail-0277/FP32/person-reidentification-retail-0277.xml
       engine: CPU
-      label: <OPENVINO_DATA>/labels/person-reidentification/person-reidentification-retail-0277.labels
       batch: 1
       confidence_threshold: 0.7
   outputs: [RViz, RosTopic]

@@ -170,15 +170,37 @@ public:
 
   inline void loadLabelsFromFile(const std::string file_path)
   {
+    if (file_path.empty()) {
+      return;
+    }
     std::ifstream input_file(file_path);
     for (std::string name; std::getline(input_file, name);) {
       attr_.labels.push_back(name);
+    }
+    if (attr_.labels.empty()) {
+      slog::warn << "No labels loaded from " << file_path << ", results will show class ids." << slog::endl;
     }
   }
 
   inline std::vector<std::string>& getLabels()
   {
     return attr_.labels;
+  }
+
+  /**
+   * @brief Get the label of a class id, or "label #<id>" when the label list does not cover it.
+   */
+  inline std::string getLabel(const size_t class_id)
+  {
+    if (class_id < attr_.labels.size()) {
+      return attr_.labels[class_id];
+    }
+    if (!attr_.labels.empty() && !label_range_warned_) {
+      label_range_warned_ = true;
+      slog::warn << "Class id " << class_id << " is outside the " << attr_.labels.size() << " labels of "
+                 << attr_.model_name << ": the label file does not match the model." << slog::endl;
+    }
+    return "label #" + std::to_string(class_id);
   }
 
   inline void addInputInfo(std::string key, std::string value)
@@ -294,6 +316,7 @@ public:
 
 protected:
   ModelAttr attr_;
+  bool label_range_warned_ = false;
   std::string input_tensor_name_;
   std::string output_tensor_name_;
   std::vector<ov::Output<ov::Node>> inputs_info_;
