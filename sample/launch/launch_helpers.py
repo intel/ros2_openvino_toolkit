@@ -14,7 +14,8 @@
 
 """
 Helper utilities for OpenVINO ROS2 launch files.
-Provides path resolution for YAML configuration files.
+Provides path resolution for YAML configuration files and the launch
+description shared by the YOLO26 launch files.
 """
 
 import os
@@ -22,6 +23,11 @@ import re
 import sys
 import tempfile
 from ament_index_python.packages import get_package_share_directory
+from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, PythonExpression
+from launch_ros.actions import Node
 
 TOOLKIT_DIR_ENV = 'OPENVINO_TOOLKIT_DIR'
 
@@ -115,8 +121,78 @@ def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     # Warn early about missing model files instead of failing inside the node.
     for model in re.findall(r'^\s*model:\s*(\S+)', yaml_content, re.MULTILINE):
         if not os.path.isfile(model):
+            script = 'export_yolo26.sh' if '/models/yolo26/' in model else 'download_models.sh'
             print('[launch_helpers] WARNING: model not found: %s\n'
-                  '  Set %s or run: ros2 run openvino_node download_models.sh'
-                  % (model, TOOLKIT_DIR_ENV))
+                  '  Set %s or run: ros2 run openvino_node %s'
+                  % (model, TOOLKIT_DIR_ENV, script))
 
     return resolved_yaml
+
+
+def pipeline_launch_description(yaml_filename, pipeline_name, topics, default_viewer='rqt'):
+    """
+    Return the launch description of a pipeline node and an optional image viewer.
+
+    Args:
+        yaml_filename: Name of the YAML file in the 'param' directory of openvino_node
+        pipeline_name: 'name' of the pipeline in the YAML file
+        topics: Result topics of the pipeline, remapped from
+            /openvino_toolkit/<pipeline_name>/<topic> to /ros2_openvino_toolkit/<topic>
+        default_viewer: Default of the 'viewer' argument: 'rqt', 'rviz2' or 'none'
+    """
+    default_rviz = os.path.join(
+        get_package_share_directory('openvino_node'), 'launch', 'rviz', 'people.rviz')
+    prefix = f'/openvino_toolkit/{pipeline_name}/'
+    remappings = [(prefix + topic, '/ros2_openvino_toolkit/' + topic) for topic in topics]
+    remappings.append((prefix + 'images', '/ros2_openvino_toolkit/image_rviz'))
+
+    def viewer_is(name):
+        return IfCondition(
+            PythonExpression(["'", LaunchConfiguration('viewer'), f"' == '{name}'"]))
+
+    return LaunchDescription([
+        DeclareLaunchArgument(
+            name='yaml_path',
+            default_value=resolve_yaml_paths(yaml_filename),
+            description='Path to the YAML configuration file of the pipeline'),
+        DeclareLaunchArgument(
+            name='viewer',
+            default_value=default_viewer,
+            description='Visualization viewer: "rviz2", "rqt", or "none"'),
+        DeclareLaunchArgument(
+            name='rviz_config',
+            default_value=default_rviz,
+            description='Path to RViz configuration file'),
+        DeclareLaunchArgument(
+            name='image_topic',
+            default_value='/ros2_openvino_toolkit/image_rviz',
+            description='Image topic for rqt_image_view'),
+        DeclareLaunchArgument(
+            name='viewer_delay',
+            default_value='2.0',
+            description='Delay before launching viewer (seconds)'),
+        Node(
+            package='openvino_node',
+            executable='pipeline_with_params',
+            name='openvino_pipeline',
+            arguments=['-config', LaunchConfiguration('yaml_path')],
+            remappings=remappings,
+            output='screen'),
+        TimerAction(
+            period=LaunchConfiguration('viewer_delay'),
+            actions=[
+                Node(
+                    package='rviz2',
+                    executable='rviz2',
+                    name='rviz2',
+                    arguments=['--display-config', LaunchConfiguration('rviz_config')],
+                    output='screen',
+                    condition=viewer_is('rviz2')),
+                ExecuteProcess(
+                    cmd=['rqt', '--standalone', 'rqt_image_view', '--args',
+                         LaunchConfiguration('image_topic')],
+                    output='screen',
+                    shell=False,
+                    condition=viewer_is('rqt')),
+            ]),
+    ])

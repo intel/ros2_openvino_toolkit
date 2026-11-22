@@ -1,0 +1,17 @@
+Pipelines:
+- name: depth
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/road-segmentation.png
+  infers:
+    - name: DepthEstimation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-depth/FP16/yolo26n-depth.xml
+      engine: CPU
+      batch: 1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [DepthEstimation]
+    - left: DepthEstimation
+      right: [RosTopic]
+
+Common:
