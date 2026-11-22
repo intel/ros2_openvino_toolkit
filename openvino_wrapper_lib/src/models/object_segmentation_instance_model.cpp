@@ -243,7 +243,6 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
   const auto MASK_WIDTH = mask_output_shape[3];   // mask_output_shape[ov::layout::width_idx(mask_layout)];
   slog::debug << "mask_output_shape: " << mask_output_shape << ",MASK_HEIGHT:" << MASK_HEIGHT
               << ", MASK_WIDTH:" << MASK_WIDTH << slog::endl;
-  // cv::Mat proto(32, 25600, CV_32F, mask_output_tensor.data<float>()); //[32,25600]
   cv::Mat proto(MASK_CHANNEL, MASK_HEIGHT * MASK_WIDTH, CV_32F, mask_output_tensor.data<float>());  //[32,25600]
 
   for (int idx : nms_result) {

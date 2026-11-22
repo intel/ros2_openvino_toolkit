@@ -23,6 +23,7 @@
 #include <utility>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <openvino/openvino.hpp>
 
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
@@ -286,6 +287,26 @@ void Pipeline::decreaseInferenceCounter()
 {
   std::lock_guard<std::mutex> lk(counter_mutex_);
   --counter_;
+}
+
+std::string Pipeline::getDeviceNames() const
+{
+  std::vector<std::string> devices;
+  for (const auto& pair : name_to_detection_map_) {
+    auto engine = pair.second->getEngine();
+    if (engine == nullptr) {
+      continue;
+    }
+    const std::string device = engine->getDeviceName();
+    if (!device.empty() && std::find(devices.begin(), devices.end(), device) == devices.end()) {
+      devices.push_back(device);
+    }
+  }
+  std::string result;
+  for (const auto& device : devices) {
+    result += (result.empty() ? "" : ",") + device;
+  }
+  return result;
 }
 
 void Pipeline::countFPS()

@@ -57,8 +57,6 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::updateLayerProperty(std::s
     if (input_shape.size() == 4) {  // first input contains images
       slog::debug << "handling Input[image_tensor]..." << slog::endl;
       input_info.tensor().set_element_type(ov::element::u8).set_layout(tensor_layout);
-      // addInputInfo(ModelAttribute::DefaultInputName, name);
-      // retagInputByValue(getInputInfo(name), "image_tensor");
 
       if (input_shape.is_dynamic()) {
         auto expected_size = getExpectedFrameSize();
@@ -68,14 +66,10 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::updateLayerProperty(std::s
     } else if (input_shape.size() == 2) {  // second input contains image info
       slog::debug << "handling Input[image_info]..." << slog::endl;
       input_info.tensor().set_element_type(ov::element::f32);
-      // addInputInfo("input2", info_name_);
-      // retagInputByValue(getInputInfo(name), "image_info");
     } else {
       throw std::logic_error("Unsupported input shape with size = " + std::to_string(input_shape.size()));
     }
   }
-
-  // ppp.input(0).model().set_layout("NCHW");
 
   model = ppp.build();
   ppp = ov::preprocess::PrePostProcessor(model);
@@ -178,7 +172,6 @@ bool Models::ObjectSegmentationInstanceMaskrcnnModel::fetchResults(
     float prob = box_info[2];
     const double rx = getFrameResizeRatioWidth();
     const double ry = getFrameResizeRatioHeight();
-    // slog::debug << "FrameResizeRatio W:" <<rx << ", H:" << ry << slog::endl;
     slog::debug << "Got an object with probability:" << prob << ", threshold:" << confidence_thresh << slog::endl;
     auto iW = getInputWidth();
     auto iH = getInputHeight();

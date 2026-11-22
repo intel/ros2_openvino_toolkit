@@ -15,8 +15,6 @@
 #ifndef UTILITY_HPP_
 #define UTILITY_HPP_
 
-// #include <gflags/gflags.h>
-
 #include <string>
 #include <vector>
 #include <iostream>

@@ -20,9 +20,6 @@
 #ifndef OPENVINO_WRAPPER_LIB__UTILS__VERSION_INFO_HPP_
 #define OPENVINO_WRAPPER_LIB__UTILS__VERSION_INFO_HPP_
 
-#if (defined(USE_OLD_E_PLUGIN_API))
-#include <ie_device.hpp>
-#endif
 #include <string>
 #include <map>
 #include <vector>
@@ -60,63 +57,5 @@ static std::ostream& operator<<(std::ostream& os, const ov::Version& version)
 
   return os;
 }
-
-#if (defined(USE_OLD_E_PLUGIN_API))
-/**
- * @class PluginVersion
- * @brief A PluginVersion class stores plugin version and initialization status
- */
-struct PluginVersion : public InferenceEngine::Version
-{
-  bool initialized = false;
-
-  explicit PluginVersion(const InferenceEngine::Version* ver)
-  {
-    if (nullptr == ver) {
-      return;
-    }
-    InferenceEngine::Version::operator=(*ver);
-    initialized = true;
-  }
-
-  operator bool() const noexcept
-  {
-    return initialized;
-  }
-};
-
-static UNUSED std::ostream& operator<<(std::ostream& os, const PluginVersion& version)
-{
-  os << "\tPlugin version ......... ";
-  if (!version) {
-    os << "UNKNOWN";
-  } else {
-    os << version.apiVersion.major << "." << version.apiVersion.minor;
-  }
-
-  os << "\n\tPlugin name ............ ";
-  if (!version || version.description == nullptr) {
-    os << "UNKNOWN";
-  } else {
-    os << version.description;
-  }
-
-  os << "\n\tPlugin build ........... ";
-  if (!version || version.buildNumber == nullptr) {
-    os << "UNKNOWN";
-  } else {
-    os << version.buildNumber;
-  }
-
-  return os;
-}
-
-inline void printPluginVersion(InferenceEngine::InferenceEnginePluginPtr ptr, std::ostream& stream)
-{
-  const PluginVersion* pluginVersion = nullptr;
-  ptr->GetVersion((const InferenceEngine::Version*&)pluginVersion);
-  stream << pluginVersion << std::endl;
-}
-#endif  // (defined(USE_OLD_E_PLUGIN_API))
 
 #endif  // OPENVINO_WRAPPER_LIB__UTILS__VERSION_INFO_HPP_

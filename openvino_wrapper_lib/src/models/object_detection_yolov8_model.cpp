@@ -18,7 +18,6 @@ Models::ObjectDetectionYolov8Model::ObjectDetectionYolov8Model(const std::string
                                                                const std::string& model_loc, int max_batch_size)
   : ObjectDetectionYolov5Model(label_loc, model_loc, max_batch_size)
 {
-  // setKeepInputShapeRatio(true);
   setHasConfidenceOutput(false);
   setExpectedFrameSize({ 640, 640 });
 }

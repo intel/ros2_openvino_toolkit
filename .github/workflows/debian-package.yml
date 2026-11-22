@@ -1,0 +1,67 @@
+# Copyright (C) 2026 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+name: Debian_Package
+
+on:
+  push:
+    branches: ["ros2_jazzy"]
+    tags: ["jazzy/*"]
+  pull_request:
+    branches: ["ros2_jazzy"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Debian packages
+        run: make package
+
+      - name: Test Debian packages
+        run: make test-package
+
+      - name: Upload Debian packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: ros-jazzy-openvino-toolkit-debs
+          path: dist/*.deb
+          if-no-files-found: error
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/jazzy/')
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download Debian packages
+        uses: actions/download-artifact@v4
+        with:
+          name: ros-jazzy-openvino-toolkit-debs
+          path: dist
+
+      - name: Publish release archive
+        working-directory: dist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          archive="ros-jazzy-openvino-toolkit_${GITHUB_REF_NAME#jazzy/}_amd64.tar.gz"
+          tar -czf "${archive}" -- *.deb
+          if ! gh release view "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" > /dev/null 2>&1; then
+            gh release create "${GITHUB_REF_NAME}" --repo "${GITHUB_REPOSITORY}" \
+              --title "${GITHUB_REF_NAME}" --notes "Debian packages for ROS 2 Jazzy."
+          fi
+          gh release upload "${GITHUB_REF_NAME}" "${archive}" --repo "${GITHUB_REPOSITORY}" --clobber

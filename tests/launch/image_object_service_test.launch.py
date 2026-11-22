@@ -13,26 +13,30 @@
 # limitations under the License.
 
 """
-ROS 2 Test Launch File: Image Object Service Test
+ROS 2 test launch file: Image Object Service Test.
 
 Launches the OpenVINO object detection service for automated testing.
 """
 
 import os
+import sys
 
-from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 
+launch_dir = os.path.dirname(os.path.abspath(__file__))
+if launch_dir not in sys.path:
+    sys.path.insert(0, launch_dir)
+
+import test_launch_helpers  # noqa: E402
+
 
 def generate_launch_description():
     """Generate launch description for image object service test."""
-
-    # Get test package share directory
-    test_package_dir = get_package_share_directory('openvino_test')
-    default_yaml = os.path.join(test_package_dir, 'param', 'image_object_service_test.yaml')
+    # Resolve path placeholders in the test YAML
+    default_yaml = test_launch_helpers.resolve_test_yaml('image_object_service_test.yaml')
 
     return LaunchDescription([
         # Declare launch argument for YAML configuration

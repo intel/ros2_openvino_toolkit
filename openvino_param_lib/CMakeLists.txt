@@ -71,7 +71,10 @@ if(UNIX OR APPLE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
   # Dot not forward c++17 flag to GPU because it is not supported
   set(CUDA_PROPAGATE_HOST_FLAGS OFF)
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
+  # Keep a fortify level set by the caller, for example by dpkg-buildflags.
+  if(NOT CMAKE_CXX_FLAGS MATCHES "_FORTIFY_SOURCE")
+    set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -D_FORTIFY_SOURCE=2")
+  endif()
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -pie")
 endif()
 

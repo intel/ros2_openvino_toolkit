@@ -25,9 +25,6 @@
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
 #include "openvino/openvino.hpp"
-#if (defined(USE_OLD_E_PLUGIN_API))
-#include <extension/ext_list.hpp>
-#endif
 #include "utility.hpp"
 
 int main(int argc, char** argv)

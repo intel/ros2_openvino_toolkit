@@ -189,33 +189,6 @@ bool Models::ObjectDetectionSSDModel::updateLayerProperty(std::shared_ptr<ov::Mo
   output_info.tensor().set_element_type(ov::element::f32);
   model = ppp.build();
 
-/// TODO: double check this part: BEGIN
-#if (0)
-  const InferenceEngine::CNNLayerPtr output_layer =
-      model->getNetwork().getLayerByName(output_info_map.begin()->first.c_str());
-  // output layer should have attribute called num_classes
-  slog::info << "Checking Object Detection num_classes" << slog::endl;
-  if (output_layer->params.find("num_classes") == output_layer->params.end()) {
-    slog::warn << "This model's output layer (" << output_info_map.begin()->first
-               << ") should have num_classes integer attribute" << slog::endl;
-    return false;
-  }
-  // class number should be equal to size of label vector
-  // if network has default "background" class, fake is used
-  const int num_classes = output_layer->GetParamAsInt("num_classes");
-#endif
-#if 0
-  slog::info << "Checking Object Detection output ... num_classes=" << num_classes << slog::endl;
-  if (getLabels().size() != num_classes) {
-    if (getLabels().size() == (num_classes - 1)) {
-      getLabels().insert(getLabels().begin(), "fake");
-    } else {
-      getLabels().clear();
-    }
-  }
-#endif
-  /// TODO: double check this part: END
-
   // last dimension of output layer should be 7
   auto outputsDataMap = model->outputs();
   auto& data = outputsDataMap[0];

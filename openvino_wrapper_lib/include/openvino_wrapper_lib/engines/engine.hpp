@@ -21,6 +21,7 @@
 
 #pragma once
 
+#include <string>
 #include "openvino_wrapper_lib/models/base_model.hpp"
 #include "openvino/openvino.hpp"
 
@@ -35,19 +36,21 @@ namespace Engines
 class Engine
 {
 public:
-#if (defined(USE_OLD_E_PLUGIN_API))
-  /**
-   * DEPRECATED! instead of using Engine(InferenceEngine::InferRequest::Ptr &)
-   * @brief Create an NetworkEngine instance
-   * from a inference plugin and an inference network.
-   */
-  Engine(InferenceEngine::InferencePlugin, Models::BaseModel::Ptr);
-#endif
-
   /**
    * @brief Using an Inference Request to initialize the inference Engine.
    */
   Engine(ov::InferRequest&);
+  /**
+   * @brief Initialize the engine from an inference request, keeping the compiled model
+   * and the requested device so that the actually used device(s) can be queried.
+   */
+  Engine(ov::InferRequest&, const ov::CompiledModel&, const std::string& requested_device);
+  /**
+   * @brief Get the device(s) this engine is executing on, e.g. "CPU", "GPU.0" or "NPU".
+   * For virtual devices (AUTO/HETERO/MULTI) this reports the actual execution device(s).
+   * Falls back to the requested device name if the plugin can't report it.
+   */
+  std::string getDeviceName() const;
   /**
    * @brief Get the inference request this instance holds.
    * @return The inference request this instance holds.
@@ -69,6 +72,8 @@ public:
 
 private:
   ov::InferRequest request_;
+  ov::CompiledModel compiled_model_;
+  std::string requested_device_;
 };
 }  // namespace Engines
 

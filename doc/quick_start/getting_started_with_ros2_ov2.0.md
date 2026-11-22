@@ -1,123 +1,110 @@
-# ROS2_OpenVINO_Toolkit
+# Getting Started (ROS 2 Jazzy, Ubuntu 24.04)
 
-**NOTE:**
-The steps below have been tested on **Ubuntu 24.04** with ROS2 Jazzy.
-For other ROS2 distributions, use the matching branch listed in the [README](../../README.md#ros2-version-supported).
+This guide builds the toolkit and runs a first demo. It targets the `ros2_jazzy` branch. For other ROS 2 distributions, use the matching branch listed in the [README](../../README.md#ros2-version-supported).
 
-## 1. Environment Setup
-For ROS2 jazzy on ubuntu 24.04:
-  * Install ROS2.</br>
-  Refer to: [ROS_jazzy_install_guide](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)
+|Step|What you do|
+|---|---|
+|1|[Install the prerequisites](#1-install-the-prerequisites)|
+|2|[Get the sources and install OpenVINO](#2-get-the-sources-and-install-openvino)|
+|3|[Build](#3-build)|
+|4|[Download the models](#4-download-the-models)|
+|5|[Run a demo](#5-run-a-demo)|
 
-  * Install Intel® OpenVINO™ Toolkit Version: 2025.x (2025.4 is used in CI).</br>
-  Refer to: [OpenVINO_install_guide](https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-archive-linux.html)
+To try the toolkit without a local ROS 2 installation, use the Debian packages in a container instead: see [Test in a Container](../../README.md#test-in-a-container).
 
-  * Install Intel® RealSense™ SDK.</br>
-  Refer to: [RealSense_install_guide](https://github.com/IntelRealSense/librealsense/blob/master/doc/distribution_linux.md)
+## 1. Install the prerequisites
 
-## 2. Building and Installation
-* Install ROS2_OpenVINO_Toolkit packages
-```
-mkdir -p ~/catkin_ws/src
-cd ~/catkin_ws/src
+|Component|Install|
+|---|---|
+|ROS 2 Jazzy|[Install guide](https://docs.ros.org/en/jazzy/Installation/Ubuntu-Install-Debs.html)|
+|Build tools and ROS packages|`sudo apt install python3-colcon-common-extensions ros-jazzy-cv-bridge ros-jazzy-librealsense2 ros-jazzy-yaml-cpp-vendor ros-jazzy-rviz2 ros-jazzy-rqt-image-view libopencv-dev`|
+|OpenVINO 2025.4|Installed in step 2|
+
+Notes:
+* `ros-jazzy-librealsense2` is needed to build even if you do not own a RealSense camera.
+* `ros-jazzy-rviz2` and `ros-jazzy-rqt-image-view` are only needed for the visualization options (`viewer:=rviz2` or `viewer:=rqt`).
+* The object messages are part of this repository ([object_msgs](../../object_msgs)). Do not clone `ros2_object_msgs` in addition.
+
+## 2. Get the sources and install OpenVINO
+
+```bash
+mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src
 git clone https://github.com/intel/ros2_openvino_toolkit -b ros2_jazzy
-git clone https://github.com/intel/ros2_object_msgs
-git clone https://github.com/IntelRealSense/realsense-ros.git -b ros2-development
-git clone https://github.com/ros-perception/vision_opencv.git -b <ROS2_VERSION>
-```
-* Install dependencies
-```
-sudo apt-get install ros-<ROS2_VERSION>-diagnostic-updater
-sudo apt install python3-colcon-common-extensions
-```
-* Build package
-```
-source /opt/ros/<ROS2_VERSION>/setup.bash 
-source <OpenVINO_INSTALL_DIR>/setupvars.sh
-cd ~/catkin_ws
-colcon build --symlink-install
-source ./install/local_setup.bash
+sudo ./ros2_openvino_toolkit/script/packaging/setup_openvino_apt.sh
+sudo apt install openvino-libraries-dev-2025.4.0
 ```
 
-## 3. Running the Demo
-### Install OpenVINO 2022.3 by PIP
-OMZ tools are provided for downloading and converting models of open_model_zoo in ov2022.</br>
-Refer to: [OMZ-tool_guide](https://pypi.org/project/openvino-dev/)
+The script enables the [Intel APT repository of OpenVINO](https://docs.openvino.ai/2025/get-started/install-openvino/install-openvino-apt.html). OpenVINO 2025.4.0 is the release this branch is built and tested with.
 
-* See all available models
-```
-omz_downloader --print_all
-```
+## 3. Build
 
-* Download the optimized Intermediate Representation (IR) of model (execute once), for example:
-```
-cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
-omz_downloader --list download_model.lst -o /opt/openvino_toolkit/models/
+```bash
+cd ~/ros2_ws
+source /opt/ros/jazzy/setup.bash
+colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+source install/setup.bash
 ```
 
-* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) needs to be converted to intermediate representation (such as the model for object detection):
-```
-cd ~/catkin_ws/src/ros2_openvino_toolkit/data/model_list
-omz_converter --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
-```
-### Install OpenVINO 2022.3 by source code
-* See all available models
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --print_all
+## 4. Download the models
+
+```bash
+ros2 run openvino_node download_models.sh
 ```
 
-* Download the optimized Intermediate Representation (IR) of models (execute once), for example:
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 downloader.py --list download_model.lst -o /opt/openvino_toolkit/models/
-```
+This downloads the pre-converted models used by the face / people demos (face detection, age and gender, emotion, head pose) to `~/.local/share/openvino_toolkit/models/intel/`.
 
-* If the model (TensorFlow, caffe, MXNet, ONNX, Kaldi) needs to be converted to Intermediate Representation (such as the model for object detection):
-```
-cd ~/openvino/thirdparty/open_model_zoo/tools/model_tools
-sudo python3 converter.py --list convert_model.lst -d /opt/openvino_toolkit/models/ -o /opt/openvino_toolkit/models/convert
-```
+|Command|Result|
+|---|---|
+|`ros2 run openvino_node download_models.sh --all`|All Intel models supported by the script|
+|`ros2 run openvino_node download_models.sh face-detection-adas-0001/FP16`|Only the listed `<name>/<precision>` models|
 
-* Copy label files (execute once)
-**Note**: You need to make label_dirs if you skipped the steps for setting output_dirs above.
-```
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/face_detection/face-detection-adas-0001.labels /opt/openvino_toolkit/models/intel/face-detection-adas-0001/FP16/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/emotions-recognition/FP32/emotions-recognition-retail-0003.labels /opt/openvino_toolkit/models/intel/emotions-recognition-retail-0003/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP32/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_segmentation/frozen_inference_graph.labels /opt/openvino_toolkit/models/intel/semantic-segmentation-adas-0001/FP16/
-sudo cp ~/catkin_ws/src/ros2_openvino_toolkit/data/labels/object_detection/vehicle-license-plate-detection-barrier-0106.labels /opt/openvino_toolkit/models/intel/vehicle-license-plate-detection-barrier-0106/FP32
+To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloading **and** before launching:
+
+```bash
+export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-* Check the parameter configuration in ros2_openvino_toolkit/sample/param/xxxx.yaml before launching, make sure parameters such as model_path, label_path and input_path are set correctly. Please refer to the quick start document for [yaml configuration guide](./yaml_configuration_guide.md) for detailed configuration guidance.
-  * run face detection sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_people.launch.py
-  ```
-  * run person reidentification sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_reidentification.launch.py
-  ```
-  * run face detection sample code input from Image.
-  ```
-  ros2 launch openvino_node pipeline_image.launch.py
-  ```
-  * run object segmentation sample code input from RealSenseCameraTopic.
-  ```
-  ros2 launch openvino_node pipeline_segmentation.launch.py
-  ```
-  * run vehicle detection sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_vehicle_detection.launch.py
-  ```
-  * run person attributes sample code input from StandardCamera.
-  ```
-  ros2 launch openvino_node pipeline_person_attributes.launch.py
-  ```
+Models that need conversion (for example YOLO) are not covered by this script. See the [YOLOv5](./tutorial_for_yolov5_converted.md), [YOLOv7](./tutorial_for_yolov7_converted.md) and [YOLOv8](./tutorial_for_yolov8_converted.md) tutorials.
 
-# More Information
-* ROS2 OpenVINO description written in Chinese: https://mp.weixin.qq.com/s/BgG3RGauv5pmHzV_hkVAdw
+## 5. Run a demo
 
-###### *Any security issue should be reported using process at https://01.org/security*
+```bash
+ros2 launch openvino_node pipeline_image.launch.py
+```
 
+This runs face detection, age / gender, emotion and head pose estimation on a sample image and opens `rqt_image_view` with the annotated result.
+
+Useful launch arguments:
+
+|Argument|Example|Description|
+|---|---|---|
+|`device`|`device:=GPU`|Run all models on this OpenVINO device (`CPU`, `GPU`, `NPU`, `AUTO`, ...). Defaults to the `engine:` values in the YAML file. Available on all sample launch files.|
+|`viewer`|`viewer:=none`|`rqt` (default), `rviz2` or `none`. Only on launch files that open a viewer.|
+|`yaml_path`|`yaml_path:=/path/to/my.yaml`|Use your own pipeline file. Use absolute paths in it, placeholders are not replaced.|
+
+The device each model actually runs on is printed at startup (`Engine created: requested device=GPU, executing on=GPU.0`) and drawn on the output image next to the FPS.
+
+`GPU` and `NPU` need the Intel user-space drivers of the device, see the OpenVINO configuration guides for [GPU](https://docs.openvino.ai/2025/get-started/install-openvino/configurations/configurations-intel-gpu.html) and [NPU](https://docs.openvino.ai/2025/get-started/install-openvino/configurations/configurations-intel-npu.html).
+
+### Other demos
+
+|Demo|Command|
+|---|---|
+|Face / people analytics, camera input|`ros2 launch openvino_node pipeline_people.launch.py`|
+|Person re-identification, camera input|`ros2 launch openvino_node pipeline_reidentification.launch.py`|
+|Object segmentation|`ros2 launch openvino_node pipeline_segmentation.launch.py`|
+|Vehicle detection|`ros2 launch openvino_node pipeline_vehicle_detection.launch.py`|
+|Person attributes|`ros2 launch openvino_node pipeline_person_attributes.launch.py`|
+
+Each demo needs its own models. If one is missing, the launch prints `WARNING: model not found: <path>` with the exact location it expects. See the [YAML configuration guide](./yaml_configuration_guide.md) to adapt a pipeline.
+
+## Troubleshooting
+
+|Symptom|Cause and fix|
+|---|---|
+|`WARNING: model not found: ...` at launch|The models are not where the launch file looks. Run the download script, or set `OPENVINO_TOOLKIT_DIR` to the folder that contains `models/`.|
+|CMake error `Could not find a package configuration file provided by "OpenVINO"`|The OpenVINO development files are not installed. See step 2.|
+|CMake error about `realsense2`|Install `ros-jazzy-librealsense2`.|
+|Symlink "File exists" errors, or packages built against the wrong ROS distribution|The shell still has an old workspace sourced. Open a new terminal, source only `/opt/ros/jazzy/setup.bash`, and remove the `build/`, `install/` and `log/` folders.|
+|Device is shown as `GPU.0`, not `GPU`|Expected. OpenVINO reports the index of the GPU that is used.|
+|The system monitor shows about 0% GPU load while running on GPU|OpenVINO uses the GPU compute engine, which many monitors do not show. Use `intel_gpu_top` and look at the Compute row.|

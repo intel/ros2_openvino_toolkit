@@ -41,9 +41,6 @@
 #include "openvino_wrapper_lib/pipeline_manager.hpp"
 #include "openvino_wrapper_lib/services/pipeline_processing_server.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
-#if (defined(USE_OLD_E_PLUGIN_API))
-#include <extension/ext_list.hpp>
-#endif
 #include "openvino/openvino.hpp"
 #include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"

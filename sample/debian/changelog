@@ -1,0 +1,5 @@
+ros-jazzy-openvino-node (0.9.0-1) noble; urgency=medium
+
+  * Initial Debian packaging.
+
+ -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Fri, 20 Nov 2026 00:00:00 +0000

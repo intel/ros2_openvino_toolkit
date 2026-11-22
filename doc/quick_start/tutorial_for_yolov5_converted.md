@@ -68,8 +68,8 @@ Then we will get three files: yolov5n.xml, yolov5n.bin, and yolov5n.mapping unde
 # Move to the Recommended Model Path
 ```
 cd ~/yolov5/model_convert
-mkdir -p  /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
-sudo cp yolov5n.bin yolov5n.mapping yolov5n.xml /opt/openvino_toolkit/models/convert/public/yolov5n/FP32/
+mkdir -p  ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov5n/FP32/
+cp yolov5n.bin yolov5n.mapping yolov5n.xml ${OPENVINO_TOOLKIT_DIR:-$HOME/.local/share/openvino_toolkit}/models/convert/public/yolov5n/FP32/
 ```
 
 # yolov5 optimize to yolov5-int8
