@@ -52,6 +52,10 @@
 #include "openvino_wrapper_lib/inferences/license_plate_detection.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation_maskrcnn.hpp"
 #include "openvino_wrapper_lib/inferences/object_segmentation_instance.hpp"
+#include "openvino_wrapper_lib/inferences/keypoint_detection.hpp"
+#include "openvino_wrapper_lib/inferences/oriented_object_detection.hpp"
+#include "openvino_wrapper_lib/inferences/image_classification.hpp"
+#include "openvino_wrapper_lib/inferences/depth_estimation.hpp"
 #include "opencv2/opencv.hpp"
 
 class Pipeline;
@@ -121,6 +125,30 @@ public:
    * @brief Generate output content according to the object segmentation result for instance models.
    */
   virtual void accept(const std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>&)
+  {
+  }
+  /**
+   * @brief Generate output content according to the keypoint detection result.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>&)
+  {
+  }
+  /**
+   * @brief Generate output content according to the oriented object detection result.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>&)
+  {
+  }
+  /**
+   * @brief Generate output content according to the image classification result.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>&)
+  {
+  }
+  /**
+   * @brief Generate output content according to the depth estimation result.
+   */
+  virtual void accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>&)
   {
   }
   /**

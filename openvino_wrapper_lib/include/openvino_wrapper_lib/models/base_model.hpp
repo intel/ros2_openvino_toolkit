@@ -112,6 +112,13 @@ public:
     return model_;
   }
 
+  /**
+   * @brief Get the part of an output map that covers the frame, which excludes the padding added
+   * to the frame when the input shape ratio is kept.
+   * @param[in] output_size The size of the output map.
+   */
+  cv::Rect getFrameAreaInOutput(const cv::Size& output_size) const;
+
 protected:
   // Keep the ModelAttribute overload visible next to the one declared below.
   using ModelAttribute::updateLayerProperty;

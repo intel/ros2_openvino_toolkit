@@ -179,6 +179,7 @@ add_library(${PROJECT_NAME} SHARED
         src/inferences/object_segmentation.cpp
         src/inferences/object_segmentation_maskrcnn.cpp
         src/inferences/object_segmentation_instance.cpp
+        src/inferences/model_inference.cpp
         src/inferences/person_reidentification.cpp
         src/inferences/person_attribs_detection.cpp
         #src/inferences/landmarks_detection.cpp
@@ -210,6 +211,14 @@ add_library(${PROJECT_NAME} SHARED
         src/models/object_detection_ssd_model.cpp
         src/models/object_detection_yolov5_model.cpp
         src/models/object_detection_yolov8_model.cpp
+        src/models/object_detection_yolo26_model.cpp
+        src/models/object_segmentation_yolo26_model.cpp
+        src/models/object_segmentation_instance_yolo26_model.cpp
+        src/models/yolo26_model.cpp
+        src/models/keypoint_detection_yolo26_model.cpp
+        src/models/oriented_object_detection_yolo26_model.cpp
+        src/models/image_classification_yolo26_model.cpp
+        src/models/depth_estimation_yolo26_model.cpp
         src/outputs/image_window_output.cpp
         src/outputs/ros_topic_output.cpp
         src/outputs/rviz_output.cpp

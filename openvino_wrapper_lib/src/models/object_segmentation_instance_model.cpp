@@ -167,15 +167,13 @@ bool Models::ObjectSegmentationInstanceModel::updateLayerProperty(std::shared_pt
   return true;
 }
 
-bool Models::ObjectSegmentationInstanceModel::fetchResults(
-    const std::shared_ptr<Engines::Engine>& engine,
-    std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results, const float& confidence_thresh,
-    const bool& enable_roi_constraint)
+std::vector<int> Models::ObjectSegmentationInstanceModel::decodeDetections(
+    ov::InferRequest& request, float confidence_thresh, std::vector<cv::Rect>& boxes, std::vector<int>& class_ids,
+    std::vector<float>& confidences, std::vector<cv::Mat>& mask_confs)
 {
   const float NMS_THRESHOLD = config_.nms_threshold;  //  threshold for removing overlapping bounding boxes
   slog::debug << "NMS_THRESHOLD=" << NMS_THRESHOLD << slog::endl;
 
-  ov::InferRequest request = engine->getRequest();
   std::string det_output = getOutputName("detection");
   const ov::Tensor det_output_tensor = request.get_tensor(det_output);
   ov::Shape det_output_shape = det_output_tensor.get_shape();
@@ -193,12 +191,6 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
     dimentions = det_output_shape.at(1);
   }
   slog::debug << "AFTER calibration: rows->" << rows << ", dimentions->" << dimentions << slog::endl;
-
-  std::vector<cv::Rect> boxes;
-  std::vector<cv::Mat> mask_confs;
-  std::vector<int> class_ids;
-  std::vector<float> confidences;
-  std::vector<std::string>& labels = getLabels();
 
   for (int i = 0; i < rows; i++) {
     // float *detection = &detections[i * dimentions];
@@ -234,6 +226,21 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
 
   std::vector<int> nms_result;
   cv::dnn::NMSBoxes(boxes, confidences, confidence_thresh, NMS_THRESHOLD, nms_result);
+  return nms_result;
+}
+
+bool Models::ObjectSegmentationInstanceModel::fetchResults(
+    const std::shared_ptr<Engines::Engine>& engine,
+    std::vector<openvino_wrapper_lib::ObjectSegmentationInstanceResult>& results, const float& confidence_thresh,
+    const bool& enable_roi_constraint)
+{
+  ov::InferRequest request = engine->getRequest();
+  std::vector<cv::Rect> boxes;
+  std::vector<cv::Mat> mask_confs;
+  std::vector<int> class_ids;
+  std::vector<float> confidences;
+  const std::vector<int> nms_result =
+      decodeDetections(request, confidence_thresh, boxes, class_ids, confidences, mask_confs);
 
   const ov::Tensor mask_output_tensor = request.get_tensor(getOutputName("masks"));
   ov::Shape mask_output_shape = mask_output_tensor.get_shape();
@@ -273,9 +280,7 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
     slog::debug << "Detection Rectangle in Input Image Size: " << det_bb << slog::endl;
     Result result(det_bb);
     result.setConfidence(confidences[idx]);
-    std::string label = class_ids[idx] < labels.size() ? labels[class_ids[idx]] :
-                                                         std::string("label #") + std::to_string(class_ids[idx]);
-    result.setLabel(label);
+    result.setLabel(getLabel(class_ids[idx]));
 
     // Mask data operation
     auto sigmoid = [](float a) { return 1. / (1. + exp(-a)); };
@@ -299,8 +304,8 @@ bool Models::ObjectSegmentationInstanceModel::fetchResults(
     if (mask_h + mask_y >= MASK_HEIGHT) {
       mask_h = MASK_HEIGHT - mask_y - 1;
     }
-    if (mask_w <= 0 || mask_h <= 0) {
-      break;
+    if (mask_w <= 0 || mask_h <= 0 || det_bb_w <= 0 || det_bb_h <= 0) {
+      continue;
     }
     cv::Rect roi{ mask_x, mask_y, mask_w, mask_h };
     slog::debug << "Mask ROI:" << roi << slog::endl;
