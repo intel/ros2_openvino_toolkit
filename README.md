@@ -166,7 +166,7 @@ Currently, the corresponding relation of supported inference features, models us
 |Emotion Recognition| Emotion recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[emotions-recognition-retail-0003](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/emotions-recognition-retail-0003)|
 |Age & Gender Recognition| Age and gender recognition based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[age-gender-recognition-retail-0013](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/age-gender-recognition-retail-0013)|
 |Head Pose Estimation| Head pose estimation based on detected face image.|[pipeline_image.yaml](./sample/param/pipeline_image.yaml)<br>[pipeline_image_video.yaml](./sample/param/pipeline_image_video.yaml)<br>[pipeline_people.yaml](./sample/param/pipeline_people.yaml)<br>[pipeline_people_ip.yaml](./sample/param/pipeline_people_ip.yaml)|[head-pose-estimation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/head-pose-estimation-adas-0001)|
-|Object Detection| Object detection based on SSD-based or YOLO26 trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)<br>[pipeline_yolo26_detection.yaml](./sample/param/pipeline_yolo26_detection.yaml)|[ssdlite_mobilenet_v2](https://github.com/openvinotoolkit/open_model_zoo/tree/2024.6.0/models/public/ssdlite_mobilenet_v2)<br>[yolo26](./doc/quick_start/tutorial_for_yolo26.md)|
+|Object Detection| Object detection based on SSD-based or YOLO26 trained models.|[pipeline_object.yaml](./sample/param/pipeline_object.yaml)<br>[pipeline_object_topic.yaml](./sample/param/pipeline_object_topic.yaml)<br>[pipeline_yolo26_detection.yaml](./sample/param/pipeline_yolo26_detection.yaml)|[ssdlite_mobilenet_v2](./doc/quick_start/getting_started_with_ros2_ov2.0.md#4-download-the-models)<br>[yolo26](./doc/quick_start/tutorial_for_yolo26.md)|
 |Vehicle and License Detection| Vehicle and license detection based on Intel models.|[pipeline_vehicle_detection.yaml](./sample/param/pipeline_vehicle_detection.yaml)|[vehicle-license-plate-detection-barrier-0106](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-license-plate-detection-barrier-0106)<br>[vehicle-attributes-recognition-barrier-0039](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/vehicle-attributes-recognition-barrier-0039)<br>[license-plate-recognition-barrier-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/license-plate-recognition-barrier-0001)|
 |Object Segmentation - Semantic| semantic segmentation, assign a class label to each pixel in an image. |[pipeline_segmentation.yaml](./sample/param/pipeline_segmentation.yaml)<br>[pipeline_segmentation_image.yaml](./sample/param/pipeline_segmentation_image.yaml)<br>[pipeline_video.yaml](./sample/param/pipeline_video.yaml)<br>[pipeline_yolo26_semantic.yaml](./sample/param/pipeline_yolo26_semantic.yaml)|[semantic-segmentation-adas-0001](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/intel/semantic-segmentation-adas-0001)<br>[deeplabv3](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/deeplabv3)<br>[yolo26-sem](./doc/quick_start/tutorial_for_yolo26.md)|
 | Object Segmentation - Instance | Instance Segmentation, combination of semantic segmentation & object detection. | [pipeline_yolo26_segmentation.yaml](./sample/param/pipeline_yolo26_segmentation.yaml) | [yolo26-seg](./doc/quick_start/tutorial_for_yolo26.md)<br>[mask_rcnn_inception_v2_coco_2018_01_28](https://github.com/openvinotoolkit/open_model_zoo/tree/releases/2022/3/models/public/mask_rcnn_inception_resnet_v2_atrous_coco)|
@@ -302,6 +302,14 @@ ros2 launch openvino_node pipeline_yolo26_pose.launch.py device:=GPU
 
 See the [YOLO26 tutorial](./doc/quick_start/tutorial_for_yolo26.md) for all tasks, topics and options.
 
+### SSD object detection pipelines
+The `ssdlite_mobilenet_v2` model of `pipeline_object.launch.py` and the other SSD samples is converted on your machine from the TensorFlow Object Detection API model with `ovc`. The pipeline reads the TensorFlow outputs of the converted model directly. With `device:=NPU` the backbone runs on the NPU and the TensorFlow post-processing (NMS) on the CPU, because the NPU cannot compile its dynamic shapes; the device is then reported as `CPU,NPU`.
+
+```bash
+ros2 run openvino_node export_ssdlite_mobilenet_v2.sh
+ros2 launch openvino_node pipeline_object.launch.py
+```
+
 ## Deploy in Local Environment
 * Refer to the quick start document for [getting_started_with_ros2](./doc/quick_start/getting_started_with_ros2_ov2.0.md) for detailed installation & launching instructions.
 * Refer to the quick start document for [yaml configuration guidance](./doc/quick_start/yaml_configuration_guide.md) for detailed configuration guidance.
@@ -315,7 +323,7 @@ The toolkit can be packaged for ROS 2 Lyrical on Ubuntu 26.04 (amd64). The packa
 
 |Package|Content|
 |-----------------------|--------------------------------|
-|`ros-lyrical-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images, `download_models.sh` and `export_yolo26.sh`. Depends on all packages below.|
+|`ros-lyrical-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images, `download_models.sh`, `export_yolo26.sh` and `export_ssdlite_mobilenet_v2.sh`. Depends on all packages below.|
 |`ros-lyrical-openvino-wrapper-lib`|OpenVINO pipeline library and headers|
 |`ros-lyrical-openvino-param-lib`|YAML parameter library and headers|
 |`ros-lyrical-openvino-msgs`|Pipeline messages and services|
@@ -332,7 +340,7 @@ sudo apt install ./dist/*.deb
 source /opt/ros/lyrical/setup.bash
 ```
 * Each `lyrical/<version>` release on GitHub also provides the packages as `ros-lyrical-openvino-toolkit_<version>_amd64.tar.gz`. Extract the archive and install the `.deb` files in the same way.
-* The OpenVINO models are not part of the packages. Download them with `ros2 run openvino_node download_models.sh` and export the YOLO26 models with `ros2 run openvino_node export_yolo26.sh`.
+* The OpenVINO models are not part of the packages. Download them with `ros2 run openvino_node download_models.sh`, export the YOLO26 models with `ros2 run openvino_node export_yolo26.sh` and convert `ssdlite_mobilenet_v2` with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`.
 * `make test` builds the workspace, downloads the models to `.models/` and runs the unit tests in a container. Its colcon output goes to `.colcon-docker/`, separate from the `build/`, `install/` and `log/` of a local `colcon build`. Run `make help` for the other targets, for example `make test-package`, `make build` and `make lint`.
 
 ## Test in a Container

@@ -5,6 +5,8 @@ ros-lyrical-openvino-node (1.1.0-1) resolute; urgency=medium
     and depth estimation, and export_yolo26.sh to export their models.
   * Use label files that match the models of the sample pipelines, for
     example the COCO labels for ssdlite_mobilenet_v2.
+  * Add export_ssdlite_mobilenet_v2.sh to convert the ssdlite_mobilenet_v2
+    model of the SSD object detection pipelines.
   * Remove the YOLOv5, YOLOv7 and YOLOv8 sample pipelines and the unused
     label and parameter files.
 
