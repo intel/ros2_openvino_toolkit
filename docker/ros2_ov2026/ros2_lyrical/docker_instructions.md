@@ -62,7 +62,7 @@ ros2 launch openvino_node pipeline_image.launch.py
 
 Use `device:=GPU` or `device:=NPU` to select the OpenVINO device, for example `ros2 launch openvino_node pipeline_image.launch.py device:=GPU`. The device in use is printed at startup and drawn next to the FPS. See the [getting started guide](../../../doc/quick_start/getting_started_with_ros2_ov2.0.md) for all demos and launch arguments.
 
-Models that need conversion (YOLO, SSD-lite, ...) are not downloaded by the script. See the YOLO tutorials in `doc/quick_start`.
+YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). The `ssdlite_mobilenet_v2` model of the SSD object detection samples is converted with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`. Other models that need conversion (Mask R-CNN, DeepLabv3, ...) are not covered by the scripts.
 
 ## Notes
 

@@ -15,7 +15,7 @@ limitations under the License.
 
 <package format="2">
   <name>openvino_test</name>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <description>a ROS2 wrapper package for Intel OpenVINO</description>
   <maintainer email="jayabalaji.sathiyamoorthi@intel.com">Jayabalaji Sathiyamoorthi</maintainer>
   <license>Apache License 2.0</license>

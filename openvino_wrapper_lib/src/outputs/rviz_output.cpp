@@ -87,6 +87,26 @@ void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::ObjectS
   image_window_output_->accept(results);
 }
 
+void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::KeypointDetectionResult>& results)
+{
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::OrientedObjectDetectionResult>& results)
+{
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::ImageClassificationResult>& results)
+{
+  image_window_output_->accept(results);
+}
+
+void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::DepthEstimationResult>& results)
+{
+  image_window_output_->accept(results);
+}
+
 void Outputs::RvizOutput::accept(const std::vector<openvino_wrapper_lib::EmotionsResult>& results)
 {
   image_window_output_->accept(results);

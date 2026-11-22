@@ -1,0 +1,121 @@
+Pipelines:
+- name: yolo26_detection
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ObjectDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.xml
+      model_type: yolo26
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n/FP16/yolo26n.labels
+      batch: 1
+      confidence_threshold: 0.5
+      enable_roi_constraint: true
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectDetection]
+    - left: ObjectDetection
+      right: [RosTopic]
+
+- name: yolo26_segmentation
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ObjectSegmentationInstance
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.xml
+      model_type: yolo26
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-seg/FP16/yolo26n-seg.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentationInstance]
+    - left: ObjectSegmentationInstance
+      right: [RosTopic]
+
+- name: yolo26_pose
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: KeypointDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-pose/FP16/yolo26n-pose.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-pose/FP16/yolo26n-pose.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [KeypointDetection]
+    - left: KeypointDetection
+      right: [RosTopic]
+
+- name: yolo26_obb
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: OrientedObjectDetection
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-obb/FP16/yolo26n-obb.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-obb/FP16/yolo26n-obb.labels
+      batch: 1
+      confidence_threshold: 0.5
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [OrientedObjectDetection]
+    - left: OrientedObjectDetection
+      right: [RosTopic]
+
+- name: yolo26_classification
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ImageClassification
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.xml
+      engine: CPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.labels
+      batch: 1
+      confidence_threshold: 0.1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ImageClassification]
+    - left: ImageClassification
+      right: [RosTopic]
+
+- name: yolo26_semantic
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: ObjectSegmentation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-sem/FP16/yolo26n-sem.xml
+      model_type: yolo26
+      engine: CPU
+      batch: 1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [ObjectSegmentation]
+    - left: ObjectSegmentation
+      right: [RosTopic]
+
+- name: yolo26_depth
+  inputs: [Image]
+  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  infers:
+    - name: DepthEstimation
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-depth/FP16/yolo26n-depth.xml
+      engine: CPU
+      batch: 1
+  outputs: [RosTopic]
+  connects:
+    - left: Image
+      right: [DepthEstimation]
+    - left: DepthEstimation
+      right: [RosTopic]
+
+Common:

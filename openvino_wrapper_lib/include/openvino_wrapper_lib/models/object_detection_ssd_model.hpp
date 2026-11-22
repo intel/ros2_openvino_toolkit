@@ -51,6 +51,21 @@ public:
   const std::string getModelCategory() const override;
 
   bool updateLayerProperty(std::shared_ptr<ov::Model>&) override;
+
+  std::string prepareForDevice(const std::string& device) override;
+
+private:
+  bool fetchTfApiResults(ov::InferRequest& request, std::vector<openvino_wrapper_lib::ObjectDetectionResult>& results,
+                         float confidence_thresh, bool enable_roi_constraint);
+
+  // Set for models converted directly from the TensorFlow Object Detection API
+  // (separate detection_boxes/scores/classes outputs, RGB input).
+  bool tf_api_outputs_ = false;
+  bool resize_loop_removed_ = false;
+  std::string boxes_name_;
+  std::string scores_name_;
+  std::string classes_name_;
+  std::string num_detections_name_;
 };
 }  // namespace Models
 #endif  // OPENVINO_WRAPPER_LIB__MODELS__OBJECT_DETECTION_SSD_MODEL_HPP_

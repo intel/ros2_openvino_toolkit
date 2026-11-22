@@ -28,6 +28,7 @@ set(msg_files
   msg/EmotionsStamped.msg
   msg/HeadPose.msg
   msg/HeadPoseStamped.msg
+  msg/Keypoint.msg
   msg/Landmark.msg
   msg/LandmarkStamped.msg
   msg/LicensePlate.msg
@@ -40,6 +41,10 @@ set(msg_files
   msg/ObjectsInBoxes3D.msg
   msg/ObjectInMask.msg
   msg/ObjectsInMasks.msg
+  msg/ObjectInOrientedBox.msg
+  msg/ObjectsInOrientedBoxes.msg
+  msg/ObjectWithKeypoints.msg
+  msg/ObjectsWithKeypoints.msg
   msg/PerfValue.msg
   msg/PersonAttribute.msg
   msg/PersonAttributeStamped.msg

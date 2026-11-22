@@ -34,7 +34,8 @@ std::shared_ptr<Engines::Engine>
 Engines::EngineManager::createEngine_V2022(const std::string& device, const std::shared_ptr<Models::BaseModel>& model)
 {
   ov::Core core;
-  ov::CompiledModel executable_network = core.compile_model(model->getModel(), device);
+  const std::string compile_device = model->prepareForDevice(device);
+  ov::CompiledModel executable_network = core.compile_model(model->getModel(), compile_device);
   ov::InferRequest infer_request = executable_network.create_infer_request();
 
   auto engine = std::make_shared<Engines::Engine>(infer_request, executable_network, device);

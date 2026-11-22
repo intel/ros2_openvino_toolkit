@@ -10,3 +10,7 @@ rules:
   comments: disable
   comments-indentation: disable
   line-length: disable
+  # The pipeline YAML files have no document start and an unindented top-level list.
+  document-start: disable
+  indentation:
+    indent-sequences: whatever

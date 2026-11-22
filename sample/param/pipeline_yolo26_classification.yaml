@@ -1,0 +1,18 @@
+Pipelines:
+- name: classification
+  inputs: [StandardCamera]
+  infers:
+    - name: ImageClassification
+      model: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.xml
+      engine: CPU #GPU #NPU
+      label: <OPENVINO_NODE_SHARE>/models/yolo26/yolo26n-cls/FP16/yolo26n-cls.labels
+      batch: 1
+      confidence_threshold: 0.1 # the classes above this probability are reported, at most five
+  outputs: [RosTopic, RViz]
+  connects:
+    - left: StandardCamera
+      right: [ImageClassification]
+    - left: ImageClassification
+      right: [RosTopic, RViz]
+
+Common:
