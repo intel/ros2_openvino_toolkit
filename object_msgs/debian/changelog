@@ -1,3 +1,10 @@
+ros-jazzy-object-msgs (0.5.0-1) noble; urgency=medium
+
+  * Add the Keypoint, ObjectWithKeypoints and ObjectsWithKeypoints messages.
+  * Add the ObjectInOrientedBox and ObjectsInOrientedBoxes messages.
+
+ -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Sun, 22 Nov 2026 00:00:00 +0000
+
 ros-jazzy-object-msgs (0.4.0-1) noble; urgency=medium
 
   * Initial Debian packaging.

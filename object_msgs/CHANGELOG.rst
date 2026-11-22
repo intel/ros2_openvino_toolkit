@@ -2,6 +2,11 @@
 Changelog for package object_msgs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+0.5.0 (2026-11-22)
+------------------
+* Add Keypoint, ObjectWithKeypoints and ObjectsWithKeypoints for objects with keypoints (pose estimation)
+* Add ObjectInOrientedBox and ObjectsInOrientedBoxes for objects with oriented bounding boxes
+
 0.4.0 (2019-05-15)
 ------------------
 * Merge pull request `#3 <https://github.com/RachelRen05/ros2_object_msgs/issues/3>`_ from chaoli2/master
