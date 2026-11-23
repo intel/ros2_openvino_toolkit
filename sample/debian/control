@@ -11,7 +11,6 @@ Build-Depends: debhelper-compat (= 13),
                ros-jazzy-builtin-interfaces,
                ros-jazzy-class-loader,
                ros-jazzy-cv-bridge,
-               ros-jazzy-librealsense2,
                ros-jazzy-object-msgs,
                ros-jazzy-openvino-msgs,
                ros-jazzy-openvino-param-lib,
@@ -40,7 +39,6 @@ Depends: ${misc:Depends},
          ros-jazzy-class-loader,
          ros-jazzy-cv-bridge,
          ros-jazzy-launch-ros,
-         ros-jazzy-librealsense2,
          ros-jazzy-object-msgs,
          ros-jazzy-openvino-msgs,
          ros-jazzy-openvino-param-lib,
@@ -57,6 +55,7 @@ Depends: ${misc:Depends},
 Recommends: intel-opencl-icd,
             ros-jazzy-rqt-image-view,
             ros-jazzy-rviz2
+Suggests: ros-jazzy-realsense2-camera
 Description: ROS 2 OpenVINO toolkit nodes, launch and parameter files
  Pipeline and service nodes of the ROS 2 OpenVINO toolkit together with their
  launch files, YAML pipeline configurations, label files and sample images.

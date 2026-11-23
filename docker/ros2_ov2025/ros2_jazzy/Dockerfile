@@ -15,22 +15,18 @@ LABEL maintainer="Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com
 
 SHELL ["/bin/bash", "-c"]
 
-# Install dependencies, OpenVINO, and librealsense2
+# Install dependencies, OpenVINO, and the RealSense ROS camera node
 RUN apt update && \
     apt install -y --no-install-recommends \
     curl wget gnupg2 lsb-release nano software-properties-common \
     apt-transport-https libyaml-cpp-dev ros-jazzy-libyaml-vendor ros-jazzy-cv-bridge \
-    libssl-dev libusb-1.0-0-dev libudev-dev pkg-config \
+    ros-jazzy-realsense2-camera \
     libgtk-3-dev git cmake build-essential nano && \
     # Add OpenVINO GPG key and repository
     wget -qO- https://apt.repos.intel.com/intel-gpg-keys/GPG-PUB-KEY-INTEL-SW-PRODUCTS.PUB | gpg --dearmor -o /etc/apt/trusted.gpg.d/intel.gpg && \
     echo "deb https://apt.repos.intel.com/openvino ubuntu24 main" | tee /etc/apt/sources.list.d/intel-openvino.list && \
-    # Add librealsense GPG key and repository
-    mkdir -p /etc/apt/keyrings && \
-    curl -sSf https://librealsense.realsenseai.com/Debian/librealsenseai.asc | gpg --dearmor -o /etc/apt/keyrings/librealsenseai.gpg && \
-    echo "deb [signed-by=/etc/apt/keyrings/librealsenseai.gpg] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | tee /etc/apt/sources.list.d/librealsense.list && \
     apt update && \
-    apt-get install -y openvino-2025.4.0 librealsense2-dev librealsense2-utils && \
+    apt-get install -y openvino-2025.4.0 && \
     rm -rf /var/lib/apt/lists/*
 
 # build ros2 openvino toolkit

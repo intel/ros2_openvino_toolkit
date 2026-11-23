@@ -1,6 +1,6 @@
 Pipelines:
 - name: people
-  inputs: [RealSenseCamera]
+  inputs: [RealSenseCameraTopic]
   infers:
     - name: FaceDetection
       model: <OPENVINO_NODE_SHARE>/models/intel/face-detection-adas-0001/FP16/face-detection-adas-0001.xml
@@ -20,7 +20,7 @@ Pipelines:
       confidence_threshold: 0.9
   outputs: [RosTopic, RViz]
   connects:
-    - left: RealSenseCamera
+    - left: RealSenseCameraTopic
       right: [FaceDetection]
     - left: FaceDetection
       right: [LandmarksDetection, FaceReidentification]

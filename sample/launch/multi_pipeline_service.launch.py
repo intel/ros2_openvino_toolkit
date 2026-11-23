@@ -19,10 +19,11 @@ Launches multiple OpenVINO detection pipelines simultaneously.
 Useful for running different models or configurations in parallel.
 
 This configuration runs two object detection pipelines with separate topics:
-- Pipeline 1: /ros2_openvino_toolkit/detected_objects1
-- Pipeline 2: /ros2_openvino_toolkit/detected_objects2
+- Pipeline 1 (StandardCamera): /ros2_openvino_toolkit/detected_objects1
+- Pipeline 2 (/camera/color/image_raw): /ros2_openvino_toolkit/detected_objects2
 
 Note: Requires sufficient compute resources (CPU/GPU) for multiple pipelines.
+      Launch your camera node separately, or add camera:=realsense to start realsense2_camera.
 """
 
 import os
@@ -39,7 +40,7 @@ launch_dir = os.path.dirname(os.path.abspath(__file__))
 if launch_dir not in sys.path:
     sys.path.insert(0, launch_dir)
 
-import launch_helpers
+import launch_helpers  # noqa: E402  # pylint: disable=wrong-import-position
 
 
 def generate_launch_description():
@@ -55,6 +56,7 @@ def generate_launch_description():
     dual_rviz = os.path.join(package_share_dir, 'launch', 'rviz', 'default2.rviz')
 
     return LaunchDescription([
+        *launch_helpers.camera_topic_actions(),
         # Declare launch argument for YAML configuration
         DeclareLaunchArgument(
             name='yaml_path',
@@ -69,6 +71,7 @@ def generate_launch_description():
             name='openvino_multi_pipeline',
             arguments=['-config', LaunchConfiguration('yaml_path')],
             remappings=[
+                ('/openvino_toolkit/image_raw', '/camera/color/image_raw'),
                 ('/openvino_toolkit/object1/detected_objects',
                  '/ros2_openvino_toolkit/detected_objects1'),
                 ('/openvino_toolkit/object2/detected_objects',

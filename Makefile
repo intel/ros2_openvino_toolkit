@@ -49,7 +49,7 @@ endef
 COLCON_DEPS := libopencv-dev libyaml-cpp-dev openvino-libraries-dev-$(OPENVINO_VERSION) \
 	ros-$(ROS_DISTRO)-ament-cmake-gtest ros-$(ROS_DISTRO)-ament-lint-auto \
 	ros-$(ROS_DISTRO)-ament-lint-common ros-$(ROS_DISTRO)-cv-bridge \
-	ros-$(ROS_DISTRO)-librealsense2 ros-$(ROS_DISTRO)-yaml-cpp-vendor
+	ros-$(ROS_DISTRO)-yaml-cpp-vendor
 COLCON_EVENT_HANDLERS := console_direct- compile_commands- console_cohesion- \
 	console_package_list- console_start_end+ console_stderr+ desktop_notification- \
 	event_log- log- log_command- status- store_result- summary+ terminal_title-
