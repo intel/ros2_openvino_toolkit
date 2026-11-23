@@ -63,7 +63,6 @@
 #include "openvino_wrapper_lib/models/depth_estimation_yolo26_model.hpp"
 #include "openvino_wrapper_lib/inputs/base_input.hpp"
 #include "openvino_wrapper_lib/inputs/image_input.hpp"
-#include "openvino_wrapper_lib/inputs/realsense_camera.hpp"
 #include "openvino_wrapper_lib/inputs/realsense_camera_topic.hpp"
 #include "openvino_wrapper_lib/inputs/standard_camera.hpp"
 #include "openvino_wrapper_lib/inputs/ip_camera.hpp"
@@ -137,7 +136,11 @@ PipelineManager::parseInputDevice(const PipelineData& pdata)
     slog::info << "Parsing InputDevice: " << name << slog::endl;
     std::shared_ptr<Input::BaseInputDevice> device = nullptr;
     if (name == kInputType_RealSenseCamera) {
-      device = std::make_shared<Input::RealSenseCamera>();
+      // No librealsense link, so the binaries work with any librealsense2 version.
+      slog::warn << "Input " << name << " is deprecated and reads the camera topic /openvino_toolkit/image_raw; "
+                 << "start realsense2_camera (e.g. launch with camera:=realsense) and use "
+                 << kInputType_CameraTopic << " instead." << slog::endl;
+      device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
     } else if (name == kInputType_StandardCamera) {
       device = std::make_shared<Input::StandardCamera>(pdata.params.input_meta);
     } else if (name == kInputType_IpCamera) {
