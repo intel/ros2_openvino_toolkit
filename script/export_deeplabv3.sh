@@ -14,7 +14,7 @@ if [[ "$EUID" -eq 0 && -z "${OPENVINO_TOOLKIT_DIR:-}" ]]; then
   exit 2
 fi
 
-OPENVINO_VERSION="${OPENVINO_VERSION:-2025.4.0}"
+OPENVINO_VERSION="${OPENVINO_VERSION:-2026.4.1}"
 TOOLKIT_DIR="${OPENVINO_TOOLKIT_DIR:-${XDG_DATA_HOME:-$HOME/.local/share}/openvino_toolkit}"
 VENV_DIR="$TOOLKIT_DIR/venv/deeplabv3"
 WORK_DIR="$TOOLKIT_DIR/cache/deeplabv3"
