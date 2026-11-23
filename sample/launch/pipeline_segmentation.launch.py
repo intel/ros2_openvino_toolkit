@@ -25,7 +25,7 @@ Visualization options:
 - viewer:=rviz2  -> Launches RViz2 with custom config
 - viewer:=none   -> No visualization
 
-Note: Launch your camera node (e.g., realsense2_camera) separately.
+Note: Launch your camera node separately, or add camera:=realsense to start realsense2_camera.
 
 Topics:
 - Subscribes to: /camera/color/image_raw
@@ -64,6 +64,7 @@ def generate_launch_description():
     default_rviz = os.path.join(package_share_dir, 'launch', 'rviz', 'people.rviz')
 
     return LaunchDescription([
+        *launch_helpers.camera_topic_actions(),
         # Declare launch argument for YAML configuration
         DeclareLaunchArgument(
             name='yaml_path',

@@ -51,7 +51,7 @@ source install/setup.bash
 ros2 run openvino_node setup_models.sh
 ```
 
-This gets the core set of models to `~/.local/share/openvino_toolkit/models/`: the pre-converted Intel models of the face / people demos, `ssdlite_mobilenet_v2` (SSD object detection), `deeplabv3` (semantic segmentation) and YOLO26 detection. Models that are already present are skipped. The first conversion or export creates a Python virtual environment in `~/.local/share/openvino_toolkit/venv/`, which takes a few minutes (about 2 GB for YOLO26).
+This gets the core set of models to `~/.local/share/openvino_toolkit/models/`: the pre-converted Intel models (face / people, person, vehicle and segmentation samples), `ssdlite_mobilenet_v2` (SSD object detection), `deeplabv3` (semantic segmentation) and YOLO26 detection. Models that are already present are skipped. The first conversion or export creates a Python virtual environment in `~/.local/share/openvino_toolkit/venv/`, which takes a few minutes (about 2 GB for YOLO26).
 
 |Command|Result|
 |---|---|
@@ -66,7 +66,7 @@ To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloadin
 export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-`setup_models.sh` runs four scripts, which can also be used directly:
+`setup_models.sh` runs five scripts, which can also be used directly:
 
 |Script|Models|
 |---|---|
@@ -74,6 +74,7 @@ export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 |`export_yolo26.sh [--tasks ...] [--size ...] [--precision ...]`|YOLO26, see the [YOLO26 tutorial](./tutorial_for_yolo26.md)|
 |`export_ssdlite_mobilenet_v2.sh`|`ssdlite_mobilenet_v2`, converted from TensorFlow|
 |`export_deeplabv3.sh`|`deeplabv3`, converted from TensorFlow|
+|`export_maskrcnn.sh`|`mask_rcnn_inception_resnet_v2_atrous_coco`, converted from TensorFlow with the legacy Model Optimizer (about 3 GB, only with `--all` or `--sample pipeline_segmentation_maskrcnn`)|
 
 ## 5. Run a demo
 
