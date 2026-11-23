@@ -12,8 +12,11 @@ ros-lyrical-openvino-wrapper-lib (1.1.0-1) resolute; urgency=medium
     outputs).
   * Run the backbone of these SSD models on the NPU and their
     post-processing on the CPU when the NPU is requested.
+  * Do not link librealsense2, so the package works with any librealsense2
+    version. The RealSenseCamera input is a deprecated alias of
+    RealSenseCameraTopic and reads the image of the realsense2_camera node.
 
- -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Sun, 22 Nov 2026 00:00:00 +0000
+ -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Tue, 24 Nov 2026 00:00:00 +0000
 
 ros-lyrical-openvino-wrapper-lib (1.0.0-1) resolute; urgency=medium
 
