@@ -6,7 +6,7 @@ Dockerfile for ROS 2 Lyrical (Ubuntu 26.04) with OpenVINO 2026.4.1. The image is
 
 - ROS 2 Lyrical Desktop
 - OpenVINO 2026.4.1 (Intel APT repository)
-- librealsense2 (`ros-lyrical-librealsense2`)
+- RealSense ROS camera node (`ros-lyrical-realsense2-camera`), used with `camera:=realsense`
 - Intel GPU user-space drivers (OpenCL and Level Zero)
 
 ## Prerequisites

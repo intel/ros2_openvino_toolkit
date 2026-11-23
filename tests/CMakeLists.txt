@@ -39,12 +39,6 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(realsense2)
-if(NOT realsense2_FOUND)
-  message(FATAL_ERROR "\n\n Intel RealSense SDK 2.0 is missing, please install it from "
-    "https://github.com/IntelRealSense/librealsense/releases\n\n")
-endif()
-
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -119,7 +113,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-deprecated-de
 # Properties->C/C++->General->Additional Include Directories
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${realsense2_INCLUDE_DIRS}
 )
 
 # Install param files.
@@ -159,7 +152,6 @@ if(BUILD_TESTING)
         object_msgs::object_msgs
         openvino_msgs::openvino_msgs
         ${OpenCV_LIBS}
-        realsense2::realsense2
         ament_index_cpp::ament_index_cpp
         yaml-cpp
         class_loader::class_loader

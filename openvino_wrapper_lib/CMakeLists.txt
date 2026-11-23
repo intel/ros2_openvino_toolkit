@@ -50,10 +50,6 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-# realsense_camera.hpp includes librealsense2 unconditionally.
-# On Lyrical: sudo apt install ros-lyrical-librealsense2
-find_package(realsense2 REQUIRED)
-
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -159,7 +155,7 @@ include_directories(
     ${OpenVINO_INCLUDE_DIRS}
 )
 
-set(DEPENDENCIES realsense2::realsense2 ${OpenCV_LIBS} openvino::runtime)
+set(DEPENDENCIES ${OpenCV_LIBS} openvino::runtime)
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
@@ -187,7 +183,6 @@ add_library(${PROJECT_NAME} SHARED
         #src/inferences/face_reidentification.cpp
         src/inferences/vehicle_attribs_detection.cpp
         src/inferences/license_plate_detection.cpp
-        src/inputs/realsense_camera.cpp
         src/inputs/image_topic.cpp
         src/inputs/standard_camera.cpp
         src/inputs/ip_camera.cpp
@@ -270,7 +265,7 @@ ament_export_targets(${PROJECT_NAME}Targets HAS_LIBRARY_TARGET)
 ament_export_dependencies(
   rclcpp rmw_implementation std_msgs sensor_msgs object_msgs openvino_msgs
   ament_index_cpp class_loader cv_bridge openvino_param_lib yaml_cpp_vendor
-  OpenCV OpenVINO realsense2
+  OpenCV OpenVINO
 )
 
 ament_package()

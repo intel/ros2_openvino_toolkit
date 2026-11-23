@@ -17,11 +17,11 @@ To try the toolkit without a local ROS 2 installation, use the Debian packages i
 |Component|Install|
 |---|---|
 |ROS 2 Lyrical|[Install guide](https://docs.ros.org/en/lyrical/Installation/Ubuntu-Install-Debs.html)|
-|Build tools and ROS packages|`sudo apt install python3-colcon-common-extensions ros-lyrical-cv-bridge ros-lyrical-librealsense2 ros-lyrical-yaml-cpp-vendor ros-lyrical-rviz2 ros-lyrical-rqt-image-view libopencv-dev`|
+|Build tools and ROS packages|`sudo apt install python3-colcon-common-extensions ros-lyrical-cv-bridge ros-lyrical-yaml-cpp-vendor ros-lyrical-rviz2 ros-lyrical-rqt-image-view libopencv-dev`|
 |OpenVINO 2026.4|Installed in step 2|
 
 Notes:
-* `ros-lyrical-librealsense2` is needed to build even if you do not own a RealSense camera.
+* RealSense cameras are read through the ROS camera node. Install `ros-lyrical-realsense2-camera` (or the one of your librealsense stack) only if you use a RealSense camera, and launch with `camera:=realsense`.
 * `ros-lyrical-rviz2` and `ros-lyrical-rqt-image-view` are only needed for the visualization options (`viewer:=rviz2` or `viewer:=rqt`).
 * The object messages are part of this repository ([object_msgs](../../object_msgs)). Do not clone `ros2_object_msgs` in addition.
 
@@ -115,7 +115,7 @@ Each demo needs its own models. If one is missing, the launch prints `WARNING: m
 |`WARNING: model not found: ...` at launch|The models are not where the launch file looks. Run the script named in the warning, or set `OPENVINO_TOOLKIT_DIR` to the folder that contains `models/`.|
 |`No labels loaded from ...` or `Class id ... is outside the ... labels` at start-up|The `label:` file of the YAML file is missing or belongs to another model. The results then show class ids or wrong names. Use the label file that matches the model.|
 |CMake error `Could not find a package configuration file provided by "OpenVINO"`|The OpenVINO development files are not installed. See step 2.|
-|CMake error about `realsense2`|Install `ros-lyrical-librealsense2`.|
+|`nothing publishes on /camera/color/image_raw`|The pipeline waits for a camera topic. Launch with `camera:=realsense`, or start your camera node and remap its image topic to `/camera/color/image_raw`.|
 |Symlink "File exists" errors, or packages built against the wrong ROS distribution|The shell still has an old workspace sourced. Open a new terminal, source only `/opt/ros/lyrical/setup.bash`, and remove the `build/`, `install/` and `log/` folders.|
 |Device is shown as `GPU.0`, not `GPU`|Expected. OpenVINO reports the index of the GPU that is used.|
 |The system monitor shows about 0% GPU load while running on GPU|OpenVINO uses the GPU compute engine, which many monitors do not show. Use `intel_gpu_top` and look at the Compute row.|

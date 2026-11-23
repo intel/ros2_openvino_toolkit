@@ -22,7 +22,8 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl git nano cmake build-essential \
     python3-colcon-common-extensions libopencv-dev \
-    ros-lyrical-cv-bridge ros-lyrical-librealsense2 ros-lyrical-yaml-cpp-vendor \
+    ros-lyrical-cv-bridge ros-lyrical-yaml-cpp-vendor \
+    ros-lyrical-realsense2-camera \
     ros-lyrical-rqt-image-view \
     intel-opencl-icd libze-intel-gpu1 libze1 && \
     rm -rf /var/lib/apt/lists/*
