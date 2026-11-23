@@ -146,7 +146,7 @@ Currently, the package supports several input resources for acquiring image data
 |Input Resource|Description|
 |--------------------|------------------------------------------------------------------|
 |StandardCamera|Any RGB camera with USB port supporting. Currently only the first USB camera if many are connected.|
-|RealSenseCamera| Intel RealSense RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|
+|RealSenseCamera| Deprecated alias of `RealSenseCameraTopic`: reads the image topic of the RealSense ROS node (`camera:=realsense`). The toolkit no longer links librealsense, so it works with any librealsense version.|
 |ImageTopic| Any ROS topic which is structured in image message.|
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|
 |Video| Any video file which can be parsed by openCV.|

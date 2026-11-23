@@ -21,7 +21,7 @@ Pipelines:
       right: [RViz]
 
 - name: object2
-  inputs: [RealSenseCamera]
+  inputs: [RealSenseCameraTopic]
   infers:
     - name: ObjectDetection
       model: <OPENVINO_NODE_SHARE>/models/convert/public/ssdlite_mobilenet_v2/FP16/ssdlite_mobilenet_v2.xml
@@ -32,7 +32,7 @@ Pipelines:
       enable_roi_constraint: true # set enable_roi_constraint to false if you don't want to make the inferred ROI (region of interest) constrained into the camera frame
   outputs: [RosTopic, RViz]
   connects:
-    - left: RealSenseCamera
+    - left: RealSenseCameraTopic
       right: [ObjectDetection]
     - left: ObjectDetection
       right: [RosTopic]
