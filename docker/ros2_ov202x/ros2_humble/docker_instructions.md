@@ -30,14 +30,14 @@ docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" -t  r
 
 ```
 ## Download the Models
-Run the download script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the pre-converted Intel models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set.
-YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). The `ssdlite_mobilenet_v2` model of the SSD object detection samples is converted with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`.
-Other models that need conversion (Mask R-CNN, DeepLabv3, ...) are not covered by the scripts.
+Run the setup script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. It downloads the pre-converted Intel models and converts `ssdlite_mobilenet_v2`, `deeplabv3` and the YOLO26 models (see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md)).
+Other models that need conversion (Mask R-CNN, ...) are not covered by the scripts.
 
 ```bash
 source /home/ubuntu/ros2_ws/install/setup.bash
-ros2 run openvino_node download_models.sh        # models of the face / people demos
-ros2 run openvino_node download_models.sh --all  # all Intel models supported by the script
+ros2 run openvino_node setup_models.sh                         # core set of models
+ros2 run openvino_node setup_models.sh --sample pipeline_image # models of one sample
+ros2 run openvino_node setup_models.sh --all                   # every model that the scripts provide
 ```
 
 ## Running the Docker Container
@@ -71,7 +71,7 @@ docker run -itd -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix -v /dev:/de
 * `-e DISPLAY=$DISPLAY`: sets the DISPLAY environment variable inside the container to match the host's DISPLAY variable. This is necessary for GUI applications to display on the host's screen.
 * `-v /tmp/.X11-unix:/tmp/.X11-unix`: mounts the X11 Unix socket from the host to the container. This is required for GUI applications to communicate with the X server on the host.
 * `-v /dev:/dev`: mounts the /dev directory from the host to the container, allowing the container to access hardware devices. This is often necessary for applications that interact with hardware, such as cameras or GPUs.
-* `-v $HOME/openvino_models:/opt/openvino_toolkit -e OPENVINO_TOOLKIT_DIR=/opt/openvino_toolkit`: mounts a host directory as the models directory of the toolkit, so that the models downloaded with download_models.sh are kept between runs.
+* `-v $HOME/openvino_models:/opt/openvino_toolkit -e OPENVINO_TOOLKIT_DIR=/opt/openvino_toolkit`: mounts a host directory as the models directory of the toolkit, so that the models fetched with setup_models.sh are kept between runs.
 * `-v /data:/data`: mounts the /data directory from the host to the container, that contains the images and labels. Replace this with the folder of your images and labels.
 * `--privileged=true`: grants the container extended privileges, allowing it to access all devices on the host and perform operations that are typically restricted. This is necessary for certain applications that require direct hardware access.
 * `--name ros2_openvino_container`: assigns the name ros2_openvino_container to the running container, making it easier to reference in subsequent Docker commands.
