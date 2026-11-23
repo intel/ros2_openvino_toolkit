@@ -48,12 +48,6 @@ if(OpenCV_FOUND)
     add_definitions(-DUSE_OPENCV)
 endif()
 
-find_package(realsense2 QUIET)
-if(NOT (realsense2_FOUND))
-  message(STATUS "\n\n Intel RealSense SDK 2.0 is missing, some features depending on it won't work. \
-    please install it from https://github.com/IntelRealSense/librealsense/releases\n\n")
-endif()
-
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -158,7 +152,7 @@ include_directories(
     ${OpenVINO_INCLUDE_DIRS}
 )
 
-set(DEPENDENCIES ${realsense2_LIBRARY} ${OpenCV_LIBS} openvino::runtime)
+set(DEPENDENCIES ${OpenCV_LIBS} openvino::runtime)
 
 add_library(${PROJECT_NAME} SHARED
         src/services/pipeline_processing_server.cpp
@@ -186,7 +180,6 @@ add_library(${PROJECT_NAME} SHARED
         #src/inferences/face_reidentification.cpp
         src/inferences/vehicle_attribs_detection.cpp
         src/inferences/license_plate_detection.cpp
-        src/inputs/realsense_camera.cpp
         src/inputs/image_topic.cpp
         src/inputs/standard_camera.cpp
         src/inputs/ip_camera.cpp
@@ -237,7 +230,6 @@ ament_target_dependencies(${PROJECT_NAME}
   "openvino_msgs"
   "ament_index_cpp"
   "class_loader"
-  "realsense2"
   "cv_bridge"
   "openvino_param_lib"
   "yaml_cpp_vendor"

@@ -40,7 +40,6 @@
 #include "openvino_wrapper_lib/pipeline_manager.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino/openvino.hpp"
-#include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 
 #define MAX_SIZE 300

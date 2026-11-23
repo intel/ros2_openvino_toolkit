@@ -11,7 +11,6 @@ Build-Depends: debhelper-compat (= 13),
                ros-humble-builtin-interfaces,
                ros-humble-class-loader,
                ros-humble-cv-bridge,
-               ros-humble-librealsense2,
                ros-humble-object-msgs,
                ros-humble-openvino-msgs,
                ros-humble-openvino-param-lib,
@@ -40,7 +39,6 @@ Depends: ${misc:Depends},
          ros-humble-class-loader,
          ros-humble-cv-bridge,
          ros-humble-launch-ros,
-         ros-humble-librealsense2,
          ros-humble-object-msgs,
          ros-humble-openvino-msgs,
          ros-humble-openvino-param-lib,
@@ -57,6 +55,7 @@ Depends: ${misc:Depends},
 Recommends: intel-opencl-icd,
             ros-humble-rqt-image-view,
             ros-humble-rviz2
+Suggests: ros-humble-realsense2-camera
 Description: ROS 2 OpenVINO toolkit nodes, launch and parameter files
  Pipeline and service nodes of the ROS 2 OpenVINO toolkit together with their
  launch files, YAML pipeline configurations, label files and sample images.
