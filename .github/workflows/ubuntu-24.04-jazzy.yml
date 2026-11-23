@@ -2,9 +2,9 @@ name: Ubuntu-24.04-Jazzy-CI
 
 on:
   push:
-    branches: [ "ros2_jazzy" ]
+    branches: ["ros2_jazzy"]
   pull_request:
-    branches: [ "ros2_jazzy" ]
+    branches: ["ros2_jazzy"]
   workflow_dispatch:
 
 permissions: read-all
@@ -33,7 +33,7 @@ jobs:
       run: |
         mkdir -p ~/ros2_ws/src
         env
-        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src
+        cp -rf "${GITHUB_WORKSPACE}" ~/ros2_ws/src
         cd ~/ros2_ws
         source /opt/ros/jazzy/setup.bash
         colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
