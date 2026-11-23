@@ -2,15 +2,15 @@
 # Get the OpenVINO models of the samples with one command.
 #
 # Usage:
-#   setup_models.sh                                 # core set: face/people, SSD object detection, DeepLabv3, YOLO26 detection
-#   setup_models.sh --all                           # every model that the scripts provide
+#   setup_models.sh                                 # core set: all Intel models, SSD object detection, DeepLabv3, YOLO26 detection
+#   setup_models.sh --all                           # every model that the scripts provide, incl. Mask R-CNN (large)
 #   setup_models.sh --sample pipeline_segmentation  # models of one sample (launch file or YAML name, repeatable)
 #   setup_models.sh --model <path> [<path>...]      # specific model files, e.g. as printed by a launch file
 #   setup_models.sh --list                          # models of all samples and whether they are present
 #   setup_models.sh --size s --precision INT8       # YOLO26 size and precision of the core set or --all
 #
 # Present models are skipped. It runs download_models.sh, export_yolo26.sh,
-# export_ssdlite_mobilenet_v2.sh and export_deeplabv3.sh, which can also be used directly.
+# export_ssdlite_mobilenet_v2.sh, export_deeplabv3.sh and export_maskrcnn.sh, which can also be used directly.
 # Target directory: $OPENVINO_TOOLKIT_DIR, else $XDG_DATA_HOME/openvino_toolkit
 # (default ~/.local/share/openvino_toolkit).
 set -uo pipefail
@@ -88,6 +88,8 @@ classify() {
     KIND=ssdlite
   elif [[ "$path" == */models/convert/public/deeplabv3/* ]]; then
     KIND=deeplabv3
+  elif [[ "$path" == */models/convert/public/mask_rcnn_inception_resnet_v2_atrous_coco/* ]]; then
+    KIND=maskrcnn
   elif [[ "$path" =~ /models/intel/([^/]+)/([^/]+)/ ]]; then
     KIND=intel
     ARG="${BASH_REMATCH[1]}/${BASH_REMATCH[2]}"
@@ -98,6 +100,7 @@ intel=()
 declare -A yolo=()
 ssdlite=0
 deeplabv3=0
+maskrcnn=0
 manual=()
 
 plan_model() {
@@ -113,6 +116,7 @@ plan_model() {
       ;;
     ssdlite) ssdlite=1 ;;
     deeplabv3) deeplabv3=1 ;;
+    maskrcnn) maskrcnn=1 ;;
     *) manual+=("$1") ;;
   esac
 }
@@ -125,7 +129,7 @@ run_step() {
   shift
   echo
   echo "==> $label"
-  if "$@"; then
+  if bash "$@"; then
     ok+=("$label")
   else
     failed+=("$label")
@@ -147,6 +151,9 @@ run_plan() {
   fi
   if [[ "$deeplabv3" -eq 1 ]]; then
     run_step "deeplabv3" "$SCRIPT_DIR/export_deeplabv3.sh"
+  fi
+  if [[ "$maskrcnn" -eq 1 ]]; then
+    run_step "mask_rcnn_inception_resnet_v2_atrous_coco" "$SCRIPT_DIR/export_maskrcnn.sh"
   fi
 }
 
@@ -213,7 +220,7 @@ case "$mode" in
     exit 0
     ;;
   core)
-    run_step "Intel models (face and people samples)" "$SCRIPT_DIR/download_models.sh"
+    run_step "Intel models" "$SCRIPT_DIR/download_models.sh" --all
     run_step "ssdlite_mobilenet_v2" "$SCRIPT_DIR/export_ssdlite_mobilenet_v2.sh"
     run_step "deeplabv3" "$SCRIPT_DIR/export_deeplabv3.sh"
     run_step "YOLO26 detection" "$SCRIPT_DIR/export_yolo26.sh" "${yolo_opts[@]}"
@@ -223,6 +230,7 @@ case "$mode" in
     run_step "ssdlite_mobilenet_v2" "$SCRIPT_DIR/export_ssdlite_mobilenet_v2.sh"
     run_step "deeplabv3" "$SCRIPT_DIR/export_deeplabv3.sh"
     run_step "YOLO26 (all tasks)" "$SCRIPT_DIR/export_yolo26.sh" --tasks all "${yolo_opts[@]}"
+    run_step "mask_rcnn_inception_resnet_v2_atrous_coco" "$SCRIPT_DIR/export_maskrcnn.sh"
     ;;
   selected)
     for sample in "${samples[@]}"; do
