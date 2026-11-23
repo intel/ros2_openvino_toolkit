@@ -9,8 +9,15 @@ ros-humble-openvino-node (1.1.0-1) jammy; urgency=medium
     model of the SSD object detection pipelines.
   * Remove the YOLOv5, YOLOv7 and YOLOv8 sample pipelines and the unused
     label and parameter files.
+  * Add setup_models.sh to get the models of the samples with one command
+    (core set, --all, --sample, --model, --list), and launch with
+    fetch_models:=true to fetch missing models before the start.
+  * Add export_deeplabv3.sh and export_maskrcnn.sh to convert the DeepLabv3
+    and Mask R-CNN models of the segmentation pipelines.
+  * Do not link librealsense2. RealSense cameras are read through the
+    realsense2_camera node: launch the camera samples with camera:=realsense.
 
- -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Sun, 22 Nov 2026 00:00:00 +0000
+ -- Jayabalaji Sathiyamoorthi <jayabalaji.sathiyamoorthi@intel.com>  Tue, 24 Nov 2026 00:00:00 +0000
 
 ros-humble-openvino-node (1.0.0-1) jammy; urgency=medium
 
