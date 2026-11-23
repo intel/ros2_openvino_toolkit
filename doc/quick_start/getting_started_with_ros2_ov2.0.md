@@ -45,18 +45,20 @@ colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 ```
 
-## 4. Download the models
+## 4. Get the models
 
 ```bash
-ros2 run openvino_node download_models.sh
+ros2 run openvino_node setup_models.sh
 ```
 
-This downloads the pre-converted models used by the face / people demos (face detection, age and gender, emotion, head pose) to `~/.local/share/openvino_toolkit/models/intel/`.
+This gets the core set of models to `~/.local/share/openvino_toolkit/models/`: the pre-converted Intel models of the face / people demos, `ssdlite_mobilenet_v2` (SSD object detection), `deeplabv3` (semantic segmentation) and YOLO26 detection. Models that are already present are skipped. The first conversion or export creates a Python virtual environment in `~/.local/share/openvino_toolkit/venv/`, which takes a few minutes (about 2 GB for YOLO26).
 
 |Command|Result|
 |---|---|
-|`ros2 run openvino_node download_models.sh --all`|All Intel models supported by the script|
-|`ros2 run openvino_node download_models.sh face-detection-adas-0001/FP16`|Only the listed `<name>/<precision>` models|
+|`ros2 run openvino_node setup_models.sh --sample pipeline_image`|Only the models of one sample (launch file or YAML name)|
+|`ros2 run openvino_node setup_models.sh --all`|Every model that the scripts provide|
+|`ros2 run openvino_node setup_models.sh --list`|The models of all samples and whether they are present|
+|`ros2 launch openvino_node <sample>.launch.py fetch_models:=true`|Fetches the missing models of the sample, then launches it|
 
 To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloading **and** before launching:
 
@@ -64,15 +66,14 @@ To store the models somewhere else, set `OPENVINO_TOOLKIT_DIR` before downloadin
 export OPENVINO_TOOLKIT_DIR=/data/openvino_toolkit
 ```
 
-YOLO26 models are exported with a second script, see the [YOLO26 tutorial](./tutorial_for_yolo26.md).
+`setup_models.sh` runs four scripts, which can also be used directly:
 
-The `ssdlite_mobilenet_v2` model of `pipeline_object.launch.py` and the other SSD object detection samples is converted from the TensorFlow model with a third script:
-
-```bash
-ros2 run openvino_node export_ssdlite_mobilenet_v2.sh
-```
-
-The first run creates a Python virtual environment with the `openvino` package in `~/.local/share/openvino_toolkit/venv/ssdlite`. The model is stored in `~/.local/share/openvino_toolkit/models/convert/public/ssdlite_mobilenet_v2/FP16/`.
+|Script|Models|
+|---|---|
+|`download_models.sh [--all \| <name>/<precision>...]`|Pre-converted Intel models|
+|`export_yolo26.sh [--tasks ...] [--size ...] [--precision ...]`|YOLO26, see the [YOLO26 tutorial](./tutorial_for_yolo26.md)|
+|`export_ssdlite_mobilenet_v2.sh`|`ssdlite_mobilenet_v2`, converted from TensorFlow|
+|`export_deeplabv3.sh`|`deeplabv3`, converted from TensorFlow|
 
 ## 5. Run a demo
 
