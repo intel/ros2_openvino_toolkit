@@ -175,7 +175,8 @@ def camera_topic_actions(topic='/camera/color/image_raw', check_delay=8.0):
     """
     check = (f'ros2 topic info {topic} 2>/dev/null | grep -q "Publisher count: [1-9]" || '
              f'echo "[launch_helpers] WARNING: nothing publishes on {topic}, the pipeline is '
-             'waiting for images. Start your camera node, or launch again with camera:=realsense."')
+             'waiting for images. Start your camera node, '
+             'or launch again with camera:=realsense."')
     return [
         DeclareLaunchArgument(
             name='camera',
@@ -195,7 +196,8 @@ def camera_topic_actions(topic='/camera/color/image_raw', check_delay=8.0):
     ]
 
 
-def pipeline_launch_description(yaml_filename, pipeline_name, topics, default_viewer='rqt'):
+def pipeline_launch_description(yaml_filename, pipeline_name, topics, default_viewer='rqt',
+                                camera_topic=None):
     """
     Return the launch description of a pipeline node and an optional image viewer.
 
@@ -205,18 +207,25 @@ def pipeline_launch_description(yaml_filename, pipeline_name, topics, default_vi
         topics: Result topics of the pipeline, remapped from
             /openvino_toolkit/<pipeline_name>/<topic> to /ros2_openvino_toolkit/<topic>
         default_viewer: Default of the 'viewer' argument: 'rqt', 'rviz2' or 'none'
+        camera_topic: Image topic of a RealSenseCameraTopic/ImageTopic input; adds the
+            'camera' argument and the missing-camera warning (see camera_topic_actions())
     """
     default_rviz = os.path.join(
         get_package_share_directory('openvino_node'), 'launch', 'rviz', 'people.rviz')
     prefix = f'/openvino_toolkit/{pipeline_name}/'
     remappings = [(prefix + topic, '/ros2_openvino_toolkit/' + topic) for topic in topics]
     remappings.append((prefix + 'images', '/ros2_openvino_toolkit/image_rviz'))
+    camera_actions = []
+    if camera_topic:
+        remappings.append(('/openvino_toolkit/image_raw', camera_topic))
+        camera_actions = camera_topic_actions(camera_topic)
 
     def viewer_is(name):
         return IfCondition(
             PythonExpression(["'", LaunchConfiguration('viewer'), f"' == '{name}'"]))
 
     return LaunchDescription([
+        *camera_actions,
         DeclareLaunchArgument(
             name='yaml_path',
             default_value=resolve_yaml_paths(yaml_filename),
