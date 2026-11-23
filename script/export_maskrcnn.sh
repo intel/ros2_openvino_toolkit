@@ -11,6 +11,8 @@
 # The pipeline needs the IR layout of the legacy Model Optimizer (inputs image_tensor and
 # image_info, outputs masks and reshape_do_2d), which ovc cannot produce. The conversion
 # therefore uses openvino-dev 2024.6 with TensorFlow (about 2 GB, created on first use).
+# openvino-dev 2024.6 needs Python 3.9-3.12: set MASKRCNN_PYTHON to such an interpreter
+# if python3 is newer, e.g. after "uv python install 3.12".
 set -euo pipefail
 
 if [[ "$EUID" -eq 0 && -z "${OPENVINO_TOOLKIT_DIR:-}" ]]; then
@@ -36,8 +38,21 @@ if [[ -s "$OUT_DIR/$NAME.xml" && -s "$OUT_DIR/$NAME.bin" ]]; then
 fi
 
 if [[ ! -x "$VENV_DIR/bin/mo" ]]; then
-  echo "Creating the Python environment in $VENV_DIR"
-  python3 -m venv "$VENV_DIR"
+  python=""
+  for candidate in "${MASKRCNN_PYTHON:-}" python3.12 python3.11 python3.10 python3; do
+    if [[ -n "$candidate" ]] && command -v "$candidate" > /dev/null &&
+      "$candidate" -c 'import sys; sys.exit(not (3, 9) <= sys.version_info[:2] <= (3, 12))'; then
+      python="$candidate"
+      break
+    fi
+  done
+  if [[ -z "$python" ]]; then
+    echo "openvino-dev $MO_VERSION needs Python 3.9-3.12, but $(python3 --version) was found." >&2
+    echo "Install one (e.g. 'uv python install 3.12') and set MASKRCNN_PYTHON to its path." >&2
+    exit 2
+  fi
+  echo "Creating the Python environment in $VENV_DIR with $($python --version)"
+  "$python" -m venv "$VENV_DIR"
   "$VENV_DIR/bin/pip" install --quiet --upgrade pip
   "$VENV_DIR/bin/pip" install --quiet "openvino-dev[tensorflow2]==$MO_VERSION"
 fi
