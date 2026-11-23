@@ -21,6 +21,7 @@ ros2 run openvino_node setup_models.sh --all     # or: export_yolo26.sh --tasks 
 ```
 
 `setup_models.sh` exports the YOLO26 models with `export_yolo26.sh`, which can also be run directly with these options (`setup_models.sh` passes `--size` and `--precision` on):
+
 |Option|Values|Default|
 |---|---|---|
 |`--tasks`|Comma-separated list of the values in the table above, or `all`|`detect`|

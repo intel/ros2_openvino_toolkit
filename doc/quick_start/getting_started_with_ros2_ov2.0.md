@@ -7,7 +7,7 @@ This guide builds the toolkit and runs a first demo. It targets the `ros2_jazzy`
 |1|[Install the prerequisites](#1-install-the-prerequisites)|
 |2|[Get the sources and install OpenVINO](#2-get-the-sources-and-install-openvino)|
 |3|[Build](#3-build)|
-|4|[Download the models](#4-download-the-models)|
+|4|[Get the models](#4-get-the-models)|
 |5|[Run a demo](#5-run-a-demo)|
 
 To try the toolkit without a local ROS 2 installation, use the Debian packages in a container instead: see [Test in a Container](../../README.md#test-in-a-container).
@@ -51,7 +51,8 @@ source install/setup.bash
 ros2 run openvino_node setup_models.sh
 ```
 
-This gets the core set of models to `~/.local/share/openvino_toolkit/models/`: the pre-converted Intel models (face / people, person, vehicle and segmentation samples), `ssdlite_mobilenet_v2` (SSD object detection), `deeplabv3` (semantic segmentation) and YOLO26 detection. Models that are already present are skipped. The first conversion or export creates a Python virtual environment in `~/.local/share/openvino_toolkit/venv/`, which takes a few minutes (about 2 GB for YOLO26).
+This gets the core set of models to `~/.local/share/openvino_toolkit/models/`: the pre-converted Intel models (face / people, person, vehicle and segmentation samples), `ssdlite_mobilenet_v2` (SSD object detection), `deeplabv3` (semantic segmentation) and YOLO26 detection.
+Models that are already present are skipped. The first conversion or export creates a Python virtual environment in `~/.local/share/openvino_toolkit/venv/`, which takes a few minutes (about 2 GB for YOLO26).
 
 |Command|Result|
 |---|---|
