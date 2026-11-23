@@ -165,6 +165,36 @@ def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     return resolved_yaml
 
 
+def camera_topic_actions(topic='/camera/color/image_raw', check_delay=8.0):
+    """
+    Return launch actions for pipelines that subscribe to a camera topic.
+
+    Declares 'camera' ('none' or 'realsense'): 'realsense' starts realsense2_camera
+    publishing on /camera/color/image_raw. After check_delay seconds a warning is
+    printed if nothing publishes on topic, since the pipeline then waits silently.
+    """
+    check = (f'ros2 topic info {topic} 2>/dev/null | grep -q "Publisher count: [1-9]" || '
+             f'echo "[launch_helpers] WARNING: nothing publishes on {topic}, the pipeline is '
+             'waiting for images. Start your camera node, or launch again with camera:=realsense."')
+    return [
+        DeclareLaunchArgument(
+            name='camera',
+            default_value='none',
+            description='Camera node to start: "none" (start it yourself) or "realsense"'),
+        Node(
+            package='realsense2_camera',
+            executable='realsense2_camera_node',
+            name='camera',
+            namespace='/',
+            output='screen',
+            condition=IfCondition(
+                PythonExpression(["'", LaunchConfiguration('camera'), "' == 'realsense'"]))),
+        TimerAction(
+            period=check_delay,
+            actions=[ExecuteProcess(cmd=['bash', '-c', check], output='screen')]),
+    ]
+
+
 def pipeline_launch_description(yaml_filename, pipeline_name, topics, default_viewer='rqt'):
     """
     Return the launch description of a pipeline node and an optional image viewer.
