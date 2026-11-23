@@ -264,6 +264,7 @@ install(TARGETS image_people_client
   DESTINATION lib/${PROJECT_NAME})
 
 install(PROGRAMS ../script/download_models.sh ../script/export_yolo26.sh ../script/export_ssdlite_mobilenet_v2.sh
+  ../script/export_deeplabv3.sh ../script/setup_models.sh
   DESTINATION lib/${PROJECT_NAME})
 
 install(TARGETS composable_pipeline

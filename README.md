@@ -274,10 +274,28 @@ source /opt/ros/jazzy/setup.bash
 colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
 source install/setup.bash
 
-# 3. Download the models and run a demo on a sample image
-ros2 run openvino_node download_models.sh
+# 3. Get the models and run a demo on a sample image
+ros2 run openvino_node setup_models.sh
 ros2 launch openvino_node pipeline_image.launch.py
 ```
+
+#### Get the models
+One command fetches the models: it downloads the pre-converted Intel models and converts or exports the others on your machine. Models that are already present are skipped, so it is safe to run again.
+
+|Command|Result|
+|---|---|
+|`ros2 run openvino_node setup_models.sh`|Core set: face / people samples, SSD object detection, DeepLabv3 segmentation, YOLO26 detection|
+|`ros2 run openvino_node setup_models.sh --sample pipeline_segmentation`|Only the models of one sample (launch file or YAML name)|
+|`ros2 run openvino_node setup_models.sh --all`|Every model that the scripts provide, including all YOLO26 tasks|
+|`ros2 run openvino_node setup_models.sh --list`|The models of all samples and whether they are present|
+
+A launch file that misses a model prints the command that fetches it. Add `fetch_models:=true` to fetch the missing models before the launch starts:
+
+```bash
+ros2 launch openvino_node pipeline_segmentation.launch.py fetch_models:=true
+```
+
+The first conversion or export creates a Python environment, which takes a few minutes (about 2 GB for YOLO26). The individual scripts `download_models.sh`, `export_yolo26.sh`, `export_ssdlite_mobilenet_v2.sh` and `export_deeplabv3.sh` remain available for finer control, see `--help` of each script.
 
 #### Choose the inference device
 Every sample launch file accepts a `device` argument that overrides the `engine:` value of all models in the YAML file. Without it, the YAML values are used.
@@ -302,7 +320,7 @@ The YAML files use the placeholders `<OPENVINO_NODE_SHARE>` (the models location
 The models are exported on your machine by a script, which needs about 2 GB for a Python environment. They are licensed by Ultralytics under AGPL-3.0 and are not part of this repository.
 
 ```bash
-ros2 run openvino_node export_yolo26.sh --tasks detect,pose
+ros2 run openvino_node setup_models.sh --sample pipeline_yolo26_detection --sample pipeline_yolo26_pose
 ros2 launch openvino_node pipeline_yolo26_detection.launch.py
 ros2 launch openvino_node pipeline_yolo26_pose.launch.py device:=GPU
 ```
@@ -314,8 +332,16 @@ The `ssdlite_mobilenet_v2` model of `pipeline_object.launch.py` and the other SS
 The pipeline reads the TensorFlow outputs of the converted model directly. With `device:=NPU` the backbone runs on the NPU and the TensorFlow post-processing (NMS) on the CPU, because the NPU cannot compile its dynamic shapes; the device is then reported as `CPU,NPU`.
 
 ```bash
-ros2 run openvino_node export_ssdlite_mobilenet_v2.sh
+ros2 run openvino_node setup_models.sh --sample pipeline_object
 ros2 launch openvino_node pipeline_object.launch.py
+```
+
+#### DeepLabv3 semantic segmentation pipelines
+The `deeplabv3` model of `pipeline_segmentation.launch.py` and `pipeline_video.launch.py` is converted from the TensorFlow DeepLabv3 MobileNetV2 (Pascal VOC) model.
+
+```bash
+ros2 run openvino_node setup_models.sh --sample pipeline_segmentation
+ros2 launch openvino_node pipeline_segmentation.launch.py
 ```
 
 ### Deploy in Local Environment
@@ -331,7 +357,7 @@ The toolkit can be packaged for ROS 2 Jazzy on Ubuntu 24.04 (amd64). The package
 
 |Package|Content|
 |-----------------------|--------------------------------|
-|`ros-jazzy-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images, `download_models.sh`, `export_yolo26.sh` and `export_ssdlite_mobilenet_v2.sh`. Depends on all packages below.|
+|`ros-jazzy-openvino-node`|Pipeline and service nodes, launch files, YAML configurations, labels, sample images, `setup_models.sh` and the individual model scripts it runs. Depends on all packages below.|
 |`ros-jazzy-openvino-wrapper-lib`|OpenVINO pipeline library and headers|
 |`ros-jazzy-openvino-param-lib`|YAML parameter library and headers|
 |`ros-jazzy-openvino-msgs`|Pipeline messages and services|
@@ -348,7 +374,7 @@ sudo apt install ./dist/*.deb
 source /opt/ros/jazzy/setup.bash
 ```
 * Each `jazzy/<version>` release on GitHub also provides the packages as `ros-jazzy-openvino-toolkit_<version>_amd64.tar.gz`. Extract the archive and install the `.deb` files in the same way.
-* The OpenVINO models are not part of the packages. Download them with `ros2 run openvino_node download_models.sh`, export the YOLO26 models with `ros2 run openvino_node export_yolo26.sh` and convert `ssdlite_mobilenet_v2` with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`.
+* The OpenVINO models are not part of the packages. Get them with `ros2 run openvino_node setup_models.sh`, see [Get the models](#get-the-models).
 * `make test` builds the workspace, downloads the models to `.models/` and runs the unit tests in a container. Its colcon output goes to `.colcon-docker/`, separate from the `build/`, `install/` and `log/` of a local `colcon build`. Run `make help` for the other targets, for example `make test-package`, `make build` and `make lint`.
 
 ### Test in a Container
@@ -362,7 +388,7 @@ source /opt/ros/jazzy/setup.bash
 ```bash
 make shell
 # inside the container
-ros2 run openvino_node download_models.sh
+ros2 run openvino_node setup_models.sh --sample pipeline_image
 ros2 launch openvino_node pipeline_image.launch.py device:=CPU
 ```
 * `GPU` needs a driver in the container that supports the GPU of the host. The `intel-opencl-icd` package of Ubuntu 24.04 is installed for that purpose; see the [OpenVINO GPU configuration](https://docs.openvino.ai/2025/get-started/install-openvino/configurations/configurations-intel-gpu.html) for newer drivers.

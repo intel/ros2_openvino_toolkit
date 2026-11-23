@@ -20,9 +20,10 @@ description shared by the YOLO26 launch files.
 
 import os
 import re
+import subprocess
 import sys
 import tempfile
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_prefix, get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, ExecuteProcess, TimerAction
 from launch.conditions import IfCondition
@@ -74,6 +75,43 @@ def get_device_override():
     return os.environ.get('OPENVINO_DEVICE') or None
 
 
+def fetch_models_requested():
+    """
+    Return True when missing models should be fetched before the launch.
+
+    Usage: ros2 launch openvino_node <file>.launch.py fetch_models:=true
+    Falls back to $OPENVINO_FETCH_MODELS.
+    """
+    value = os.environ.get('OPENVINO_FETCH_MODELS', '')
+    for arg in sys.argv:
+        if arg.startswith('fetch_models:='):
+            value = arg.split(':=', 1)[1]
+    return value.strip().lower() in ('1', 'true', 'yes')
+
+
+def fetch_missing_models(models, yaml_filename, package_name, toolkit_dir):
+    """Fetch the missing model files with setup_models.sh, or print how to do it."""
+    for model in models:
+        print(f'[launch_helpers] WARNING: model not found: {model}')
+
+    if not fetch_models_requested():
+        if package_name == 'openvino_node':
+            args = '--sample ' + os.path.splitext(yaml_filename)[0]
+        else:
+            args = '--model ' + ' '.join(models)
+        print(f'  Get them with: ros2 run openvino_node setup_models.sh {args}\n'
+              '  or launch again with fetch_models:=true. '
+              f'Set {TOOLKIT_DIR_ENV} if the models are elsewhere.')
+        return
+
+    script = os.path.join(get_package_prefix('openvino_node'), 'lib', 'openvino_node',
+                          'setup_models.sh')
+    print('[launch_helpers] Fetching the missing models, this can take several minutes...')
+    env = dict(os.environ, **{TOOLKIT_DIR_ENV: toolkit_dir})
+    if subprocess.run([script, '--model', *models], env=env, check=False).returncode != 0:
+        print('[launch_helpers] WARNING: some models could not be fetched, see above.')
+
+
 def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     """
     Load a YAML file and resolve placeholder paths.
@@ -118,12 +156,11 @@ def resolve_yaml_paths(yaml_filename, package_name='openvino_node'):
     with open(resolved_yaml, 'w', encoding='utf-8') as f:
         f.write(yaml_content)
 
-    # Warn early about missing model files instead of failing inside the node.
-    for model in re.findall(r'^\s*model:\s*(\S+)', yaml_content, re.MULTILINE):
-        if not os.path.isfile(model):
-            script = 'export_yolo26.sh' if '/models/yolo26/' in model else 'download_models.sh'
-            print(f'[launch_helpers] WARNING: model not found: {model}\n'
-                  f'  Set {TOOLKIT_DIR_ENV} or run: ros2 run openvino_node {script}')
+    # Report or fetch missing model files instead of failing inside the node.
+    missing = [model for model in re.findall(r'^\s*model:\s*(\S+)', yaml_content, re.MULTILINE)
+               if not os.path.isfile(model)]
+    if missing:
+        fetch_missing_models(missing, yaml_filename, package_name, toolkit_dir)
 
     return resolved_yaml
 
