@@ -48,7 +48,6 @@ find_package(object_msgs REQUIRED)
 find_package(openvino_msgs REQUIRED)
 find_package(openvino_param_lib REQUIRED)
 find_package(yaml_cpp_vendor REQUIRED)
-find_package(realsense2 REQUIRED)
 find_package(rclcpp_components REQUIRED)
 find_package(class_loader REQUIRED)
 find_package(std_msgs REQUIRED)
@@ -119,7 +118,6 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 include_directories(${PROJECT_SOURCE_DIR}/include)
 include_directories(${openvino_wrapper_lib_INCLUDE_DIRS})
 include_directories(${openvino_param_lib_INCLUDE_DIRS})
-include_directories(${realsense2_INCLUDE_DIRS})
 
 add_executable(vino_param_sample
   src/parameters.cpp
@@ -133,7 +131,6 @@ add_executable(pipeline_with_params
 )
 target_link_libraries(pipeline_with_params
   ${SAMPLE_LIBS}
-  realsense2::realsense2
   )
 
 # Add Pipeline Composition version
@@ -142,7 +139,6 @@ add_library(composable_pipeline SHARED
 target_link_libraries(composable_pipeline
   ${SAMPLE_LIBS}
   rclcpp_components::component
-  realsense2::realsense2
   )
 rclcpp_components_register_nodes(composable_pipeline "ComposablePipeline")
 

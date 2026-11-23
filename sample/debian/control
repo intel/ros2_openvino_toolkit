@@ -11,7 +11,6 @@ Build-Depends: debhelper-compat (= 13),
                ros-lyrical-builtin-interfaces,
                ros-lyrical-class-loader,
                ros-lyrical-cv-bridge,
-               ros-lyrical-librealsense2,
                ros-lyrical-object-msgs,
                ros-lyrical-openvino-msgs,
                ros-lyrical-openvino-param-lib,
@@ -40,7 +39,6 @@ Depends: ${misc:Depends},
          ros-lyrical-class-loader,
          ros-lyrical-cv-bridge,
          ros-lyrical-launch-ros,
-         ros-lyrical-librealsense2,
          ros-lyrical-object-msgs,
          ros-lyrical-openvino-msgs,
          ros-lyrical-openvino-param-lib,
@@ -57,6 +55,7 @@ Depends: ${misc:Depends},
 Recommends: intel-opencl-icd,
             ros-lyrical-rqt-image-view,
             ros-lyrical-rviz2
+Suggests: ros-lyrical-realsense2-camera
 Description: ROS 2 OpenVINO toolkit nodes, launch and parameter files
  Pipeline and service nodes of the ROS 2 OpenVINO toolkit together with their
  launch files, YAML pipeline configurations, label files and sample images.

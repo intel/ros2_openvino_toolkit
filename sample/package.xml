@@ -39,7 +39,6 @@ limitations under the License.
   <build_depend>cv_bridge</build_depend>
   <build_depend>object_msgs</build_depend>
   <build_depend>openvino_msgs</build_depend>
-  <build_depend>realsense2</build_depend>
 
   <exec_depend>rosidl_default_runtime</exec_depend>
   <exec_depend>builtin_interfaces</exec_depend>
@@ -54,7 +53,6 @@ limitations under the License.
   <exec_depend>openvino_wrapper_lib</exec_depend>
   <exec_depend>openvino_param_lib</exec_depend>
   <exec_depend>object_msgs</exec_depend>
-  <exec_depend>realsense2</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

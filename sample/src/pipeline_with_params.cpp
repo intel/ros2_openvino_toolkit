@@ -42,7 +42,6 @@
 #include "openvino_wrapper_lib/services/pipeline_processing_server.hpp"
 #include "openvino_wrapper_lib/slog.hpp"
 #include "openvino/openvino.hpp"
-#include "librealsense2/rs.hpp"
 #include "opencv2/opencv.hpp"
 #include "utility.hpp"
 

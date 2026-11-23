@@ -24,7 +24,7 @@ jobs:
         apt-get update
         apt-get install -y --no-install-recommends git \
           python3-colcon-common-extensions build-essential cmake libopencv-dev \
-          ros-lyrical-cv-bridge ros-lyrical-librealsense2 ros-lyrical-yaml-cpp-vendor
+          ros-lyrical-cv-bridge ros-lyrical-yaml-cpp-vendor
 
     - name: install openvino 2026.4.1
       run: |
