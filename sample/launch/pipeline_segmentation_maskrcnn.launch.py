@@ -25,11 +25,11 @@ Visualization options:
 - viewer:=rviz2  -> Launches RViz2 with custom config
 - viewer:=none   -> No visualization
 
-Note: Launch your camera node (e.g., realsense2_camera) separately.
+Note: The input is StandardCamera: the first /dev/video* device that is not a RealSense
+      camera (e.g. a laptop or USB webcam), opened directly without a camera node.
       RViz2 visualization is disabled by default for this pipeline.
 
 Topics:
-- Subscribes to: /camera/color/image_raw
 - Publishes: /ros2_openvino_toolkit/segmented_objects
 - Publishes: /ros2_openvino_toolkit/image_rviz
 """
