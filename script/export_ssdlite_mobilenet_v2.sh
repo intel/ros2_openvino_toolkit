@@ -9,8 +9,8 @@
 # $XDG_DATA_HOME/openvino_toolkit (default ~/.local/share/openvino_toolkit).
 set -euo pipefail
 
-if [[ "$EUID" -eq 0 ]]; then
-  echo "Run as your user, not root: root would write to /root/.local" >&2
+if [[ "$EUID" -eq 0 && -z "${OPENVINO_TOOLKIT_DIR:-}" ]]; then
+  echo "Run as your user, not root: root would write to /root/.local (or set OPENVINO_TOOLKIT_DIR)" >&2
   exit 2
 fi
 
@@ -24,6 +24,11 @@ MODEL="ssdlite_mobilenet_v2_coco_2018_05_09"
 ARCHIVE="${MODEL}.tar.gz"
 URL="http://download.tensorflow.org/models/object_detection/${ARCHIVE}"
 ARCHIVE_SHA256="542445cce834dbfbb7df1991425d475e85a2d7ec68c60a4f262bb18aac10c8b2"
+
+if [[ -s "$OUT_DIR/ssdlite_mobilenet_v2.xml" && -s "$OUT_DIR/ssdlite_mobilenet_v2.bin" ]]; then
+  echo "ssdlite_mobilenet_v2/FP16 is already converted"
+  exit 0
+fi
 
 if [[ ! -x "$VENV_DIR/bin/ovc" ]]; then
   echo "Creating the Python environment in $VENV_DIR"
