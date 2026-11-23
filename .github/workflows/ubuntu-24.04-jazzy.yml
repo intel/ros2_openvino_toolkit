@@ -29,15 +29,6 @@ jobs:
         sudo ./script/packaging/setup_openvino_apt.sh
         sudo apt-get install -y openvino-libraries-dev-2025.4.0
 
-    - name: install librealsense2
-      run: |
-        # Install from Intel apt repository for Ubuntu 24.04 (noble)
-        sudo mkdir -p /etc/apt/keyrings
-        curl -sSf https://librealsense.realsenseai.com/Debian/librealsenseai.asc | gpg --dearmor | sudo tee /etc/apt/keyrings/librealsenseai.gpg > /dev/null
-        echo "deb [signed-by=/etc/apt/keyrings/librealsenseai.gpg] https://librealsense.realsenseai.com/Debian/apt-repo `lsb_release -cs` main" | sudo tee /etc/apt/sources.list.d/librealsense.list
-        sudo apt-get update
-        sudo apt-get install -y librealsense2-dev librealsense2-utils
-
     - name: build ros2 openvino toolkit
       run: |
         mkdir -p ~/ros2_ws/src
