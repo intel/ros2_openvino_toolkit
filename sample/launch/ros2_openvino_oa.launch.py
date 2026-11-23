@@ -21,10 +21,10 @@ OpenVINO Object Analytics (OA) framework.
 This is a lightweight launcher without visualization, suitable for
 integration with other ROS 2 nodes or analytics pipelines.
 
-Note: Launch your camera node (e.g., realsense2_camera) separately.
+Note: The input is StandardCamera: the first /dev/video* device that is not a RealSense
+      camera (e.g. a laptop or USB webcam), opened directly without a camera node.
 
 Topics:
-- Subscribes to: /camera/color/image_raw
 - Publishes: /ros2_openvino_toolkit/detected_objects
 - Publishes: /ros2_openvino_toolkit/image_rviz
 """

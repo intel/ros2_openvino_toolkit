@@ -1,7 +1,7 @@
 Pipelines:
 - name: segmentation
   inputs: [Image]
-  input_path: <OPENVINO_DATA>/images/sample_faces.jpg
+  input_path: <OPENVINO_DATA>/images/expressway.jpg
   infers:
     - name: ObjectSegmentation
       model: <OPENVINO_NODE_SHARE>/models/intel/semantic-segmentation-adas-0001/FP16/semantic-segmentation-adas-0001.xml

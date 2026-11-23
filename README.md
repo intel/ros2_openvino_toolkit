@@ -284,9 +284,9 @@ One command fetches the models: it downloads the pre-converted Intel models and 
 
 |Command|Result|
 |---|---|
-|`ros2 run openvino_node setup_models.sh`|Core set: face / people samples, SSD object detection, DeepLabv3 segmentation, YOLO26 detection|
+|`ros2 run openvino_node setup_models.sh`|Core set: all pre-converted Intel models, SSD object detection, DeepLabv3 segmentation, YOLO26 detection|
 |`ros2 run openvino_node setup_models.sh --sample pipeline_segmentation`|Only the models of one sample (launch file or YAML name)|
-|`ros2 run openvino_node setup_models.sh --all`|Every model that the scripts provide, including all YOLO26 tasks|
+|`ros2 run openvino_node setup_models.sh --all`|Every model that the scripts provide, including all YOLO26 tasks and Mask R-CNN (about 3 GB more)|
 |`ros2 run openvino_node setup_models.sh --list`|The models of all samples and whether they are present|
 
 A launch file that misses a model prints the command that fetches it. Add `fetch_models:=true` to fetch the missing models before the launch starts:
@@ -295,7 +295,7 @@ A launch file that misses a model prints the command that fetches it. Add `fetch
 ros2 launch openvino_node pipeline_segmentation.launch.py fetch_models:=true
 ```
 
-The first conversion or export creates a Python environment, which takes a few minutes (about 2 GB for YOLO26). The individual scripts `download_models.sh`, `export_yolo26.sh`, `export_ssdlite_mobilenet_v2.sh` and `export_deeplabv3.sh` remain available for finer control, see `--help` of each script.
+The first conversion or export creates a Python environment, which takes a few minutes (about 2 GB for YOLO26). The individual scripts `download_models.sh`, `export_yolo26.sh`, `export_ssdlite_mobilenet_v2.sh`, `export_deeplabv3.sh` and `export_maskrcnn.sh` remain available for finer control, see `--help` of each script.
 
 #### Choose the inference device
 Every sample launch file accepts a `device` argument that overrides the `engine:` value of all models in the YAML file. Without it, the YAML values are used.
