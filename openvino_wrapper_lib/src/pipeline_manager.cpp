@@ -138,8 +138,8 @@ PipelineManager::parseInputDevice(const PipelineData& pdata)
     if (name == kInputType_RealSenseCamera) {
       // No librealsense link, so the binaries work with any librealsense2 version.
       slog::warn << "Input " << name << " is deprecated and reads the camera topic /openvino_toolkit/image_raw; "
-                 << "start realsense2_camera (e.g. launch with camera:=realsense) and use "
-                 << kInputType_CameraTopic << " instead." << slog::endl;
+                 << "start realsense2_camera (e.g. launch with camera:=realsense) and use " << kInputType_CameraTopic
+                 << " instead." << slog::endl;
       device = std::make_shared<Input::RealSenseCameraTopic>(pdata.parent_node);
     } else if (name == kInputType_StandardCamera) {
       device = std::make_shared<Input::StandardCamera>(pdata.params.input_meta);

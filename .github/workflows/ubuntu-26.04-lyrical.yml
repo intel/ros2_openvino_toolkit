@@ -2,9 +2,9 @@ name: Ubuntu-26.04-Lyrical-CI
 
 on:
   push:
-    branches: [ "ros2_lyrical" ]
+    branches: ["ros2_lyrical"]
   pull_request:
-    branches: [ "ros2_lyrical" ]
+    branches: ["ros2_lyrical"]
   workflow_dispatch:
 
 permissions: read-all
@@ -36,7 +36,7 @@ jobs:
       shell: bash
       run: |
         mkdir -p ~/ros2_ws/src
-        cp -rf ${GITHUB_WORKSPACE} ~/ros2_ws/src/ros2_openvino_toolkit
+        cp -rf "${GITHUB_WORKSPACE}" ~/ros2_ws/src/ros2_openvino_toolkit
         cd ~/ros2_ws
         source /opt/ros/lyrical/setup.bash
         colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
