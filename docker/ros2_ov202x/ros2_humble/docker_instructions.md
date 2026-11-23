@@ -1,12 +1,12 @@
 # ROS2 OpenVINO Toolkit Docker Image
 
-This repository contains a Dockerfile for building a Docker image with ROS2 and the OpenVINO toolkit. The image is based on the `osrf/ros:humble-desktop` base image and includes additional tools and libraries for working with OpenVINO and librealsense.
+This repository contains a Dockerfile for building a Docker image with ROS2 and the OpenVINO toolkit. The image is based on the `osrf/ros:humble-desktop` base image and includes additional tools and libraries for working with OpenVINO and RealSense cameras.
 
 ## Features
 
 - ROS2 Humble Desktop
 - OpenVINO Toolkit version 2025.4.0
-- librealsense2
+- RealSense ROS camera node (`realsense2_camera`), used with `camera:=realsense`
 - User setup with `sudo` privileges
   
 ## Prerequisites  

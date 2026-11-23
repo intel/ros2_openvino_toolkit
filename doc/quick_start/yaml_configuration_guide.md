@@ -66,7 +66,7 @@ Currently, options for inputs are:
 |Input Option|Description|Configuration|
 |--------------------|------------------------------------------------------------------|-----------------------------------------|
 |StandardCamera|Any RGB camera with USB port support. Currently only the first USB camera is used if many are connected.|```inputs: [StandardCamera]```|
-|RealSenseCamera| Intel® RealSense™ RGB-D Camera, directly calling RealSense Camera via librealsense plugin of openCV.|```inputs: [RealSenseCamera]```|
+|RealSenseCamera| Deprecated alias of `RealSenseCameraTopic`: reads `/openvino_toolkit/image_raw`, published by the RealSense ROS node (`camera:=realsense`). The toolkit no longer links librealsense.|```inputs: [RealSenseCamera]```|
 |RealSenseCameraTopic| Any ROS topic which is structured in image message.|```inputs: [RealSenseCameraTopic]```|
 |Image| Any image file which can be parsed by openCV, such as .png, .jpeg.|```inputs: [Image]```|
 |Video| Any video file which can be parsed by openCV.|```inputs: [Video]```|
