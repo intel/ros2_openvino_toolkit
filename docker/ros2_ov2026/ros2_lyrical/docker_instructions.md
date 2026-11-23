@@ -56,13 +56,13 @@ For a RealSense or USB camera add `--device /dev/video0` (or `-v /dev:/dev --pri
 Inside the container:
 
 ```bash
-ros2 run openvino_node download_models.sh
+ros2 run openvino_node setup_models.sh
 ros2 launch openvino_node pipeline_image.launch.py
 ```
 
 Use `device:=GPU` or `device:=NPU` to select the OpenVINO device, for example `ros2 launch openvino_node pipeline_image.launch.py device:=GPU`. The device in use is printed at startup and drawn next to the FPS. See the [getting started guide](../../../doc/quick_start/getting_started_with_ros2_ov2.0.md) for all demos and launch arguments.
 
-YOLO26 models are exported with `ros2 run openvino_node export_yolo26.sh`, see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md). The `ssdlite_mobilenet_v2` model of the SSD object detection samples is converted with `ros2 run openvino_node export_ssdlite_mobilenet_v2.sh`. Other models that need conversion (Mask R-CNN, DeepLabv3, ...) are not covered by the scripts.
+`setup_models.sh` downloads the pre-converted Intel models and converts `ssdlite_mobilenet_v2`, `deeplabv3` and YOLO26 detection; add `--sample <launch file>` for the models of one sample, or `--all` for every model including all YOLO26 tasks and Mask R-CNN. See the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md) for the YOLO26 options.
 
 ## Notes
 
