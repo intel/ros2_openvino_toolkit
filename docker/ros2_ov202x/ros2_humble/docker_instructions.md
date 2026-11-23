@@ -30,8 +30,7 @@ docker build --build-arg  "HTTP_PROXY=http://<your-proxy.com>:<your-port>" -t  r
 
 ```
 ## Download the Models
-Run the setup script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. It downloads the pre-converted Intel models and converts `ssdlite_mobilenet_v2`, `deeplabv3` and the YOLO26 models (see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md)).
-Other models that need conversion (Mask R-CNN, ...) are not covered by the scripts.
+Run the setup script inside the container (see [Running the Docker Container](#running-the-docker-container)). It stores the models in `$OPENVINO_TOOLKIT_DIR/models`, or in `~/.local/share/openvino_toolkit/models` when the variable is not set. It downloads the pre-converted Intel models and converts `ssdlite_mobilenet_v2`, `deeplabv3` and the YOLO26 models (see the [YOLO26 tutorial](../../../doc/quick_start/tutorial_for_yolo26.md)). `--all` also converts Mask R-CNN.
 
 ```bash
 source /home/ubuntu/ros2_ws/install/setup.bash
